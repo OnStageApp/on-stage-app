@@ -18,7 +18,7 @@ jobs:
 
   build:
     call-workflow-in-local-repo:
-    uses: ToniVinter/on_stage_workflows/.github/workflows/flutter_package.yml@v1
+    uses: ./.github/workflows/flutter_package.yml@v1
     with:
       flutter_channel: stable
 
