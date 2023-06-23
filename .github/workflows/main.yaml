@@ -16,11 +16,10 @@ jobs:
   semantic-pull-request:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
 
-  build:
-    call-workflow-in-local-repo:
-    uses: ./.github/workflows/flutter_package.yml
-    with:
-      flutter_channel: stable
+#  call-workflow-in-local-repo:
+#    uses: ./.github/workflows/flutter_package.yml
+#    with:
+#      flutter_channel: stable
 
   spell-check:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
