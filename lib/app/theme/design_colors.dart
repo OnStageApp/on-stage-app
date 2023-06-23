@@ -505,7 +505,7 @@ class DesignColors extends ThemeExtension<DesignColors> {
     greyscale100: Color.fromRGBO(243, 243, 243, 1),
     greyscale200: Color.fromRGBO(230, 230, 229, 1),
     greyscale400: Color.fromRGBO(184, 182, 180, 1),
-    greyscale500: Color.fromRGBO(143, 141, 138, 1),
+    greyscale500: Color.fromRGBO(143, 141, 136, 1),
     greyscale800: Color.fromRGBO(102, 101, 99, 1),
     orangeLight200: Color.fromRGBO(254, 245, 237, 1),
     greyscale700: Color.fromRGBO(114, 113, 110, 1),
