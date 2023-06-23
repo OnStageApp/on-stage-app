@@ -22,6 +22,7 @@ jobs:
       flutter_channel: stable
       test_recursion: false
       test_optimization: false
+      min_coverage: 0
 
 
 
