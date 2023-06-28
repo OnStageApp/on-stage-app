@@ -1,0 +1,7 @@
+{
+  "@@locale": "ro",
+  "counterAppBarTitle": "Incrementare",
+  "@counterAppBarTitle": {
+    "description": "Textul afișat în bara de titlu a paginii de incrementare a contorului"
+  }
+}
