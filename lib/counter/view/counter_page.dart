@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/counter/counter.dart';
 import 'package:on_stage_app/l10n/l10n.dart';
 
+/// This is for testing purposes, has to be deleted
 class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
 
@@ -29,13 +32,20 @@ class CounterView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'increment',
             onPressed: () => context.read<CounterCubit>().increment(),
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
+            heroTag: 'decrement',
             onPressed: () => context.read<CounterCubit>().decrement(),
             child: const Icon(Icons.remove),
+          ),
+          FloatingActionButton(
+            heroTag: 'router example',
+            onPressed: () => context.pushNamed(AppRoute.home.name),
+            child: const Icon(Icons.near_me),
           ),
         ],
       ),
