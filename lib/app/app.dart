@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/design_colors.dart';
 import 'package:on_stage_app/l10n/l10n.dart';
 
@@ -22,7 +22,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: getIt<GoRouter>(),
+      routerConfig: AppRouter.router,
       theme: ThemeData.light().copyWith(
         extensions: <ThemeExtension<dynamic>>[DesignColors.light],
       ),
