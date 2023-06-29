@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
-
-extension ContextDesignColors on BuildContext {
-  DesignColors get designColors => Theme.of(this).extension<DesignColors>()!;
-}
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading
