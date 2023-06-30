@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/counter/counter.dart';
-import 'package:on_stage_app/l10n/l10n.dart';
 
 /// This is for testing purposes, has to be deleted
 class CounterPage extends StatelessWidget {

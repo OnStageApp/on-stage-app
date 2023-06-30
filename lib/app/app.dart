@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/l10n/l10n.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 final GetIt getIt = GetIt.instance;
 
