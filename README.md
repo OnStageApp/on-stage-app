@@ -25,7 +25,7 @@ On Stage App
   
 ## Before commit
 - Verify that all text is not hardcoded, use l10n
-- Run ```sh $ flutter analyze```
+- Run ```flutter analyze```
 - Resolve all issues
   
 ## Getting Started 🚀
