@@ -15,7 +15,7 @@ On Stage App
 - To commit your files ```git commit -m "explain what you did" ```
 - Update your main ```git checkout main ``` -> ```sh git pull origin main ```
 - Go to your branch ```git checkout [my-branch]```
-- Squash all commits into one ```git reabse -i HEAD~numberOfCommits ( eg. git reabse -i HEAD~3 ) ```
+- Squash all commits into one ```git reabse -i HEAD~[number of commits] ( eg. git reabse -i HEAD~3 ) ```
 - Rebase with main ```git rebase main```
 - Push your commits ```git push origin [my-branch] ```
 - Create a Pull Request, name of the pull request has to be the same as Jira's task title
