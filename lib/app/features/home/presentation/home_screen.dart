@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -27,14 +26,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                context.goNamed(AppRoute.songs.name);
+              },
+              child: const Text('Go to Songs'),
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
-              context.pushNamed(AppRoute.songs.name);
+              context.goNamed(AppRoute.profile.name);
             },
-            child: const Text('Go to Songs'),
-          ),
-          const Center(
-            child: Text('Home Screen'),
+            child: const Text('Go to Profile'),
           ),
         ],
       ),

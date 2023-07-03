@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/songs/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class SongsScreen extends StatefulWidget {
-  const SongsScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<SongsScreen> createState() => _SongsScreenState();
+  State<ProfileScreen> createState() => _ProfileScreentate();
 }
 
-class _SongsScreenState extends State<SongsScreen> {
+class _ProfileScreentate extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,11 +31,10 @@ class _SongsScreenState extends State<SongsScreen> {
                 child: const Text('Go back'),
               ),
               Text(
-                'Songs',
+                'Profile',
                 style: context.textTheme.headlineMedium,
               ),
               const SizedBox(height: 32),
-              const StageSearchBar(),
             ],
           ),
         ),
