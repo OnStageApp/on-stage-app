@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    uses: ToniVinter/on_stage_workflows/.github/workflows/flutter_package.yml@v1
+    uses: ToniVinter/on_stage_workflows/.github/workflows/flutter_package.yml@v2
     with:
       flutter_channel: stable
       test_recursion: false
