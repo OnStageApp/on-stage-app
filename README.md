@@ -11,7 +11,7 @@ On Stage App
 
 ## GIT Workflow
 - Create a branch with the id from Jira ( eg. STG-134 ) 
-- To add your modifications: ```sh git add . ```
+- To add your modifications: ```sh $ git add . ```
 - To commit your files ```sh git commit -m "explain what you did" ```
 - Update your main ```sh git checkout main ``` -> ```sh git pull origin main ```
 - Go to your branch ```sh git checkout [my-branch]```
