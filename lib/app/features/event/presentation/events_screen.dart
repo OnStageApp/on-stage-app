@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class EventsScreen extends StatefulWidget {
+  const EventsScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<EventsScreen> createState() => _EventsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'Profile',
+                'Events',
                 style: context.textTheme.headlineMedium,
               ),
             ),

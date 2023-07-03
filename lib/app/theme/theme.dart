@@ -6,16 +6,19 @@ export 'extensions.dart';
 final onStageLightTheme = ThemeData.from(
   useMaterial3: true,
   colorScheme: lightColorScheme,
-  textTheme: onStageTextTheme,
+  textTheme: _onStageTextTheme,
 ).copyWith(cardTheme: const CardTheme());
 
 final onStageDarkTheme = ThemeData.from(
   useMaterial3: true,
   colorScheme: darkColorScheme,
-  textTheme: onStageTextTheme,
-).copyWith(cardTheme: const CardTheme());
+  textTheme: _onStageTextTheme,
+).copyWith(
+  cardTheme: const CardTheme(),
+  splashColor: Colors.transparent,
+);
 
-final TextTheme onStageTextTheme = TextTheme(
+final TextTheme _onStageTextTheme = TextTheme(
   displayLarge: GoogleFonts.montserrat(
     fontSize: 57,
     height: 64.0 / 57.0,
@@ -110,7 +113,7 @@ final TextTheme onStageTextTheme = TextTheme(
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
-  primary: Color(0xFF6229FD),
+  primary: Color(0xFF225FA6),
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFE6DEFF),
   onPrimaryContainer: Color(0xFF1D0061),
@@ -132,7 +135,7 @@ const lightColorScheme = ColorScheme(
   onSurface: Color(0xFF1C1B1E),
   surfaceVariant: Color(0xFFE6E0EC),
   onSurfaceVariant: Color(0xFF49454F),
-  outline: Color(0xFF79757F),
+  outline: Color(0xFF938F99),
   onInverseSurface: Color(0xFFBBC6C8),
   inverseSurface: Color(0xFF313033),
   inversePrimary: Color(0xFFCBBEFF),
@@ -142,7 +145,7 @@ const lightColorScheme = ColorScheme(
 
 const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFFCBBEFF),
+  primary: Color(0xFF225FA6),
   onPrimary: Color(0xFF320099),
   primaryContainer: Color(0xFF4900D5),
   onPrimaryContainer: Color(0xFFE6DEFF),

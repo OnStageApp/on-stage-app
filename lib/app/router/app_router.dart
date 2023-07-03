@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/songs/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/main_screen.dart';
 
 export 'package:go_router/go_router.dart';
 
@@ -35,7 +36,7 @@ class AppRouter {
       GoRoute(
         name: AppRoute.welcome.name,
         path: '/welcome',
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const MainScreen(),
       ),
       GoRoute(
         name: AppRoute.home.name,

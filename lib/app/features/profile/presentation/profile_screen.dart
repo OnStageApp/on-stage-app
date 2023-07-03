@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -24,12 +23,6 @@ class _ProfileScreentate extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  context.goNamed(AppRoute.home.name);
-                },
-                child: const Text('Go back'),
-              ),
               Text(
                 'Profile',
                 style: context.textTheme.headlineMedium,

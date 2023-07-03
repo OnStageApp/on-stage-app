@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/songs/presentation/widgets/stage_search_bar.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongsScreen extends StatefulWidget {
@@ -20,12 +19,6 @@ class _SongsScreenState extends State<SongsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  context.goNamed(AppRoute.home.name);
-                },
-                child: const Text('Go back'),
-              ),
               Text(
                 'Songs',
                 style: context.textTheme.headlineMedium,
