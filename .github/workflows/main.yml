@@ -25,6 +25,4 @@ jobs:
 
   spell-check:
     uses: ToniVinter/very_good_workflows/.github/workflows/spell_check.yml@v1
-    with:
-      includes: |
-      modified_files_only: false
+
