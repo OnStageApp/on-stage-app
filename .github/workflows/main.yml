@@ -20,9 +20,3 @@ jobs:
       test_recursion: false
       test_optimization: false
       min_coverage: 0
-
-
-
-  spell-check:
-    uses: ToniVinter/on_stage_workflows/.github/workflows/spell_check.yml@v1
-
