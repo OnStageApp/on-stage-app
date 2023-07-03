@@ -11,13 +11,13 @@ On Stage App
 
 ## GIT Workflow
 - Create a branch with the id from Jira ( eg. STG-134 ) 
-- To add your modifications: ```sh $ git add . ```
-- To commit your files ```sh git commit -m "explain what you did" ```
-- Update your main ```sh git checkout main ``` -> ```sh git pull origin main ```
-- Go to your branch ```sh git checkout [my-branch]```
-- Squash all commits into one ```sh git reabse -i HEAD~numberOfCommits ( eg. git reabse -i HEAD~3 ) ```
-- Rebase with main ```sh git rebase main```
-- Push your commits ```sh git push origin [my-branch] ```
+- To add your modifications: ```git add . ```
+- To commit your files ```git commit -m "explain what you did" ```
+- Update your main ```git checkout main ``` -> ```sh git pull origin main ```
+- Go to your branch ```git checkout [my-branch]```
+- Squash all commits into one ```git reabse -i HEAD~numberOfCommits ( eg. git reabse -i HEAD~3 ) ```
+- Rebase with main ```git rebase main```
+- Push your commits ```git push origin [my-branch] ```
 - Create a Pull Request, name of the pull request has to be the same as Jira's task title
 - Verify if code coverage it's ok
 - Wait for approval to merge it
