@@ -1,7 +1,7 @@
 CODE_DIR ?= src
 PARENT_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 
-FLUTTER_TARGET_VERSION = 3.3.0
+FLUTTER_TARGET_VERSION = 3.10.5
 PRODUCTION_TARGET = lib/main.dart
 FLUTTER = fvm flutter
 

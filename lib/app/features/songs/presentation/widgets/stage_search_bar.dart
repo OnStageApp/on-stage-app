@@ -13,7 +13,7 @@ class StageSearchBar extends StatelessWidget {
         (states) => Colors.transparent,
       ),
       backgroundColor: MaterialStateColor.resolveWith(
-        (states) => context.colorScheme.onInverseSurface,
+        (states) => context.colorScheme.surfaceVariant,
       ),
       trailing: [
         Padding(

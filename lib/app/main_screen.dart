@@ -30,16 +30,17 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.background,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFFF9F9FC),
+        backgroundColor: Colors.white,
         selectedLabelStyle: context.textTheme.labelMedium,
         unselectedLabelStyle: context.textTheme.labelMedium,
         selectedItemColor: context.colorScheme.primary,
         unselectedItemColor: context.colorScheme.outline,
         showUnselectedLabels: true,
-        elevation: 0,
+        elevation: 1,
         onTap: _onChangedScreen,
         items: const [
           BottomNavigationBarItem(
@@ -50,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             label: 'Home',
-            backgroundColor: Color(0xFFF9F9FC),
+            backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
             icon: Padding(
