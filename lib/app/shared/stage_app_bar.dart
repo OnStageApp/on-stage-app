@@ -4,10 +4,12 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StageAppBar({
+    required this.title,
     this.trailing,
     super.key,
   });
 
+  final String title;
   final Widget? trailing;
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         children: [
           Text(
-            'Songs',
+            title,
             style: context.textTheme.headlineMedium,
           ),
           const Expanded(child: SizedBox()),
