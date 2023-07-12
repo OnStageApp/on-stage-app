@@ -45,7 +45,9 @@ class _SongsScreenState extends State<SongsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const StageAppBar(),
+      appBar: const StageAppBar(
+        title: 'Songs',
+      ),
       body: Padding(
         padding: defaultScreenPadding,
         child: ListView(
