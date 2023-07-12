@@ -1,5 +1,12 @@
 include: package:very_good_analysis/analysis_options.5.0.0.yaml
 analyzer:
+  exclude:
+    - lib/**.g.dart
+    - lib/**.inject.dart
+    - lib/**.inject.summary
+    - lib/**.freezed.dart
+    - test/**.g.dart
+    - test/**.inject.dart
   errors:
     invalid_annotation_target: ignore
 linter:

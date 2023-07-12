@@ -122,7 +122,7 @@ const lightColorScheme = ColorScheme(
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFE6DEFF),
   onPrimaryContainer: Color(0xFF1D0061),
-  secondary: Color(0xFF4758A9),
+  secondary: Color(0xFFD9C8EB),
   onSecondary: Color(0xFFFFFFFF),
   secondaryContainer: Color(0xFFDDE1FF),
   onSecondaryContainer: Color(0xFF001257),
@@ -154,7 +154,7 @@ const darkColorScheme = ColorScheme(
   onPrimary: Color(0xFF320099),
   primaryContainer: Color(0xFF4900D5),
   onPrimaryContainer: Color(0xFFE6DEFF),
-  secondary: Color(0xFFB9C3FF),
+  secondary: Color(0xFFD9C8EB),
   onSecondary: Color(0xFF132778),
   secondaryContainer: Color(0xFF2E4090),
   onSecondaryContainer: Color(0xFFDDE1FF),
@@ -191,3 +191,7 @@ class Insets {
   static const double extraLarge = 48;
   static const double huge = 64;
 }
+
+const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
+const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 56, 24, 0);
+const defaultAppBarHeight = 48.0;
