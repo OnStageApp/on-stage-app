@@ -7,7 +7,12 @@ final onStageLightTheme = ThemeData.from(
   useMaterial3: true,
   colorScheme: lightColorScheme,
   textTheme: _onStageTextTheme,
-).copyWith(cardTheme: const CardTheme());
+).copyWith(
+  cardTheme: const CardTheme(),
+  splashColor: Colors.transparent,
+  highlightColor: Colors.transparent,
+  hoverColor: Colors.transparent,
+);
 
 final onStageDarkTheme = ThemeData.from(
   useMaterial3: true,
@@ -113,11 +118,11 @@ final TextTheme _onStageTextTheme = TextTheme(
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
-  primary: Color(0xFF225FA6),
+  primary: Color(0xFF6B9EBB),
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFE6DEFF),
   onPrimaryContainer: Color(0xFF1D0061),
-  secondary: Color(0xFF4758A9),
+  secondary: Color(0xFFD9C8EB),
   onSecondary: Color(0xFFFFFFFF),
   secondaryContainer: Color(0xFFDDE1FF),
   onSecondaryContainer: Color(0xFF001257),
@@ -129,11 +134,11 @@ const lightColorScheme = ColorScheme(
   errorContainer: Color(0xFFFFDAD6),
   onError: Color(0xFFFFFFFF),
   onErrorContainer: Color(0xFF410002),
-  background: Color(0xFFFFFBFF),
+  background: Color(0xFFF6F6F6),
   onBackground: Color(0xFF1C1B1E),
   surface: Color(0xFFFFFBFF),
   onSurface: Color(0xFF1C1B1E),
-  surfaceVariant: Color(0xFFE6E0EC),
+  surfaceVariant: Color(0xFFE0E2EC),
   onSurfaceVariant: Color(0xFF49454F),
   outline: Color(0xFF938F99),
   onInverseSurface: Color(0xFFBBC6C8),
@@ -149,7 +154,7 @@ const darkColorScheme = ColorScheme(
   onPrimary: Color(0xFF320099),
   primaryContainer: Color(0xFF4900D5),
   onPrimaryContainer: Color(0xFFE6DEFF),
-  secondary: Color(0xFFB9C3FF),
+  secondary: Color(0xFFD9C8EB),
   onSecondary: Color(0xFF132778),
   secondaryContainer: Color(0xFF2E4090),
   onSecondaryContainer: Color(0xFFDDE1FF),
@@ -174,3 +179,19 @@ const darkColorScheme = ColorScheme(
   shadow: Color(0xFF000000),
   surfaceTint: Color(0xFFCBBEFF),
 );
+
+class Insets {
+  static const double extraSmall = 4;
+  static const double smaller = 6;
+  static const double small = 8;
+  static const double smallNormal = 12;
+  static const double normal = 16;
+  static const double medium = 24;
+  static const double large = 32;
+  static const double extraLarge = 48;
+  static const double huge = 64;
+}
+
+const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
+const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 56, 24, 0);
+const defaultAppBarHeight = 48.0;

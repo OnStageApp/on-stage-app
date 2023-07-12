@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
-import 'package:on_stage_app/app/features/songs/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class MainScreen extends StatefulWidget {
@@ -30,16 +30,17 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.background,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFFF9F9FC),
+        backgroundColor: Colors.white,
         selectedLabelStyle: context.textTheme.labelMedium,
         unselectedLabelStyle: context.textTheme.labelMedium,
         selectedItemColor: context.colorScheme.primary,
         unselectedItemColor: context.colorScheme.outline,
         showUnselectedLabels: true,
-        elevation: 0,
+        elevation: 1,
         onTap: _onChangedScreen,
         items: const [
           BottomNavigationBarItem(
@@ -50,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             label: 'Home',
-            backgroundColor: Color(0xFFF9F9FC),
+            backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
             icon: Padding(

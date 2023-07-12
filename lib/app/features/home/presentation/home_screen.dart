@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'Profile',
+                'Home',
                 style: context.textTheme.headlineMedium,
               ),
             ),

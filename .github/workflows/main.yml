@@ -20,3 +20,4 @@ jobs:
       test_recursion: false
       test_optimization: false
       min_coverage: 0
+
