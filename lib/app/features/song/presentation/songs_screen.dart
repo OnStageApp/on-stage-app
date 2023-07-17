@@ -71,7 +71,6 @@ class _SongsScreenState extends State<SongsScreen> {
               const EventTile(
                 title: 'Friday Night',
                 description: 'Monday, 14 Feb',
-                chord: 'C# major',
               ),
             ],
             const SizedBox(height: Insets.medium),
