@@ -13,7 +13,6 @@ class EventTileEnhanced extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Do not use StageTile anymore, too much params
     return StageTile(
       title: title,
       description: description,
