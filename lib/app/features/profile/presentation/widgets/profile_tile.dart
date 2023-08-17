@@ -33,7 +33,7 @@ class ProfileTile extends StatelessWidget {
               maxLines: 1,
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             totalNumber,
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
