@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
+import 'package:on_stage_app/app/shared/profile_icon_widget.dart';
 import 'package:on_stage_app/app/shared/song_square_card.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -48,12 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const Expanded(child: SizedBox()),
-                  Image.asset(
-                    'assets/images/profile4.png',
-                    width: 64,
-                    height: 64,
-                    fit: BoxFit.fill,
-                  ),
+                  const ProfileIconWidget(),
                 ],
               ),
             ),
@@ -63,34 +60,40 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  StageSearchBar(focusNode: _focusNode),
+                  Hero(
+                    tag: 'searchBar',
+                    child: StageSearchBar(
+                      focusNode: _focusNode,
+                      onTap: () {
+                        //use ShellRoutes
+                        ///https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
+                        context.goNamed(AppRoute.songs.name);
+                      },
+                    ),
+                  ),
                   const SizedBox(height: Insets.large),
-                  Text('Upcoming Events', style: context.textTheme.titleMedium),
+                  Text('Upcoming Event', style: context.textTheme.titleMedium),
                   const SizedBox(height: Insets.medium),
                   const EventTileEnhanced(
                     title: 'Program seara',
                     description: 'Monday, 14 Feb',
                   ),
-                  const SizedBox(height: Insets.large),
+                  const SizedBox(height: Insets.medium),
                   Text('Top Rated', style: context.textTheme.titleMedium),
                   const SizedBox(height: Insets.medium),
                 ],
               ),
             ),
             _buildTopRatedSongs(),
-            const SizedBox(height: Insets.large),
+            const SizedBox(height: Insets.medium),
             Padding(
               padding: defaultScreenHorizontalPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              child:
                   Text('Recently Added', style: context.textTheme.titleMedium),
-                  const SizedBox(height: Insets.medium),
-                ],
-              ),
             ),
+            const SizedBox(height: Insets.medium),
             _buildTopRatedSongs(),
-            const SizedBox(height: Insets.large),
+            const SizedBox(height: Insets.medium),
           ],
         ),
       ),

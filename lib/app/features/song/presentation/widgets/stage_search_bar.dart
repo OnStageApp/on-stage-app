@@ -7,12 +7,14 @@ class StageSearchBar extends StatelessWidget {
     this.controller,
     this.onChanged,
     this.onClosed,
+    this.onTap,
     super.key,
   });
 
   final FocusNode focusNode;
   final void Function(String)? onChanged;
   final void Function()? onClosed;
+  final void Function()? onTap;
   final TextEditingController? controller;
 
   @override
@@ -60,6 +62,7 @@ class StageSearchBar extends StatelessWidget {
       ],
       hintText: 'Search',
       onChanged: onChanged,
+      onTap: onTap,
     );
   }
 }
