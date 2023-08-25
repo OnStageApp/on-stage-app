@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
-import 'package:on_stage_app/app/theme/assets.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -11,16 +10,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Divider(
-        color: context.colorScheme.outline,
-        thickness: 1,
-        height: 0,
-      ),
-    );
-  }
+
 
   @override
   void initState() {
@@ -61,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CircleAvatar(
                           backgroundImage:
                               AssetImage('assets/images/profile1.png'),
-                          radius: 40,
+                          radius: 32,
                         )
                       ],
                     ),
@@ -76,21 +66,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ProfileTile(
-                        icon: Assets.bookmarked,
+                        icon: Icons.bookmark,
                         title: 'Saved',
                         totalNumber: '5',
                         onTap: () {},
                       ),
                       _buildDivider(),
                       ProfileTile(
-                        icon: Assets.friends,
+                        icon: Icons.supervised_user_circle,
                         title: 'Friends',
                         totalNumber: '5',
                         onTap: () {},
                       ),
                       _buildDivider(),
                       ProfileTile(
-                        icon: Assets.song,
+                        icon: Icons.audiotrack_rounded,
                         title: 'Played',
                         totalNumber: '5',
                         onTap: () {},
@@ -107,30 +97,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ProfileTile(
-                        icon: Assets.settings,
+                        icon: Icons.settings,
                         title: 'App Settings',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                       _buildDivider(),
                       ProfileTile(
-                        icon: Assets.notification,
+                        icon: Icons.notifications,
                         title: 'Notifications',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                       _buildDivider(),
                       ProfileTile(
-                        icon: Assets.account,
+                        icon: Icons.perm_identity_rounded,
                         title: 'Account',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                       _buildDivider(),
                       ProfileTile(
-                        icon: Assets.account,
+                        icon: Icons.heart_broken,
                         title: 'Account',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                     ],
@@ -145,9 +131,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ProfileTile(
-                        icon: Assets.notes,
+                        icon: Icons.assignment,
                         title: 'Request a song',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                     ],
@@ -162,9 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ProfileTile(
-                        icon: Assets.logout,
+                        icon: Icons.logout,
                         title: 'Logout',
-                        totalNumber: '5',
                         onTap: () {},
                       ),
                     ],
@@ -175,6 +159,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(
+        color: context.colorScheme.outline,
+        thickness: 1,
+        height: 0,
       ),
     );
   }

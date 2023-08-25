@@ -4,15 +4,15 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ProfileTile extends StatelessWidget {
   const ProfileTile({
     required this.title,
-    required this.totalNumber,
+    this.totalNumber,
     required this.icon,
     required this.onTap,
     super.key,
   });
 
   final String title;
-  final String totalNumber;
-  final String icon;
+  final String? totalNumber;
+  final IconData icon;
   final void Function() onTap;
 
   @override
@@ -21,22 +21,20 @@ class ProfileTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          ImageIcon(
-            AssetImage(icon),
-            size: 16,
-          ),
+          Icon(icon,
+          size: 16),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               title,
-              style: context.textTheme.bodyText1,
+              style: context.textTheme.bodyLarge,
               maxLines: 1,
             ),
           ),
           const Spacer(),
           Text(
-            totalNumber,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+            totalNumber ?? '',
+            style: context.textTheme.titleMedium!.copyWith(
                   color: context.colorScheme.primary,
                 ),
           ),
