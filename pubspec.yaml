@@ -21,7 +21,7 @@ dependencies:
   google_fonts: ^5.1.0
   intl: ^0.18.0
   json_annotation: ^4.8.1
-  logger: ^1.4.0
+  logger: ^2.0.2
 
 dev_dependencies:
   bloc_test: ^9.1.3
