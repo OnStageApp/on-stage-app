@@ -10,8 +10,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
-
   @override
   void initState() {
     super.initState();
@@ -41,18 +39,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           '@johnmayer03',
                           style: context.textTheme.bodyLarge!.copyWith(
-                              color: context.colorScheme.onSurfaceVariant),
+                            color: context.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ],
                     ),
                     const Spacer(),
-                    const Column(
+                    Column(
                       children: <Widget>[
-                        CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/images/profile1.png'),
-                          radius: 32,
-                        )
+                        Container(
+                          decoration:
+                              const BoxDecoration(shape: BoxShape.circle),
+                          child: Image.asset(
+                            'assets/images/profile1.png',
+                            height: 64,
+                            width: 64,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                       ],
                     ),
                   ],

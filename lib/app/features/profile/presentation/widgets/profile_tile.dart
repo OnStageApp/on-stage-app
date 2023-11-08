@@ -21,10 +21,12 @@ class ProfileTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Icon(icon,
-          size: 16),
+          Icon(
+            icon,
+            size: 16,
+          ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 8),
             child: Text(
               title,
               style: context.textTheme.bodyLarge,
@@ -35,8 +37,8 @@ class ProfileTile extends StatelessWidget {
           Text(
             totalNumber ?? '',
             style: context.textTheme.titleMedium!.copyWith(
-                  color: context.colorScheme.primary,
-                ),
+              color: context.colorScheme.primary,
+            ),
           ),
         ],
       ),
