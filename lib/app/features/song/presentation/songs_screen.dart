@@ -53,13 +53,16 @@ class _SongsScreenState extends State<SongsScreen> {
         child: ListView(
           children: [
             const SizedBox(height: Insets.medium),
-            StageSearchBar(
-              focusNode: _focusNode,
-              controller: searchController,
-              onClosed: () {
-                _songs = SongDummy.songs;
-              },
-              onChanged: _getSearchedSongs,
+            Hero(
+              tag: 'searchBar',
+              child: StageSearchBar(
+                focusNode: _focusNode,
+                controller: searchController,
+                onClosed: () {
+                  _songs = SongDummy.songs;
+                },
+                onChanged: _getSearchedSongs,
+              ),
             ),
             if (!isSearching) ...[
               const SizedBox(height: Insets.medium),
@@ -71,7 +74,6 @@ class _SongsScreenState extends State<SongsScreen> {
               const EventTile(
                 title: 'Friday Night',
                 description: 'Monday, 14 Feb',
-                chord: 'C# major',
               ),
             ],
             const SizedBox(height: Insets.medium),

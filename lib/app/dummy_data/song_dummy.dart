@@ -1,7 +1,47 @@
 import 'package:on_stage_app/app/features/artist/domain/artist_model.dart';
+import 'package:on_stage_app/app/features/notifications/domain/stage_notification_model.dart';
 import 'package:on_stage_app/app/features/song/domain/song_model.dart';
 
 class SongDummy {
+  static const notificationsDummy = <StageNotification>[
+    //fill with dummy data
+    StageNotification(
+      id: 1,
+      title: 'Ready to go live?',
+      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      createdAt: 'today',
+    ),
+    StageNotification(
+      id: 1,
+      title: 'Friend Request',
+      body: 'David sent you a friend request',
+      createdAt: 'today',
+    ),
+    StageNotification(
+      id: 1,
+      title: 'Ready to go live?',
+      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      createdAt: 'today',
+    ),
+    StageNotification(
+      id: 1,
+      title: 'Ready to go live?',
+      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      createdAt: 'today',
+    ),
+    StageNotification(
+      id: 1,
+      title: 'Friend Request',
+      body: 'David sent you a friend request',
+      createdAt: 'today',
+    ),
+    StageNotification(
+      id: 1,
+      title: 'Ready to go live?',
+      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      createdAt: 'today',
+    ),
+  ];
   static const List<Song> songs = [
     Song(
       id: 1,

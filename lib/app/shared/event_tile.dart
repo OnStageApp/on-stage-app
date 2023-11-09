@@ -6,13 +6,11 @@ class EventTile extends StatelessWidget {
   const EventTile({
     required this.title,
     required this.description,
-    required this.chord,
     super.key,
   });
 
   final String title;
   final String description;
-  final String chord;
 
   @override
   Widget build(BuildContext context) {

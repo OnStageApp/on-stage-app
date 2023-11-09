@@ -134,7 +134,7 @@ const lightColorScheme = ColorScheme(
   errorContainer: Color(0xFFFFDAD6),
   onError: Color(0xFFFFFFFF),
   onErrorContainer: Color(0xFF410002),
-  background: Color(0xFFF6F6F6),
+  background: Color(0xFFF8F9FB),
   onBackground: Color(0xFF1C1B1E),
   surface: Color(0xFFFFFBFF),
   onSurface: Color(0xFF1C1B1E),
@@ -193,5 +193,6 @@ class Insets {
 }
 
 const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
+const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
 const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 56, 24, 0);
 const defaultAppBarHeight = 48.0;
