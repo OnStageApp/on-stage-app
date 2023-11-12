@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/artist/domain/artist_model.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
 part 'song_model.freezed.dart';
 part 'song_model.g.dart';

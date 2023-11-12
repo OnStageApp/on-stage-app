@@ -1,6 +1,6 @@
-import 'package:on_stage_app/app/features/artist/domain/artist_model.dart';
-import 'package:on_stage_app/app/features/notifications/domain/stage_notification_model.dart';
-import 'package:on_stage_app/app/features/song/domain/song_model.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class SongDummy {
   static const notificationsDummy = <StageNotification>[

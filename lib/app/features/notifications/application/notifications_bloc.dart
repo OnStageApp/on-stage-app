@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:on_stage_app/app/features/notifications/application/notifications_event.dart';
 import 'package:on_stage_app/app/features/notifications/application/notifications_state.dart';
-import 'package:on_stage_app/app/features/song/domain/song_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class NotificationBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationBloc({required this.notifications})

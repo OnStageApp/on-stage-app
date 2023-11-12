@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
-import 'package:on_stage_app/app/features/song/domain/song_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/search/search_song_provider.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
 import 'package:on_stage_app/app/shared/song_author_tile.dart';
@@ -8,22 +9,21 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class SongsScreen extends StatefulWidget {
+class SongsScreen extends ConsumerStatefulWidget {
   const SongsScreen({super.key});
 
   @override
-  State<SongsScreen> createState() => _SongsScreenState();
+  SongsScreenState createState() => SongsScreenState();
 }
 
-class _SongsScreenState extends State<SongsScreen> {
-  late List<Song> _songs;
+class SongsScreenState extends ConsumerState<SongsScreen> {
+  final List<Song> _songs = List.empty(growable: true);
   final FocusNode _focusNode = FocusNode();
   bool isSearching = false;
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
-    _songs = SongDummy.songs;
     _isSearchedFocused();
     super.initState();
   }
@@ -44,6 +44,9 @@ class _SongsScreenState extends State<SongsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _songs
+      ..clear()
+      ..addAll(ref.watch(searchSongProvider).songs);
     return Scaffold(
       appBar: const StageAppBar(
         title: 'Songs',
@@ -59,9 +62,16 @@ class _SongsScreenState extends State<SongsScreen> {
                 focusNode: _focusNode,
                 controller: searchController,
                 onClosed: () {
-                  _songs = SongDummy.songs;
+                  ref.invalidate(searchSongProvider);
                 },
-                onChanged: _getSearchedSongs,
+                onChanged: (value) {
+                  if (value.isEmpty) {
+                    _focusNode.unfocus();
+                  }
+                  ref.read(searchSongProvider.notifier).searchSongs(
+                        searchedText: value,
+                      );
+                },
               ),
             ),
             if (!isSearching) ...[
@@ -101,18 +111,5 @@ class _SongsScreenState extends State<SongsScreen> {
         ),
       ),
     );
-  }
-
-  void _getSearchedSongs(String value) {
-    return setState(() {
-      _songs = SongDummy.songs
-          .where(
-            (song) =>
-                song.title.toLowerCase().contains(value) ||
-                song.artist.fullName.toLowerCase().contains(value) ||
-                song.lyrics.toLowerCase().contains(value),
-          )
-          .toList();
-    });
   }
 }
