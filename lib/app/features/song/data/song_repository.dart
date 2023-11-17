@@ -9,7 +9,7 @@ class SongRepository extends _$SongRepository {
   @override
   FutureOr build() {}
 
-  Future<List<Song>> fetchSongs() async {
+  Future<List<SongModel>> fetchSongs() async {
     final songs = await Future.delayed(
       const Duration(seconds: 1),
       () => SongDummy.songs,

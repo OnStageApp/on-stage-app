@@ -4,9 +4,9 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ProfileTile extends StatelessWidget {
   const ProfileTile({
     required this.title,
-    this.totalNumber,
     required this.icon,
     required this.onTap,
+    this.totalNumber,
     super.key,
   });
 

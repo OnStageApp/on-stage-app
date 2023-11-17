@@ -21,7 +21,7 @@ class SongSquareCard extends StatelessWidget {
             blurRadius: 10,
             offset: Offset(0, 6),
             spreadRadius: 4,
-          )
+          ),
         ],
       ),
       child: Column(
@@ -76,7 +76,7 @@ class SongSquareCard extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

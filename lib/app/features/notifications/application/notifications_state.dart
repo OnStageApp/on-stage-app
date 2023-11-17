@@ -8,7 +8,7 @@ class NotificationsState extends Equatable {
     this.notificationsLoading = false,
   });
 
-  final List<Song>? notifications;
+  final List<SongModel>? notifications;
   final int notificationsCount;
 
   final bool notificationsLoading;
@@ -17,7 +17,7 @@ class NotificationsState extends Equatable {
   List<Object> get props => [];
 
   NotificationsState copyWith({
-    List<Song>? notifications,
+    List<SongModel>? notifications,
     int? notificationsCount,
     bool? notificationsLoading,
   }) {

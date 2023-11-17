@@ -10,7 +10,7 @@ class SongAndAuthorTile extends StatefulWidget {
     super.key,
   });
 
-  final Song song;
+  final SongModel song;
 
   @override
   State<SongAndAuthorTile> createState() => _SongAndAuthorTileState();

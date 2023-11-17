@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         //use ShellRoutes
                         ///https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
-                        context.goNamed(AppRoute.songs.name);
+                        context.pushNamed(AppRoute.songs.name);
                       },
                     ),
                   ),

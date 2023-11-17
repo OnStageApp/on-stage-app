@@ -9,10 +9,10 @@ class NotificationBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // on<GetNotifcations>(_handleGetNotifications);
   }
 
-  final List<Song> notifications;
-  final List<Song> todayNotifications = [];
-  final List<Song> yesterdayNotifications = [];
-  final List<Song> lastWeekNotifications = [];
+  final List<SongModel> notifications;
+  final List<SongModel> todayNotifications = [];
+  final List<SongModel> yesterdayNotifications = [];
+  final List<SongModel> lastWeekNotifications = [];
 
   Future<void> _handleGetNotifications(
     GetNotifications event,
