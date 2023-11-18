@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
@@ -109,6 +111,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileTile(
                         icon: Icons.notifications,
                         title: 'Notifications',
+                        totalNumber: ref
+                            .watch(notificationNotifierProvider)
+                            .length
+                            .toString(),
                         onTap: () {},
                       ),
                       _buildDivider(),

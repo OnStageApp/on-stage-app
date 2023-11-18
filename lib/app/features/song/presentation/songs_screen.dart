@@ -28,12 +28,6 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   @override
   void initState() {
     _isSearchedFocused();
-
-    ///This will get our songs from the API
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songNotifierProvider.notifier).init();
-    });
-
     super.initState();
   }
 
