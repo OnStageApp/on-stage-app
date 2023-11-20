@@ -19,34 +19,37 @@ class ProfileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 24,
-            color: iconColor ?? context.colorScheme.primary,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Text(
-              title,
-              style: context.textTheme.bodyLarge!.copyWith(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: iconColor,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                title,
+                style: context.textTheme.bodyLarge!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              totalNumber ?? '',
+              style: context.textTheme.titleMedium!.copyWith(
+                color: context.colorScheme.primary,
                 fontWeight: FontWeight.w600,
               ),
-              maxLines: 1,
             ),
-          ),
-          const Spacer(),
-          Text(
-            totalNumber ?? '',
-            style: context.textTheme.titleMedium!.copyWith(
-              color: context.colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

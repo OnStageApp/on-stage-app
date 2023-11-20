@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
+import 'package:on_stage_app/app/shared/notifications_bottom_sheet.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -115,7 +116,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                             .watch(notificationNotifierProvider)
                             .length
                             .toString(),
-                        onTap: () {},
+                        onTap: () {
+                          NotificationsBottomSheet.show(context);
+                        },
                       ),
                       _buildDivider(),
                       ProfileTile(
@@ -137,6 +140,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ProfileTile(
                         icon: Icons.assignment,
                         title: 'Request a song',
+                        iconColor: context.colorScheme.primary,
                         onTap: () {},
                       ),
                     ],
