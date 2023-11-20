@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/song_provider.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
@@ -7,19 +10,23 @@ import 'package:on_stage_app/app/shared/song_square_card.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends ConsumerState<HomeScreen> {
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(songNotifierProvider.notifier).init();
+      ref.read(notificationNotifierProvider.notifier).getNotifications();
+    });
   }
 
   @override
@@ -28,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: ListView(
           children: [
-            const SizedBox(height: Insets.medium),
+            const SizedBox(height: Insets.extraLarge),
             Padding(
               padding: defaultScreenHorizontalPadding,
               child: Row(
@@ -67,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         //use ShellRoutes
                         ///https://codewithandrea.com/articles/flutter-bottom-navigation-bar-nested-routes-gorouter/
-                        context.goNamed(AppRoute.songs.name);
+                        context.pushNamed(AppRoute.songs.name);
                       },
                     ),
                   ),

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
+import 'package:on_stage_app/app/shared/notifications_bottom_sheet.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     super.initState();
@@ -33,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: <Widget>[
                         Text(
                           'John Mayer',
-                          style: context.textTheme.headlineLarge,
+                          style: context.textTheme.displaySmall,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -109,17 +112,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileTile(
                         icon: Icons.notifications,
                         title: 'Notifications',
-                        onTap: () {},
+                        totalNumber: ref
+                            .watch(notificationNotifierProvider)
+                            .length
+                            .toString(),
+                        onTap: () {
+                          NotificationsBottomSheet.show(context);
+                        },
                       ),
                       _buildDivider(),
                       ProfileTile(
                         icon: Icons.perm_identity_rounded,
-                        title: 'Account',
-                        onTap: () {},
-                      ),
-                      _buildDivider(),
-                      ProfileTile(
-                        icon: Icons.heart_broken,
                         title: 'Account',
                         onTap: () {},
                       ),
@@ -137,12 +140,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileTile(
                         icon: Icons.assignment,
                         title: 'Request a song',
+                        iconColor: context.colorScheme.primary,
                         onTap: () {},
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 98),
+                const SizedBox(height: 48),
                 Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -153,6 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileTile(
                         icon: Icons.logout,
                         title: 'Logout',
+                        iconColor: context.colorScheme.error,
                         onTap: () {},
                       ),
                     ],
@@ -171,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Divider(
-        color: context.colorScheme.outline,
+        color: context.colorScheme.surfaceVariant,
         thickness: 1,
         height: 0,
       ),

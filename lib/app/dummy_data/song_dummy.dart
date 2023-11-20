@@ -1,6 +1,6 @@
-import 'package:on_stage_app/app/features/artist/domain/artist_model.dart';
-import 'package:on_stage_app/app/features/notifications/domain/stage_notification_model.dart';
-import 'package:on_stage_app/app/features/song/domain/song_model.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class SongDummy {
   static const notificationsDummy = <StageNotification>[
@@ -42,8 +42,8 @@ class SongDummy {
       createdAt: 'today',
     ),
   ];
-  static const List<Song> songs = [
-    Song(
+  static const List<SongModel> songs = [
+    SongModel(
       id: 1,
       title: 'Nu e munte prea mare',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -61,7 +61,7 @@ class SongDummy {
       capo: 1,
     ),
     //add more of these
-    Song(
+    SongModel(
       id: 2,
       title: 'Ala bala portocala',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -73,7 +73,7 @@ class SongDummy {
       album: 'Tabara 477',
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 3,
       title: 'Isus e Rege',
       lyrics: 'Ana are mere si pere',
@@ -89,7 +89,7 @@ class SongDummy {
       ),
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 4,
       title: 'Soarele neprihanirii',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -101,7 +101,7 @@ class SongDummy {
       album: 'Tabara 477',
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 5,
       title: 'Astazi e craciun',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -118,7 +118,7 @@ class SongDummy {
       album: 'Tabara 477',
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 6,
       title: 'Yahweh se manifesta',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -130,7 +130,7 @@ class SongDummy {
       album: 'Tabara 477',
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 7,
       title: 'Soarele neprihanirii',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -147,7 +147,7 @@ class SongDummy {
       album: 'Tabara 477',
       capo: 1,
     ),
-    Song(
+    SongModel(
       id: 8,
       title: 'Eu sunt mic, dar Isus',
       lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',

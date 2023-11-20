@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/shared/close_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class NotificationsBottomSheet extends StatelessWidget {
+class NotificationsBottomSheet extends ConsumerWidget {
   const NotificationsBottomSheet({super.key});
 
   static void show(BuildContext context) {
@@ -23,8 +24,8 @@ class NotificationsBottomSheet extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    const notifications = SongDummy.notificationsDummy;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifications = ref.watch(notificationNotifierProvider);
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -87,13 +88,13 @@ class NotificationsBottomSheet extends StatelessWidget {
   }
 }
 
-class NotificationsCloseHeader extends StatelessWidget {
+class NotificationsCloseHeader extends ConsumerWidget {
   const NotificationsCloseHeader({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -125,7 +126,7 @@ class NotificationsCloseHeader extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.topCenter,
                   child: Text(
-                    '2',
+                    ref.watch(notificationNotifierProvider).length.toString(),
                     style: context.textTheme.labelLarge?.copyWith(
                       color: context.colorScheme.background,
                       fontWeight: FontWeight.w700,

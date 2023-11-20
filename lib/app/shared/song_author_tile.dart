@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/song/domain/song_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/shared/stage_tile.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -10,7 +10,7 @@ class SongAndAuthorTile extends StatefulWidget {
     super.key,
   });
 
-  final Song song;
+  final SongModel song;
 
   @override
   State<SongAndAuthorTile> createState() => _SongAndAuthorTileState();

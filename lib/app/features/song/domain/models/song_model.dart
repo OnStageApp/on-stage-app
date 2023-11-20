@@ -1,12 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/artist/domain/artist_model.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
 part 'song_model.freezed.dart';
 part 'song_model.g.dart';
 
 @Freezed()
-class Song with _$Song {
-  const factory Song({
+class SongModel with _$SongModel {
+  const factory SongModel({
     required int id,
     required String title,
     required String lyrics,
@@ -17,7 +17,8 @@ class Song with _$Song {
     required Artist artist,
     String? album,
     int? capo,
-  }) = _Song;
+  }) = _SongModel;
 
-  factory Song.fromJson(Map<String, dynamic> json) => _$SongFromJson(json);
+  factory SongModel.fromJson(Map<String, dynamic> json) =>
+      _$SongModelFromJson(json);
 }

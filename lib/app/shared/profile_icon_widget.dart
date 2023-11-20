@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/shared/notifications_bottom_sheet.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProfileIconWidget extends StatelessWidget {
+class ProfileIconWidget extends ConsumerWidget {
   const ProfileIconWidget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () => NotificationsBottomSheet.show(context),
       child: Stack(
@@ -27,7 +29,7 @@ class ProfileIconWidget extends StatelessWidget {
               height: 22,
               decoration: BoxDecoration(
                 color: Colors.black,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(8),
                 border: Border.fromBorderSide(
                   BorderSide(
                     color: context.colorScheme.background,
@@ -36,14 +38,14 @@ class ProfileIconWidget extends StatelessWidget {
                 ),
               ),
               child: Container(
-                alignment: Alignment.topCenter,
+                alignment: Alignment.center,
                 child: Text(
-                  '2',
+                  ref.watch(notificationNotifierProvider).length.toString(),
                   style: context.textTheme.labelLarge?.copyWith(
                     color: context.colorScheme.background,
                     fontWeight: FontWeight.w700,
                   ),
-                  textAlign: TextAlign.start,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
