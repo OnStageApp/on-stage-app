@@ -1,33 +1,31 @@
-import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:on_stage_app/app/shared/close_header.dart';
+import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/pick_image.dart';
 
-import 'close_header.dart';
-import 'nested_scroll_modal.dart';
-import 'notifications_bottom_sheet.dart';
 
 class ProfileImageWidget extends StatefulWidget {
-  final bool canChangeProfilePicture;
+  const ProfileImageWidget({super.key, this.canChangeProfilePicture = false});
 
-  const ProfileImageWidget({Key? key, required this.canChangeProfilePicture})
-      : super(key: key);
+  final bool canChangeProfilePicture;
 
   @override
   State<ProfileImageWidget> createState() => _ProfileImageWidgetState();
 }
 
 class _ProfileImageWidgetState extends State<ProfileImageWidget> {
-  Uint8List? _image;
+  XFile? _imageFile;
 
   Future<void> selectImage() async {
-    Navigator.pop(context);
-    final img = await pickImage(ImageSource.gallery) as Uint8List;
+    context.popDialog();
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
-      _image = img;
+      _imageFile = pickedImage;
     });
   }
 
@@ -42,10 +40,11 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
           child: Container(
             decoration: const BoxDecoration(shape: BoxShape.circle),
             child: CircleAvatar(
-              backgroundImage: _image != null ? MemoryImage(_image!) : null,
-              backgroundColor: _image != null ? null : Colors.grey,
+              backgroundImage:
+                  _imageFile != null ? FileImage(File(_imageFile!.path)) : null,
+              backgroundColor: _imageFile != null ? null : Colors.grey,
               radius: 32,
-              child: _image == null
+              child: _imageFile == null
                   ? const Icon(
                       Icons.person,
                       color: Colors.white,
@@ -60,25 +59,23 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
   }
 
   Future<void> showCustomBottomSheet(BuildContext context) async {
-    if (widget.canChangeProfilePicture) {
-      await showModalBottomSheet(
-        backgroundColor: context.colorScheme.background,
-        context: context,
-        builder: (context) => NestedScrollModal(
-          buildHeader: () => const CloseHeader(
-            title: Text(''),
-          ),
-          headerHeight: () => CloseHeader.height,
-          footerHeight: () => 59,
-          buildContent: () => Container(
-            margin: const EdgeInsets.only(right: 20, left: 20),
-            child: ElevatedButton(
-              onPressed: selectImage,
-              child: const Text('Change Profile Picture'),
-            ),
+    await showModalBottomSheet(
+      backgroundColor: context.colorScheme.background,
+      context: context,
+      builder: (context) => NestedScrollModal(
+        buildHeader: () => const CloseHeader(
+          title: SizedBox(),
+        ),
+        headerHeight: () => CloseHeader.height,
+        footerHeight: () => 59,
+        buildContent: () => Container(
+          margin: const EdgeInsets.only(right: 32, left: 32),
+          child: ElevatedButton(
+            onPressed: selectImage,
+            child: const Text('Change Profile Picture'),
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }

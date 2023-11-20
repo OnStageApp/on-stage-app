@@ -16,7 +16,7 @@ class ProfileImageInboxWidget extends ConsumerWidget {
       onTap: () => NotificationsBottomSheet.show(context),
       child: Stack(
         children: [
-          const ProfileImageWidget(canChangeProfilePicture: false),
+           const ProfileImageWidget(),
           Positioned(
             left: -2,
             bottom: 0,

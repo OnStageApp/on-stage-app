@@ -1,14 +1,15 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:on_stage_app/logger.dart';
 
-Future<Uint8List?> pickImage(ImageSource source) async{
+Future<XFile?> pickImage(ImageSource source) async{
   final  imagePicker = ImagePicker();
-  XFile? _file = await imagePicker.pickImage(source: source);
-  if(_file != null){
-    return await _file.readAsBytes();
+  XFile? file = await imagePicker.pickImage(source: source);
+  if(file != null){
+   logger.i('Changed profile picture');
+    return file;
   }
-  print('No Images Selected');
+
   return null;
 }

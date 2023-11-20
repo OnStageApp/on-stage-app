@@ -55,7 +55,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ],
                     ),
                     const Spacer(),
-                    const ProfileImageWidget(canChangeProfilePicture: true),
+                     const ProfileImageWidget(canChangeProfilePicture: true),
                   ],
                 ),
                 const SizedBox(height: 48),
