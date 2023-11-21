@@ -49,20 +49,6 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
                size: 64,
              ),
             ),
-
-            // CircleAvatar(
-            //   backgroundImage:
-            //       _imageFile != null ? FileImage(File(_imageFile!.path)) : null,
-            //   backgroundColor: _imageFile != null ? null : Colors.grey,
-            //   radius: 32,
-            //   child: _imageFile == null
-            //       ? const Icon(
-            //           Icons.person,
-            //           color: Colors.white,
-            //           size: 48,
-            //         )
-            //       : null,
-            // ),
           ),
         ),
       ],
