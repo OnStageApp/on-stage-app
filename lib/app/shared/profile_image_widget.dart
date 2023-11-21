@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/shared/close_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-
 
 class ProfileImageWidget extends StatefulWidget {
   const ProfileImageWidget({super.key, this.canChangeProfilePicture = false});
@@ -23,7 +20,8 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
 
   Future<void> selectImage() async {
     context.popDialog();
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       _imageFile = pickedImage;
     });
@@ -39,19 +37,32 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
               : null,
           child: Container(
             decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: CircleAvatar(
-              backgroundImage:
-                  _imageFile != null ? FileImage(File(_imageFile!.path)) : null,
-              backgroundColor: _imageFile != null ? null : Colors.grey,
+            child: _imageFile != null ? CircleAvatar(
+              backgroundImage: FileImage(File(_imageFile!.path)),
               radius: 32,
-              child: _imageFile == null
-                  ? const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 48,
-                    )
-                  : null,
+            ) : const CircleAvatar(
+              radius: 32,
+              backgroundColor: Colors.grey,
+              child: Icon(
+               Icons.person,
+               color: Colors.white,
+               size: 64,
+             ),
             ),
+
+            // CircleAvatar(
+            //   backgroundImage:
+            //       _imageFile != null ? FileImage(File(_imageFile!.path)) : null,
+            //   backgroundColor: _imageFile != null ? null : Colors.grey,
+            //   radius: 32,
+            //   child: _imageFile == null
+            //       ? const Icon(
+            //           Icons.person,
+            //           color: Colors.white,
+            //           size: 48,
+            //         )
+            //       : null,
+            // ),
           ),
         ),
       ],
