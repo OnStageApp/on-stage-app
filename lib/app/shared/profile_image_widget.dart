@@ -18,7 +18,7 @@ class ProfileImageWidget extends StatefulWidget {
 class _ProfileImageWidgetState extends State<ProfileImageWidget> {
   XFile? _imageFile;
 
-  Future<void> selectImage() async {
+  Future<void> _selectImage() async {
     context.popDialog();
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -68,7 +68,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
         buildContent: () => Container(
           margin: const EdgeInsets.only(right: 32, left: 32),
           child: ElevatedButton(
-            onPressed: selectImage,
+            onPressed: _selectImage,
             child: const Text('Change Profile Picture'),
           ),
         ),
