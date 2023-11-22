@@ -7,6 +7,9 @@
 		<string>en</string>
 		<string>es</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Access to the photo library is requested to allow users to select or set a profile picture within the app. This permission enables users to choose images from their device's gallery, facilitating personalization and customization of their profile within our app.</string>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/shared/notifications_bottom_sheet.dart';
+import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProfileIconWidget extends ConsumerWidget {
-  const ProfileIconWidget({
+class ProfileImageInboxWidget extends ConsumerWidget {
+  const ProfileImageInboxWidget({
     super.key,
   });
 
@@ -15,12 +16,7 @@ class ProfileIconWidget extends ConsumerWidget {
       onTap: () => NotificationsBottomSheet.show(context),
       child: Stack(
         children: [
-          Image.asset(
-            'assets/images/profile4.png',
-            width: 64,
-            height: 64,
-            fit: BoxFit.fill,
-          ),
+           const ProfileImageWidget(),
           Positioned(
             left: -2,
             bottom: 0,
@@ -29,7 +25,7 @@ class ProfileIconWidget extends ConsumerWidget {
               height: 22,
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.circular(8),
+                shape: BoxShape.circle,
                 border: Border.fromBorderSide(
                   BorderSide(
                     color: context.colorScheme.background,

@@ -5,7 +5,7 @@ import 'package:on_stage_app/app/features/song/application/song_provider.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
-import 'package:on_stage_app/app/shared/profile_icon_widget.dart';
+import 'package:on_stage_app/app/shared/profile_image_inbox_widget.dart';
 import 'package:on_stage_app/app/shared/song_square_card.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -57,7 +57,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                   const Expanded(child: SizedBox()),
-                  const ProfileIconWidget(),
+                  const ProfileImageInboxWidget(),
                 ],
               ),
             ),
