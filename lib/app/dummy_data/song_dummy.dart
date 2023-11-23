@@ -1,8 +1,101 @@
+import 'package:intl/intl.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class SongDummy {
+  static const eventsDummy = <EventModel>[
+    EventModel(
+      id: 1,
+      name: 'Vineri seara',
+      date: '2023-10-01',
+      rehearsalsDate: ['2023-12-01'],
+      staggersId: ['stagger_id_1'],
+      adminsId: ['admin_id_1'],
+      eventItemIds: ['event_item_id_1'],
+      location: 'Location 1',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 2,
+      name: 'Tineret Speranta',
+      date: '2023-11-26',
+      rehearsalsDate: ['2023-12-02'],
+      staggersId: ['stagger_id_2'],
+      adminsId: ['admin_id_2'],
+      eventItemIds: ['event_item_id_2'],
+      location: 'Location 2',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 3,
+      name: 'Tineret Betania',
+      date: '2023-11-27',
+      rehearsalsDate: ['2023-12-03'],
+      staggersId: ['stagger_id_3'],
+      adminsId: ['admin_id_3'],
+      eventItemIds: ['event_item_id_3'],
+      location: 'Location 3',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 4,
+      name: 'Peniel',
+      date: '2023-11-24',
+      rehearsalsDate: ['2023-12-04'],
+      staggersId: ['stagger_id_4'],
+      adminsId: ['admin_id_4'],
+      eventItemIds: ['event_item_id_4'],
+      location: 'Location 4',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 5,
+      name: 'Ekklesia Arad',
+      date: '2023-12-05',
+      rehearsalsDate: ['2023-12-05'],
+      staggersId: ['stagger_id_5'],
+      adminsId: ['admin_id_5'],
+      eventItemIds: ['event_item_id_5'],
+      location: 'Location 5',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 6,
+      name: 'Conferinta',
+      date: '2023-12-06',
+      rehearsalsDate: ['2023-12-06'],
+      staggersId: ['stagger_id_6'],
+      adminsId: ['admin_id_6'],
+      eventItemIds: ['event_item_id_6'],
+      location: 'Location 6',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 7,
+      name: 'Ez az a nap',
+      date: '2023-12-07',
+      rehearsalsDate: ['2023-12-07'],
+      staggersId: ['stagger_id_7'],
+      adminsId: ['admin_id_7'],
+      eventItemIds: ['event_item_id_7'],
+      location: 'Location 7',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    EventModel(
+      id: 8,
+      name: 'Seara de colinde',
+      date: '2023-12-08',
+      rehearsalsDate: ['2023-12-08'],
+      staggersId: ['stagger_id_8'],
+      adminsId: ['admin_id_8'],
+      eventItemIds: ['event_item_id_8'],
+      location: 'Location 8',
+      imageUrl: 'https://via.placeholder.com/150',
+    ),
+    ];
+
   static const notificationsDummy = <StageNotification>[
     //fill with dummy data
     StageNotification(
