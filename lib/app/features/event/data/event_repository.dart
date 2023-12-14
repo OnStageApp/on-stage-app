@@ -12,45 +12,18 @@ class EventRepository extends _$EventRepository {
   Future<List<EventModel>> fetchEvents() async {
     final events = await Future.delayed(
       const Duration(seconds: 1),
-      () => SongDummy.eventsDummy,
+      () => SongDummy.thisWeekEventsDummy,
     );
     return events;
   }
 
-  Future<List<EventModel>> getPastEvents() async {
-    final allEvents = await fetchEvents();
-    final currentDate = DateTime.now();
+  Future<List<EventModel>> getEventsByRange( DateTime? startDate,  DateTime? endDate ) async {
+  final thisWeekEvents = await fetchEvents();
 
-    final pastEvents = allEvents.where((event) {
-      final eventDate = DateTime.parse(event.date);
-      return eventDate.isBefore(currentDate);
-    }).toList();
-
-    return pastEvents;
+  return thisWeekEvents;
   }
 
-  Future<List<EventModel>> getThisWeekEvents() async {
-    final allEvents = await fetchEvents();
-    final currentDate = DateTime.now();
-    final nextWeekDate = currentDate.add(const Duration(days: 7));
-
-    final thisWeekEvents = allEvents.where((event) {
-      final eventDate = DateTime.parse(event.date);
-      return eventDate.isAfter(currentDate) && eventDate.isBefore(nextWeekDate);
-    }).toList();
-
-    return thisWeekEvents;
   }
 
-  Future<List<EventModel>> getUpcomingEvents() async {
-    final allEvents = await fetchEvents();
-    final nextWeekDate = DateTime.now().add(const Duration(days: 7));
 
-    final upcomingEvents = allEvents.where((event) {
-      final eventDate = DateTime.parse(event.date);
-      return eventDate.isAfter(nextWeekDate);
-    }).toList();
 
-    return upcomingEvents;
-  }
-}

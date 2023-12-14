@@ -5,7 +5,7 @@ import 'package:on_stage_app/app/features/notifications/domain/models/stage_noti
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class SongDummy {
-  static const eventsDummy = <EventModel>[
+  static const thisWeekEventsDummy = <EventModel>[
     EventModel(
       id: 1,
       name: 'Vineri seara',
@@ -50,6 +50,8 @@ class SongDummy {
       location: 'Location 4',
       imageUrl: 'https://via.placeholder.com/150',
     ),
+    ];
+  static const upcomingEventsDummy = <EventModel>[
     EventModel(
       id: 5,
       name: 'Ekklesia Arad',
@@ -72,6 +74,8 @@ class SongDummy {
       location: 'Location 6',
       imageUrl: 'https://via.placeholder.com/150',
     ),
+    ];
+  static const pastEventsDummy = <EventModel>[
     EventModel(
       id: 7,
       name: 'Ez az a nap',
