@@ -69,8 +69,9 @@ class AppRouter {
             name: AppRoute.song.name,
             path: 'song/:id',
             builder: (context, state) {
-              final songId = int.parse(state.pathParameters['id']!);
-              return SongDetailScreen(songId);
+              final songId = int.parse(state.pathParameters['id'] ?? '-1');
+              final songName = state.extra! as String;
+              return SongDetailScreen(songId, songName);
             },
           ),
         ],
