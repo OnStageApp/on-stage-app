@@ -6,8 +6,9 @@ part of 'stage_notification_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_StageNotification _$$_StageNotificationFromJson(Map<String, dynamic> json) =>
-    _$_StageNotification(
+_$StageNotificationImpl _$$StageNotificationImplFromJson(
+        Map<String, dynamic> json) =>
+    _$StageNotificationImpl(
       id: json['id'] as int,
       title: json['title'] as String,
       body: json['body'] as String,
@@ -17,8 +18,8 @@ _$_StageNotification _$$_StageNotificationFromJson(Map<String, dynamic> json) =>
       eventId: json['eventId'] as String?,
     );
 
-Map<String, dynamic> _$$_StageNotificationToJson(
-        _$_StageNotification instance) =>
+Map<String, dynamic> _$$StageNotificationImplToJson(
+        _$StageNotificationImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,

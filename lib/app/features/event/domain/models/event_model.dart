@@ -4,8 +4,8 @@ part 'event_model.freezed.dart';
 part 'event_model.g.dart';
 
 @Freezed()
-class Event with _$Event {
-  const factory Event({
+class EventModel with _$EventModel {
+  const factory EventModel({
     required int id,
     required String name,
     required String date,
@@ -17,5 +17,5 @@ class Event with _$Event {
     String? imageUrl,
   }) = _Event;
 
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+  factory EventModel.fromJson(Map<String, dynamic> json) => _$EventModelFromJson(json);
 }

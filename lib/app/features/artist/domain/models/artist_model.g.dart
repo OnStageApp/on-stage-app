@@ -6,14 +6,15 @@ part of 'artist_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Artist _$$_ArtistFromJson(Map<String, dynamic> json) => _$_Artist(
+_$ArtistImpl _$$ArtistImplFromJson(Map<String, dynamic> json) => _$ArtistImpl(
       id: json['id'] as int,
       fullName: json['fullName'] as String,
       songIds: (json['songIds'] as List<dynamic>).map((e) => e as int).toList(),
       imageUrl: json['imageUrl'] as String?,
     );
 
-Map<String, dynamic> _$$_ArtistToJson(_$_Artist instance) => <String, dynamic>{
+Map<String, dynamic> _$$ArtistImplToJson(_$ArtistImpl instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'fullName': instance.fullName,
       'songIds': instance.songIds,
