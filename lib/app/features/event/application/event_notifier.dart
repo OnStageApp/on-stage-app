@@ -83,7 +83,7 @@ class EventNotifier extends _$EventNotifier {
       ref.read(loadingProvider.notifier).state = false;
     }
 
-    Future<void> getEventsByDate() async {
+    Future<void> _getEventsByDate() async {
 
       ref.read(eventRepositoryProvider.notifier).getEventsByRange(DateTime.now(), DateTime.now());
     }
