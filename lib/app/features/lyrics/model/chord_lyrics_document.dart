@@ -1,4 +1,4 @@
-import 'chord_lyrics_line.dart';
+import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 
 class ChordLyricsDocument {
   ChordLyricsDocument(

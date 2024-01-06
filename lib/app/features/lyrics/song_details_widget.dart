@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/lyrics/chord_parser.dart';
+import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-import 'chord_parser.dart';
-import 'chord_transposer.dart';
-
-class LyricsRenderer extends StatefulWidget {
-  const LyricsRenderer({
+class SongDetailWidget extends StatefulWidget {
+  const SongDetailWidget({
     required this.lyrics,
     required this.textStyle,
     required this.chordStyle,
@@ -77,10 +76,10 @@ class LyricsRenderer extends StatefulWidget {
   final TextStyle? commentStyle;
 
   @override
-  State<LyricsRenderer> createState() => _LyricsRendererState();
+  State<SongDetailWidget> createState() => _SongDetailWidgetState();
 }
 
-class _LyricsRendererState extends State<LyricsRenderer> {
+class _SongDetailWidgetState extends State<SongDetailWidget> {
   late final ScrollController _controller;
   late TextStyle chorusStyle;
   late TextStyle capoStyle;
@@ -102,7 +101,6 @@ class _LyricsRendererState extends State<LyricsRenderer> {
         );
     _controller = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // executes after build
       _scrollToEnd();
     });
   }
@@ -139,7 +137,6 @@ class _LyricsRendererState extends State<LyricsRenderer> {
     chordLyricsDocument.chordLyricsLines.map((e) {
       structures.addAll(e.structure);
     }).toList();
-    print('STR: $structures');
     if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
     return SingleChildScrollView(
       controller: _controller,
@@ -149,7 +146,6 @@ class _LyricsRendererState extends State<LyricsRenderer> {
         children: [
           Row(
             children: [
-              // display strcuture here
               Text('Str: ', style: context.textTheme.bodySmall),
               Text(
                 structures.join(', '),
@@ -219,7 +215,7 @@ class _LyricsRendererState extends State<LyricsRenderer> {
                           line.structure.isNotEmpty ? line.structure.first : '',
                       style: widget.structureStyle,
                     ),
-                  )
+                  ),
                 ],
               );
             },
@@ -232,7 +228,7 @@ class _LyricsRendererState extends State<LyricsRenderer> {
   }
 
   @override
-  void didUpdateWidget(covariant LyricsRenderer oldWidget) {
+  void didUpdateWidget(covariant SongDetailWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.scrollSpeed != widget.scrollSpeed) {
       _scrollToEnd();
@@ -278,7 +274,6 @@ class TextRender extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     textPainter.layout(
-      minWidth: 0,
       maxWidth: size.width,
     );
     textPainter.paint(canvas, Offset.zero);

@@ -13,8 +13,8 @@ class ChordLyricsLine {
   /// Remove also the keyword
   bool isStartOfChorus() {
     const startOfChorusAbbreviation = '{soc}';
-    const String startOfChorus = '{start_of_chorus}';
-    var out = lyrics.contains(startOfChorus) ||
+    const startOfChorus = '{start_of_chorus}';
+    final out = lyrics.contains(startOfChorus) ||
         lyrics.contains(startOfChorusAbbreviation);
     if (out) {
       lyrics = lyrics.replaceAll(startOfChorus, '');
@@ -25,9 +25,9 @@ class ChordLyricsLine {
 
   /// Remove also the keyword
   bool isEndOfChorus() {
-    const String endOfChorusAbbreviation = '{eoc}';
-    const String endOfChorus = '{end_of_chorus}';
-    bool out = lyrics.contains(endOfChorus) ||
+    const endOfChorusAbbreviation = '{eoc}';
+    const endOfChorus = '{end_of_chorus}';
+    final out = lyrics.contains(endOfChorus) ||
         lyrics.contains(endOfChorusAbbreviation);
     if (out) {
       lyrics = lyrics.replaceAll(endOfChorus, '');
@@ -38,8 +38,8 @@ class ChordLyricsLine {
 
   /// Remove also the keyword
   bool isComment() {
-    const String comment = '{comment:';
-    bool out = lyrics.contains(comment);
+    const comment = '{comment:';
+    final out = lyrics.contains(comment);
     if (out) {
       lyrics = lyrics.replaceAll(comment, '');
       lyrics = lyrics.replaceAll('}', '').trim();
