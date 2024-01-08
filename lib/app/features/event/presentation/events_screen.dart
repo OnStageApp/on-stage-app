@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -44,14 +44,20 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     return isLoading
         ? _buildLoadingIndicator()
         : Scaffold(
-            appBar: const StageAppBar(
+            appBar: StageAppBar(
               title: 'Events',
+              trailing: IconButton(
+                onPressed: () {
+                  context.pushNamed(AppRoute.addEvent.name);
+                },
+                icon: const Icon(Icons.add),
+              ),
             ),
             body: Padding(
               padding: defaultScreenPadding,
               child: ListView(
                 children: [
-                  const SizedBox(height: Insets.medium),
+                  const SizedBox(height: Insets.small),
                   Hero(
                     tag: 'searchBar',
                     child: StageSearchBar(

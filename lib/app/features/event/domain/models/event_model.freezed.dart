@@ -22,8 +22,8 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 mixin _$EventModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String get date => throw _privateConstructorUsedError;
-  List<String> get rehearsalsDate => throw _privateConstructorUsedError;
+  DateTime get date => throw _privateConstructorUsedError;
+  List<DateTime> get rehearsalsDate => throw _privateConstructorUsedError;
   List<String> get staggersId => throw _privateConstructorUsedError;
   List<String> get adminsId => throw _privateConstructorUsedError;
   List<String> get eventItemIds => throw _privateConstructorUsedError;
@@ -45,8 +45,8 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String date,
-      List<String> rehearsalsDate,
+      DateTime date,
+      List<DateTime> rehearsalsDate,
       List<String> staggersId,
       List<String> adminsId,
       List<String> eventItemIds,
@@ -89,11 +89,11 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       rehearsalsDate: null == rehearsalsDate
           ? _value.rehearsalsDate
           : rehearsalsDate // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<DateTime>,
       staggersId: null == staggersId
           ? _value.staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
@@ -128,8 +128,8 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String date,
-      List<String> rehearsalsDate,
+      DateTime date,
+      List<DateTime> rehearsalsDate,
       List<String> staggersId,
       List<String> adminsId,
       List<String> eventItemIds,
@@ -170,11 +170,11 @@ class __$$EventImplCopyWithImpl<$Res>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       rehearsalsDate: null == rehearsalsDate
           ? _value._rehearsalsDate
           : rehearsalsDate // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<DateTime>,
       staggersId: null == staggersId
           ? _value._staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
@@ -206,7 +206,7 @@ class _$EventImpl implements _Event {
       {required this.id,
       required this.name,
       required this.date,
-      required final List<String> rehearsalsDate,
+      required final List<DateTime> rehearsalsDate,
       required final List<String> staggersId,
       required final List<String> adminsId,
       required final List<String> eventItemIds,
@@ -225,10 +225,10 @@ class _$EventImpl implements _Event {
   @override
   final String name;
   @override
-  final String date;
-  final List<String> _rehearsalsDate;
+  final DateTime date;
+  final List<DateTime> _rehearsalsDate;
   @override
-  List<String> get rehearsalsDate {
+  List<DateTime> get rehearsalsDate {
     if (_rehearsalsDate is EqualUnmodifiableListView) return _rehearsalsDate;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_rehearsalsDate);
@@ -321,8 +321,8 @@ abstract class _Event implements EventModel {
   const factory _Event(
       {required final String id,
       required final String name,
-      required final String date,
-      required final List<String> rehearsalsDate,
+      required final DateTime date,
+      required final List<DateTime> rehearsalsDate,
       required final List<String> staggersId,
       required final List<String> adminsId,
       required final List<String> eventItemIds,
@@ -336,9 +336,9 @@ abstract class _Event implements EventModel {
   @override
   String get name;
   @override
-  String get date;
+  DateTime get date;
   @override
-  List<String> get rehearsalsDate;
+  List<DateTime> get rehearsalsDate;
   @override
   List<String> get staggersId;
   @override
