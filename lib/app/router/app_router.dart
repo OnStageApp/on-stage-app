@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
+import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
@@ -8,6 +9,7 @@ import 'package:on_stage_app/app/main_screen.dart';
 export 'package:go_router/go_router.dart';
 
 enum AppRoute {
+  login,
   welcome,
   home,
   songs,
@@ -33,6 +35,11 @@ class AppRouter {
       ),
     ),
     routes: [
+      GoRoute(
+        name: AppRoute.login.name,
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
       GoRoute(
         name: AppRoute.welcome.name,
         path: '/welcome',
