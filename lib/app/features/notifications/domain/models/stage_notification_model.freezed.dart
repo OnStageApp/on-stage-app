@@ -105,11 +105,11 @@ class _$StageNotificationCopyWithImpl<$Res, $Val extends StageNotification>
 }
 
 /// @nodoc
-abstract class _$$_StageNotificationCopyWith<$Res>
+abstract class _$$StageNotificationImplCopyWith<$Res>
     implements $StageNotificationCopyWith<$Res> {
-  factory _$$_StageNotificationCopyWith(_$_StageNotification value,
-          $Res Function(_$_StageNotification) then) =
-      __$$_StageNotificationCopyWithImpl<$Res>;
+  factory _$$StageNotificationImplCopyWith(_$StageNotificationImpl value,
+          $Res Function(_$StageNotificationImpl) then) =
+      __$$StageNotificationImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -123,11 +123,11 @@ abstract class _$$_StageNotificationCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_StageNotificationCopyWithImpl<$Res>
-    extends _$StageNotificationCopyWithImpl<$Res, _$_StageNotification>
-    implements _$$_StageNotificationCopyWith<$Res> {
-  __$$_StageNotificationCopyWithImpl(
-      _$_StageNotification _value, $Res Function(_$_StageNotification) _then)
+class __$$StageNotificationImplCopyWithImpl<$Res>
+    extends _$StageNotificationCopyWithImpl<$Res, _$StageNotificationImpl>
+    implements _$$StageNotificationImplCopyWith<$Res> {
+  __$$StageNotificationImplCopyWithImpl(_$StageNotificationImpl _value,
+      $Res Function(_$StageNotificationImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -141,7 +141,7 @@ class __$$_StageNotificationCopyWithImpl<$Res>
     Object? friendPhotoUrl = freezed,
     Object? eventId = freezed,
   }) {
-    return _then(_$_StageNotification(
+    return _then(_$StageNotificationImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -176,8 +176,8 @@ class __$$_StageNotificationCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_StageNotification implements _StageNotification {
-  const _$_StageNotification(
+class _$StageNotificationImpl implements _StageNotification {
+  const _$StageNotificationImpl(
       {required this.id,
       required this.title,
       required this.body,
@@ -186,8 +186,8 @@ class _$_StageNotification implements _StageNotification {
       this.friendPhotoUrl,
       this.eventId});
 
-  factory _$_StageNotification.fromJson(Map<String, dynamic> json) =>
-      _$$_StageNotificationFromJson(json);
+  factory _$StageNotificationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$StageNotificationImplFromJson(json);
 
   @override
   final int id;
@@ -213,7 +213,7 @@ class _$_StageNotification implements _StageNotification {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_StageNotification &&
+            other is _$StageNotificationImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.body, body) || other.body == body) &&
@@ -234,13 +234,13 @@ class _$_StageNotification implements _StageNotification {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_StageNotificationCopyWith<_$_StageNotification> get copyWith =>
-      __$$_StageNotificationCopyWithImpl<_$_StageNotification>(
+  _$$StageNotificationImplCopyWith<_$StageNotificationImpl> get copyWith =>
+      __$$StageNotificationImplCopyWithImpl<_$StageNotificationImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_StageNotificationToJson(
+    return _$$StageNotificationImplToJson(
       this,
     );
   }
@@ -254,10 +254,10 @@ abstract class _StageNotification implements StageNotification {
       required final String createdAt,
       final String? friendId,
       final String? friendPhotoUrl,
-      final String? eventId}) = _$_StageNotification;
+      final String? eventId}) = _$StageNotificationImpl;
 
   factory _StageNotification.fromJson(Map<String, dynamic> json) =
-      _$_StageNotification.fromJson;
+      _$StageNotificationImpl.fromJson;
 
   @override
   int get id;
@@ -275,6 +275,6 @@ abstract class _StageNotification implements StageNotification {
   String? get eventId;
   @override
   @JsonKey(ignore: true)
-  _$$_StageNotificationCopyWith<_$_StageNotification> get copyWith =>
+  _$$StageNotificationImplCopyWith<_$StageNotificationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

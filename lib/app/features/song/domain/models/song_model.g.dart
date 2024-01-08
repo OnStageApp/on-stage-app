@@ -6,7 +6,8 @@ part of 'song_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SongModel _$$_SongModelFromJson(Map<String, dynamic> json) => _$_SongModel(
+_$SongModelImpl _$$SongModelImplFromJson(Map<String, dynamic> json) =>
+    _$SongModelImpl(
       id: json['id'] as int,
       title: json['title'] as String,
       lyrics: json['lyrics'] as String,
@@ -19,7 +20,7 @@ _$_SongModel _$$_SongModelFromJson(Map<String, dynamic> json) => _$_SongModel(
       capo: json['capo'] as int?,
     );
 
-Map<String, dynamic> _$$_SongModelToJson(_$_SongModel instance) =>
+Map<String, dynamic> _$$SongModelImplToJson(_$SongModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
