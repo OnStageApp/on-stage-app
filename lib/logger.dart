@@ -18,13 +18,13 @@ class _OnStageLogger {
   );
 
   void v(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.v(message, error, stackTrace);
+      logger.t(message, error: error, stackTrace: stackTrace);
 
   void d(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.d(message, error, stackTrace);
+      logger.d(message, error: error, stackTrace: stackTrace);
 
   void i(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.i(message, error, stackTrace);
+      logger.i(message, error: error, stackTrace: stackTrace);
 
   void fetchedRequestResponse(
     String objectName,
@@ -47,11 +47,11 @@ class _OnStageLogger {
       );
 
   void w(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.w(message, error, stackTrace);
+      logger.w(message, error: error, stackTrace: stackTrace);
 
   void e(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.e(message, error, stackTrace);
+      logger.e(message, error: error, stackTrace: stackTrace);
 
   void f(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.v(message, error, stackTrace);
+      logger.t(message, error: error, stackTrace: stackTrace);
 }

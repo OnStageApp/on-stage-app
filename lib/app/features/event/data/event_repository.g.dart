@@ -6,12 +6,12 @@ part of 'event_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$eventRepositoryHash() => r'f78f7c3708add920cdcf5fb7ab59f7b3abf238d0';
+String _$eventRepositoryHash() => r'e6648edbf69793f0ced2c16bf17871cc71000420';
 
 /// See also [EventRepository].
 @ProviderFor(EventRepository)
 final eventRepositoryProvider =
-    AutoDisposeAsyncNotifierProvider<EventRepository, Object?>.internal(
+    AutoDisposeAsyncNotifierProvider<EventRepository, dynamic>.internal(
   EventRepository.new,
   name: r'eventRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final eventRepositoryProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$EventRepository = AutoDisposeAsyncNotifier<Object?>;
+typedef _$EventRepository = AutoDisposeAsyncNotifier<dynamic>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
