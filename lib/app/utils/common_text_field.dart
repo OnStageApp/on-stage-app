@@ -14,7 +14,7 @@ class CommonTextField extends StatelessWidget {
     this.textInputType,
     this.errorString,
     this.isBorderVisible = false,
-    this.height = 42, // New parameter for controlling height
+    this.height = 42,
   });
 
   final String? hintText;
@@ -23,7 +23,7 @@ class CommonTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final TextInputAction? textInputAction;
   final TextInputType? textInputType;
-  final Function(String)? onChanged;
+  final void Function(String)? onChanged;
   final String? errorString;
   final bool isBorderVisible;
   final double height; // New parameter
@@ -34,7 +34,7 @@ class CommonTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: height, // Use the provided height or default to 42
+          height: height,
           child: TextFormField(
             onChanged: onChanged,
             cursorColor: lightColorScheme.onSurfaceVariant,
@@ -44,15 +44,13 @@ class CommonTextField extends StatelessWidget {
             obscureText: obscureText,
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
             decoration: InputDecoration(
-
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
               fillColor: Colors.white,
               filled: true,
               hintText: hintText,
               hintStyle: context.textTheme.labelMedium,
-              border: const OutlineInputBorder(
-              ),
+              border: const OutlineInputBorder(),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               enabledBorder: OutlineInputBorder(
                 borderSide: _getEnabledBorder(),
@@ -65,14 +63,11 @@ class CommonTextField extends StatelessWidget {
             ),
           ),
         ),
-        if (errorString != null) Padding(
-                padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  errorString ?? '',
-                  style: context.textTheme.labelLarge
-                      // .copyWith(color: CustomColor.red),
-                ),
-              ) else Container()
+        if (errorString != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(errorString ?? '', style: context.textTheme.labelLarge),
+          ),
       ],
     );
   }

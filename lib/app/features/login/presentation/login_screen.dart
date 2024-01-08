@@ -4,33 +4,25 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/common_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool obscurePassword =
-      true; // Add this variable to manage password visibility
+  bool isObscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final height = size.height;
-    final width = size.width;
     return Scaffold(
-      backgroundColor: lightColorScheme.background,
-      resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: width / 10),
+        padding: defaultScreenPadding,
         child: Column(
           children: [
-            SizedBox(
-              height: height / 8,
-            ),
+            const SizedBox(height: 148),
             ClipRRect(
-              borderRadius: BorderRadius.circular(16), // Adjust the radius to control corner roundness
+              borderRadius: BorderRadius.circular(16),
               child: Image.asset(
                 'assets/images/onstageapp_logo.png',
                 height: 120,
@@ -38,40 +30,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(
-              height: height / 20,
-            ),
+            const SizedBox(height: 48),
             Text(
               "Get On Stage with us",
               style: context.textTheme.titleLarge,
             ),
-            SizedBox(
-              height: height / 20,
-            ),
+            const SizedBox(height: 48),
             const CommonTextField(
               hintText: "Email",
-              // onChanged: () {},
-              // errorString: "error",
               textInputAction: TextInputAction.next,
               textInputType: TextInputType.emailAddress,
             ),
-            SizedBox(
-              height: height / 50,
-            ),
+            const SizedBox(height: 24),
             CommonTextField(
               hintText: "Password",
-              obscureText: obscurePassword,
+              obscureText: isObscurePassword,
               suffixIcon: IconButton(
                 onPressed: () {
-                  // Toggle password visibility
                   setState(
                     () {
-                      obscurePassword = !obscurePassword;
+                      isObscurePassword = !isObscurePassword;
                     },
                   );
                 },
                 icon: Icon(
-                  obscurePassword ? Icons.visibility : Icons.visibility_off,
+                  isObscurePassword ? Icons.visibility : Icons.visibility_off,
                 ),
               ),
             ),
@@ -80,9 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child:
                   Text('Forgot password?', style: context.textTheme.bodyMedium),
             ),
-            SizedBox(
-              height: height / 60,
-            ),
+            const SizedBox(height: 60),
             Column(
               children: [
                 InkWell(
@@ -92,8 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     height: 42,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.secondary),
+                      borderRadius: BorderRadius.circular(8),
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     child: Center(
                       child: Text(
                         "Log in",
@@ -102,16 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 Text(
                   "or",
                   style: context.textTheme.labelLarge,
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 InkWell(
                   splashColor: lightColorScheme.surfaceTint,
                   highlightColor: lightColorScheme.surfaceTint,
@@ -119,23 +97,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     height: 42,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.white),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Assets.icons.group.svg(width: 16, height: 16),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          "Log in with Google",
-                          style: context.textTheme.bodyMedium,
-                        ),
-                      ],
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Log in with Google",
+                        style: context.textTheme.bodyMedium,
+                      ),
                     ),
                   ),
                 ),
+                // ),
               ],
             ),
             const Spacer(),
@@ -161,9 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "It takes less than a minute.",
               style: context.textTheme.bodyMedium,
             ),
-            SizedBox(
-              height: height / 30,
-            )
+            const SizedBox(height: 32),
           ],
         ),
       ),
