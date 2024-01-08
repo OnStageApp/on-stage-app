@@ -7,7 +7,7 @@ part of 'event_model.dart';
 // **************************************************************************
 
 _$EventImpl _$$EventImplFromJson(Map<String, dynamic> json) => _$EventImpl(
-      id: json['id'] as int,
+      id: json['id'] as String,
       name: json['name'] as String,
       date: json['date'] as String,
       rehearsalsDate: (json['rehearsalsDate'] as List<dynamic>)

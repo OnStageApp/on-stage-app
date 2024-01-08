@@ -1,15 +1,15 @@
 import 'package:on_stage_app/app/features/event/application/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/event_repository.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 
 part 'event_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class EventNotifier extends _$EventNotifier {
+  final TimeUtils timeUtils = TimeUtils();
 
   @override
   EventState build() {
@@ -26,66 +26,50 @@ class EventNotifier extends _$EventNotifier {
     await getUpcomingEvents();
   }
 
- 
-
-
-
-  Future<void> getPastEvents() async {
+  Future<void> searchEvents(String? search) async {
     ref.read(loadingProvider.notifier).state = true;
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    
-    // TODO: uncomment when we use database
-   // var pastEvents = await ref.read(eventRepositoryProvider.notifier).getEventsByRange(null, yesterday);
+    final events = await ref
+        .read(eventRepositoryProvider.notifier)
+        .getEvents(search: search);
 
-    final pastEvents = await Future.delayed(
-      const Duration(seconds: 1),
-          () => SongDummy.pastEventsDummy,
-    );
-   state = state.copyWith(pastEvents: pastEvents);
+    state = state.copyWith(filteredEvents: events);
     ref.read(loadingProvider.notifier).state = false;
   }
 
+  Future<void> getPastEvents() async {
+    ref.read(loadingProvider.notifier).state = true;
+    final yesterday = timeUtils.getYesterdayDateTime();
 
+    final pastEvents = await ref
+        .read(eventRepositoryProvider.notifier)
+        .getEvents(endDate: yesterday);
 
-    Future<void> getThisWeekEvents() async {
-      ref.read(loadingProvider.notifier).state = true;
-      // TODO: uncomment when we use database
-      // DateTime now = DateTime.now();
-      // DateTime lastDayOfTheWeek = now.subtract(Duration(days: now.weekday - 7));
-
-      //var thisWeekEvents = await ref.read(eventRepositoryProvider.notifier).getEventsByRange(DateTime.now(), lastDayOfTheWeek);
-
-      final thisWeekEvents = await Future.delayed(
-        const Duration(seconds: 1),
-            () => SongDummy.thisWeekEventsDummy,
-      );
-
-      state = state.copyWith(thisWeekEvents: thisWeekEvents);
-      ref.read(loadingProvider.notifier).state = false;
-     
-    }
-
-    Future<void> getUpcomingEvents() async {
-      ref.read(loadingProvider.notifier).state = true;
-      // TODO: uncomment when we use database
-
-     // DateTime now = DateTime.now();
-     // DateTime lastDayOfTheWeek = now.subtract(Duration(days: now.weekday - 7));
-
-      //var upcomingEvents = await ref.read(eventRepositoryProvider.notifier).getEventsByRange(lastDayOfTheWeek, null);
-
-      final upcomingEvents = await Future.delayed(
-        const Duration(seconds: 1),
-            () => SongDummy.upcomingEventsDummy,
-      );
-
-      state = state.copyWith(upcomingEvents: upcomingEvents);
-      ref.read(loadingProvider.notifier).state = false;
-    }
-
-    Future<void> _getEventsByDate() async {
-
-      ref.read(eventRepositoryProvider.notifier).getEventsByRange(DateTime.now(), DateTime.now());
-    }
+    state = state.copyWith(pastEvents: pastEvents);
+    ref.read(loadingProvider.notifier).state = false;
   }
 
+  Future<void> getThisWeekEvents() async {
+    ref.read(loadingProvider.notifier).state = true;
+
+    final thisWeekEvents =
+        await ref.read(eventRepositoryProvider.notifier).getEvents(
+              startDate: timeUtils.getNowDateTime(),
+              endDate: timeUtils.getEndOfTheWeekDateTime(),
+            );
+
+    state = state.copyWith(thisWeekEvents: thisWeekEvents);
+    ref.read(loadingProvider.notifier).state = false;
+  }
+
+  Future<void> getUpcomingEvents() async {
+    ref.read(loadingProvider.notifier).state = true;
+
+    final upcomingEvents =
+        await ref.read(eventRepositoryProvider.notifier).getEvents(
+              startDate: timeUtils.getStartOfTheNextWeekDateTime(),
+            );
+
+    state = state.copyWith(upcomingEvents: upcomingEvents);
+    ref.read(loadingProvider.notifier).state = false;
+  }
+}

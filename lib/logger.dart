@@ -27,6 +27,26 @@ class _OnStageLogger {
   void i(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
       logger.i(message, error, stackTrace);
 
+  void fetchedRequestResponse(
+    String objectName,
+    int statusCode, [
+    dynamic body,
+  ]) =>
+      logger.i(
+        'Fetched $objectName with status code:'
+        ' $statusCode and $objectName: ${body ?? 'no body'}',
+      );
+
+  void postRequestResponse(
+    String objectName,
+    int statusCode, [
+    dynamic body,
+  ]) =>
+      logger.i(
+        'Created $objectName with status code:'
+        ' $statusCode and $objectName: ${body ?? 'no body'}',
+      );
+
   void w(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
       logger.w(message, error, stackTrace);
 

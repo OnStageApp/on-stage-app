@@ -20,7 +20,7 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EventModel {
-  int get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get date => throw _privateConstructorUsedError;
   List<String> get rehearsalsDate => throw _privateConstructorUsedError;
@@ -43,7 +43,7 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {int id,
+      {String id,
       String name,
       String date,
       List<String> rehearsalsDate,
@@ -81,7 +81,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -126,7 +126,7 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int id,
+      {String id,
       String name,
       String date,
       List<String> rehearsalsDate,
@@ -162,7 +162,7 @@ class __$$EventImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -221,7 +221,7 @@ class _$EventImpl implements _Event {
       _$$EventImplFromJson(json);
 
   @override
-  final int id;
+  final String id;
   @override
   final String name;
   @override
@@ -319,7 +319,7 @@ class _$EventImpl implements _Event {
 
 abstract class _Event implements EventModel {
   const factory _Event(
-      {required final int id,
+      {required final String id,
       required final String name,
       required final String date,
       required final List<String> rehearsalsDate,
@@ -332,7 +332,7 @@ abstract class _Event implements EventModel {
   factory _Event.fromJson(Map<String, dynamic> json) = _$EventImpl.fromJson;
 
   @override
-  int get id;
+  String get id;
   @override
   String get name;
   @override
