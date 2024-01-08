@@ -15,17 +15,16 @@ class _OnStageLogger {
       ],
     ),
     filter: kReleaseMode ? ProductionFilter() : DevelopmentFilter(),
-    level: kReleaseMode ? Level.trace : Level.trace,
   );
 
   void v(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.t(message, error: error, stackTrace: stackTrace);
+      logger.v(message, error, stackTrace);
 
   void d(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.d(message, error: error, stackTrace: stackTrace);
+      logger.d(message, error, stackTrace);
 
   void i(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.i(message, error: error, stackTrace: stackTrace);
+      logger.i(message, error, stackTrace);
 
   void fetchedRequestResponse(
     String objectName,
@@ -48,11 +47,11 @@ class _OnStageLogger {
       );
 
   void w(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.w(message, error: error, stackTrace: stackTrace);
+      logger.w(message, error, stackTrace);
 
   void e(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.e(message, error: error, stackTrace: stackTrace);
+      logger.e(message, error, stackTrace);
 
   void f(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.f(message, error: error, stackTrace: stackTrace);
+      logger.v(message, error, stackTrace);
 }
