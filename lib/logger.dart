@@ -15,24 +15,43 @@ class _OnStageLogger {
       ],
     ),
     filter: kReleaseMode ? ProductionFilter() : DevelopmentFilter(),
-    level: kReleaseMode ? Level.verbose : Level.verbose,
   );
 
   void v(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.v(message, error, stackTrace);
+      logger.t(message, error: error, stackTrace: stackTrace);
 
   void d(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.d(message, error, stackTrace);
+      logger.d(message, error: error, stackTrace: stackTrace);
 
   void i(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.i(message, error, stackTrace);
+      logger.i(message, error: error, stackTrace: stackTrace);
+
+  void fetchedRequestResponse(
+    String objectName,
+    int statusCode, [
+    dynamic body,
+  ]) =>
+      logger.i(
+        'Fetched $objectName with status code:'
+        ' $statusCode and $objectName: ${body ?? 'no body'}',
+      );
+
+  void postRequestResponse(
+    String objectName,
+    int statusCode, [
+    dynamic body,
+  ]) =>
+      logger.i(
+        'Created $objectName with status code:'
+        ' $statusCode and $objectName: ${body ?? 'no body'}',
+      );
 
   void w(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.w(message, error, stackTrace);
+      logger.w(message, error: error, stackTrace: stackTrace);
 
   void e(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.e(message, error, stackTrace);
+      logger.e(message, error: error, stackTrace: stackTrace);
 
-  void wtf(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
-      logger.wtf(message, error, stackTrace);
+  void f(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      logger.t(message, error: error, stackTrace: stackTrace);
 }

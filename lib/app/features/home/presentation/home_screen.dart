@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song_provider.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
@@ -26,6 +27,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(songNotifierProvider.notifier).init();
       ref.read(notificationNotifierProvider.notifier).getNotifications();
+      ref.read(eventNotifierProvider.notifier).init();
     });
   }
 
