@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/event/application/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/event_repository.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -70,6 +71,12 @@ class EventNotifier extends _$EventNotifier {
             );
 
     state = state.copyWith(upcomingEvents: upcomingEvents);
+    ref.read(loadingProvider.notifier).state = false;
+  }
+
+  Future<void> addEvent(EventModel event) async {
+    ref.read(loadingProvider.notifier).state = true;
+    await ref.read(eventRepositoryProvider.notifier).createEvent(event);
     ref.read(loadingProvider.notifier).state = false;
   }
 }

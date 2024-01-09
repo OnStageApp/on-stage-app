@@ -22,8 +22,8 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 mixin _$EventModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String get date => throw _privateConstructorUsedError;
-  List<String> get rehearsalsDate => throw _privateConstructorUsedError;
+  DateTime get date => throw _privateConstructorUsedError;
+  List<DateTime> get rehearsalDates => throw _privateConstructorUsedError;
   List<String> get staggersId => throw _privateConstructorUsedError;
   List<String> get adminsId => throw _privateConstructorUsedError;
   List<String> get eventItemIds => throw _privateConstructorUsedError;
@@ -45,8 +45,8 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String date,
-      List<String> rehearsalsDate,
+      DateTime date,
+      List<DateTime> rehearsalDates,
       List<String> staggersId,
       List<String> adminsId,
       List<String> eventItemIds,
@@ -70,7 +70,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
     Object? id = null,
     Object? name = null,
     Object? date = null,
-    Object? rehearsalsDate = null,
+    Object? rehearsalDates = null,
     Object? staggersId = null,
     Object? adminsId = null,
     Object? eventItemIds = null,
@@ -89,11 +89,11 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
-      rehearsalsDate: null == rehearsalsDate
-          ? _value.rehearsalsDate
-          : rehearsalsDate // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as DateTime,
+      rehearsalDates: null == rehearsalDates
+          ? _value.rehearsalDates
+          : rehearsalDates // ignore: cast_nullable_to_non_nullable
+              as List<DateTime>,
       staggersId: null == staggersId
           ? _value.staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
@@ -128,8 +128,8 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String date,
-      List<String> rehearsalsDate,
+      DateTime date,
+      List<DateTime> rehearsalDates,
       List<String> staggersId,
       List<String> adminsId,
       List<String> eventItemIds,
@@ -151,7 +151,7 @@ class __$$EventImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? date = null,
-    Object? rehearsalsDate = null,
+    Object? rehearsalDates = null,
     Object? staggersId = null,
     Object? adminsId = null,
     Object? eventItemIds = null,
@@ -170,11 +170,11 @@ class __$$EventImplCopyWithImpl<$Res>
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
-      rehearsalsDate: null == rehearsalsDate
-          ? _value._rehearsalsDate
-          : rehearsalsDate // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as DateTime,
+      rehearsalDates: null == rehearsalDates
+          ? _value._rehearsalDates
+          : rehearsalDates // ignore: cast_nullable_to_non_nullable
+              as List<DateTime>,
       staggersId: null == staggersId
           ? _value._staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
@@ -206,13 +206,13 @@ class _$EventImpl implements _Event {
       {required this.id,
       required this.name,
       required this.date,
-      required final List<String> rehearsalsDate,
+      required final List<DateTime> rehearsalDates,
       required final List<String> staggersId,
       required final List<String> adminsId,
       required final List<String> eventItemIds,
       required this.location,
       this.imageUrl})
-      : _rehearsalsDate = rehearsalsDate,
+      : _rehearsalDates = rehearsalDates,
         _staggersId = staggersId,
         _adminsId = adminsId,
         _eventItemIds = eventItemIds;
@@ -225,13 +225,13 @@ class _$EventImpl implements _Event {
   @override
   final String name;
   @override
-  final String date;
-  final List<String> _rehearsalsDate;
+  final DateTime date;
+  final List<DateTime> _rehearsalDates;
   @override
-  List<String> get rehearsalsDate {
-    if (_rehearsalsDate is EqualUnmodifiableListView) return _rehearsalsDate;
+  List<DateTime> get rehearsalDates {
+    if (_rehearsalDates is EqualUnmodifiableListView) return _rehearsalDates;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_rehearsalsDate);
+    return EqualUnmodifiableListView(_rehearsalDates);
   }
 
   final List<String> _staggersId;
@@ -265,7 +265,7 @@ class _$EventImpl implements _Event {
 
   @override
   String toString() {
-    return 'EventModel(id: $id, name: $name, date: $date, rehearsalsDate: $rehearsalsDate, staggersId: $staggersId, adminsId: $adminsId, eventItemIds: $eventItemIds, location: $location, imageUrl: $imageUrl)';
+    return 'EventModel(id: $id, name: $name, date: $date, rehearsalDates: $rehearsalDates, staggersId: $staggersId, adminsId: $adminsId, eventItemIds: $eventItemIds, location: $location, imageUrl: $imageUrl)';
   }
 
   @override
@@ -277,7 +277,7 @@ class _$EventImpl implements _Event {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.date, date) || other.date == date) &&
             const DeepCollectionEquality()
-                .equals(other._rehearsalsDate, _rehearsalsDate) &&
+                .equals(other._rehearsalDates, _rehearsalDates) &&
             const DeepCollectionEquality()
                 .equals(other._staggersId, _staggersId) &&
             const DeepCollectionEquality().equals(other._adminsId, _adminsId) &&
@@ -296,7 +296,7 @@ class _$EventImpl implements _Event {
       id,
       name,
       date,
-      const DeepCollectionEquality().hash(_rehearsalsDate),
+      const DeepCollectionEquality().hash(_rehearsalDates),
       const DeepCollectionEquality().hash(_staggersId),
       const DeepCollectionEquality().hash(_adminsId),
       const DeepCollectionEquality().hash(_eventItemIds),
@@ -321,8 +321,8 @@ abstract class _Event implements EventModel {
   const factory _Event(
       {required final String id,
       required final String name,
-      required final String date,
-      required final List<String> rehearsalsDate,
+      required final DateTime date,
+      required final List<DateTime> rehearsalDates,
       required final List<String> staggersId,
       required final List<String> adminsId,
       required final List<String> eventItemIds,
@@ -336,9 +336,9 @@ abstract class _Event implements EventModel {
   @override
   String get name;
   @override
-  String get date;
+  DateTime get date;
   @override
-  List<String> get rehearsalsDate;
+  List<DateTime> get rehearsalDates;
   @override
   List<String> get staggersId;
   @override

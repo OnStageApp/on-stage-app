@@ -7,7 +7,7 @@ part 'event_overview_model.g.dart';
 class EventOverview with _$EventOverview {
   const factory EventOverview({
     required String id,
-    required String title,
+    required String name,
     required String date,
   }) = _EventOverview;
 

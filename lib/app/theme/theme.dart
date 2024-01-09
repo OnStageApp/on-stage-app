@@ -194,5 +194,5 @@ class Insets {
 
 const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
 const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
-const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 56, 24, 0);
+const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 64, 24, 0);
 const defaultAppBarHeight = 48.0;
