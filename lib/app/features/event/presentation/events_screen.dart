@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
+import 'package:on_stage_app/app/features/event/presentation/add_event/add_event_info_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
@@ -48,7 +49,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               title: 'Events',
               trailing: IconButton(
                 onPressed: () {
-                  context.pushNamed(AppRoute.addEvent.name);
+                  AddEventInfoScreen.show(context);
                 },
                 icon: const Icon(Icons.add),
               ),

@@ -6,14 +6,14 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
-class AddEventScreen extends ConsumerStatefulWidget {
-  const AddEventScreen({super.key});
+class AddEventItemsScreen extends ConsumerStatefulWidget {
+  const AddEventItemsScreen({super.key});
 
   @override
-  AddEventScreenState createState() => AddEventScreenState();
+  AddEventItemsScreenState createState() => AddEventItemsScreenState();
 }
 
-class AddEventScreenState extends ConsumerState<AddEventScreen> {
+class AddEventItemsScreenState extends ConsumerState<AddEventItemsScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   DateTime date = DateTime.now();
@@ -33,7 +33,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       ),
       body: Padding(
         padding: defaultScreenPadding,
-        child: ListView(
+        child: Column(
           children: [
             TextField(
               controller: titleController,
@@ -52,11 +52,12 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
               controller: locationController,
               decoration: InputDecoration(labelText: 'Location'),
             ),
-            SizedBox(height: 20),
+            Expanded(child: SizedBox()),
             ElevatedButton(
               onPressed: _submitForm,
               child: Text('Submit'),
             ),
+            SizedBox(height: 32),
           ],
         ),
       ),
@@ -64,7 +65,6 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
   }
 
   void _submitForm() {
-    // Process form submission here
     print('Title: ${titleController.text}');
     print('Date: $date');
     print('Rehearsal Date: $rehearsalDate');
@@ -78,7 +78,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       location: locationController.text,
       staggersId: [],
       adminsId: [],
-      eventItemIds: [],
+      eventItems: [],
     );
 
     ref.read(eventNotifierProvider.notifier).addEvent(event);
@@ -91,11 +91,10 @@ Widget _buildCupertinoDatePicker(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(label),
-      SizedBox(height: 5),
-      Container(
+      const SizedBox(height: 5),
+      SizedBox(
         height: 100,
         child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.dateAndTime,
           initialDateTime: DateTime.now(),
           onDateTimeChanged: onDateChanged,
         ),

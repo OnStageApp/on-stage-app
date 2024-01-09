@@ -26,7 +26,7 @@ mixin _$EventModel {
   List<DateTime> get rehearsalDates => throw _privateConstructorUsedError;
   List<String> get staggersId => throw _privateConstructorUsedError;
   List<String> get adminsId => throw _privateConstructorUsedError;
-  List<String> get eventItemIds => throw _privateConstructorUsedError;
+  List<EventItem> get eventItems => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
 
@@ -49,7 +49,7 @@ abstract class $EventModelCopyWith<$Res> {
       List<DateTime> rehearsalDates,
       List<String> staggersId,
       List<String> adminsId,
-      List<String> eventItemIds,
+      List<EventItem> eventItems,
       String location,
       String? imageUrl});
 }
@@ -73,7 +73,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
     Object? rehearsalDates = null,
     Object? staggersId = null,
     Object? adminsId = null,
-    Object? eventItemIds = null,
+    Object? eventItems = null,
     Object? location = null,
     Object? imageUrl = freezed,
   }) {
@@ -102,10 +102,10 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.adminsId
           : adminsId // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      eventItemIds: null == eventItemIds
-          ? _value.eventItemIds
-          : eventItemIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      eventItems: null == eventItems
+          ? _value.eventItems
+          : eventItems // ignore: cast_nullable_to_non_nullable
+              as List<EventItem>,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -132,7 +132,7 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
       List<DateTime> rehearsalDates,
       List<String> staggersId,
       List<String> adminsId,
-      List<String> eventItemIds,
+      List<EventItem> eventItems,
       String location,
       String? imageUrl});
 }
@@ -154,7 +154,7 @@ class __$$EventImplCopyWithImpl<$Res>
     Object? rehearsalDates = null,
     Object? staggersId = null,
     Object? adminsId = null,
-    Object? eventItemIds = null,
+    Object? eventItems = null,
     Object? location = null,
     Object? imageUrl = freezed,
   }) {
@@ -183,10 +183,10 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value._adminsId
           : adminsId // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      eventItemIds: null == eventItemIds
-          ? _value._eventItemIds
-          : eventItemIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      eventItems: null == eventItems
+          ? _value._eventItems
+          : eventItems // ignore: cast_nullable_to_non_nullable
+              as List<EventItem>,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -209,13 +209,13 @@ class _$EventImpl implements _Event {
       required final List<DateTime> rehearsalDates,
       required final List<String> staggersId,
       required final List<String> adminsId,
-      required final List<String> eventItemIds,
+      required final List<EventItem> eventItems,
       required this.location,
       this.imageUrl})
       : _rehearsalDates = rehearsalDates,
         _staggersId = staggersId,
         _adminsId = adminsId,
-        _eventItemIds = eventItemIds;
+        _eventItems = eventItems;
 
   factory _$EventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventImplFromJson(json);
@@ -250,12 +250,12 @@ class _$EventImpl implements _Event {
     return EqualUnmodifiableListView(_adminsId);
   }
 
-  final List<String> _eventItemIds;
+  final List<EventItem> _eventItems;
   @override
-  List<String> get eventItemIds {
-    if (_eventItemIds is EqualUnmodifiableListView) return _eventItemIds;
+  List<EventItem> get eventItems {
+    if (_eventItems is EqualUnmodifiableListView) return _eventItems;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_eventItemIds);
+    return EqualUnmodifiableListView(_eventItems);
   }
 
   @override
@@ -265,7 +265,7 @@ class _$EventImpl implements _Event {
 
   @override
   String toString() {
-    return 'EventModel(id: $id, name: $name, date: $date, rehearsalDates: $rehearsalDates, staggersId: $staggersId, adminsId: $adminsId, eventItemIds: $eventItemIds, location: $location, imageUrl: $imageUrl)';
+    return 'EventModel(id: $id, name: $name, date: $date, rehearsalDates: $rehearsalDates, staggersId: $staggersId, adminsId: $adminsId, eventItems: $eventItems, location: $location, imageUrl: $imageUrl)';
   }
 
   @override
@@ -282,7 +282,7 @@ class _$EventImpl implements _Event {
                 .equals(other._staggersId, _staggersId) &&
             const DeepCollectionEquality().equals(other._adminsId, _adminsId) &&
             const DeepCollectionEquality()
-                .equals(other._eventItemIds, _eventItemIds) &&
+                .equals(other._eventItems, _eventItems) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.imageUrl, imageUrl) ||
@@ -299,7 +299,7 @@ class _$EventImpl implements _Event {
       const DeepCollectionEquality().hash(_rehearsalDates),
       const DeepCollectionEquality().hash(_staggersId),
       const DeepCollectionEquality().hash(_adminsId),
-      const DeepCollectionEquality().hash(_eventItemIds),
+      const DeepCollectionEquality().hash(_eventItems),
       location,
       imageUrl);
 
@@ -325,7 +325,7 @@ abstract class _Event implements EventModel {
       required final List<DateTime> rehearsalDates,
       required final List<String> staggersId,
       required final List<String> adminsId,
-      required final List<String> eventItemIds,
+      required final List<EventItem> eventItems,
       required final String location,
       final String? imageUrl}) = _$EventImpl;
 
@@ -344,7 +344,7 @@ abstract class _Event implements EventModel {
   @override
   List<String> get adminsId;
   @override
-  List<String> get eventItemIds;
+  List<EventItem> get eventItems;
   @override
   String get location;
   @override

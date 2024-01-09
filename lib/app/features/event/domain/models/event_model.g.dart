@@ -18,8 +18,8 @@ _$EventImpl _$$EventImplFromJson(Map<String, dynamic> json) => _$EventImpl(
           .toList(),
       adminsId:
           (json['adminsId'] as List<dynamic>).map((e) => e as String).toList(),
-      eventItemIds: (json['eventItemIds'] as List<dynamic>)
-          .map((e) => e as String)
+      eventItems: (json['eventItems'] as List<dynamic>)
+          .map((e) => EventItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       location: json['location'] as String,
       imageUrl: json['imageUrl'] as String?,
@@ -34,7 +34,7 @@ Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
           instance.rehearsalDates.map((e) => e.toIso8601String()).toList(),
       'staggersId': instance.staggersId,
       'adminsId': instance.adminsId,
-      'eventItemIds': instance.eventItemIds,
+      'eventItems': instance.eventItems,
       'location': instance.location,
       'imageUrl': instance.imageUrl,
     };

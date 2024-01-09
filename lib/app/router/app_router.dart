@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_event_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/add_event/add_event_info_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/add_event/add_event_items_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
@@ -16,7 +17,8 @@ enum AppRoute {
   home,
   songs,
   events,
-  addEvent,
+  addEventInfo,
+  addEventItems,
   profile,
 }
 
@@ -65,9 +67,14 @@ class AppRouter {
         builder: (context, state) => const EventsScreen(),
         routes: [
           GoRoute(
-            name: AppRoute.addEvent.name,
-            path: 'addEvent',
-            builder: (context, state) => const AddEventScreen(),
+            name: AppRoute.addEventInfo.name,
+            path: 'addEventInfo',
+            builder: (context, state) => const AddEventInfoScreen(),
+          ),
+          GoRoute(
+            name: AppRoute.addEventItems.name,
+            path: 'addEventItems',
+            builder: (context, state) => const AddEventItemsScreen(),
           ),
         ],
       ),
