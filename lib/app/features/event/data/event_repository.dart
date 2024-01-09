@@ -50,15 +50,26 @@ class EventRepository extends _$EventRepository {
     return [];
   }
 
-  Future<EventModel?> createEvent(EventModel newEvent) async {
-    final response = await http.post(API.createEvent, body: newEvent.toJson());
+  Future<String?> createEvent(EventModel newEvent) async {
+    var eventMap = newEvent.toJson();
+    eventMap.remove('id');
+    eventMap.remove('imageUrl');
+    eventMap.remove('adminsId');
+    eventMap.remove('eventItemIds');
+    eventMap.remove('staggersId');
+    // eventMap.remove('rehearsalDates');
+    final response = await http.post(
+      API.createEvent,
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      // Set the Content-Type header
+      body: jsonEncode(eventMap),
+    );
     logger.postRequestResponse('event', response.statusCode, response.body);
     try {
       switch (response.statusCode) {
         case 200:
-          final eventJson = jsonDecode(response.body) as Map<String, dynamic>;
-          final event = EventModel.fromJson(eventJson);
-          return event;
+          final eventId = response.body;
+          return eventId;
         default:
           logger.e('Internal server error, please try again later.');
       }

@@ -9,13 +9,13 @@ part of 'event_overview_model.dart';
 _$EventOverviewImpl _$$EventOverviewImplFromJson(Map<String, dynamic> json) =>
     _$EventOverviewImpl(
       id: json['id'] as String,
-      title: json['title'] as String,
+      name: json['name'] as String,
       date: json['date'] as String,
     );
 
 Map<String, dynamic> _$$EventOverviewImplToJson(_$EventOverviewImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'title': instance.title,
+      'name': instance.name,
       'date': instance.date,
     };

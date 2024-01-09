@@ -143,7 +143,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         return Column(
           children: [
             EventTile(
-              title: event.title,
+              title: event.name,
               description: formattedDate,
             ),
             const SizedBox(height: Insets.smallNormal),

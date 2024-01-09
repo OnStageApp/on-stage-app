@@ -10,7 +10,7 @@ _$EventImpl _$$EventImplFromJson(Map<String, dynamic> json) => _$EventImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       date: DateTime.parse(json['date'] as String),
-      rehearsalsDate: (json['rehearsalsDate'] as List<dynamic>)
+      rehearsalDates: (json['rehearsalDates'] as List<dynamic>)
           .map((e) => DateTime.parse(e as String))
           .toList(),
       staggersId: (json['staggersId'] as List<dynamic>)
@@ -30,8 +30,8 @@ Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'date': instance.date.toIso8601String(),
-      'rehearsalsDate':
-          instance.rehearsalsDate.map((e) => e.toIso8601String()).toList(),
+      'rehearsalDates':
+          instance.rehearsalDates.map((e) => e.toIso8601String()).toList(),
       'staggersId': instance.staggersId,
       'adminsId': instance.adminsId,
       'eventItemIds': instance.eventItemIds,

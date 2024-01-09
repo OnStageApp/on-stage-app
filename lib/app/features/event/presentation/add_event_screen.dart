@@ -18,6 +18,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
   TextEditingController locationController = TextEditingController();
   DateTime date = DateTime.now();
   DateTime rehearsalDate = DateTime.now();
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +33,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       ),
       body: Padding(
         padding: defaultScreenPadding,
-        child: Column(
+        child: ListView(
           children: [
             TextField(
               controller: titleController,
@@ -69,18 +70,18 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
     print('Rehearsal Date: $rehearsalDate');
     print('Location: ${locationController.text}');
 
-    var event = EventModel(
+    final event = EventModel(
+      id: '',
       name: titleController.text,
       date: date,
-      rehearsalDate: rehearsalDate,
+      rehearsalDates: [rehearsalDate],
       location: locationController.text,
+      staggersId: [],
+      adminsId: [],
+      eventItemIds: [],
     );
-    ref.read(eventNotifierProvider.notifier).addEvent(
-          title: titleController.text,
-          date: date,
-          rehearsalDate: rehearsalDate,
-          location: locationController.text,
-        );
+
+    ref.read(eventNotifierProvider.notifier).addEvent(event);
   }
 }
 

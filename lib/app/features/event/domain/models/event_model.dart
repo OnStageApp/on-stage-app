@@ -9,7 +9,7 @@ class EventModel with _$EventModel {
     required String id,
     required String name,
     required DateTime date,
-    required List<DateTime> rehearsalsDate,
+    required List<DateTime> rehearsalDates,
     required List<String> staggersId,
     required List<String> adminsId,
     required List<String> eventItemIds,
