@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -10,6 +14,7 @@ import 'package:on_stage_app/app/shared/event_tile.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
@@ -142,9 +147,20 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
         return Column(
           children: [
-            EventTile(
-              title: event.name,
-              description: formattedDate,
+            GestureDetector(
+              onTap: () async {
+                final uri = API.getEvent('659d4d7e7b60a2030fff52bb');
+                final response = await http.get(uri);
+                var oldEvent = EventModel.fromJson(
+                  jsonDecode(response.body) as Map<String, dynamic>,
+                );
+                await context.pushNamed(AppRoute.singleEvent.name,
+                    extra: oldEvent);
+              },
+              child: EventTile(
+                title: event.name,
+                description: formattedDate,
+              ),
             ),
             const SizedBox(height: Insets.smallNormal),
           ],

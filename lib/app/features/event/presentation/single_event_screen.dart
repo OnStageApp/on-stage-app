@@ -6,14 +6,16 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
-class AddEventScreen extends ConsumerStatefulWidget {
-  const AddEventScreen({super.key});
+class SingleEventScreen extends ConsumerStatefulWidget {
+  SingleEventScreen(this.event, {super.key});
+
+  final EventModel event;
 
   @override
-  AddEventScreenState createState() => AddEventScreenState();
+  SingleEventScreenState createState() => SingleEventScreenState();
 }
 
-class AddEventScreenState extends ConsumerState<AddEventScreen> {
+class SingleEventScreenState extends ConsumerState<SingleEventScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   DateTime date = DateTime.now();
@@ -28,7 +30,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StageAppBar(
-        title: 'Events',
+        title: 'Events ${widget.event.name}',
         trailing: IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
       ),
       body: Padding(
@@ -65,26 +67,20 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
 
   void _submitForm() {
     // Process form submission here
+    var newEvent = widget.event.copyWith(
+      name: titleController.text,
+    );
     print('Title: ${titleController.text}');
     print('Date: $date');
     print('Rehearsal Date: $rehearsalDate');
     print('Location: ${locationController.text}');
 
-    var event = EventModel(
-      id: '',
-      name: titleController.text,
-      date: date,
-      rehearsalDates: [],
-      location: '',
-      staggersId: [],
-      adminsId: [],
-      eventItemIds: [],
-    );
+    print('Old Event: ${widget.event.name}');
+    print('New Event: ${newEvent.name}');
 
-    event = event.copyWith(rehearsalDates: [rehearsalDate]);
-    print(event.rehearsalDates);
-
-    ref.read(eventNotifierProvider.notifier).addEvent(event);
+    ref
+        .read(eventNotifierProvider.notifier)
+        .updateEvent(widget.event, newEvent);
   }
 }
 

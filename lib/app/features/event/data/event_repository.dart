@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:json_patch/json_patch.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -51,20 +52,26 @@ class EventRepository extends _$EventRepository {
   }
 
   Future<String?> createEvent(EventModel newEvent) async {
-    var eventMap = newEvent.toJson();
-    eventMap.remove('id');
-    eventMap.remove('imageUrl');
-    eventMap.remove('adminsId');
-    eventMap.remove('eventItemIds');
-    eventMap.remove('staggersId');
-    // eventMap.remove('rehearsalDates');
+    final eventMap = newEvent.toJson();
+
+    ///This is temporary, until we have a proper way to handle this
+    eventMap
+      ..remove('id')
+      ..remove('imageUrl')
+      ..remove('adminsId')
+      ..remove('eventItemIds')
+      ..remove('staggersId');
+
     final response = await http.post(
       API.createEvent,
-      headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      // Set the Content-Type header
+      headers: API.getHeaders(),
       body: jsonEncode(eventMap),
     );
-    logger.postRequestResponse('event', response.statusCode, response.body);
+    logger.postRequestResponse(
+      'event',
+      response.statusCode,
+      response.body,
+    );
     try {
       switch (response.statusCode) {
         case 200:
@@ -77,5 +84,43 @@ class EventRepository extends _$EventRepository {
       logger.e('Failed fetching events: $e with stacktrace: $s');
     }
     return null;
+  }
+
+  Future<void> patchEvent({
+    required EventModel oldEvent,
+    required EventModel newEvent,
+  }) async {
+    final eventId = oldEvent.id;
+    final diff = JsonPatch.diff(
+      oldEvent.toJson(),
+      newEvent.toJson(),
+    );
+
+    print('DIFF: $diff');
+    print("DIFF: ${jsonEncode(diff)}");
+    var diffed = jsonEncode(diff);
+    var url = API.patchEvent(eventId);
+    final response = await http.patch(
+      url,
+      headers: API.getHeaders(),
+      body: diffed,
+    );
+
+    logger.postRequestResponse(
+      'event',
+      response.statusCode,
+      response.body,
+    );
+
+    try {
+      switch (response.statusCode) {
+        case 200:
+          return;
+        default:
+          logger.e('Internal server error, please try again later.');
+      }
+    } on IOException catch (e, s) {
+      logger.e('Failed fetching events: $e with stacktrace: $s');
+    }
   }
 }

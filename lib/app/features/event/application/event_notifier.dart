@@ -79,4 +79,15 @@ class EventNotifier extends _$EventNotifier {
     await ref.read(eventRepositoryProvider.notifier).createEvent(event);
     ref.read(loadingProvider.notifier).state = false;
   }
+
+  Future<void> updateEvent(EventModel oldEvent, EventModel updatedEvent) async {
+    // if (state.currentEvent == null || oldEvent == null) {
+    //   return;
+    // }
+    ref.read(loadingProvider.notifier).state = true;
+    await ref
+        .read(eventRepositoryProvider.notifier)
+        .patchEvent(oldEvent: oldEvent, newEvent: updatedEvent);
+    ref.read(loadingProvider.notifier).state = false;
+  }
 }

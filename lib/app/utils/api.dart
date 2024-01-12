@@ -24,6 +24,14 @@ class API {
     return _FLAVOR_DEV;
   }
 
+  static Map<String, String> getHeaders() {
+    return {'Content-Type': 'application/json; charset=UTF-8'};
+  }
+
+  static Uri getEvent(String eventId) {
+    return Uri.https(apiUrl, 'events/$eventId');
+  }
+
   static Uri getEvents([
     DateTime? startDate,
     DateTime? endDate,
@@ -38,6 +46,10 @@ class API {
         if (search != null) 'search': search,
       },
     );
+  }
+
+  static Uri patchEvent(String eventId) {
+    return Uri.https(apiUrl, 'events/$eventId');
   }
 
   static Uri get createEvent {

@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 
 class EventState extends Equatable {
   const EventState({
+    this.currentEvent,
     this.events = const [],
     this.pastEvents = const [],
     this.upcomingEvents = const [],
@@ -10,6 +12,7 @@ class EventState extends Equatable {
     this.filteredEvents = const [],
   });
 
+  final EventModel? currentEvent;
   final List<EventOverview> events;
   final List<EventOverview> pastEvents;
   final List<EventOverview> upcomingEvents;
@@ -20,6 +23,7 @@ class EventState extends Equatable {
   List<Object?> get props => events;
 
   EventState copyWith({
+    EventModel? currentEvent,
     List<EventOverview>? events,
     List<EventOverview>? pastEvents,
     List<EventOverview>? upcomingEvents,
@@ -27,6 +31,7 @@ class EventState extends Equatable {
     List<EventOverview>? filteredEvents,
   }) {
     return EventState(
+      currentEvent: currentEvent ?? this.currentEvent,
       events: events ?? this.events,
       pastEvents: pastEvents ?? this.pastEvents,
       upcomingEvents: upcomingEvents ?? this.upcomingEvents,

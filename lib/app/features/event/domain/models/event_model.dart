@@ -8,11 +8,11 @@ class EventModel with _$EventModel {
   const factory EventModel({
     required String id,
     required String name,
-    required DateTime date,
-    required List<DateTime> rehearsalDates,
-    required List<String> staggersId,
-    required List<String> adminsId,
-    required List<String> eventItemIds,
+    required DateTime? date,
+    required List<DateTime>? rehearsalDates,
+    required List<String>? staggersId,
+    required List<String>? adminsId,
+    required List<String>? eventItemIds,
     required String location,
     String? imageUrl,
   }) = _Event;

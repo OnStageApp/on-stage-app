@@ -32,18 +32,18 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 48),
             Text(
-              "Get On Stage with us",
+              'Get On Stage with us',
               style: context.textTheme.titleLarge,
             ),
             const SizedBox(height: 48),
             const CommonTextField(
-              hintText: "Email",
+              hintText: 'Email',
               textInputAction: TextInputAction.next,
               textInputType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 24),
             CommonTextField(
-              hintText: "Password",
+              hintText: 'Password',
               obscureText: isObscurePassword,
               suffixIcon: IconButton(
                 onPressed: () {
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        "Log in",
+                        'Log in',
                         style: context.textTheme.bodyMedium,
                       ),
                     ),
@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "or",
+                  'or',
                   style: context.textTheme.labelLarge,
                 ),
                 const SizedBox(height: 8),
@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        "Log in with Google",
+                        'Log in with Google',
                         style: context.textTheme.bodyMedium,
                       ),
                     ),
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Don’t have an account? ",
+                  'Don’t have an account? ',
                   style: context.textTheme.bodyMedium,
                 ),
                 InkWell(
@@ -124,14 +124,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   highlightColor: lightColorScheme.surfaceTint,
                   onTap: () {},
                   child: Text(
-                    "Sign up here",
+                    'Sign up here',
                     style: context.textTheme.bodyMedium,
                   ),
                 ),
               ],
             ),
             Text(
-              "It takes less than a minute.",
+              'It takes less than a minute.',
               style: context.textTheme.bodyMedium,
             ),
             const SizedBox(height: 32),

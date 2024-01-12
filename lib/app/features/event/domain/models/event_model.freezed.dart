@@ -22,11 +22,11 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 mixin _$EventModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  DateTime get date => throw _privateConstructorUsedError;
-  List<DateTime> get rehearsalDates => throw _privateConstructorUsedError;
-  List<String> get staggersId => throw _privateConstructorUsedError;
-  List<String> get adminsId => throw _privateConstructorUsedError;
-  List<String> get eventItemIds => throw _privateConstructorUsedError;
+  DateTime? get date => throw _privateConstructorUsedError;
+  List<DateTime>? get rehearsalDates => throw _privateConstructorUsedError;
+  List<String>? get staggersId => throw _privateConstructorUsedError;
+  List<String>? get adminsId => throw _privateConstructorUsedError;
+  List<String>? get eventItemIds => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
 
@@ -45,11 +45,11 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      DateTime date,
-      List<DateTime> rehearsalDates,
-      List<String> staggersId,
-      List<String> adminsId,
-      List<String> eventItemIds,
+      DateTime? date,
+      List<DateTime>? rehearsalDates,
+      List<String>? staggersId,
+      List<String>? adminsId,
+      List<String>? eventItemIds,
       String location,
       String? imageUrl});
 }
@@ -69,11 +69,11 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? date = null,
-    Object? rehearsalDates = null,
-    Object? staggersId = null,
-    Object? adminsId = null,
-    Object? eventItemIds = null,
+    Object? date = freezed,
+    Object? rehearsalDates = freezed,
+    Object? staggersId = freezed,
+    Object? adminsId = freezed,
+    Object? eventItemIds = freezed,
     Object? location = null,
     Object? imageUrl = freezed,
   }) {
@@ -86,26 +86,26 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      date: null == date
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      rehearsalDates: null == rehearsalDates
+              as DateTime?,
+      rehearsalDates: freezed == rehearsalDates
           ? _value.rehearsalDates
           : rehearsalDates // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      staggersId: null == staggersId
+              as List<DateTime>?,
+      staggersId: freezed == staggersId
           ? _value.staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      adminsId: null == adminsId
+              as List<String>?,
+      adminsId: freezed == adminsId
           ? _value.adminsId
           : adminsId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      eventItemIds: null == eventItemIds
+              as List<String>?,
+      eventItemIds: freezed == eventItemIds
           ? _value.eventItemIds
           : eventItemIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -128,11 +128,11 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      DateTime date,
-      List<DateTime> rehearsalDates,
-      List<String> staggersId,
-      List<String> adminsId,
-      List<String> eventItemIds,
+      DateTime? date,
+      List<DateTime>? rehearsalDates,
+      List<String>? staggersId,
+      List<String>? adminsId,
+      List<String>? eventItemIds,
       String location,
       String? imageUrl});
 }
@@ -150,11 +150,11 @@ class __$$EventImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? date = null,
-    Object? rehearsalDates = null,
-    Object? staggersId = null,
-    Object? adminsId = null,
-    Object? eventItemIds = null,
+    Object? date = freezed,
+    Object? rehearsalDates = freezed,
+    Object? staggersId = freezed,
+    Object? adminsId = freezed,
+    Object? eventItemIds = freezed,
     Object? location = null,
     Object? imageUrl = freezed,
   }) {
@@ -167,26 +167,26 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      date: null == date
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      rehearsalDates: null == rehearsalDates
+              as DateTime?,
+      rehearsalDates: freezed == rehearsalDates
           ? _value._rehearsalDates
           : rehearsalDates // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      staggersId: null == staggersId
+              as List<DateTime>?,
+      staggersId: freezed == staggersId
           ? _value._staggersId
           : staggersId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      adminsId: null == adminsId
+              as List<String>?,
+      adminsId: freezed == adminsId
           ? _value._adminsId
           : adminsId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      eventItemIds: null == eventItemIds
+              as List<String>?,
+      eventItemIds: freezed == eventItemIds
           ? _value._eventItemIds
           : eventItemIds // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<String>?,
       location: null == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -206,10 +206,10 @@ class _$EventImpl implements _Event {
       {required this.id,
       required this.name,
       required this.date,
-      required final List<DateTime> rehearsalDates,
-      required final List<String> staggersId,
-      required final List<String> adminsId,
-      required final List<String> eventItemIds,
+      required final List<DateTime>? rehearsalDates,
+      required final List<String>? staggersId,
+      required final List<String>? adminsId,
+      required final List<String>? eventItemIds,
       required this.location,
       this.imageUrl})
       : _rehearsalDates = rehearsalDates,
@@ -225,37 +225,45 @@ class _$EventImpl implements _Event {
   @override
   final String name;
   @override
-  final DateTime date;
-  final List<DateTime> _rehearsalDates;
+  final DateTime? date;
+  final List<DateTime>? _rehearsalDates;
   @override
-  List<DateTime> get rehearsalDates {
+  List<DateTime>? get rehearsalDates {
+    final value = _rehearsalDates;
+    if (value == null) return null;
     if (_rehearsalDates is EqualUnmodifiableListView) return _rehearsalDates;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_rehearsalDates);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<String> _staggersId;
+  final List<String>? _staggersId;
   @override
-  List<String> get staggersId {
+  List<String>? get staggersId {
+    final value = _staggersId;
+    if (value == null) return null;
     if (_staggersId is EqualUnmodifiableListView) return _staggersId;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_staggersId);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<String> _adminsId;
+  final List<String>? _adminsId;
   @override
-  List<String> get adminsId {
+  List<String>? get adminsId {
+    final value = _adminsId;
+    if (value == null) return null;
     if (_adminsId is EqualUnmodifiableListView) return _adminsId;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_adminsId);
+    return EqualUnmodifiableListView(value);
   }
 
-  final List<String> _eventItemIds;
+  final List<String>? _eventItemIds;
   @override
-  List<String> get eventItemIds {
+  List<String>? get eventItemIds {
+    final value = _eventItemIds;
+    if (value == null) return null;
     if (_eventItemIds is EqualUnmodifiableListView) return _eventItemIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_eventItemIds);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -321,11 +329,11 @@ abstract class _Event implements EventModel {
   const factory _Event(
       {required final String id,
       required final String name,
-      required final DateTime date,
-      required final List<DateTime> rehearsalDates,
-      required final List<String> staggersId,
-      required final List<String> adminsId,
-      required final List<String> eventItemIds,
+      required final DateTime? date,
+      required final List<DateTime>? rehearsalDates,
+      required final List<String>? staggersId,
+      required final List<String>? adminsId,
+      required final List<String>? eventItemIds,
       required final String location,
       final String? imageUrl}) = _$EventImpl;
 
@@ -336,15 +344,15 @@ abstract class _Event implements EventModel {
   @override
   String get name;
   @override
-  DateTime get date;
+  DateTime? get date;
   @override
-  List<DateTime> get rehearsalDates;
+  List<DateTime>? get rehearsalDates;
   @override
-  List<String> get staggersId;
+  List<String>? get staggersId;
   @override
-  List<String> get adminsId;
+  List<String>? get adminsId;
   @override
-  List<String> get eventItemIds;
+  List<String>? get eventItemIds;
   @override
   String get location;
   @override
