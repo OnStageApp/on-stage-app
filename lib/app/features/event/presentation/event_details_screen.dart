@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
@@ -39,16 +40,17 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   Widget build(BuildContext context) {
     final isLoading = ref.watch(eventNotifierProvider).event == null;
 
-  //  _event = ref.watch(eventNotifierProvider).event;
+    _event = ref.watch(eventNotifierProvider).event;
     return  Scaffold(
       appBar: AppBar(
+        backgroundColor: context.colorScheme.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('goool'),
+        title: Text(_event?.name ?? ''),
       ),
        body: isLoading ? _buildLoadingIndicator() :_buildContent(context),
     );
@@ -56,7 +58,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
 
   Widget _buildContent(BuildContext context) {
     _playlist = ref.watch(eventNotifierProvider).playlist;
-
+    final formattedDate = DateFormat('EEEE, dd MMMM').format(_event!.date);
 
     return Padding(
       padding: defaultScreenPadding,
@@ -64,7 +66,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         children: [
           const SizedBox(height: Insets.medium),
           Text(
-            'Data evenimentului',
+            formattedDate,
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: Insets.medium),
