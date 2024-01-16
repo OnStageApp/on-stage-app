@@ -45,3 +45,5 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/images/profile1.png
+    - assets/images/profile2.png

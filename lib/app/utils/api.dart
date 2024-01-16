@@ -40,7 +40,11 @@ class API {
     );
   }
 
+  static Uri getEvent(String eventId) {
+    return Uri.https(apiUrl, 'events/$eventId');
+  }
+
   static Uri get createEvent {
-    return Uri.https(apiUrl, 'events');
+    return Uri.https(apiUrl, 'event');
   }
 }

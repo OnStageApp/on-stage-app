@@ -142,9 +142,18 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
         return Column(
           children: [
-            EventTile(
-              title: event.name,
-              description: formattedDate,
+            GestureDetector(
+              onTap: () {
+                // Navigator.pushNamed(context, AppRoute.eventDetails.name);
+                context.pushNamed(
+                  AppRoute.eventDetails.name,
+                  queryParameters: {'eventId': event.id},
+                );
+              },
+              child: EventTile(
+                title: event.name,
+                description: formattedDate,
+              ),
             ),
             const SizedBox(height: Insets.smallNormal),
           ],

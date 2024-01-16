@@ -22,9 +22,31 @@ class EventNotifier extends _$EventNotifier {
       return;
     }
     logger.i('init event provider state');
+    await getPlaylist();
     await getPastEvents();
     await getThisWeekEvents();
     await getUpcomingEvents();
+  }
+
+  Future<void> getEventById(String eventId) async{
+   // ref.read(loadingProvider.notifier).state = true;
+    final event = await ref
+    .read(eventRepositoryProvider.notifier)
+    .getEventById(eventId);
+
+    state = state.copyWith(event: event);
+    //ref.read(loadingProvider.notifier).state = false;
+  }
+
+  Future<void> getPlaylist() async {
+    if (state.playlist.isNotEmpty) {
+      state = state.copyWith(playlist: state.playlist);
+      return;
+    }
+    ref.read(loadingProvider.notifier).state = true;
+    final playlist = await ref.read(eventRepositoryProvider.notifier).fetchPlaylist();
+    state = state.copyWith(playlist: playlist);
+    ref.read(loadingProvider.notifier).state = false;
   }
 
   Future<void> searchEvents(String? search) async {
