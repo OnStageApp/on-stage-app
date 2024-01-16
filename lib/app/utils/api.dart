@@ -1,7 +1,7 @@
 class API {
-  static const String _API_URL_DEV = '0525-82-76-100-87.ngrok-free.app';
-  static const String _API_URL_PROD = '26ec-82-76-100-87.ngrok-free.app';
-  static const String _API_URL_STAGE = '26ec-82-76-100-87.ngrok-free.app';
+  static const String _API_URL_DEV = 'onstage-event-service.onrender.com';
+  static const String _API_URL_PROD = 'onstage-event-service.onrender.com';
+  static const String _API_URL_STAGE = 'onstage-event-service.onrender.com';
 
   static const String _FLAVOR_DEV = 'development';
   static const String _FLAVOR_PROD = 'production';
