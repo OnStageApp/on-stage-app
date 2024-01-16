@@ -76,9 +76,9 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       date: date,
       rehearsalDates: [rehearsalDate],
       location: locationController.text,
-      staggersId: [],
-      adminsId: [],
-      eventItemIds: [],
+      // staggersId: [],
+      // adminsId: [],
+      eventItems: [],
     );
 
     ref.read(eventNotifierProvider.notifier).addEvent(event);
