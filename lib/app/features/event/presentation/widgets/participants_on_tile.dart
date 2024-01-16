@@ -5,12 +5,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ParticipantsOnTile extends StatelessWidget {
   const ParticipantsOnTile({
     required this.participantsProfile,
+    this.width = 48,
     super.key,
   });
 
   static const _participantsMax = 3;
 
   final List<String> participantsProfile;
+  final double width;
 
   bool get _isMoreThanMax => participantsProfile.length > _participantsMax;
 
@@ -34,41 +36,17 @@ class ParticipantsOnTile extends StatelessWidget {
               return Positioned(
                 left: (participantsProfile.indexOf(e)) * Insets.normal,
                 child: Container(
-                  width: 48,
-                  height: 48,
-                  padding: const EdgeInsets.all(1),
+                  width: width,
+                  height: width,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.colorScheme.shadow.withOpacity(0.05),
-                        blurRadius: 4,
-                      ),
-                    ],
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF6F97D4),
-                        Color(0xFFD9C8EB),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    color: context.colorScheme.primary,
                   ),
                   child: Container(
-                    width: 42,
-                    height: 42,
+                    width: width - 6,
+                    height: width - 6,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.primary,
-                      gradient: index == _participantsMax
-                          ? const LinearGradient(
-                              colors: [
-                                Color(0xFF6F97D4),
-                                Color(0xFFD9C8EB),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            )
-                          : null,
+                      color: context.colorScheme.primaryContainer,
                       shape: BoxShape.circle,
                       image: index < _participantsMax
                           ? DecorationImage(
