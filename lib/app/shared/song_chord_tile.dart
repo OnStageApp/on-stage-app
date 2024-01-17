@@ -7,9 +7,6 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class SongChordTile extends StatefulWidget {
   const SongChordTile({
     required this.song,
-    // required this.title,
-    // required this.description,
-    // required this.chord,
     super.key,
   });
 
@@ -20,7 +17,7 @@ class SongChordTile extends StatefulWidget {
 }
 
 class _SongChordTileState extends State<SongChordTile> {
-  // final String title;
+
   @override
   Widget build(BuildContext context) {
     return StageTile(

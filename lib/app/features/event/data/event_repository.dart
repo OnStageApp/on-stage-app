@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/shared/participant_profile.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,6 +25,14 @@ class EventRepository extends _$EventRepository {
           () => SongDummy.playlist,
     );
     return playlist;
+  }
+
+  Future<List<ParticipantProfile>> fetchParticipants() async {
+    final participants = await Future.delayed(
+      const Duration(seconds: 1),
+          () => ParticipantsDummy.participants,
+    );
+    return participants;
   }
 
   Future<List<EventOverview>> getEvents({
@@ -62,7 +72,7 @@ class EventRepository extends _$EventRepository {
 
   Future<EventModel?> getEventById(String eventId) async {
     try {
-      final uri = API.getEvent(eventId); // Replace with your API endpoint for fetching a single event by ID
+      final uri = API.getEvent(eventId);
       final response = await http.get(uri);
       logger.fetchedRequestResponse(
         'event',

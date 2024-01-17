@@ -12,17 +12,17 @@ class ParticipantProfile extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 48, // You can adjust the width as needed
-          height: 48, // This sets the circular avatar height
+          width: 48,
+          height: 48,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: AssetImage(profilePicture), // Use AssetImage for local assets
+              image: AssetImage(profilePicture),
             ),
           ),
         ),
-        SizedBox(height: 8), // Adjust the spacing between the circle and text
+        const SizedBox(height: 8),
         Text(
           fullName,
           style: context.textTheme.bodySmall,

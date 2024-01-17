@@ -29,13 +29,13 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> getEventById(String eventId) async{
-   // ref.read(loadingProvider.notifier).state = true;
+    ref.read(loadingProvider.notifier).state = true;
     final event = await ref
     .read(eventRepositoryProvider.notifier)
     .getEventById(eventId);
 
     state = state.copyWith(event: event);
-    //ref.read(loadingProvider.notifier).state = false;
+
   }
 
   Future<void> getPlaylist() async {
@@ -46,6 +46,17 @@ class EventNotifier extends _$EventNotifier {
     ref.read(loadingProvider.notifier).state = true;
     final playlist = await ref.read(eventRepositoryProvider.notifier).fetchPlaylist();
     state = state.copyWith(playlist: playlist);
+    ref.read(loadingProvider.notifier).state = false;
+  }
+
+  Future<void> getParticipants() async {
+    if(state.participants.isNotEmpty){
+      state = state.copyWith(participants: state.participants);
+      return;
+    }
+    ref.read(loadingProvider.notifier).state = true;
+    final participants = await ref.read(eventRepositoryProvider.notifier).fetchParticipants();
+    state = state.copyWith(participants: participants);
     ref.read(loadingProvider.notifier).state = false;
   }
 

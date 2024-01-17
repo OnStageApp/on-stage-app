@@ -144,7 +144,6 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                // Navigator.pushNamed(context, AppRoute.eventDetails.name);
                 context.pushNamed(
                   AppRoute.eventDetails.name,
                   queryParameters: {'eventId': event.id},

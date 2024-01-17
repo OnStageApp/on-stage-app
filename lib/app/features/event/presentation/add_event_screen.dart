@@ -76,8 +76,6 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       date: date,
       rehearsalDates: [rehearsalDate],
       location: locationController.text,
-      // staggersId: [],
-      // adminsId: [],
       eventItems: [],
     );
 

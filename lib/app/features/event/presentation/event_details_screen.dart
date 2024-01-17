@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
@@ -27,6 +28,7 @@ class EventDetailsScreen extends ConsumerStatefulWidget {
 
 class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   List<SongModel> _playlist = List.empty(growable: true);
+  List<ParticipantProfile> _participants = List.empty(growable: true);
   EventModel? _event;
 
 
@@ -39,73 +41,72 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(eventNotifierProvider).event == null;
-
     _event = ref.watch(eventNotifierProvider).event;
+    _playlist = ref.watch(eventNotifierProvider).playlist;
+    _participants = ref.watch(eventNotifierProvider).participants;
+
+    final formattedDate = _event != null ? DateFormat('EEEE, dd MMMM').format(_event!.date) : '';
     return  Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorScheme.background,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
           },
         ),
         title: Text(_event?.name ?? ''),
       ),
-       body: isLoading ? _buildLoadingIndicator() :_buildContent(context),
+       body: isLoading
+           ? _buildLoadingIndicator()
+           : Padding(
+         padding: defaultScreenPadding,
+         child: ListView(
+           children: [
+             const SizedBox(height: Insets.medium),
+             Text(
+               formattedDate,
+               style: context.textTheme.bodyMedium,
+             ),
+             const SizedBox(height: Insets.medium),
+             SingleChildScrollView(
+               scrollDirection: Axis.horizontal,
+               child: Row(
+                 children: [
+                   ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile2.png', fullName: 'Vasile'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile4.png', fullName: 'John Mayer'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile2.png', fullName: 'Vasile'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile4.png', fullName: 'John Mayer'),
+                   SizedBox(width: 8),
+                   ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
+                 ],
+               ),
+             ),
+             const SizedBox(height: Insets.medium),
+             Text(
+               'Playlist',
+               style: context.textTheme.titleMedium,
+             ),
+             const SizedBox(height: Insets.normal),
+             if (ref.watch(loadingProvider.notifier).state)
+               _buildLoadingIndicator()
+             else
+               _buildPlaylist(),
+           ],
+         ),
+       ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    _playlist = ref.watch(eventNotifierProvider).playlist;
-    final formattedDate = DateFormat('EEEE, dd MMMM').format(_event!.date);
 
-    return Padding(
-      padding: defaultScreenPadding,
-      child: ListView(
-        children: [
-          const SizedBox(height: Insets.medium),
-          Text(
-            formattedDate,
-            style: context.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: Insets.medium),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Horizontal scrolling
-            child: Row(
-              children: [
-                ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile2.png', fullName: 'Vasile'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile4.png', fullName: 'John Mayer'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile2.png', fullName: 'Vasile'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile4.png', fullName: 'John Mayer'),
-                SizedBox(width: 8),
-                ParticipantProfile(profilePicture: 'assets/images/profile1.png', fullName: 'Alexandru'),
-              ],
-            ),
-          ),
-          const SizedBox(height: Insets.medium),
-          Text(
-            'Playlist',
-            style: context.textTheme.titleMedium,
-          ),
-          const SizedBox(height: Insets.normal),
-          if (ref.watch(loadingProvider.notifier).state)
-            _buildLoadingIndicator()
-          else
-            _buildPlaylist(),
-        ],
-      ),
-    );
-  }
-
-  ListView _buildPlaylist() {
+  Widget _buildPlaylist() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -113,17 +114,17 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
       itemBuilder: (context, index) {
         final song = _playlist[index];
 
-        return Column(
-          children: [
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: 
             SongChordTile(song: song),
-            const SizedBox(height: Insets.smallNormal),
-          ],
         );
+        
       },
     );
   }
 
-  Center _buildLoadingIndicator() {
+  Widget _buildLoadingIndicator() {
     return const Center(
       child: SizedBox(
         width: 50,
@@ -141,19 +142,21 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return const Column(
+          final participant = _participants[index];
+          return Column(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(""),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Container(child: participant),
               ),
             ],
           );
         },
-        itemCount: 5,
         shrinkWrap: true,
       ),
     );
   }
+
+
 
 }
