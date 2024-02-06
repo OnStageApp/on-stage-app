@@ -6,8 +6,8 @@ import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/shared/participant_profile.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,17 +22,25 @@ class EventRepository extends _$EventRepository {
   Future<List<SongModel>> fetchPlaylist() async {
     final playlist = await Future.delayed(
       const Duration(seconds: 1),
-          () => SongDummy.playlist,
+      () => SongDummy.playlist,
     );
     return playlist;
   }
 
-  Future<List<ParticipantProfile>> fetchParticipants() async {
-    final participants = await Future.delayed(
+  // Future<List<ParticipantProfile>> fetchParticipants() async {
+  //   final participants = await Future.delayed(
+  //     const Duration(seconds: 1),
+  //         () => ParticipantsDummy.participants,
+  //   );
+  //   return participants;
+  // }
+
+  Future<List<StagerOverview>> getStagers() async {
+    final stagers = await Future.delayed(
       const Duration(seconds: 1),
-          () => ParticipantsDummy.participants,
+      () => StagersDummy.stagers,
     );
-    return participants;
+    return stagers;
   }
 
   Future<List<EventOverview>> getEvents({
@@ -96,7 +104,6 @@ class EventRepository extends _$EventRepository {
     }
     return null;
   }
-
 
   Future<String?> createEvent(EventModel newEvent) async {
     var eventMap = newEvent.toJson();

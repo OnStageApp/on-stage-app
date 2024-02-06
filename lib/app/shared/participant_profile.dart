@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ParticipantProfile extends StatelessWidget {
+  const ParticipantProfile({
+    required this.profilePicture,
+    required this.fullName,
+    super.key,
+  });
+
   final String profilePicture;
   final String fullName;
-
-  ParticipantProfile({required this.profilePicture, required this.fullName});
 
   @override
   Widget build(BuildContext context) {

@@ -23,9 +23,7 @@ mixin _$EventModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   DateTime get date => throw _privateConstructorUsedError;
-  List<DateTime>? get rehearsalDates =>
-      throw _privateConstructorUsedError; // required List<String> staggersId,
-// required List<String> adminsId,
+  List<DateTime>? get rehearsalDates => throw _privateConstructorUsedError;
   List<EventItem>? get eventItems => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
 
@@ -194,11 +192,7 @@ class _$EventImpl implements _Event {
     return EqualUnmodifiableListView(value);
   }
 
-// required List<String> staggersId,
-// required List<String> adminsId,
   final List<EventItem>? _eventItems;
-// required List<String> staggersId,
-// required List<String> adminsId,
   @override
   List<EventItem>? get eventItems {
     final value = _eventItems;
@@ -276,8 +270,7 @@ abstract class _Event implements EventModel {
   DateTime get date;
   @override
   List<DateTime>? get rehearsalDates;
-  @override // required List<String> staggersId,
-// required List<String> adminsId,
+  @override
   List<EventItem>? get eventItems;
   @override
   String get location;
