@@ -2,8 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,6 +18,30 @@ part 'event_repository.g.dart';
 class EventRepository extends _$EventRepository {
   @override
   FutureOr<dynamic> build() {}
+
+  Future<List<SongModel>> fetchPlaylist() async {
+    final playlist = await Future.delayed(
+      const Duration(seconds: 1),
+      () => SongDummy.playlist,
+    );
+    return playlist;
+  }
+
+  // Future<List<ParticipantProfile>> fetchParticipants() async {
+  //   final participants = await Future.delayed(
+  //     const Duration(seconds: 1),
+  //         () => ParticipantsDummy.participants,
+  //   );
+  //   return participants;
+  // }
+
+  Future<List<StagerOverview>> getStagers() async {
+    final stagers = await Future.delayed(
+      const Duration(seconds: 1),
+      () => StagersDummy.stagers,
+    );
+    return stagers;
+  }
 
   Future<List<EventOverview>> getEvents({
     String? search,
@@ -48,6 +76,33 @@ class EventRepository extends _$EventRepository {
       logger.e('Failed fetching events: $e with stacktrace: $s');
     }
     return [];
+  }
+
+  Future<EventModel?> getEventById(String eventId) async {
+    try {
+      final uri = API.getEvent(eventId);
+      final response = await http.get(uri);
+      logger.fetchedRequestResponse(
+        'event',
+        response.statusCode,
+        response.body,
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          final eventJson = jsonDecode(response.body) as Map<String, dynamic>;
+          final event = EventModel.fromJson(eventJson);
+          return event;
+        case 404:
+          logger.e('Event not found.');
+          return null;
+        default:
+          logger.e('Internal server error, please try again later.');
+      }
+    } on IOException catch (e, s) {
+      logger.e('Failed fetching event: $e with stacktrace: $s');
+    }
+    return null;
   }
 
   Future<String?> createEvent(EventModel newEvent) async {

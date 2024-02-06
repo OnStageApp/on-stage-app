@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class TimeUtils {
   DateTime getEndOfTheWeekDateTime() {
     final now = DateTime.now().subtract(Duration(hours: DateTime.now().hour));
@@ -19,5 +21,9 @@ class TimeUtils {
     final endOfTheWeek = getEndOfTheWeekDateTime();
     final startOfTheNextWeek = endOfTheWeek.add(const Duration(days: 1));
     return startOfTheNextWeek;
+  }
+
+  String formatDate(DateTime? datetime) {
+    return datetime != null ? DateFormat('EEEE, dd MMMM').format(datetime) : '';
   }
 }

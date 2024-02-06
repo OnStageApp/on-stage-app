@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_indicator/loading_indicator.dart';
-import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
-import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
+import 'package:on_stage_app/app/shared/loading_widget.dart'; // Assuming this is a custom loading widget
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -21,35 +21,32 @@ class EventsScreen extends ConsumerStatefulWidget {
 
 class EventsScreenState extends ConsumerState<EventsScreen> {
   final FocusNode _focusNode = FocusNode();
-  List<EventOverview> _events = List.empty(growable: true);
-  List<EventOverview> _pastEvents = List.empty(growable: true);
-  List<EventOverview> _thisWeekEvents = List.empty(growable: true);
-  List<EventOverview> _upcomingEvents = List.empty(growable: true);
-  bool isSearching = false;
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    // Instead of using WidgetsBinding.instance.addPostFrameCallback, consider fetching initial data here directly or in didChangeDependencies if dependent on context.
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _events = ref.watch(eventNotifierProvider).filteredEvents;
-    _pastEvents = ref.watch(eventNotifierProvider).pastEvents;
-    _thisWeekEvents = ref.watch(eventNotifierProvider).thisWeekEvents;
-    _upcomingEvents = ref.watch(eventNotifierProvider).upcomingEvents;
-    final isLoading = ref.watch(loadingProvider.notifier).state;
+    final eventsState = ref.watch(eventsNotifierProvider);
 
-    return isLoading
-        ? _buildLoadingIndicator()
+    return eventsState.isLoading
+        ? const OnStageLoadingIndicator()
         : Scaffold(
             appBar: StageAppBar(
               title: 'Events',
               trailing: IconButton(
-                onPressed: () {
-                  context.pushNamed(AppRoute.addEvent.name);
-                },
+                onPressed: () => context.pushNamed(AppRoute.addEvent.name),
                 icon: const Icon(Icons.add),
               ),
             ),
@@ -58,109 +55,68 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               child: ListView(
                 children: [
                   const SizedBox(height: Insets.small),
-                  Hero(
-                    tag: 'searchBar',
-                    child: StageSearchBar(
-                      focusNode: _focusNode,
-                      controller: searchController,
-                      onClosed: () {
-                        context.canPop() ? context.pop() : null;
-                        searchController.clear();
-                      },
-                      onChanged: (value) {
-                        if (value.isEmpty) {
-                          _focusNode.unfocus();
-                        }
-                        Future.delayed(const Duration(seconds: 2), () {
-                          ref
-                              .read(eventNotifierProvider.notifier)
-                              .searchEvents(value);
-                        });
-                      },
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_thisWeekEvents.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: Insets.medium),
-                            Text(
-                              'This week',
-                              style: context.textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: Insets.medium),
-                            _buildEvents(_thisWeekEvents),
-                          ],
-                        ),
-                      if (_upcomingEvents.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: Insets.medium),
-                            Text(
-                              'Upcoming',
-                              style: context.textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: Insets.medium),
-                            _buildEvents(_upcomingEvents),
-                          ],
-                        ),
-                      if (_pastEvents.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: Insets.medium),
-                            Text(
-                              'Past Events',
-                              style: context.textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: Insets.medium),
-                            _buildEvents(_pastEvents),
-                          ],
-                        ),
-                    ],
-                  ),
+                  _buildSearchBar(),
+                  _buildEventSections(eventsState),
                 ],
               ),
             ),
           );
   }
 
-  ListView _buildEvents(List<EventOverview> myEvents) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: myEvents.length,
-      itemBuilder: (context, index) {
-        final event = myEvents[index];
-
-        final formattedDate =
-            DateFormat('EEEE, dd MMM').format(DateTime.parse(event.date));
-
-        return Column(
-          children: [
-            EventTile(
-              title: event.name,
-              description: formattedDate,
-            ),
-            const SizedBox(height: Insets.smallNormal),
-          ],
-        );
-      },
+  Widget _buildSearchBar() {
+    return Hero(
+      tag: 'searchBar',
+      child: StageSearchBar(
+        focusNode: _focusNode,
+        controller: searchController,
+        onClosed: () {
+          if (context.canPop()) context.pop();
+          searchController.clear();
+        },
+        onChanged: (value) =>
+            ref.read(eventsNotifierProvider.notifier).searchEvents(value),
+      ),
     );
   }
 
-  Center _buildLoadingIndicator() {
-    return const Center(
-      child: SizedBox(
-        width: 50,
-        height: 50,
-        child: LoadingIndicator(
-          indicatorType: Indicator.ballClipRotateMultiple,
+  Widget _buildEventSections(EventsState eventsState) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (eventsState.thisWeekEvents.isNotEmpty)
+          _buildEventsSection('This week', eventsState.thisWeekEvents),
+        if (eventsState.upcomingEvents.isNotEmpty)
+          _buildEventsSection('Upcoming', eventsState.upcomingEvents),
+        if (eventsState.pastEvents.isNotEmpty)
+          _buildEventsSection('Past Events', eventsState.pastEvents),
+      ],
+    );
+  }
+
+  Widget _buildEventsSection(String title, List<EventOverview> events) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Insets.medium),
+          child: Text(title, style: context.textTheme.titleMedium),
         ),
+        ...events.map(_buildEventTile),
+      ],
+    );
+  }
+
+  Widget _buildEventTile(EventOverview event) {
+    final formattedDate =
+        DateFormat('EEEE, dd MMM').format(DateTime.parse(event.date));
+    return Container(
+      margin: const EdgeInsets.only(bottom: Insets.smallNormal),
+      child: GestureDetector(
+        onTap: () => context.pushNamed(
+          AppRoute.eventDetails.name,
+          queryParameters: {'eventId': event.id},
+        ),
+        child: EventTile(title: event.name, description: formattedDate),
       ),
     );
   }

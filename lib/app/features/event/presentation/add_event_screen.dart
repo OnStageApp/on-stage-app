@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -76,9 +76,7 @@ class AddEventScreenState extends ConsumerState<AddEventScreen> {
       date: date,
       rehearsalDates: [rehearsalDate],
       location: locationController.text,
-      staggersId: [],
-      adminsId: [],
-      eventItemIds: [],
+      eventItems: [],
     );
 
     ref.read(eventNotifierProvider.notifier).addEvent(event);
