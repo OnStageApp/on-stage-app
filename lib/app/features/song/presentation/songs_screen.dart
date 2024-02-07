@@ -5,9 +5,9 @@ import 'package:on_stage_app/app/features/song/application/song_provider.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/event_tile.dart';
+import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
-import 'package:on_stage_app/app/shared/song_author_tile.dart';
+import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -56,13 +56,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
     );
   }
 
-  Padding _buildContent(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: ListView(
-        children: [
-          const SizedBox(height: Insets.medium),
-          Hero(
+  Widget _buildContent(BuildContext context) {
+    return ListView(
+      children: [
+        const SizedBox(height: Insets.medium),
+        Padding(
+          padding: defaultScreenHorizontalPadding,
+          child: Hero(
             tag: 'searchBar',
             child: StageSearchBar(
               focusNode: _focusNode,
@@ -81,34 +81,51 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               },
             ),
           ),
-          if (!isSearching) ...[
-            const SizedBox(height: Insets.medium),
-            Text(
-              'Upcoming',
-              style: context.textTheme.titleMedium,
-            ),
-            const SizedBox(height: Insets.medium),
-            const EventTile(
-              title: 'Friday Night',
-              description: 'Monday, 14 Feb',
-            ),
-          ],
+        ),
+        if (!isSearching) ...[
           const SizedBox(height: Insets.medium),
-          Text(
-            'Songs (${_songs.length})',
-            style: context.textTheme.titleMedium,
+          Padding(
+            padding: defaultScreenHorizontalPadding,
+            child: Text(
+              'Upcoming Events',
+              style: context.textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-          const SizedBox(height: Insets.normal),
-          if (ref.watch(loadingProvider.notifier).state)
-            _buildLoadingIndicator()
-          else
-            _buildSongs(),
+          const SizedBox(height: Insets.medium),
+          Container(
+            padding: EdgeInsets.zero,
+            child: _buildUpcomingEvents(),
+          ),
         ],
-      ),
+        const SizedBox(height: Insets.large),
+        Padding(
+          padding: defaultScreenHorizontalPadding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isSearching)
+                Text(
+                  'Recently added',
+                  style: context.textTheme.headlineMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              const SizedBox(height: Insets.medium),
+              if (ref.watch(loadingProvider.notifier).state)
+                _buildLoadingIndicator()
+              else
+                _buildSongs(),
+            ],
+          ),
+        )
+      ],
     );
   }
 
-  ListView _buildSongs() {
+  Widget _buildSongs() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -118,11 +135,43 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
         return Column(
           children: [
-            SongAndAuthorTile(song: song),
-            const SizedBox(height: Insets.smallNormal),
+            SongTile(song: song),
+            const SizedBox(height: Insets.small),
+            Divider(
+              color: context.colorScheme.outlineVariant,
+              thickness: 1,
+            ),
+            const SizedBox(height: Insets.small),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildUpcomingEvents() {
+    return SizedBox(
+      height: 180,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: const [
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: EventTileEnhanced(
+              title: 'Duminică seara',
+              hour: '18:00',
+              location: 'Sala El-Shaddai',
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: EventTileEnhanced(
+              title: 'Duminică seara',
+              hour: '18:00',
+              location: 'Sala El-Shaddai',
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -35,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
+        backgroundColor: context.colorScheme.background,
         selectedLabelStyle: context.textTheme.labelMedium,
         unselectedLabelStyle: context.textTheme.labelMedium,
         selectedItemColor: context.colorScheme.primary,

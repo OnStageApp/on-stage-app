@@ -65,7 +65,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
       overlayColor:
           MaterialStateColor.resolveWith((states) => Colors.transparent),
       backgroundColor: MaterialStateColor.resolveWith(
-        (states) => context.colorScheme.surfaceVariant,
+        (states) => context.colorScheme.onBackground,
       ),
       leading: Padding(
         padding: const EdgeInsets.all(8),
