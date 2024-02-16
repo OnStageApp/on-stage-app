@@ -7,17 +7,11 @@ import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 class EventsState extends Equatable {
   const EventsState({
     this.events = const [],
-    this.pastEvents = const [],
-    this.upcomingEvents = const [],
-    this.thisWeekEvents = const [],
     this.filteredEvents = const [],
     this.isLoading = false,
   });
 
   final List<EventOverview> events;
-  final List<EventOverview> pastEvents;
-  final List<EventOverview> upcomingEvents;
-  final List<EventOverview> thisWeekEvents;
   final List<EventOverview> filteredEvents;
   final bool isLoading;
 
@@ -37,9 +31,6 @@ class EventsState extends Equatable {
   }) {
     return EventsState(
       events: events ?? this.events,
-      pastEvents: pastEvents ?? this.pastEvents,
-      upcomingEvents: upcomingEvents ?? this.upcomingEvents,
-      thisWeekEvents: thisWeekEvents ?? this.thisWeekEvents,
       filteredEvents: filteredEvents ?? this.filteredEvents,
       isLoading: isLoading ?? this.isLoading,
     );

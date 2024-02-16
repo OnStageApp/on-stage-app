@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class StageTile extends StatelessWidget {
   const StageTile({
@@ -29,9 +30,14 @@ class StageTile extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                   maxLines: 1,
                 ),
-                Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                Row(
+                  children: [
+                    Text(
+                      description,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    _buildCircle(context),
+                  ],
                 ),
               ],
             ),
@@ -39,6 +45,17 @@ class StageTile extends StatelessWidget {
           trailing ?? const SizedBox(),
           const Divider(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCircle(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Icon(
+        Icons.circle,
+        size: 8,
+        color: context.colorScheme.outline,
       ),
     );
   }

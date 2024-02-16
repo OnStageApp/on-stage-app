@@ -1,5 +1,7 @@
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/data/event_repository.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,29 +16,31 @@ class EventsNotifier extends _$EventsNotifier {
   EventsState build() => const EventsState();
 
   Future<void> init() async {
-    if (state.events.isNotEmpty) {
+    if (state.events.isNotNullOrEmpty) {
       return;
+    } else {
+      await _init();
     }
-    await _init();
   }
 
   Future<void> _init() async {
-    logger.i('init event provider state');
+    logger.i('init events provider state starting...');
     try {
-      await Future.wait([
-        getPastEvents(),
-        getThisWeekEvents(),
-        getUpcomingEvents(),
-      ]);
+      await getEvents();
     } catch (error) {
       logger.e('Error loading events: $error');
     } finally {
+      logger.i('init events provider state completed');
       state = state.copyWith(isLoading: false);
     }
   }
 
   Future<void> searchEvents(String? search) async {
     state = state.copyWith(isLoading: true);
+    if (search.isNullEmptyOrWhitespace) {
+      state = state.copyWith(filteredEvents: state.events, isLoading: false);
+      return;
+    }
     final events = await ref
         .read(eventRepositoryProvider.notifier)
         .getEvents(search: search);
@@ -44,37 +48,9 @@ class EventsNotifier extends _$EventsNotifier {
     state = state.copyWith(filteredEvents: events, isLoading: false);
   }
 
-  Future<void> getPastEvents() async {
-    state = state.copyWith(isLoading: true);
-    final yesterday = timeUtils.getYesterdayDateTime();
+  Future<void> getEvents() async {
+    final events = await ref.read(eventRepositoryProvider.notifier).getEvents();
 
-    final pastEvents = await ref
-        .read(eventRepositoryProvider.notifier)
-        .getEvents(endDate: yesterday);
-
-    state = state.copyWith(pastEvents: pastEvents, isLoading: false);
-  }
-
-  Future<void> getThisWeekEvents() async {
-    state = state.copyWith(isLoading: true);
-
-    final thisWeekEvents =
-        await ref.read(eventRepositoryProvider.notifier).getEvents(
-              startDate: timeUtils.getNowDateTime(),
-              endDate: timeUtils.getEndOfTheWeekDateTime(),
-            );
-
-    state = state.copyWith(thisWeekEvents: thisWeekEvents, isLoading: false);
-  }
-
-  Future<void> getUpcomingEvents() async {
-    state = state.copyWith(isLoading: true);
-
-    final upcomingEvents =
-        await ref.read(eventRepositoryProvider.notifier).getEvents(
-              startDate: timeUtils.getStartOfTheNextWeekDateTime(),
-            );
-
-    state = state.copyWith(upcomingEvents: upcomingEvents, isLoading: false);
+    state = state.copyWith(events: events, filteredEvents: events);
   }
 }
