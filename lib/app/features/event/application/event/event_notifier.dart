@@ -1,7 +1,6 @@
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/event_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
-import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,8 +8,6 @@ part 'event_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class EventNotifier extends _$EventNotifier {
-  final TimeUtils timeUtils = TimeUtils();
-
   @override
   EventState build() {
     return const EventState();

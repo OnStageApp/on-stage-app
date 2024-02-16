@@ -22,7 +22,7 @@ class SongsScreen extends ConsumerStatefulWidget {
 class SongsScreenState extends ConsumerState<SongsScreen> {
   List<SongModel> _songs = List.empty(growable: true);
   final FocusNode _focusNode = FocusNode();
-  bool isSearching = false;
+  bool _isSearching = false;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -35,11 +35,11 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         setState(() {
-          isSearching = true;
+          _isSearching = true;
         });
       } else {
         setState(() {
-          isSearching = false;
+          _isSearching = false;
         });
       }
     });
@@ -68,29 +68,28 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               focusNode: _focusNode,
               controller: searchController,
               onClosed: () {
-                context.canPop() ? context.pop() : null;
+                if (context.canPop()) context.pop();
                 searchController.clear();
               },
               onChanged: (value) {
                 if (value.isEmpty) {
                   _focusNode.unfocus();
+                } else {
+                  ref.read(songNotifierProvider.notifier).searchSongs(
+                        searchedText: value,
+                      );
                 }
-                ref.read(songNotifierProvider.notifier).searchSongs(
-                      searchedText: value,
-                    );
               },
             ),
           ),
         ),
-        if (!isSearching) ...[
+        if (!_isSearching) ...[
           const SizedBox(height: Insets.medium),
           Padding(
             padding: defaultScreenHorizontalPadding,
             child: Text(
               'Upcoming Events',
-              style: context.textTheme.headlineMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: context.textTheme.headlineMedium,
             ),
           ),
           const SizedBox(height: Insets.medium),
@@ -103,15 +102,12 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         Padding(
           padding: defaultScreenHorizontalPadding,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!isSearching)
+              if (!_isSearching)
                 Text(
                   'Recently added',
-                  style: context.textTheme.headlineMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: context.textTheme.headlineMedium,
                 ),
               const SizedBox(height: Insets.medium),
               if (ref.watch(loadingProvider.notifier).state)
@@ -136,12 +132,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         return Column(
           children: [
             SongTile(song: song),
-            const SizedBox(height: Insets.small),
+            // const SizedBox(height: Insets.small),
             Divider(
               color: context.colorScheme.outlineVariant,
               thickness: 1,
+              height: Insets.medium,
             ),
-            const SizedBox(height: Insets.small),
+            // const SizedBox(height: Insets.small),
           ],
         );
       },
