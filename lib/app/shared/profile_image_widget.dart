@@ -37,18 +37,28 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
               : null,
           child: Container(
             decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: _imageFile != null ? CircleAvatar(
-              backgroundImage: FileImage(File(_imageFile!.path)),
-              radius: 32,
-            ) : const CircleAvatar(
-              radius: 32,
-              backgroundColor: Colors.grey,
-              child: Icon(
-               Icons.person,
-               color: Colors.white,
-               size: 64,
-             ),
-            ),
+            child: _imageFile != null
+                ? Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: FileImage(
+                          File(_imageFile!.path),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 52,
+                    ),
+                  ),
           ),
         ),
       ],
@@ -57,7 +67,7 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
 
   Future<void> showCustomBottomSheet(BuildContext context) async {
     await showModalBottomSheet(
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.primary,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const CloseHeader(
