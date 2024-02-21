@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
+import 'package:on_stage_app/app/features/home/presentation/widgets/friends_enhanced_tile.dart';
+import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song_provider.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/profile_image_inbox_widget.dart';
+import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -22,7 +25,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(initializeNotifiers);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initializeNotifiers();
+    });
   }
 
   void initializeNotifiers() {
@@ -37,11 +43,51 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       body: SafeArea(
         child: ListView(
           children: [
+            const SizedBox(height: Insets.large),
             _buildHeader(),
             const SizedBox(height: Insets.large),
             _buildSearchBar(),
+            const SizedBox(height: Insets.large),
+            _buildEnhanced(),
+            const SizedBox(height: Insets.extraLarge),
+            Padding(
+              padding: defaultScreenHorizontalPadding,
+              child: Text(
+                'Upcoming events',
+                style: context.textTheme.headlineMedium,
+              ),
+            ),
+            const SizedBox(height: Insets.large),
+            _buildRecentlyAdded(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRecentlyAdded() {
+    final songs = ref.watch(songNotifierProvider).songs;
+    return Padding(
+      padding: defaultScreenHorizontalPadding,
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: songs.length,
+        itemBuilder: (context, index) {
+          final song = songs[index];
+          return Column(
+            children: [
+              SongTile(
+                song: song,
+              ),
+              Divider(
+                color: context.colorScheme.outlineVariant,
+                thickness: 1,
+                height: Insets.medium,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -51,9 +97,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       padding: defaultScreenHorizontalPadding,
       child: Row(
         children: [
+          const ProfileImageInboxWidget(),
+          const SizedBox(width: Insets.medium),
           _buildWelcomeText(),
           const Expanded(child: SizedBox()),
-          const ProfileImageInboxWidget(),
+          IconButton(
+            onPressed: () => {},
+            icon: Icon(
+              Icons.notifications_none_outlined,
+              color: context.colorScheme.onSurfaceVariant,
+              size: 36,
+            ),
+          ),
         ],
       ),
     );
@@ -63,12 +118,17 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome', style: context.textTheme.headlineLarge),
-        const SizedBox(height: 4),
         Text(
-          '@johnmayer145',
-          style: context.textTheme.bodyLarge
-              ?.copyWith(color: context.colorScheme.outline),
+          'Welcome back,',
+          style: context.textTheme.bodyLarge!.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        Text(
+          'Ferra Alexandra',
+          style: context.textTheme.headlineSmall!.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -87,13 +147,56 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: () => context.pushNamed(AppRoute.songs.name),
             ),
           ),
-          const SizedBox(height: Insets.large),
-          Text('Upcoming Event', style: context.textTheme.titleMedium),
-          const SizedBox(height: Insets.medium),
-          Text('Top Rated', style: context.textTheme.titleMedium),
-          const SizedBox(height: Insets.medium),
         ],
       ),
+    );
+  }
+
+  Widget _buildEnhanced() {
+    return Row(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 2,
+          height: 240,
+          child: const Padding(
+            padding: EdgeInsets.only(left: 16, right: 8),
+            child: UpcomingEventEnhanced(
+              title: 'Duminică seara la elsh',
+              hour: '18:00',
+              location: 'Sala El-Shaddai',
+            ),
+          ),
+        ),
+        Column(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              height: 112,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 8, right: 16),
+                child: FriendsEnhancedTile(
+                  title: 'Duminică seara',
+                  hour: '18:00',
+                  location: 'Sala El-Shaddai',
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              height: 112,
+              child: const Padding(
+                padding: EdgeInsets.only(left: 8, right: 16),
+                child: FriendsEnhancedTile(
+                  title: 'Duminică seara',
+                  hour: '18:00',
+                  location: 'Sala El-Shaddai',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -67,13 +67,18 @@ class _StageSearchBarState extends State<StageSearchBar> {
       backgroundColor: MaterialStateColor.resolveWith(
         (states) => context.colorScheme.onBackground,
       ),
+      shape: MaterialStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
       leading: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.only(left: 8, right: 0),
         child: AnimatedOpacity(
           opacity: widget.focusNode.hasFocus ? 1 : 0.7,
           duration: animationDuration,
           child: Icon(
-            Icons.search,
+            Icons.search_rounded,
             color: context.colorScheme.onSurfaceVariant,
           ),
         ),
@@ -96,6 +101,11 @@ class _StageSearchBarState extends State<StageSearchBar> {
         ),
       ],
       hintText: 'Search',
+      hintStyle: MaterialStateProperty.all(
+        context.textTheme.titleLarge!.copyWith(
+          color: context.colorScheme.onSurfaceVariant,
+        ),
+      ),
       onChanged: (value) => _onSearchChanged(),
       onTap: widget.onTap,
     );

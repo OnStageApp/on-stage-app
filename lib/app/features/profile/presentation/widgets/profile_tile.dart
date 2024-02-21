@@ -22,13 +22,13 @@ class ProfileTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
           children: [
             Icon(
               icon,
               size: 20,
-              color: iconColor,
+              color: iconColor ?? context.colorScheme.primary,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8),
@@ -43,8 +43,8 @@ class ProfileTile extends StatelessWidget {
             const Spacer(),
             Text(
               totalNumber ?? '',
-              style: context.textTheme.titleMedium!.copyWith(
-                color: context.colorScheme.primary,
+              style: context.textTheme.bodyLarge!.copyWith(
+                color: Colors.black,
                 fontWeight: FontWeight.w600,
               ),
             ),
