@@ -8,7 +8,7 @@ class SongDummy {
     StageNotification(
       id: 1,
       title: 'Ready to go live?',
-      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      body: '8:00 PM',
       createdAt: 'today',
     ),
     StageNotification(
@@ -20,25 +20,25 @@ class SongDummy {
     StageNotification(
       id: 1,
       title: 'Ready to go live?',
-      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      body: '8:00 PM',
       createdAt: 'today',
     ),
     StageNotification(
       id: 1,
       title: 'Ready to go live?',
-      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      body: '8:00 PM',
       createdAt: 'today',
     ),
     StageNotification(
       id: 1,
       title: 'Friend Request',
-      body: 'David sent you a friend request',
+      body: '8:00 PM',
       createdAt: 'today',
     ),
     StageNotification(
       id: 1,
       title: 'Ready to go live?',
-      body: 'Julia invited you to join the stage on Friday Night, 8:00 PM',
+      body: '8:00 PM',
       createdAt: 'today',
     ),
   ];
