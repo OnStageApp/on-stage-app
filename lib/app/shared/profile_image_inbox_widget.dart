@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 
 class ProfileImageInboxWidget extends ConsumerWidget {
@@ -12,9 +12,7 @@ class ProfileImageInboxWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const NotificationPage(),
-        ));
+        context.goNamed(AppRoute.notification.name);
       },
       child: const ProfileImageWidget(),
     );

@@ -84,9 +84,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       title: 'Notifications',
                       totalNumber: 4.toString(),
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const NotificationPage(),
-                        ));
+                        context.goNamed(AppRoute.notification.name);
                       },
                     ),
                     _buildDivider(),

@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/presentation/event_details_scree
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
@@ -20,6 +21,7 @@ enum AppRoute {
   addEvent,
   eventDetails,
   profile,
+  notification,
 }
 
 class AppRouter {
@@ -85,6 +87,13 @@ class AppRouter {
         name: AppRoute.profile.name,
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoute.notification.name,
+            path: 'addEvent',
+            builder: (context, state) => const NotificationPage(),
+          ),
+        ]
       ),
     ],
   );
