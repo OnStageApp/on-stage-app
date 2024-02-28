@@ -7,8 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'firebase_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
-class FirebaseNotifier extends _$FirebaseNotifier{
-
+class FirebaseNotifier extends _$FirebaseNotifier {
   FirebaseState build() {
     return FirebaseState();
   }
@@ -16,6 +15,9 @@ class FirebaseNotifier extends _$FirebaseNotifier{
   Future<void> init() async {
     await Firebase.initializeApp();
     final messaging = FirebaseMessaging.instance;
+    await messaging.getToken().then((token) {
+      print("token is $token");
+    });
 
     await messaging.requestPermission(
       alert: true,
