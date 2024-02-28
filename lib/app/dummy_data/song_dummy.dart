@@ -7,8 +7,8 @@ class SongDummy {
     //fill with dummy data
     StageNotification(
       id: 1,
-      title: 'Ready to go live?',
-      body: '8:00 PM',
+      title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Ready to go live?',
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit8:00 PM',
       createdAt: 'today',
     ),
     StageNotification(
