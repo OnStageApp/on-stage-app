@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'event_notifier.dart';
+part of 'firebase_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$eventNotifierHash() => r'751ca817e79e72ebcf85ce5daba75874954e1552';
+String _$firebaseNotifierHash() => r'2b125dea73b5108d3c9d395bcc602bf66f078ce1';
 
-/// See also [EventNotifier].
-@ProviderFor(EventNotifier)
-final eventNotifierProvider =
-    NotifierProvider<EventNotifier, EventState>.internal(
-  EventNotifier.new,
-  name: r'eventNotifierProvider',
+/// See also [FirebaseNotifier].
+@ProviderFor(FirebaseNotifier)
+final firebaseNotifierProvider =
+    NotifierProvider<FirebaseNotifier, FirebaseState>.internal(
+  FirebaseNotifier.new,
+  name: r'firebaseNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$eventNotifierHash,
+      : _$firebaseNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$EventNotifier = Notifier<EventState>;
+typedef _$FirebaseNotifier = Notifier<FirebaseState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
