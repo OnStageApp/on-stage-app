@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-Widget buildDivider(BuildContext context) {
+Widget dividerWidget(BuildContext context) {
   return Divider(
     color: Theme.of(context).colorScheme.surfaceVariant,
     thickness: 1,

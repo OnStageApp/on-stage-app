@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
-import 'package:on_stage_app/app/shared/build_devider.dart';
+import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/custom_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -69,7 +69,7 @@ class _NotificationPageState extends State<NotificationPage> {
                           ),
                         ),
                         if (index != notifications.length - 1)
-                          buildDivider(context),
+                          dividerWidget(context),
                       ],
                     );
                   },
