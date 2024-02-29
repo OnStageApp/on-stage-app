@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -15,27 +14,29 @@ class NotificationPage extends ConsumerStatefulWidget {
 }
 
 class _NotificationPageState extends ConsumerState<NotificationPage> {
+  late final List<StageNotification> notifications;
+
   @override
   Widget build(BuildContext context) {
-    final notifications = ref.watch(notificationNotifierProvider);
+    notifications = ref.watch(notificationNotifierProvider);
     return Scaffold(
-      appBar: StageAppBar(
+      appBar: const StageAppBar(
         title: 'Notifications',
-        canBack: true,
-        onBack: () {
-          context.pop();
-        },
+        isBackButtonVisible: true,
       ),
       body: notifications.isNotEmpty
-          ? _buildBody(notifications)
+          ? _buildBody()
           : const Center(
-              child: Text('No notifications'),
-            ),
+        child: Text('No notifications'),
+      ),
     );
   }
 
-  Widget _buildBody(List<StageNotification> notifications) {
+  Widget _buildBody() {
     return ListView.builder(
+      physics: const ClampingScrollPhysics(),
+      itemCount: notifications.length,
+      shrinkWrap: true,
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +61,9 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
                   decoration: BoxDecoration(
                     border: index == 0
                         ? Border.all(
-                            color: Colors.white,
-                            width: 2,
-                          )
+                      color: Colors.white,
+                      width: 2,
+                    )
                         : null,
                     shape: BoxShape.circle,
                   ),
@@ -78,9 +79,9 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
           ],
         );
       },
-      itemCount: notifications.length,
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
     );
   }
 }
+
+
+

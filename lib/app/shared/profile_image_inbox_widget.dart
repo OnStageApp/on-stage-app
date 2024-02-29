@@ -11,9 +11,9 @@ class ProfileImageInboxWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {
-        context.goNamed(AppRoute.notification.name);
-      },
+      onTap: () => context.pushNamed(
+        AppRoute.notification.name,
+      ),
       child: const ProfileImageWidget(),
     );
   }

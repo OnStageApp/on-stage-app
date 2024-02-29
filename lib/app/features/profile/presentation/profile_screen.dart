@@ -83,9 +83,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       icon: Icons.notifications,
                       title: 'Notifications',
                       totalNumber: 4.toString(),
-                      onTap: () {
-                        context.goNamed(AppRoute.notification.name);
-                      },
+                      onTap: () => context.pushNamed(
+                        AppRoute.notification.name,
+                      ),
                     ),
                     const DividerWidget(),
                     ProfileTile(
