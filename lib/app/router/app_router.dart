@@ -90,7 +90,7 @@ class AppRouter {
         routes: [
           GoRoute(
             name: AppRoute.notification.name,
-            path: 'addEvent',
+            path: 'notification',
             builder: (context, state) => const NotificationPage(),
           ),
         ]

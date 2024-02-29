@@ -30,7 +30,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: Insets.large),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 80),
                 Row(
@@ -65,21 +64,21 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    dividerWidget(context),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.people,
                       title: 'Friends',
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    dividerWidget(context),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.event,
                       title: 'Events',
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    dividerWidget(context),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.notifications,
                       title: 'Notifications',
@@ -88,7 +87,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         context.goNamed(AppRoute.notification.name);
                       },
                     ),
-                    dividerWidget(context),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.perm_identity_rounded,
                       title: 'Account',
@@ -96,7 +95,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         context.goNamed(AppRoute.login.name);
                       },
                     ),
-                    dividerWidget(context),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.assignment,
                       title: 'Complete Profile',
