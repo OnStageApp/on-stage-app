@@ -26,7 +26,7 @@ class CommonTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final String? errorString;
   final bool isBorderVisible;
-  final double height; // New parameter
+  final double height;
 
   @override
   Widget build(BuildContext context) {

@@ -35,7 +35,6 @@ class _NotificationPageState extends ConsumerState<NotificationPage> {
   }
 
   Widget _buildBody(List<StageNotification> notifications) {
-    // Corrected Type
     return ListView.builder(
       itemBuilder: (context, index) {
         return Column(
