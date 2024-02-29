@@ -123,12 +123,4 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
       ),
     );
   }
-
-  Widget _buildDivider() {
-    return Divider(
-      color: context.colorScheme.surfaceVariant,
-      thickness: 1,
-      height: 0,
-    );
-  }
 }
