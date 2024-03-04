@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-
 class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StageAppBar({
     required this.title,
@@ -18,17 +17,23 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: context.colorScheme.background,
-      title: Text(
-        title,
-        style: context.textTheme.headlineMedium?.copyWith(
-          color: context.colorScheme.shadow,
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: AppBar(
+        backgroundColor: context.colorScheme.background,
+        leading: _buildLeading(context),
+        centerTitle: isBackButtonVisible,
+        title: Text(
+          title,
+          style: context.textTheme.headlineMedium?.copyWith(
+            fontSize: isBackButtonVisible ? 20 : 28,
+            color: context.colorScheme.shadow,
+          ),
         ),
+        automaticallyImplyLeading: false,
+        actions: [trailing ?? const SizedBox()],
+        surfaceTintColor: context.colorScheme.onSurface,
       ),
-      automaticallyImplyLeading: false,
-      actions: [trailing ?? const SizedBox()],
-      surfaceTintColor: context.colorScheme.onSurface,
     );
   }
 

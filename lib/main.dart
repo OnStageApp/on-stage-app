@@ -4,9 +4,11 @@ import 'package:on_stage_app/app/features/firebase/application/firebase_notifier
 import 'package:on_stage_app/bootstrap.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await FirebaseNotifier().init();
 
   await bootstrap(() => const App());
+  // FlutterNativeSplash.remove();
 }
