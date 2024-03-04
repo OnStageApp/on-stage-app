@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
+import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -28,7 +30,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: Insets.large),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 80),
                 Row(
@@ -63,28 +64,30 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    _buildDivider(),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.people,
                       title: 'Friends',
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    _buildDivider(),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.event,
                       title: 'Events',
                       totalNumber: '5',
                       onTap: () {},
                     ),
-                    _buildDivider(),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.notifications,
                       title: 'Notifications',
                       totalNumber: 4.toString(),
-                      onTap: () {},
+                      onTap: () => context.pushNamed(
+                        AppRoute.notification.name,
+                      ),
                     ),
-                    _buildDivider(),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.perm_identity_rounded,
                       title: 'Account',
@@ -92,7 +95,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         context.goNamed(AppRoute.login.name);
                       },
                     ),
-                    _buildDivider(),
+                    const DividerWidget(),
                     ProfileTile(
                       icon: Icons.assignment,
                       title: 'Complete Profile',
@@ -118,14 +121,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Divider(
-      color: context.colorScheme.surfaceVariant,
-      thickness: 1,
-      height: 0,
     );
   }
 }
