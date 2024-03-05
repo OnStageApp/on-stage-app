@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:on_stage_app/app/features/song/application/song_provider.dart';
+import 'package:on_stage_app/app/features/song/application/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
+import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -47,12 +48,14 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _songs = ref.watch(songNotifierProvider).filteredSongs;
+    _songs = ref.watch(songsNotifierProvider).filteredSongs;
     return Scaffold(
       appBar: const StageAppBar(
         title: 'Songs',
       ),
-      body: _buildContent(context),
+      body: ref.watch(songsNotifierProvider).isLoading
+          ? const OnStageLoadingIndicator()
+          : _buildContent(context),
     );
   }
 
@@ -75,7 +78,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
                 if (value.isEmpty) {
                   _focusNode.unfocus();
                 } else {
-                  ref.read(songNotifierProvider.notifier).searchSongs(
+                  ref.read(songsNotifierProvider.notifier).searchSongs(
                         searchedText: value,
                       );
                 }
@@ -132,13 +135,11 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         return Column(
           children: [
             SongTile(song: song),
-            // const SizedBox(height: Insets.small),
             Divider(
               color: context.colorScheme.outlineVariant,
               thickness: 1,
               height: Insets.medium,
             ),
-            // const SizedBox(height: Insets.small),
           ],
         );
       },

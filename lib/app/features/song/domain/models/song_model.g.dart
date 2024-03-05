@@ -8,14 +8,14 @@ part of 'song_model.dart';
 
 _$SongModelImpl _$$SongModelImplFromJson(Map<String, dynamic> json) =>
     _$SongModelImpl(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      lyrics: json['lyrics'] as String,
-      tab: json['tab'] as String,
-      key: json['key'] as String,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
-      artist: Artist.fromJson(json['artist'] as Map<String, dynamic>),
+      id: json['id'] as String?,
+      title: json['title'] as String?,
+      lyrics: json['lyrics'] as String?,
+      tab: json['tab'] as String?,
+      key: json['key'] as String?,
+      createdAt: json['createdAt'] as String?,
+      updatedAt: json['updatedAt'] as String?,
+      artist: json['artist'] as String?,
       album: json['album'] as String?,
       capo: json['capo'] as int?,
     );

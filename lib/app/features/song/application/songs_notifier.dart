@@ -1,25 +1,27 @@
 import 'package:on_stage_app/app/features/song/application/song_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
-import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'song_provider.g.dart';
+part 'songs_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
-class SongNotifier extends _$SongNotifier {
+class SongsNotifier extends _$SongsNotifier {
   @override
-  SongState build() {
-    return const SongState();
+  SongsState build() {
+    return const SongsState();
   }
 
   Future<void> init() async {
-    if (state.songs.isNotEmpty) {
-      return;
+    logger.i('init songs provider state starting...');
+    try {
+      await getSongs();
+    } catch (error) {
+      logger.e('Error loading songs: $error');
+    } finally {
+      logger.i('init songs provider state completed');
     }
-    logger.i('init song provider state');
-    await getSongs();
   }
 
   Future<void> getSongs() async {
@@ -27,10 +29,10 @@ class SongNotifier extends _$SongNotifier {
       state = state.copyWith(filteredSongs: state.songs);
       return;
     }
-    ref.read(loadingProvider.notifier).state = true;
-    final songs = await ref.read(songRepositoryProvider.notifier).fetchSongs();
-    ref.read(loadingProvider.notifier).state = false;
-    state = state.copyWith(songs: songs, filteredSongs: songs);
+    state = state.copyWith(isLoading: true);
+    final songs = await ref.read(songRepositoryProvider.notifier).getSongs();
+    state =
+        state.copyWith(isLoading: false, songs: songs, filteredSongs: songs);
   }
 
   Future<void> searchSongs({
@@ -39,7 +41,7 @@ class SongNotifier extends _$SongNotifier {
     if (searchedText.isNotNullEmptyOrWhitespace) {
       final searchedSongs = state.songs
           .where(
-            (song) => song.title.toLowerCase().contains(
+            (song) => song.title!.toLowerCase().contains(
                   searchedText,
                 ),
           )

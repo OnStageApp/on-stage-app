@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/features/event/application/events/events_notifi
 import 'package:on_stage_app/app/features/home/presentation/widgets/friends_enhanced_tile.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
-import 'package:on_stage_app/app/features/song/application/song_provider.dart';
+import 'package:on_stage_app/app/features/song/application/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/profile_image_inbox_widget.dart';
@@ -32,7 +32,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void initializeNotifiers() {
-    ref.read(songNotifierProvider.notifier).init();
+    ref.read(songsNotifierProvider.notifier).init();
     ref.read(notificationNotifierProvider.notifier).getNotifications();
     ref.read(eventsNotifierProvider.notifier).init();
   }
@@ -66,7 +66,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildRecentlyAdded() {
-    final songs = ref.watch(songNotifierProvider).songs;
+    final songs = ref.watch(songsNotifierProvider).songs;
     return Padding(
       padding: defaultScreenHorizontalPadding,
       child: ListView.builder(
@@ -102,7 +102,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           _buildWelcomeText(),
           const Expanded(child: SizedBox()),
           IconButton(
-            onPressed: () => {},
+            onPressed: () => {context.pushNamed(AppRoute.notification.name)},
             icon: Icon(
               Icons.notifications_none_outlined,
               color: context.colorScheme.onSurfaceVariant,
