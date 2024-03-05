@@ -3,11 +3,9 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,13 +17,13 @@ class EventRepository extends _$EventRepository {
   @override
   FutureOr<dynamic> build() {}
 
-  Future<List<SongModel>> fetchPlaylist() async {
-    final playlist = await Future.delayed(
-      const Duration(seconds: 1),
-      () => SongDummy.playlist,
-    );
-    return playlist;
-  }
+  // Future<List<SongModel>> fetchPlaylist() async {
+  //   final playlist = await Future.delayed(
+  //     const Duration(seconds: 1),
+  //     () => SongDummy.playlist,
+  //   );
+  //   return playlist;
+  // }
 
   // Future<List<ParticipantProfile>> fetchParticipants() async {
   //   final participants = await Future.delayed(
@@ -72,7 +70,7 @@ class EventRepository extends _$EventRepository {
         default:
           logger.e('Internal server error, please try again later.');
       }
-    } on IOException catch (e, s) {
+    } on HttpException catch (e, s) {
       logger.e('Failed fetching events: $e with stacktrace: $s');
     }
     return [];
@@ -99,7 +97,7 @@ class EventRepository extends _$EventRepository {
         default:
           logger.e('Internal server error, please try again later.');
       }
-    } on IOException catch (e, s) {
+    } on HttpException catch (e, s) {
       logger.e('Failed fetching event: $e with stacktrace: $s');
     }
     return null;
@@ -128,7 +126,7 @@ class EventRepository extends _$EventRepository {
         default:
           logger.e('Internal server error, please try again later.');
       }
-    } on IOException catch (e, s) {
+    } on HttpException catch (e, s) {
       logger.e('Failed fetching events: $e with stacktrace: $s');
     }
     return null;

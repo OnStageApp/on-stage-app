@@ -27,7 +27,7 @@ class _SongTileState extends State<SongTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.song.title,
+              widget.song.title ?? '',
               style: Theme.of(context).textTheme.titleMedium,
               maxLines: 1,
             ),
@@ -35,7 +35,7 @@ class _SongTileState extends State<SongTile> {
             Row(
               children: [
                 Text(
-                  widget.song.artist.fullName,
+                  widget.song.artist ?? '',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 _buildCircle(context),
@@ -78,7 +78,7 @@ class _SongTileState extends State<SongTile> {
         ),
       ),
       child: Text(
-        widget.song.key,
+        widget.song.key ?? '',
         style: Theme.of(context)
             .textTheme
             .titleSmall!

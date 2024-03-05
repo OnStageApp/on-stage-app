@@ -44,6 +44,18 @@ class API {
     return Uri.https(apiUrl, 'events/$eventId');
   }
 
+  static Uri getSongs([
+    String? search,
+  ]) {
+    return Uri.https(
+      apiUrl,
+      'songs',
+      {
+        if (search != null) 'search': search,
+      },
+    );
+  }
+
   static Uri get createEvent {
     return Uri.https(apiUrl, 'event');
   }

@@ -5,10 +5,13 @@ class SongState extends Equatable {
   const SongState({
     this.songs = const [],
     this.filteredSongs = const [],
+    this.isLoading = false,
   });
 
   final List<SongModel> songs;
   final List<SongModel> filteredSongs;
+
+  final bool isLoading;
 
   @override
   List<Object> get props => [
@@ -19,10 +22,12 @@ class SongState extends Equatable {
   SongState copyWith({
     List<SongModel>? songs,
     List<SongModel>? filteredSongs,
+    bool? isLoading,
   }) {
     return SongState(
       songs: songs ?? this.songs,
       filteredSongs: filteredSongs ?? this.filteredSongs,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }

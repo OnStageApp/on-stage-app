@@ -17,12 +17,11 @@ class SongChordTile extends StatefulWidget {
 }
 
 class _SongChordTileState extends State<SongChordTile> {
-
   @override
   Widget build(BuildContext context) {
     return StageTile(
-      title: widget.song.title,
-      description: widget.song.artist.fullName,
+      title: widget.song.title ?? '',
+      description: widget.song.artist ?? '',
       trailing: _buildSongKeyWidget(context),
     );
   }
@@ -38,7 +37,7 @@ class _SongChordTileState extends State<SongChordTile> {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: Text(
-        widget.song.key,
+        widget.song.key ?? '',
         style: Theme.of(context)
             .textTheme
             .titleSmall!

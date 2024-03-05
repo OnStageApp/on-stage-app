@@ -20,14 +20,14 @@ SongModel _$SongModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SongModel {
-  int get id => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String get lyrics => throw _privateConstructorUsedError;
-  String get tab => throw _privateConstructorUsedError;
-  String get key => throw _privateConstructorUsedError;
-  String get createdAt => throw _privateConstructorUsedError;
-  String get updatedAt => throw _privateConstructorUsedError;
-  Artist get artist => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
+  String? get title => throw _privateConstructorUsedError;
+  String? get lyrics => throw _privateConstructorUsedError;
+  String? get tab => throw _privateConstructorUsedError;
+  String? get key => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
+  String? get updatedAt => throw _privateConstructorUsedError;
+  String? get artist => throw _privateConstructorUsedError;
   String? get album => throw _privateConstructorUsedError;
   int? get capo => throw _privateConstructorUsedError;
 
@@ -43,18 +43,16 @@ abstract class $SongModelCopyWith<$Res> {
       _$SongModelCopyWithImpl<$Res, SongModel>;
   @useResult
   $Res call(
-      {int id,
-      String title,
-      String lyrics,
-      String tab,
-      String key,
-      String createdAt,
-      String updatedAt,
-      Artist artist,
+      {String? id,
+      String? title,
+      String? lyrics,
+      String? tab,
+      String? key,
+      String? createdAt,
+      String? updatedAt,
+      String? artist,
       String? album,
       int? capo});
-
-  $ArtistCopyWith<$Res> get artist;
 }
 
 /// @nodoc
@@ -70,50 +68,50 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? lyrics = null,
-    Object? tab = null,
-    Object? key = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? artist = null,
+    Object? id = freezed,
+    Object? title = freezed,
+    Object? lyrics = freezed,
+    Object? tab = freezed,
+    Object? key = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? artist = freezed,
     Object? album = freezed,
     Object? capo = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      title: null == title
+              as String?,
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      lyrics: null == lyrics
+              as String?,
+      lyrics: freezed == lyrics
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
-              as String,
-      tab: null == tab
+              as String?,
+      tab: freezed == tab
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
-              as String,
-      key: null == key
+              as String?,
+      key: freezed == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      artist: null == artist
+              as String?,
+      artist: freezed == artist
           ? _value.artist
           : artist // ignore: cast_nullable_to_non_nullable
-              as Artist,
+              as String?,
       album: freezed == album
           ? _value.album
           : album // ignore: cast_nullable_to_non_nullable
@@ -123,14 +121,6 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
           : capo // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ArtistCopyWith<$Res> get artist {
-    return $ArtistCopyWith<$Res>(_value.artist, (value) {
-      return _then(_value.copyWith(artist: value) as $Val);
-    });
   }
 }
 
@@ -143,19 +133,16 @@ abstract class _$$SongModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      String title,
-      String lyrics,
-      String tab,
-      String key,
-      String createdAt,
-      String updatedAt,
-      Artist artist,
+      {String? id,
+      String? title,
+      String? lyrics,
+      String? tab,
+      String? key,
+      String? createdAt,
+      String? updatedAt,
+      String? artist,
       String? album,
       int? capo});
-
-  @override
-  $ArtistCopyWith<$Res> get artist;
 }
 
 /// @nodoc
@@ -169,50 +156,50 @@ class __$$SongModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? lyrics = null,
-    Object? tab = null,
-    Object? key = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? artist = null,
+    Object? id = freezed,
+    Object? title = freezed,
+    Object? lyrics = freezed,
+    Object? tab = freezed,
+    Object? key = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? artist = freezed,
     Object? album = freezed,
     Object? capo = freezed,
   }) {
     return _then(_$SongModelImpl(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      title: null == title
+              as String?,
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      lyrics: null == lyrics
+              as String?,
+      lyrics: freezed == lyrics
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
-              as String,
-      tab: null == tab
+              as String?,
+      tab: freezed == tab
           ? _value.tab
           : tab // ignore: cast_nullable_to_non_nullable
-              as String,
-      key: null == key
+              as String?,
+      key: freezed == key
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      updatedAt: null == updatedAt
+              as String?,
+      updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      artist: null == artist
+              as String?,
+      artist: freezed == artist
           ? _value.artist
           : artist // ignore: cast_nullable_to_non_nullable
-              as Artist,
+              as String?,
       album: freezed == album
           ? _value.album
           : album // ignore: cast_nullable_to_non_nullable
@@ -229,14 +216,14 @@ class __$$SongModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SongModelImpl implements _SongModel {
   const _$SongModelImpl(
-      {required this.id,
-      required this.title,
-      required this.lyrics,
-      required this.tab,
-      required this.key,
-      required this.createdAt,
-      required this.updatedAt,
-      required this.artist,
+      {this.id,
+      this.title,
+      this.lyrics,
+      this.tab,
+      this.key,
+      this.createdAt,
+      this.updatedAt,
+      this.artist,
       this.album,
       this.capo});
 
@@ -244,21 +231,21 @@ class _$SongModelImpl implements _SongModel {
       _$$SongModelImplFromJson(json);
 
   @override
-  final int id;
+  final String? id;
   @override
-  final String title;
+  final String? title;
   @override
-  final String lyrics;
+  final String? lyrics;
   @override
-  final String tab;
+  final String? tab;
   @override
-  final String key;
+  final String? key;
   @override
-  final String createdAt;
+  final String? createdAt;
   @override
-  final String updatedAt;
+  final String? updatedAt;
   @override
-  final Artist artist;
+  final String? artist;
   @override
   final String? album;
   @override
@@ -309,14 +296,14 @@ class _$SongModelImpl implements _SongModel {
 
 abstract class _SongModel implements SongModel {
   const factory _SongModel(
-      {required final int id,
-      required final String title,
-      required final String lyrics,
-      required final String tab,
-      required final String key,
-      required final String createdAt,
-      required final String updatedAt,
-      required final Artist artist,
+      {final String? id,
+      final String? title,
+      final String? lyrics,
+      final String? tab,
+      final String? key,
+      final String? createdAt,
+      final String? updatedAt,
+      final String? artist,
       final String? album,
       final int? capo}) = _$SongModelImpl;
 
@@ -324,21 +311,21 @@ abstract class _SongModel implements SongModel {
       _$SongModelImpl.fromJson;
 
   @override
-  int get id;
+  String? get id;
   @override
-  String get title;
+  String? get title;
   @override
-  String get lyrics;
+  String? get lyrics;
   @override
-  String get tab;
+  String? get tab;
   @override
-  String get key;
+  String? get key;
   @override
-  String get createdAt;
+  String? get createdAt;
   @override
-  String get updatedAt;
+  String? get updatedAt;
   @override
-  Artist get artist;
+  String? get artist;
   @override
   String? get album;
   @override
