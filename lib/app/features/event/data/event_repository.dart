@@ -17,22 +17,6 @@ class EventRepository extends _$EventRepository {
   @override
   FutureOr<dynamic> build() {}
 
-  // Future<List<SongModel>> fetchPlaylist() async {
-  //   final playlist = await Future.delayed(
-  //     const Duration(seconds: 1),
-  //     () => SongDummy.playlist,
-  //   );
-  //   return playlist;
-  // }
-
-  // Future<List<ParticipantProfile>> fetchParticipants() async {
-  //   final participants = await Future.delayed(
-  //     const Duration(seconds: 1),
-  //         () => ParticipantsDummy.participants,
-  //   );
-  //   return participants;
-  // }
-
   Future<List<StagerOverview>> getStagers() async {
     final stagers = await Future.delayed(
       const Duration(seconds: 1),

@@ -4,13 +4,13 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'song_provider.g.dart';
+part 'songs_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
-class SongNotifier extends _$SongNotifier {
+class SongsNotifier extends _$SongsNotifier {
   @override
-  SongState build() {
-    return const SongState();
+  SongsState build() {
+    return const SongsState();
   }
 
   Future<void> init() async {

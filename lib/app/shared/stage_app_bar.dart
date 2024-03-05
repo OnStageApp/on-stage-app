@@ -32,7 +32,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         automaticallyImplyLeading: false,
         actions: [trailing ?? const SizedBox()],
-        surfaceTintColor: context.colorScheme.onSurface,
+        surfaceTintColor: context.colorScheme.background,
       ),
     );
   }
