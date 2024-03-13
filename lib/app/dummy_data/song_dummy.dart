@@ -167,7 +167,8 @@ class SongDummy {
     SongModel(
       id: "8",
       title: 'Eu sunt mic, dar Isus',
-      lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      lyrics:
+          '<Verse> God is fi[G]ghting for us, [Em]God is on our sidesadsd sdad\nHe has [Bm]overcome, Yes he [D]has overcome\nWe will [G]not be shaken, we [Em]will not be moved\nJesus [D]You are here [C]Carrying our [G]burdens, covering our [Em]shame\nHe has [Bm]overcome, Yes he [D]has overcome\n<Chorus>We will [G]not be shaken, we [Em]will not be moved\nJesus [D]You are here [C]I will live, I will not die\nThe resurrection power of Christ\nAlive in me and I am free\nIn Jesus’ Name\nI will live, I will not die\nI will declare and lift You high\nChrist revealed and I am healed\nIn Jesus’ Name, in Jesus’ Name\nIn Jesus’ Name, in Jesus’ Name',
       tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       key: 'C# major',
       createdAt: '2021-08-01T00:00:00.000Z',

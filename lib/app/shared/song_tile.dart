@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -23,31 +25,37 @@ class _SongTileState extends State<SongTile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.song.title ?? '',
-              style: Theme.of(context).textTheme.titleMedium,
-              maxLines: 1,
-            ),
-            const SizedBox(height: Insets.smaller),
-            Row(
-              children: [
-                Text(
-                  widget.song.artist ?? '',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                _buildCircle(context),
-                _buildKey(context),
-                _buildCircle(context),
-                Text(
-                  '148 bpm',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          ],
+        InkWell(
+          onTap: () {
+            context.pushNamed(AppRoute.song.name,
+                extra: SongDummy.playlist.first);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.song.title ?? '',
+                style: Theme.of(context).textTheme.titleMedium,
+                maxLines: 1,
+              ),
+              const SizedBox(height: Insets.smaller),
+              Row(
+                children: [
+                  Text(
+                    widget.song.artist ?? '',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  _buildCircle(context),
+                  _buildKey(context),
+                  _buildCircle(context),
+                  Text(
+                    '148 bpm',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         InkWell(
           onTap: () {

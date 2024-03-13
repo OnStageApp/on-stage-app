@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
@@ -67,11 +68,10 @@ class AppRouter {
         routes: [
           GoRoute(
             name: AppRoute.song.name,
-            path: 'song/:id',
+            path: 'song',
             builder: (context, state) {
-              final songId = int.parse(state.pathParameters['id'] ?? '-1');
-              final songName = state.extra! as String;
-              return SongDetailScreen(songId, songName);
+              final song = state.extra! as SongModel;
+              return SongDetailScreen(song);
             },
           ),
         ],

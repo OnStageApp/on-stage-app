@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
-import 'package:on_stage_app/app/features/song/application/song_detail_provider.dart';
-import 'package:on_stage_app/app/shared/stage_detail_app_bar.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongDetailScreen extends ConsumerStatefulWidget {
   const SongDetailScreen(
-    this.songId,
-    this.songName, {
+    this.song, {
     super.key,
   });
 
-  final int songId;
-  final String songName;
+  final SongModel song;
 
   @override
   SongDetailScreenState createState() => SongDetailScreenState();
@@ -42,98 +40,91 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final song = ref.watch(
-      songDetailsProvider(widget.songId),
-    );
+    final song = widget.song;
     return Scaffold(
-      appBar: StageDetailAppBar(
-        title: widget.songName,
+      appBar: StageAppBar(
+        isBackButtonVisible: true,
+        title: widget.song.title ?? '',
       ),
       body: Padding(
-        padding: defaultScreenPadding,
-        child: song.when(
-          loading: _buildLoadingIndicator,
-          error: (error, stackTrace) => _buildError(error),
-          data: (song) => SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Key: ${song.key}'),
-                const Text('Structura: S1, R, B, C, B, I'),
-                SizedBox(
-                  height: 100,
-                  width: 300,
-                  child: ReorderableListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: _dummyStructure
-                        .map((Structure item) => Container(
-                              margin: const EdgeInsets.all(2),
-                              color: Colors.red,
-                              key: ValueKey(item.id),
-                              width: 30,
-                              alignment: Alignment.center,
-                              child: Text(item.name),
-                            ))
-                        .toList(),
-                    onReorder: (int oldIndex, int newIndex) {
-                      // setState(() {
-                      //   // If dragging an item to a position after itself, Flutter already accounts for the movement,
-                      //   // so we need to subtract 1 from the new index.
-                      //   if (newIndex > oldIndex) {
-                      //     newIndex -= 1;
-                      //   }
-                      //
-                      //   final Structure item =
-                      //       _dummyStructure.removeAt(oldIndex);
-                      //   _dummyStructure.insert(newIndex, item);
-                      // });
+        padding: defaultScreenHorizontalPadding,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Key: ${song.key}'),
+              const Text('Structura: S1, R, B, C, B, I'),
+              SizedBox(
+                height: 100,
+                width: 300,
+                child: ReorderableListView(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: _dummyStructure
+                      .map((Structure item) => Container(
+                            margin: const EdgeInsets.all(2),
+                            color: Colors.red,
+                            key: ValueKey(item.id),
+                            width: 30,
+                            alignment: Alignment.center,
+                            child: Text(item.name),
+                          ))
+                      .toList(),
+                  onReorder: (int oldIndex, int newIndex) {
+                    setState(() {
+                      // If dragging an item to a position after itself, Flutter already accounts for the movement,
+                      // so we need to subtract 1 from the new index.
+                      if (newIndex > oldIndex) {
+                        newIndex -= 1;
+                      }
+
+                      final Structure item = _dummyStructure.removeAt(oldIndex);
+                      _dummyStructure.insert(newIndex, item);
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _transposeIncrement--;
+                      });
                     },
+                    child: const Text('-'),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _transposeIncrement--;
-                        });
-                      },
-                      child: const Text('-'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _transposeIncrement++;
-                        });
-                      },
-                      child: const Text('+'),
-                    ),
-                  ],
-                ),
-                SongDetailWidget(
-                  transposeIncrement: _transposeIncrement,
-                  widgetPadding: 16 + 10,
-                  lyrics: song.lyrics ?? '',
-                  textStyle:
-                      context.textTheme.bodySmall!.copyWith(fontSize: 14),
-                  chordStyle: context.textTheme.bodySmall!.copyWith(
-                    color: context.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _transposeIncrement++;
+                      });
+                    },
+                    child: const Text('+'),
                   ),
-                  structureStyle: context.textTheme.bodySmall!.copyWith(
-                    color: context.colorScheme.onBackground,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  onTapChord: () {},
+                ],
+              ),
+              SongDetailWidget(
+                transposeIncrement: _transposeIncrement,
+                widgetPadding: 16 + 10,
+                lyrics: song.lyrics ?? '',
+                textStyle: context.textTheme.bodySmall!.copyWith(fontSize: 14),
+                chordStyle: context.textTheme.bodySmall!.copyWith(
+                  color: context.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-              ],
-            ),
+                structureStyle: context.textTheme.bodySmall!.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                onTapChord: () {},
+              ),
+            ],
           ),
         ),
       ),
