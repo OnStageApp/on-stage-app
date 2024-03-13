@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
+import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 
@@ -21,6 +22,7 @@ enum AppRoute {
   addEvent,
   eventDetails,
   profile,
+  song,
   notification,
 }
 
@@ -62,6 +64,16 @@ class AppRouter {
         name: AppRoute.songs.name,
         path: '/songs',
         builder: (context, state) => const SongsScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoute.song.name,
+            path: 'song/:id',
+            builder: (context, state) {
+              final songId = int.parse(state.pathParameters['id']!);
+              return SongDetailScreen(songId);
+            },
+          ),
+        ],
       ),
       GoRoute(
         name: AppRoute.events.name,
@@ -84,17 +96,16 @@ class AppRouter {
         ],
       ),
       GoRoute(
-        name: AppRoute.profile.name,
-        path: '/profile',
-        builder: (context, state) => const ProfileScreen(),
-        routes: [
-          GoRoute(
-            name: AppRoute.notification.name,
-            path: 'notification',
-            builder: (context, state) => const NotificationPage(),
-          ),
-        ]
-      ),
+          name: AppRoute.profile.name,
+          path: '/profile',
+          builder: (context, state) => const ProfileScreen(),
+          routes: [
+            GoRoute(
+              name: AppRoute.notification.name,
+              path: 'notification',
+              builder: (context, state) => const NotificationPage(),
+            ),
+          ]),
     ],
   );
 

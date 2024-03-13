@@ -48,4 +48,12 @@ class SongRepository extends _$SongRepository {
     }
     return [];
   }
+
+  Future<SongModel> fetchSong(int id) async {
+    final song = await Future.delayed(
+      const Duration(seconds: 1),
+      () => SongDummy.songs.firstWhere((element) => element.id == id),
+    );
+    return song;
+  }
 }
