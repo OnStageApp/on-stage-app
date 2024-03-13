@@ -108,12 +108,18 @@ final TextTheme _onStageTextTheme = TextTheme(
     letterSpacing: 0.25,
     fontWeight: FontWeight.w400,
   ),
-  bodySmall: GoogleFonts.montserrat(
-    fontSize: 12,
+  bodySmall: GoogleFonts.robotoMono(
+    fontSize: 16,
     height: 16.0 / 12.0,
     letterSpacing: 0.40,
     fontWeight: FontWeight.w400,
   ),
+  // caption: GoogleFonts.montserrat(
+  //   fontSize: 16,
+  //   height: 24.0 / 16.0,
+  //   letterSpacing: 0.15,
+  //   fontWeight: FontWeight.w400,
+  // ),
 );
 
 const lightColorScheme = ColorScheme(

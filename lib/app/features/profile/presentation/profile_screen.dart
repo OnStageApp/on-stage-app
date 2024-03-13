@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -16,11 +15,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
