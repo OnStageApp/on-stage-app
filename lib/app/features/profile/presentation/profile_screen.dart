@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
-import 'package:on_stage_app/app/shared/notifications_bottom_sheet.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
-import 'package:on_stage_app/app/utils/build_context_extensionstate();
-  }
+import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

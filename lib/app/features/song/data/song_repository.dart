@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
@@ -52,7 +53,7 @@ class SongRepository extends _$SongRepository {
   Future<SongModel> fetchSong(int id) async {
     final song = await Future.delayed(
       const Duration(seconds: 1),
-      () => SongDummy.songs.firstWhere((element) => element.id == id),
+      () => SongDummy.playlist.firstWhere((element) => element.id == id),
     );
     return song;
   }

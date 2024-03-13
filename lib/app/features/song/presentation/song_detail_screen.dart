@@ -117,7 +117,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                 SongDetailWidget(
                   transposeIncrement: _transposeIncrement,
                   widgetPadding: 16 + 10,
-                  lyrics: song.lyrics,
+                  lyrics: song.lyrics ?? '',
                   textStyle:
                       context.textTheme.bodySmall!.copyWith(fontSize: 14),
                   chordStyle: context.textTheme.bodySmall!.copyWith(

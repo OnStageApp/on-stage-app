@@ -1,4 +1,5 @@
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class SongDummy {
   static const notificationsDummy = <StageNotification>[
@@ -42,6 +43,7 @@ class SongDummy {
       createdAt: 'today',
     ),
   ];
+
   // static const List<SongModel> songs = [
   //   SongModel(
   //     id: 1,
@@ -161,58 +163,18 @@ class SongDummy {
   //   ),
   // ];
 
-  // static const List<SongModel> playlist = [
-  //   SongModel(
-  //     id: 8,
-  //     title: 'Eu sunt mic, dar Isus',
-  //     lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     key: 'C# major',
-  //     createdAt: '2021-08-01T00:00:00.000Z',
-  //     updatedAt: '2021-08-01T00:00:00.000Z',
-  //     artist: Artist(id: 1, fullName: 'Tabara 477', songIds: [1, 2]),
-  //     album: 'Tabara 477',
-  //     capo: 1,
-  //   ),
-  //
-  //   SongModel(
-  //     id: 8,
-  //     title: 'Eu sunt mic, dar Isus',
-  //     lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     key: 'C# major',
-  //     createdAt: '2021-08-01T00:00:00.000Z',
-  //     updatedAt: '2021-08-01T00:00:00.000Z',
-  //     artist: Artist(id: 1, fullName: 'Tabara 477', songIds: [1, 2]),
-  //     album: 'Tabara 477',
-  //     capo: 1,
-  //   ),
-  //
-  //   SongModel(
-  //     id: 8,
-  //     title: 'Eu sunt mic, dar Isus',
-  //     lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     key: 'C# major',
-  //     createdAt: '2021-08-01T00:00:00.000Z',
-  //     updatedAt: '2021-08-01T00:00:00.000Z',
-  //     artist: Artist(id: 1, fullName: 'Tabara 477', songIds: [1, 2]),
-  //     album: 'Tabara 477',
-  //     capo: 1,
-  //   ),
-  //
-  //   SongModel(
-  //     id: 8,
-  //     title: 'Eu sunt mic, dar Isus',
-  //     lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  //     key: 'C# major',
-  //     createdAt: '2021-08-01T00:00:00.000Z',
-  //     updatedAt: '2021-08-01T00:00:00.000Z',
-  //     artist: Artist(id: 1, fullName: 'Tabara 477', songIds: [1, 2]),
-  //     album: 'Tabara 477',
-  //     capo: 1,
-  //   ),
-  //
-  // ];
+  static const List<SongModel> playlist = [
+    SongModel(
+      id: "8",
+      title: 'Eu sunt mic, dar Isus',
+      lyrics: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      key: 'C# major',
+      createdAt: '2021-08-01T00:00:00.000Z',
+      updatedAt: '2021-08-01T00:00:00.000Z',
+      artist: 'artist1',
+      album: 'Tabara 477',
+      capo: 1,
+    ),
+  ];
 }
