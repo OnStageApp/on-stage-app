@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 part 'profile_model.freezed.dart';

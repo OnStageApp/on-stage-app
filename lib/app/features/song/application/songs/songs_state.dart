@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 class SongsState extends Equatable {

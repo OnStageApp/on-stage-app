@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';

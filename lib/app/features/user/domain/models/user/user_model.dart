@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_item.dart';
 import 'package:on_stage_app/app/features/user/domain/models/profile/profile_model.dart';
 
 part 'user_model.freezed.dart';

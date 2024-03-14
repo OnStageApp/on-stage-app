@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/dummy_data/user_dummy.dart';
-import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
-import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -24,8 +20,6 @@ class FavoriteSongsScreen extends ConsumerStatefulWidget {
 }
 
 class FavoriteSongsScreenState extends ConsumerState<FavoriteSongsScreen> {
-  List<SongModel> _songs = List.empty(growable: true);
-  final List<String> _favSongsIds = ['65e74b72ccdb244182cd0c26'];
   final List<SongOverview> _favSongs = UserDummy.userModel.profile.favoriteSongs;
 
   final FocusNode _focusNode = FocusNode();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/song_playlist_widget.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/stagers_widget.dart';

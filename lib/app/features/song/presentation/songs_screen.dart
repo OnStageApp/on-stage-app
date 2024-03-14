@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
