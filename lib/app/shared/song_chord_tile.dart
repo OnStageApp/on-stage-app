@@ -21,7 +21,7 @@ class _SongChordTileState extends State<SongChordTile> {
   Widget build(BuildContext context) {
     return StageTile(
       title: widget.song.title ?? '',
-      description: widget.song.artist ?? '',
+      description: 'widget.song.artist' ?? '',
       trailing: _buildSongKeyWidget(context),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
 part 'song_model.freezed.dart';
 part 'song_model.g.dart';
@@ -9,7 +10,7 @@ class SongModel with _$SongModel {
     String? id,
     String? title,
     String? lyrics,
-    String? tab,
+    int? bpm,
     String? key,
     String? createdAt,
     String? updatedAt,

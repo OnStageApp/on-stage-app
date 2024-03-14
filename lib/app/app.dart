@@ -18,7 +18,7 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App> {
   @override
   void initState() {
-    ref.read(firebaseNotifierProvider.notifier).init();
+    //ref.read(firebaseNotifierProvider.notifier).init();
 
     super.initState();
   }

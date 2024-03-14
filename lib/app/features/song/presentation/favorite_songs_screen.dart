@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:on_stage_app/app/dummy_data/user_dummy.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
@@ -14,15 +16,18 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class SongsScreen extends ConsumerStatefulWidget {
-  const SongsScreen({super.key});
+class FavoriteSongsScreen extends ConsumerStatefulWidget {
+  const FavoriteSongsScreen({super.key});
 
   @override
-  SongsScreenState createState() => SongsScreenState();
+  FavoriteSongsScreenState createState() => FavoriteSongsScreenState();
 }
 
-class SongsScreenState extends ConsumerState<SongsScreen> {
-  List<SongOverview> _songs = List.empty(growable: true);
+class FavoriteSongsScreenState extends ConsumerState<FavoriteSongsScreen> {
+  List<SongModel> _songs = List.empty(growable: true);
+  final List<String> _favSongsIds = ['65e74b72ccdb244182cd0c26'];
+  final List<SongOverview> _favSongs = UserDummy.userModel.profile.favoriteSongs;
+
   final FocusNode _focusNode = FocusNode();
   bool _isSearching = false;
   TextEditingController searchController = TextEditingController();
@@ -30,6 +35,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   @override
   void initState() {
     _isSearchedFocused();
+   // Future.microtask(_fetchFavoriteSongs);
     super.initState();
   }
 
@@ -47,15 +53,25 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
     });
   }
 
+  // Future<void> _fetchFavoriteSongs() async {
+  //
+  //   for (var id in _favSongsIds) {
+  //     await ref.read(songNotifierProvider.notifier).getSongById(id);
+  //     _favSongs.add( ref.watch(songNotifierProvider).copyWith());
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
-    _songs = ref.watch(songsNotifierProvider).filteredSongs;
+
     return Scaffold(
       appBar: const StageAppBar(
-        title: 'Songs',
+        title: 'Favorites',
+        isBackButtonVisible: true,
       ),
-      body: ref.watch(songsNotifierProvider).isLoading
-          ? const OnStageLoadingIndicator()
+      // body: ref.watch(songsNotifierProvider).isLoading
+      //     ? const OnStageLoadingIndicator()
+        body
           : _buildContent(context),
     );
   }
@@ -80,28 +96,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
                   _focusNode.unfocus();
                 } else {
                   ref.read(songsNotifierProvider.notifier).searchSongs(
-                        searchedText: value,
-                      );
+                    searchedText: value,
+                  );
                 }
               },
             ),
           ),
         ),
-        if (!_isSearching) ...[
-          const SizedBox(height: Insets.medium),
-          Padding(
-            padding: defaultScreenHorizontalPadding,
-            child: Text(
-              'Upcoming Events',
-              style: context.textTheme.headlineMedium,
-            ),
-          ),
-          const SizedBox(height: Insets.medium),
-          Container(
-            padding: EdgeInsets.zero,
-            child: _buildUpcomingEvents(),
-          ),
-        ],
         const SizedBox(height: Insets.large),
         Padding(
           padding: defaultScreenHorizontalPadding,
@@ -109,15 +110,12 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!_isSearching)
-                Text(
-                  'Recently added',
-                  style: context.textTheme.headlineMedium,
-                ),
+
               const SizedBox(height: Insets.medium),
               if (ref.watch(loadingProvider.notifier).state)
                 _buildLoadingIndicator()
               else
-                _buildSongs(),
+                _buildFavoriteSongs(),
             ],
           ),
         )
@@ -125,13 +123,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
     );
   }
 
-  Widget _buildSongs() {
+  Widget _buildFavoriteSongs() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _songs.length,
+      itemCount: _favSongs.length,
       itemBuilder: (context, index) {
-        final song = _songs[index];
+        final song = _favSongs[index];
 
         return Column(
           children: [
@@ -144,33 +142,6 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildUpcomingEvents() {
-    return SizedBox(
-      height: 180,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: const [
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: EventTileEnhanced(
-              title: 'Duminică seara',
-              hour: '18:00',
-              location: 'Sala El-Shaddai',
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: EventTileEnhanced(
-              title: 'Duminică seara',
-              hour: '18:00',
-              location: 'Sala El-Shaddai',
-            ),
-          ),
-        ],
-      ),
     );
   }
 

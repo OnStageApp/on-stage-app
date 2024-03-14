@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 class SongsState extends Equatable {
   const SongsState({
@@ -8,8 +9,8 @@ class SongsState extends Equatable {
     this.isLoading = false,
   });
 
-  final List<SongModel> songs;
-  final List<SongModel> filteredSongs;
+  final List<SongOverview> songs;
+  final List<SongOverview> filteredSongs;
 
   final bool isLoading;
 
@@ -20,8 +21,8 @@ class SongsState extends Equatable {
       ];
 
   SongsState copyWith({
-    List<SongModel>? songs,
-    List<SongModel>? filteredSongs,
+    List<SongOverview>? songs,
+    List<SongOverview>? filteredSongs,
     bool? isLoading,
   }) {
     return SongsState(

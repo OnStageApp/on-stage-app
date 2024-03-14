@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/presentation/widgets/song_playlist_widget.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/stagers_widget.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
@@ -43,13 +44,9 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventNotifierProvider);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: context.colorScheme.background,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(eventState.event?.name ?? ''),
+      appBar: StageAppBar(
+        title: eventState.event?.name ?? '',
+        isBackButtonVisible: true,
       ),
       body: eventState.isLoading
           ? const OnStageLoadingIndicator()

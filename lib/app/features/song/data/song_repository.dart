@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +15,7 @@ class SongRepository extends _$SongRepository {
   @override
   FutureOr build() {}
 
-  Future<List<SongModel>> getSongs({
+  Future<List<SongOverview>> getSongs({
     String? search,
   }) async {
     try {
@@ -32,7 +33,7 @@ class SongRepository extends _$SongRepository {
           final songsJson = jsonDecode(response.body) as List<dynamic>;
           final songs = songsJson
               .map(
-                (songJson) => SongModel.fromJson(
+                (songJson) => SongOverview.fromJson(
                   songJson as Map<String, dynamic>,
                 ),
               )
@@ -47,5 +48,32 @@ class SongRepository extends _$SongRepository {
       logger.e('Failed fetching songs: $e with stacktrace: $s');
     }
     return [];
+  }
+
+  Future<SongModel?> getSongById(String songId) async {
+    try {
+      final uri = API.getSong(songId);
+      final response = await http.get(uri);
+      logger.fetchedRequestResponse(
+        'song',
+        response.statusCode,
+        response.body,
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          final songJson = jsonDecode(response.body) as Map<String, dynamic>;
+          final song = SongModel.fromJson(songJson);
+          return song;
+        case 404:
+          logger.e('Song not found.');
+          return null;
+        default:
+          logger.e('Internal server error, please try again later.');
+      }
+    } on HttpException catch (e, s) {
+      logger.e('Failed fetching song: $e with stacktrace: $s');
+    }
+    return null;
   }
 }

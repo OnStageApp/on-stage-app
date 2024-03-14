@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -9,7 +10,7 @@ class SongTile extends StatefulWidget {
     super.key,
   });
 
-  final SongModel song;
+  final SongOverview song;
 
   @override
   State<SongTile> createState() => _SongTileState();
@@ -35,7 +36,7 @@ class _SongTileState extends State<SongTile> {
             Row(
               children: [
                 Text(
-                  widget.song.artist ?? '',
+                  'widget.song.artist' ?? '',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 _buildCircle(context),
