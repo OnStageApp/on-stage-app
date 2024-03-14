@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:on_stage_app/app/features/song/application/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
@@ -21,7 +21,7 @@ class SongsScreen extends ConsumerStatefulWidget {
 }
 
 class SongsScreenState extends ConsumerState<SongsScreen> {
-  List<SongModel> _songs = List.empty(growable: true);
+  List<SongOverview> _songs = List.empty(growable: true);
   final FocusNode _focusNode = FocusNode();
   bool _isSearching = false;
   TextEditingController searchController = TextEditingController();

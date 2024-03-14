@@ -9,7 +9,7 @@ class SongModel with _$SongModel {
     String? id,
     String? title,
     String? lyrics,
-    String? tab,
+    int? bpm,
     String? key,
     String? createdAt,
     String? updatedAt,
