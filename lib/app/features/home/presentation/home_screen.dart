@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/features/event/application/events/events_notifi
 import 'package:on_stage_app/app/features/home/presentation/widgets/friends_enhanced_tile.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
-import 'package:on_stage_app/app/features/song/application/songs_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/profile_image_inbox_widget.dart';
