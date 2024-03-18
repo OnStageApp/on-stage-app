@@ -6,9 +6,7 @@ import 'package:on_stage_app/bootstrap.dart';
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await FirebaseNotifier().init();
 
   await bootstrap(() => const App());
-  // FlutterNativeSplash.remove();
 }
