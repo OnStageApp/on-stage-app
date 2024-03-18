@@ -1,14 +1,14 @@
 class ChordLyricsLine {
   ChordLyricsLine()
       : chords = [],
-        structure = [],
+        structure = '',
         lyrics = '';
 
   ChordLyricsLine.line(this.chords, this.lyrics, this.structure);
   List<Chord> chords;
   String lyrics;
 
-  List<String> structure;
+  String structure;
 
   /// Remove also the keyword
   bool isStartOfChorus() {

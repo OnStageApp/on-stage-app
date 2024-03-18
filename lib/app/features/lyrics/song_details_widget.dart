@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_parser.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class SongDetailWidget extends StatefulWidget {
   const SongDetailWidget({
@@ -121,6 +122,8 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
     }
   }
 
+  void getVerse() {}
+
   @override
   Widget build(BuildContext context) {
     final chordProcessor = ChordProcessor(context, widget.chordNotation);
@@ -135,8 +138,35 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
     );
     final structures = <String>[];
     chordLyricsDocument.chordLyricsLines.map((e) {
-      structures.addAll(e.structure);
+      structures.add(e.structure);
     }).toList();
+
+    var lines = chordLyricsDocument.chordLyricsLines;
+    List<SongObject> sections = [];
+    List<ChordLyricsLine> items = [];
+    String structure = '';
+    for (int i = 0; i < lines.length; i++) {
+      if (lines[i].structure.isNotNullEmptyOrWhitespace ||
+          i == lines.length - 1) {
+        if (items.isNotEmpty) {
+          print('Items added ${items.length}');
+          print('items added as  $structure');
+          sections.add(SongObject(items, structure));
+        }
+        print('Structure: ${lines[i].structure}');
+        print('items: ${items.length} ${items.map((e) => e.lyrics)}');
+        print('lyrics: ${lines[i].lyrics}');
+
+        structure = lines[i].structure;
+        items = [];
+      } else {
+        print(lines[i].lyrics);
+        items.add(lines[i]);
+      }
+    }
+    print('asdasdasdsa');
+    print(sections);
+
     if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
     return SingleChildScrollView(
       controller: _controller,
@@ -144,86 +174,115 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
       child: Column(
         crossAxisAlignment: widget.horizontalAlignment,
         children: [
-          Row(
-            children: [
-              Text('Str: ', style: context.textTheme.bodySmall),
-              Text(
-                structures.join(', '),
-                style: widget.structureStyle,
-              ),
-            ],
-          ),
-          if (widget.leadingWidget != null) widget.leadingWidget!,
-          if (chordLyricsDocument.capo != null)
-            Text('Capo: ${chordLyricsDocument.capo!}', style: capoStyle),
-          ListView.separated(
+          ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => SizedBox(
-              height: widget.lineHeight,
-            ),
+            itemCount: sections.length,
             itemBuilder: (context, index) {
-              final line = chordLyricsDocument.chordLyricsLines[index];
-              if (line.isStartOfChorus()) {
-                _isChorus = true;
-              }
-              if (line.isEndOfChorus()) {
-                _isChorus = false;
-              }
-              if (line.isComment()) {
-                _isComment = true;
-              } else {
-                _isComment = false;
-              }
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.showChord)
-                    Row(
-                      children: line.chords
-                          .map(
-                            (chord) => Row(
-                              children: [
-                                SizedBox(
-                                  width: chord.leadingSpace,
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (sections[index].structure.isNotEmpty)
+                      Container(
+                        child: RichText(
+                          text: TextSpan(
+                            text: sections[index].structure,
+                            style: widget.structureStyle,
+                          ),
+                          textScaler: TextScaler.linear(widget.scaleFactor),
+                        ),
+                      ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: widget.lineHeight,
+                      ),
+                      itemCount: sections[index].lines.length,
+                      itemBuilder: (context, index2) {
+                        final line = sections[index].lines[index2];
+                        if (line.isStartOfChorus()) {
+                          _isChorus = true;
+                        }
+                        if (line.isEndOfChorus()) {
+                          _isChorus = false;
+                        }
+                        if (line.isComment()) {
+                          _isComment = true;
+                        } else {
+                          _isComment = false;
+                        }
+                        return Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.showChord) _buildChordsLine(line),
+                              RichText(
+                                text: TextSpan(
+                                  text: line.lyrics,
+                                  style: getLineTextStyle(),
                                 ),
-                                GestureDetector(
-                                  onTap: () =>
-                                      widget.onTapChord(chord.chordText),
-                                  child: RichText(
-                                    textScaleFactor: widget.scaleFactor,
-                                    text: TextSpan(
-                                      text: chord.chordText,
-                                      style: widget.chordStyle,
-                                    ),
+                                textScaler:
+                                    TextScaler.linear(widget.scaleFactor),
+                              ),
+                              Container(
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: line.structure.isNotEmpty
+                                        ? line.structure
+                                        : '',
+                                    style: widget.structureStyle,
                                   ),
+                                  textScaler:
+                                      TextScaler.linear(widget.scaleFactor),
                                 ),
-                              ],
-                            ),
-                          )
-                          .toList(),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                  RichText(
-                    textScaleFactor: widget.scaleFactor,
-                    text:
-                        TextSpan(text: line.lyrics, style: getLineTextStyle()),
-                  ),
-                  RichText(
-                    textScaleFactor: widget.scaleFactor,
-                    text: TextSpan(
-                      text:
-                          line.structure.isNotEmpty ? line.structure.first : '',
-                      style: widget.structureStyle,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
-            itemCount: chordLyricsDocument.chordLyricsLines.length,
           ),
           if (widget.trailingWidget != null) widget.trailingWidget!,
         ],
       ),
+    );
+  }
+
+  Widget _buildChordsLine(ChordLyricsLine line) {
+    return Row(
+      children: line.chords
+          .map(
+            (chord) => Row(
+              children: [
+                SizedBox(
+                  width: chord.leadingSpace,
+                ),
+                GestureDetector(
+                  onTap: () => widget.onTapChord(chord.chordText),
+                  child: RichText(
+                    textScaleFactor: widget.scaleFactor,
+                    text: TextSpan(
+                      text: chord.chordText,
+                      style: widget.chordStyle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -283,4 +342,11 @@ class TextRender extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
+}
+
+class SongObject {
+  final List<ChordLyricsLine> lines;
+  final String structure;
+
+  SongObject(this.lines, this.structure);
 }

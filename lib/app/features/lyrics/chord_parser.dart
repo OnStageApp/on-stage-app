@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
@@ -206,7 +205,7 @@ class ChordProcessor {
     final modifiedLine = line.replaceAllMapped(regex, (match) {
       return match.group(1)!;
     });
-    chordLyricsLine.structure.add(modifiedLine);
+    chordLyricsLine.structure = modifiedLine;
   }
 }
 

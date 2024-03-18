@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_indicator/loading_indicator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -22,16 +23,8 @@ class SongDetailScreen extends ConsumerStatefulWidget {
 class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   int _transposeIncrement = 0;
 
-  final _dummyStructure = [
-    Structure('S1', 1),
-    Structure('C', 2),
-    Structure('S2', 3),
-    Structure('B', 4),
-    Structure('C', 5),
-    Structure('S3', 6),
-    Structure('C', 7),
-    Structure('S4', 8),
-  ];
+  var _isReorderEnabled = false;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -42,71 +35,47 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   Widget build(BuildContext context) {
     final song = widget.song;
     return Scaffold(
+      backgroundColor: const Color(0xFFF4F4F4),
       appBar: StageAppBar(
+        background: const Color(0xFFF4F4F4),
         isBackButtonVisible: true,
         title: widget.song.title ?? '',
+        trailing: _buildLeading(context),
       ),
       body: Padding(
         padding: defaultScreenHorizontalPadding,
         child: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Key: ${song.key}'),
-              const Text('Structura: S1, R, B, C, B, I'),
-              SizedBox(
-                height: 100,
-                width: 300,
-                child: ReorderableListView(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  children: _dummyStructure
-                      .map((Structure item) => Container(
-                            margin: const EdgeInsets.all(2),
-                            color: Colors.red,
-                            key: ValueKey(item.id),
-                            width: 30,
-                            alignment: Alignment.center,
-                            child: Text(item.name),
-                          ))
-                      .toList(),
-                  onReorder: (int oldIndex, int newIndex) {
-                    setState(() {
-                      // If dragging an item to a position after itself, Flutter already accounts for the movement,
-                      // so we need to subtract 1 from the new index.
-                      if (newIndex > oldIndex) {
-                        newIndex -= 1;
-                      }
-
-                      final Structure item = _dummyStructure.removeAt(oldIndex);
-                      _dummyStructure.insert(newIndex, item);
-                    });
-                  },
-                ),
-              ),
               const SizedBox(
-                height: 20,
+                height: Insets.normal,
               ),
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _transposeIncrement--;
-                      });
-                    },
-                    child: const Text('-'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _transposeIncrement++;
-                      });
-                    },
-                    child: const Text('+'),
-                  ),
-                ],
+              const EditableStructureList(),
+              const SizedBox(
+                height: Insets.normal,
               ),
+              // Row(
+              //   children: [
+              //     TextButton(
+              //       onPressed: () {
+              //         setState(() {
+              //           _transposeIncrement--;
+              //         });
+              //       },
+              //       child: const Text('-'),
+              //     ),
+              //     TextButton(
+              //       onPressed: () {
+              //         setState(() {
+              //           _transposeIncrement++;
+              //         });
+              //       },
+              //       child: const Text('+'),
+              //     ),
+              //   ],
+              // ),
               SongDetailWidget(
                 transposeIncrement: _transposeIncrement,
                 widgetPadding: 16 + 10,
@@ -131,31 +100,58 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     );
   }
 
-  Widget _buildError(Object error) {
-    return Center(
-      child: Text(
-        error.toString(),
-      ),
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const Center(
-      child: SizedBox(
-        height: 50,
-        width: 50,
-        child: LoadingIndicator(
-          colors: [Colors.black],
-          indicatorType: Indicator.ballClipRotateMultiple,
+  Row _buildLeading(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+          onPressed: () {
+            setState(() {
+              _isReorderEnabled = !_isReorderEnabled;
+            });
+          },
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            child: Text('G Major',
+                style: context.textTheme.titleSmall,
+                textAlign: TextAlign.center),
+          ),
         ),
-      ),
+        SizedBox(
+          width: Insets.small,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              _isReorderEnabled = !_isReorderEnabled;
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: SvgPicture.asset(
+              'assets/icons/mixer_horizontal.svg',
+              colorFilter: const ColorFilter.mode(
+                Color(0xFF74777F),
+                BlendMode.srcIn,
+              ),
+              height: 16,
+              width: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
-}
-
-class Structure {
-  final String name;
-  final int id;
-
-  Structure(this.name, this.id);
 }
