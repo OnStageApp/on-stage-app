@@ -12,22 +12,12 @@ class SongNotifier extends _$SongNotifier {
     return const SongState();
   }
 
-  Future<void> init() async {
-    if (state.song != null) {
-      return;
-    }
-    logger.i('init song provider state');
-  }
-
   Future<void> getSongById(String songId) async {
     state = state.copyWith(isLoading: true);
     final song =
     await ref.read(songRepositoryProvider.notifier).getSongById(songId);
 
-    state = state.copyWith(currentSong: song, isLoading: false);
+    state = state.copyWith(song: song, isLoading: false);
 
   }
-
-
-
 }

@@ -32,5 +32,6 @@ class UserDummy {
     ),
     username: 'emf',
     password: '1234',
+    email: 'manufarcau@eu.com'
   );
 }

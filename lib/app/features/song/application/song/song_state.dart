@@ -19,11 +19,11 @@ class SongState extends Equatable {
   ];
 
   SongState copyWith({
-    SongModel? currentSong,
+    SongModel? song,
     bool? isLoading,
   }) {
     return SongState(
-      song: currentSong ?? this.song,
+      song: song ?? this.song,
       isLoading: isLoading ?? this.isLoading,
     );
   }

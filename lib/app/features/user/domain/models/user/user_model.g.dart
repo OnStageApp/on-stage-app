@@ -11,6 +11,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
       username: json['username'] as String,
       password: json['password'] as String,
+      email: json['email'] as String,
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -19,4 +20,5 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'profile': instance.profile,
       'username': instance.username,
       'password': instance.password,
+      'email': instance.email,
     };

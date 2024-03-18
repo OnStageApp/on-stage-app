@@ -23,9 +23,9 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      final bytes = await pickedImage.readAsBytes(); // Read image bytes
+      final bytes = await pickedImage.readAsBytes();
       setState(() {
-        _imageBytes = bytes; // Set image bytes
+        _imageBytes = bytes;
       });
     }
   }
@@ -42,8 +42,8 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
             decoration: const BoxDecoration(shape: BoxShape.circle),
             child: _imageBytes != null
                 ? Container(
-                    width: 64, // Set width as desired
-                    height: 64, // Set height as desired
+                    width: 64,
+                    height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(

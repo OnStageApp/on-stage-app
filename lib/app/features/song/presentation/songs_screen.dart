@@ -24,7 +24,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   List<SongOverview> _songs = List.empty(growable: true);
   final FocusNode _focusNode = FocusNode();
   bool _isSearching = false;
-  TextEditingController searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -69,10 +69,10 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             tag: 'searchBar',
             child: StageSearchBar(
               focusNode: _focusNode,
-              controller: searchController,
+              controller: _searchController,
               onClosed: () {
                 if (context.canPop()) context.pop();
-                searchController.clear();
+                _searchController.clear();
               },
               onChanged: (value) {
                 if (value.isEmpty) {
@@ -114,7 +114,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
                 ),
               const SizedBox(height: Insets.medium),
               if (ref.watch(loadingProvider.notifier).state)
-                _buildLoadingIndicator()
+                const OnStageLoadingIndicator()
               else
                 _buildSongs(),
             ],
@@ -131,10 +131,12 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
       itemCount: _songs.length,
       itemBuilder: (context, index) {
         final song = _songs[index];
+        final isLastSong = index == _songs.length -1;
 
         return Column(
           children: [
             SongTile(song: song),
+            if(!isLastSong)
             Divider(
               color: context.colorScheme.outlineVariant,
               thickness: 1,
