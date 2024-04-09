@@ -6,12 +6,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StageAppBar({
     required this.title,
+    this.titleWidget,
     this.trailing,
     this.isBackButtonVisible = false,
     super.key,
   });
 
   final String title;
+  final Widget? titleWidget;
   final bool isBackButtonVisible;
   final Widget? trailing;
 
@@ -23,13 +25,13 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: context.colorScheme.background,
         leading: _buildLeading(context),
         centerTitle: isBackButtonVisible,
-        title: Text(
-          title,
-          style: context.textTheme.headlineMedium?.copyWith(
-            fontSize: isBackButtonVisible ? 20 : 28,
-            color: context.colorScheme.shadow,
-          ),
-        ),
+        title: titleWidget ?? Text(
+                title,
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontSize: isBackButtonVisible ? 20 : 28,
+                  color: context.colorScheme.shadow,
+                ),
+              ),
         automaticallyImplyLeading: false,
         actions: [trailing ?? const SizedBox()],
         surfaceTintColor: context.colorScheme.background,

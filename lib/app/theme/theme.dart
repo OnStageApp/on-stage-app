@@ -24,91 +24,91 @@ final onStageDarkTheme = ThemeData.from(
 );
 
 final TextTheme _onStageTextTheme = TextTheme(
-  displayLarge: GoogleFonts.montserrat(
+  displayLarge: GoogleFonts.dmSans(
     fontSize: 57,
     height: 64.0 / 57.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  displayMedium: GoogleFonts.montserrat(
+  displayMedium: GoogleFonts.dmSans(
     fontSize: 45,
     height: 52.0 / 45.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  displaySmall: GoogleFonts.montserrat(
+  displaySmall: GoogleFonts.dmSans(
     fontSize: 36,
     height: 44.0 / 36.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  headlineLarge: GoogleFonts.montserrat(
+  headlineLarge: GoogleFonts.dmSans(
     fontSize: 32,
     height: 40.0 / 32.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  headlineMedium: GoogleFonts.montserrat(
+  headlineMedium: GoogleFonts.dmSans(
     fontSize: 28,
     height: 36.0 / 28.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w600,
   ),
-  headlineSmall: GoogleFonts.montserrat(
+  headlineSmall: GoogleFonts.dmSans(
     fontSize: 22,
     height: 32.0 / 22.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  titleLarge: GoogleFonts.montserrat(
+  titleLarge: GoogleFonts.dmSans(
     fontSize: 18,
     height: 28.0 / 22.0,
     letterSpacing: 0,
     fontWeight: FontWeight.w400,
   ),
-  titleMedium: GoogleFonts.montserrat(
+  titleMedium: GoogleFonts.dmSans(
     fontSize: 18,
     height: 24.0 / 16.0,
     letterSpacing: 0.15,
     fontWeight: FontWeight.w500,
   ),
-  titleSmall: GoogleFonts.montserrat(
+  titleSmall: GoogleFonts.dmSans(
     fontSize: 14,
     height: 20.0 / 14.0,
     letterSpacing: 0.1,
     fontWeight: FontWeight.w600,
   ),
-  labelLarge: GoogleFonts.montserrat(
+  labelLarge: GoogleFonts.dmSans(
     fontSize: 14,
     height: 20.0 / 14.0,
     letterSpacing: 0.1,
     fontWeight: FontWeight.w500,
   ),
-  labelMedium: GoogleFonts.montserrat(
+  labelMedium: GoogleFonts.dmSans(
     fontSize: 12,
     height: 16.0 / 12.0,
     letterSpacing: 0.5,
     fontWeight: FontWeight.w500,
   ),
-  labelSmall: GoogleFonts.montserrat(
+  labelSmall: GoogleFonts.dmSans(
     fontSize: 11,
     height: 16.0 / 11.0,
     letterSpacing: 0.5,
     fontWeight: FontWeight.w500,
   ),
-  bodyLarge: GoogleFonts.montserrat(
+  bodyLarge: GoogleFonts.dmSans(
     fontSize: 16,
     height: 24.0 / 16.0,
     letterSpacing: 0.15,
     fontWeight: FontWeight.w400,
   ),
-  bodyMedium: GoogleFonts.montserrat(
+  bodyMedium: GoogleFonts.dmSans(
     fontSize: 14,
     height: 20.0 / 14.0,
     letterSpacing: 0.25,
     fontWeight: FontWeight.w400,
   ),
-  bodySmall: GoogleFonts.montserrat(
+  bodySmall: GoogleFonts.dmSans(
     fontSize: 12,
     height: 16.0 / 12.0,
     letterSpacing: 0.40,
@@ -134,12 +134,12 @@ const lightColorScheme = ColorScheme(
   errorContainer: Color(0xFFFFDAD6),
   onError: Color(0xFFFFFFFF),
   onErrorContainer: Color(0xFF410002),
-  background: Color(0xFFFDFCF7),
-  onBackground: Color(0xFFF3F2EA),
+  background: Color(0xFFF4F4F4),
+  onBackground: Color(0xFFE2E2E5),
   surface: Color(0xFF3D3D3D),
   onSurface: Color(0xFF1C1B1E),
   surfaceVariant: Color(0xFFE0E2EC),
-  onSurfaceVariant: Color(0xFF49454F),
+  onSurfaceVariant: Color(0xFF7F818B),
   outline: Color(0xFF938F99),
   outlineVariant: Color(0xFFE3E3E3),
   onInverseSurface: Color(0xFFBBC6C8),
@@ -194,6 +194,6 @@ class Insets {
 }
 
 const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
-const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
+const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 12);
 const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 64, 24, 0);
 const defaultAppBarHeight = 48.0;
