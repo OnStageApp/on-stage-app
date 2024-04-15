@@ -55,6 +55,10 @@ class API {
       },
     );
   }
+  
+  static Uri getSong(String songId){
+    return Uri.https(apiUrl, 'songs/$songId');
+  }
 
   static Uri get createEvent {
     return Uri.https(apiUrl, 'event');

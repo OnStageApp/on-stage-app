@@ -9,11 +9,11 @@ class FirebaseNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    _showToken();
+    await _showToken();
     await FirebaseMessaging.instance.requestPermission();
   }
 
-  _showToken() async {
+  Future<void> _showToken() async {
     final token = await FirebaseMessaging.instance.getToken();
     logger.i('Token: $token');
   }

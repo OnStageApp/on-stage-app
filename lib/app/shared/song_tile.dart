@@ -22,75 +22,95 @@ class _SongTileState extends State<SongTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          onTap: () {
-            context.pushNamed(AppRoute.song.name,
-                extra: SongDummy.playlist.first);
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+      onTap: () {
+        context.pushNamed(AppRoute.song.name, extra: SongDummy.playlist.first);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding:
+              const EdgeInsets.only(left: 5, top: 5, right: 12, bottom: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                widget.song.title ?? '',
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 1,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.song.title ?? '',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: Insets.smaller),
+                    Row(
+                      children: [
+                        Text(
+                          'widget.song.artist' ?? '',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(color: Color(0xFF7F818B)),
+                        ),
+                        // _buildCircle(context),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        _buildKey(context),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: Insets.smaller),
-              Row(
-                children: [
-                  Text(
-                    widget.song.artist ?? '',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  _buildCircle(context),
-                  _buildKey(context),
-                  _buildCircle(context),
-                  Text(
-                    '148 bpm',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    saved = !saved;
+                  });
+                },
+                child: Icon(
+                  saved ? Icons.favorite : Icons.favorite_border,
+                  size: 28,
+                  color:
+                      saved ? const Color(0xFFF25454) : const Color(0xFF74777F),
+                ),
               ),
             ],
           ),
         ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              saved = !saved;
-            });
-          },
-          child: Icon(
-            saved ? Icons.bookmark : Icons.bookmark_border,
-            size: 28,
-            color: saved ? context.colorScheme.primary : null,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Container _buildKey(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: context.colorScheme.secondary.withOpacity(1),
-          width: 1.2,
-        ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(6),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF4F4F4),
+        // border: Border.all(
+        //   color: context.colorScheme.secondary.withOpacity(1),
+        //   width: 1.2,
+        // ),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
         ),
       ),
-      child: Text(
-        widget.song.key ?? '',
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall!
-            .copyWith(color: context.colorScheme.secondary),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Text(
+          widget.song.key ?? '',
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall!
+              .copyWith(color: const Color(0xFF7F818B)),
+        ),
       ),
     );
   }

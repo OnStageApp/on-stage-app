@@ -6,10 +6,11 @@ import 'package:on_stage_app/app/features/event/presentation/events_screen.dart'
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
-import 'package:on_stage_app/app/features/profile/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/features/song/presentation/favorite_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 
 export 'package:go_router/go_router.dart';
@@ -25,6 +26,7 @@ enum AppRoute {
   profile,
   song,
   notification,
+  favorites,
 }
 
 class AppRouter {
@@ -105,6 +107,11 @@ class AppRouter {
               name: AppRoute.notification.name,
               path: 'notification',
               builder: (context, state) => const NotificationPage(),
+            ),
+            GoRoute(
+              name: AppRoute.favorites.name,
+              path: 'favorites',
+              builder: (context, state) => const FavoriteSongsScreen(),
             ),
           ]),
     ],

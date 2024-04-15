@@ -203,7 +203,6 @@ class SongDummy {
           "<Verse> Esti Marele \"Eu sunt\" [G] \n"
           "In lumina umbrei Tale ma ascund [Am]\n"
           "[Em]Acoperit de har [G]",
-      tab: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       key: 'G major',
       createdAt: '2021-08-01T00:00:00.000Z',
       updatedAt: '2021-08-01T00:00:00.000Z',

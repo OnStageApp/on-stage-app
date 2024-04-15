@@ -65,7 +65,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
       overlayColor:
           MaterialStateColor.resolveWith((states) => Colors.transparent),
       backgroundColor: MaterialStateColor.resolveWith(
-        (states) => context.colorScheme.onBackground,
+        (states) => const Color(0xFFE2E2E5),
       ),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
@@ -73,7 +73,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
         ),
       ),
       leading: Padding(
-        padding: const EdgeInsets.only(left: 8, right: 0),
+        padding: const EdgeInsets.only(left: 8),
         child: AnimatedOpacity(
           opacity: widget.focusNode.hasFocus ? 1 : 0.7,
           duration: animationDuration,

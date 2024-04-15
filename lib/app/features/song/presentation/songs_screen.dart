@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
-import 'package:on_stage_app/app/features/song/application/songs_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
+import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -24,7 +25,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   List<SongModel> _songs = List.empty(growable: true);
   final FocusNode _focusNode = FocusNode();
   bool _isSearching = false;
-  TextEditingController searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -52,8 +53,28 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
     // _songs = ref.watch(songsNotifierProvider).filteredSongs;
     _songs = SongDummy.playlist;
     return Scaffold(
-      appBar: const StageAppBar(
-        title: 'Songs',
+      appBar: StageAppBar(
+        titleWidget: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: ref.read(songsNotifierProvider).songs.length.toString(),
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontSize: 28,
+                  color: const Color(0xFF7F818B),
+                ),
+              ),
+              TextSpan(
+                text: ' Songs',
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontSize: 28,
+                  color: context.colorScheme.shadow,
+                ),
+              ),
+            ],
+          ),
+        ),
+        title: '',
       ),
       body: _buildContent(context),
       // body: ref.watch(songsNotifierProvider).isLoading
@@ -72,10 +93,10 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             tag: 'searchBar',
             child: StageSearchBar(
               focusNode: _focusNode,
-              controller: searchController,
+              controller: _searchController,
               onClosed: () {
                 if (context.canPop()) context.pop();
-                searchController.clear();
+                _searchController.clear();
               },
               onChanged: (value) {
                 if (value.isEmpty) {
@@ -89,21 +110,6 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             ),
           ),
         ),
-        if (!_isSearching) ...[
-          const SizedBox(height: Insets.medium),
-          Padding(
-            padding: defaultScreenHorizontalPadding,
-            child: Text(
-              'Upcoming Events',
-              style: context.textTheme.headlineMedium,
-            ),
-          ),
-          const SizedBox(height: Insets.medium),
-          Container(
-            padding: EdgeInsets.zero,
-            child: _buildUpcomingEvents(),
-          ),
-        ],
         const SizedBox(height: Insets.large),
         Padding(
           padding: defaultScreenHorizontalPadding,
@@ -117,7 +123,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
                 ),
               const SizedBox(height: Insets.medium),
               if (ref.watch(loadingProvider.notifier).state)
-                _buildLoadingIndicator()
+                const OnStageLoadingIndicator()
               else
                 _buildSongs(),
             ],
@@ -134,15 +140,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
       itemCount: _songs.length,
       itemBuilder: (context, index) {
         final song = _songs[index];
+        final isLastSong = index == _songs.length - 1;
 
         return Column(
           children: [
+            SizedBox(height: 6),
             SongTile(song: song),
-            Divider(
-              color: context.colorScheme.outlineVariant,
-              thickness: 1,
-              height: Insets.medium,
-            ),
+            SizedBox(height: 6),
           ],
         );
       },

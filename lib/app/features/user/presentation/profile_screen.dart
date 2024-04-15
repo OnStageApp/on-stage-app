@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/profile/presentation/widgets/profile_tile.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/profile_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/divider_widget.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
@@ -45,7 +45,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ],
                     ),
                     const Spacer(),
-                    const ProfileImageWidget(canChangeProfilePicture: true),
+                    const ProfileImageWidget(canChangeProfilePicture: true,),
                   ],
                 ),
                 const SizedBox(height: 48),
@@ -56,7 +56,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       icon: Icons.bookmark,
                       title: 'Saved Songs',
                       totalNumber: '5',
-                      onTap: () {},
+                      onTap: () => context.pushNamed(AppRoute.favorites.name),
                     ),
                     const DividerWidget(),
                     ProfileTile(

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,15 +16,18 @@ class ProfileImageWidget extends StatefulWidget {
 }
 
 class _ProfileImageWidgetState extends State<ProfileImageWidget> {
-  XFile? _imageFile;
+  Uint8List? _imageBytes;
 
   Future<void> _selectImage() async {
     context.popDialog();
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      _imageFile = pickedImage;
-    });
+    if (pickedImage != null) {
+      final bytes = await pickedImage.readAsBytes();
+      setState(() {
+        _imageBytes = bytes;
+      });
+    }
   }
 
   @override
@@ -33,30 +36,31 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
       children: <Widget>[
         GestureDetector(
           onTap: widget.canChangeProfilePicture
-              ? () => showCustomBottomSheet(context)
+              ? () => _showCustomBottomSheet(context)
               : null,
           child: Container(
             decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: _imageFile != null
+            child: _imageBytes != null
                 ? Container(
+                    width: 64,
+                    height: 64,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: FileImage(
-                          File(_imageFile!.path),
-                        ),
+                        image: MemoryImage(_imageBytes!),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   )
                 : Container(
                     decoration: BoxDecoration(
                       color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                     child: const Icon(
                       Icons.person,
                       color: Colors.white,
-                      size: 52,
+                      size: 64,
                     ),
                   ),
           ),
@@ -65,21 +69,33 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
     );
   }
 
-  Future<void> showCustomBottomSheet(BuildContext context) async {
+  Future<void> _showCustomBottomSheet(BuildContext context) async {
     await showModalBottomSheet(
-      backgroundColor: context.colorScheme.primary,
+      backgroundColor: Colors.white,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const CloseHeader(
           title: SizedBox(),
         ),
         headerHeight: () => CloseHeader.height,
-        footerHeight: () => 59,
+        footerHeight: () => 64,
         buildContent: () => Container(
-          margin: const EdgeInsets.only(right: 32, left: 32),
+          margin: const EdgeInsets.only(right: 64, left: 64),
           child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+                  return context.colorScheme.onPrimary;
+                },
+              ),
+            ),
             onPressed: _selectImage,
-            child: const Text('Change Profile Picture'),
+            child: Text(
+              'Change Profile Picture',
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: context.colorScheme.surface,
+              ),
+            ),
           ),
         ),
       ),
