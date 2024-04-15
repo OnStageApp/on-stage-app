@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/lyrics/chord_parser.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
+import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
+import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/domain/models/structure/structure.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/widget_utils.dart';
 
-class SongDetailWidget extends StatefulWidget {
+class SongDetailWidget extends ConsumerStatefulWidget {
   const SongDetailWidget({
     required this.lyrics,
-    required this.textStyle,
-    required this.chordStyle,
-    required this.structureStyle,
+    // required this.textStyle,
+    // required this.chordStyle,
+    // required this.structureStyle,
     required this.onTapChord,
+    // required this.chorusStyle,
     super.key,
-    this.chorusStyle,
-    this.commentStyle,
-    this.capoStyle,
+    // this.capoStyle,
     this.scaleFactor = 1.0,
     this.showChord = true,
     this.widgetPadding = 0,
@@ -29,9 +37,9 @@ class SongDetailWidget extends StatefulWidget {
   });
 
   final String lyrics;
-  final TextStyle textStyle;
-  final TextStyle chordStyle;
-  final TextStyle structureStyle;
+  // final TextStyle textStyle;
+  // final TextStyle chordStyle;
+  // final TextStyle structureStyle;
   final bool showChord;
   final Function onTapChord;
 
@@ -68,42 +76,77 @@ class SongDetailWidget extends StatefulWidget {
   final ScrollPhysics scrollPhysics;
 
   /// If not defined it will be the bold version of [textStyle]
-  final TextStyle? chorusStyle;
+  // final TextStyle chorusStyle;
 
   /// If not defined it will be the italic version of [textStyle]
-  final TextStyle? capoStyle;
-
-  /// If not defined it will be the italic version of [textStyle]
-  final TextStyle? commentStyle;
+  // final TextStyle? capoStyle;
 
   @override
-  State<SongDetailWidget> createState() => _SongDetailWidgetState();
+  SongDetailWidgetState createState() => SongDetailWidgetState();
 }
 
-class _SongDetailWidgetState extends State<SongDetailWidget> {
+class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   late final ScrollController _controller;
-  late TextStyle chorusStyle;
+
+  // late TextStyle chorusStyle;
   late TextStyle capoStyle;
   late TextStyle commentStyle;
-  bool _isChorus = false;
-  bool _isComment = false;
+  List<Section> _sections = List.empty(growable: true);
+  ChordLyricsDocument? _chordLyricsDocument;
+
+  List<Structure> _structures = List.empty(growable: true);
+  final Map<int, GlobalKey> _itemKey = {};
+  final _scrollController = ScrollController();
+
+  late TextStyle _textStyle;
+  late TextStyle _chordStyle;
 
   @override
   void initState() {
     super.initState();
-    chorusStyle = widget.chorusStyle ??
-        widget.textStyle.copyWith(fontWeight: FontWeight.bold);
-    capoStyle = widget.capoStyle ??
-        widget.textStyle.copyWith(fontStyle: FontStyle.italic);
-    commentStyle = widget.commentStyle ??
-        widget.textStyle.copyWith(
-          fontStyle: FontStyle.italic,
-          fontSize: widget.textStyle.fontSize! - 2,
-        );
+
     _controller = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToEnd();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _getTextStyles();
+      await _processSong();
     });
+  }
+
+  void _getTextStyles() {
+    _textStyle = WidgetUtils.LYRICS_DEFAULT_STYLE.copyWith(
+      fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+    );
+    _chordStyle = WidgetUtils.CHORDS_DEFAULT_STYLE.copyWith(
+      fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+    );
+  }
+
+  Future<void> _processSong() async {
+    _processText();
+    setState(() {
+      _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
+      final lines = _chordLyricsDocument!.chordLyricsLines;
+      ref.read(songNotifierProvider.notifier).getSections(lines);
+      _sections = ref.watch(songNotifierProvider).sections;
+      _structures = _sections.map((e) => e.structure).toList();
+      for (var i = 0; i < _structures.length; i++) {
+        _itemKey[i] = GlobalKey();
+      }
+    });
+  }
+
+  void _processText() {
+    ref.read(chordProcessorProvider.notifier).processText(
+          text: ref.watch(songNotifierProvider).song.lyrics!,
+          lyricsStyle: _textStyle,
+          chordStyle: _chordStyle,
+          widgetPadding: widget.widgetPadding,
+          scaleFactor: widget.scaleFactor,
+          transposeIncrement:
+              ref.watch(songNotifierProvider).transposeIncremenet,
+          media: MediaQuery.of(context).size.width - 48,
+        );
   }
 
   @override
@@ -112,72 +155,29 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
     super.dispose();
   }
 
-  TextStyle getLineTextStyle() {
-    if (_isChorus) {
-      return chorusStyle;
-    } else if (_isComment) {
-      return commentStyle;
-    } else {
-      return widget.textStyle;
-    }
-  }
-
-  void getVerse() {}
-
   @override
   Widget build(BuildContext context) {
-    final chordProcessor = ChordProcessor(context, widget.chordNotation);
-    final chordLyricsDocument = chordProcessor.processText(
-      text: widget.lyrics,
-      lyricsStyle: widget.textStyle,
-      chordStyle: widget.chordStyle,
-      chorusStyle: chorusStyle,
-      widgetPadding: widget.widgetPadding,
-      scaleFactor: widget.scaleFactor,
-      transposeIncrement: widget.transposeIncrement,
-    );
-    final structures = <String>[];
-    chordLyricsDocument.chordLyricsLines.map((e) {
-      structures.add(e.structure);
-    }).toList();
-
-    var lines = chordLyricsDocument.chordLyricsLines;
-    List<SongObject> sections = [];
-    List<ChordLyricsLine> items = [];
-    String structure = '';
-    for (int i = 0; i < lines.length; i++) {
-      if (lines[i].structure.isNotNullEmptyOrWhitespace ||
-          i == lines.length - 1) {
-        if (items.isNotEmpty) {
-          print('Items added ${items.length}');
-          print('items added as  $structure');
-          sections.add(SongObject(items, structure));
-        }
-        print('Structure: ${lines[i].structure}');
-        print('items: ${items.length} ${items.map((e) => e.lyrics)}');
-        print('lyrics: ${lines[i].lyrics}');
-
-        structure = lines[i].structure;
-        items = [];
-      } else {
-        print(lines[i].lyrics);
-        items.add(lines[i]);
-      }
-    }
-    print('asdasdasdsa');
-    print(sections);
-
-    if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
+    _listens();
+    if (_chordLyricsDocument == null) return Container();
+    if (_chordLyricsDocument!.chordLyricsLines.isEmpty) return Container();
     return SingleChildScrollView(
       controller: _controller,
       physics: widget.scrollPhysics,
       child: Column(
         crossAxisAlignment: widget.horizontalAlignment,
         children: [
+          const SizedBox(
+            height: 12,
+          ),
+          EditableStructureList(structure: _structures),
+          const SizedBox(
+            height: 24,
+          ),
           ListView.builder(
+            controller: _scrollController,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: sections.length,
+            itemCount: _sections.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -186,77 +186,143 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (sections[index].structure.isNotEmpty)
-                      Container(
-                        child: RichText(
-                          text: TextSpan(
-                            text: sections[index].structure,
-                            style: widget.structureStyle,
-                          ),
-                          textScaler: TextScaler.linear(widget.scaleFactor),
-                        ),
-                      ),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: widget.lineHeight,
-                      ),
-                      itemCount: sections[index].lines.length,
-                      itemBuilder: (context, index2) {
-                        final line = sections[index].lines[index2];
-                        if (line.isStartOfChorus()) {
-                          _isChorus = true;
-                        }
-                        if (line.isEndOfChorus()) {
-                          _isChorus = false;
-                        }
-                        if (line.isComment()) {
-                          _isComment = true;
-                        } else {
-                          _isComment = false;
-                        }
-                        return Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (widget.showChord) _buildChordsLine(line),
-                              RichText(
-                                text: TextSpan(
-                                  text: line.lyrics,
-                                  style: getLineTextStyle(),
-                                ),
-                                textScaler:
-                                    TextScaler.linear(widget.scaleFactor),
-                              ),
-                              Container(
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: line.structure.isNotEmpty
-                                        ? line.structure
-                                        : '',
-                                    style: widget.structureStyle,
-                                  ),
-                                  textScaler:
-                                      TextScaler.linear(widget.scaleFactor),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                child: _buildLines(index, context),
               );
             },
           ),
           if (widget.trailingWidget != null) widget.trailingWidget!,
         ],
       ),
+    );
+  }
+
+  void _listens() {
+    ref
+      ..listen(preferencesNotifierProvider, (previous, next) {
+        setState(() {
+          _textStyle = _textStyle.copyWith(
+            fontSize:
+                ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+          );
+          _chordStyle = _chordStyle.copyWith(
+            fontSize:
+                ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+          );
+        });
+        _processSong();
+      })
+      ..listen(songNotifierProvider, (previous, next) {
+        if (previous?.selectedSectionIndex != next.selectedSectionIndex) {
+          _scrollToIndex();
+        }
+      })
+      ..listen(songNotifierProvider, (previous, next) {
+        if (previous?.transposeIncremenet != next.transposeIncremenet) {
+          _processText();
+          _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
+          final lines = _chordLyricsDocument!.chordLyricsLines;
+          ref.read(songNotifierProvider.notifier).getSections(lines);
+          _sections = ref.watch(songNotifierProvider).sections;
+          _structures = _sections.map((e) => e.structure).toList();
+        }
+      });
+  }
+
+  void _scrollToIndex() {
+    final item = ref.watch(songNotifierProvider).selectedSectionIndex;
+    if (item == null) return;
+
+    final indexToScrollTo =
+        _structures.indexWhere((element) => element.item == item);
+    if (indexToScrollTo == -1) return;
+
+    setState(() {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 300),
+      );
+
+      Future.delayed(const Duration(milliseconds: 350), () {
+        final globalKey = _itemKey[indexToScrollTo];
+        if (globalKey != null) {
+          final itemContext = globalKey.currentContext;
+          if (itemContext != null) {
+            Scrollable.ensureVisible(
+              itemContext,
+              alignment: 0.5,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        }
+      });
+    });
+  }
+
+  Widget _buildLines(int index, BuildContext context) {
+    return Column(
+      key: _itemKey[index],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(60),
+            color: Color(_sections[index].structure.item.color),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Text(
+                  _sections[index].structure.item.shortName,
+                  style: context.textTheme.labelMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                _sections[index].structure.item.name,
+                style: context.textTheme.labelLarge!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(width: 12),
+            ],
+          ),
+        ),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          separatorBuilder: (context, index) => SizedBox(
+            height: widget.lineHeight,
+          ),
+          itemCount: _sections[index].lines.length,
+          itemBuilder: (context, index2) {
+            final line = _sections[index].lines[index2];
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.showChord) _buildChordsLine(line),
+                RichText(
+                  text: TextSpan(
+                    text: line.lyrics,
+                    style: _textStyle,
+                  ),
+                  textScaler: TextScaler.linear(widget.scaleFactor),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -272,10 +338,9 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
                 GestureDetector(
                   onTap: () => widget.onTapChord(chord.chordText),
                   child: RichText(
-                    textScaleFactor: widget.scaleFactor,
                     text: TextSpan(
                       text: chord.chordText,
-                      style: widget.chordStyle,
+                      style: _chordStyle,
                     ),
                   ),
                 ),
@@ -289,30 +354,6 @@ class _SongDetailWidgetState extends State<SongDetailWidget> {
   @override
   void didUpdateWidget(covariant SongDetailWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.scrollSpeed != widget.scrollSpeed) {
-      _scrollToEnd();
-    }
-  }
-
-  void _scrollToEnd() {
-    if (widget.scrollSpeed <= 0) {
-      // stop scrolling if the speed is 0 or less
-      _controller.jumpTo(_controller.offset);
-      return;
-    }
-
-    if (_controller.offset >= _controller.position.maxScrollExtent) return;
-
-    final seconds =
-        (_controller.position.maxScrollExtent / (widget.scrollSpeed)).floor();
-
-    _controller.animateTo(
-      _controller.position.maxScrollExtent,
-      duration: Duration(
-        seconds: seconds,
-      ),
-      curve: Curves.linear,
-    );
   }
 }
 
@@ -344,9 +385,9 @@ class TextRender extends CustomPainter {
   }
 }
 
-class SongObject {
-  final List<ChordLyricsLine> lines;
-  final String structure;
+class Section {
+  Section(this.lines, this.structure);
 
-  SongObject(this.lines, this.structure);
+  final List<ChordLyricsLine> lines;
+  final Structure structure;
 }

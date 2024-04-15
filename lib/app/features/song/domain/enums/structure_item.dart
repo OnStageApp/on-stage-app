@@ -19,6 +19,55 @@ enum StructureItem {
   B2,
   B3,
   E,
+  none,
+}
+
+StructureItem stringToEnum(String value) {
+  // generetae for all
+  switch (value) {
+    case 'Verse':
+      return StructureItem.V1;
+    case 'V2':
+      return StructureItem.V2;
+    case 'V3':
+      return StructureItem.V3;
+    case 'V4':
+      return StructureItem.V4;
+    case 'V5':
+      return StructureItem.V5;
+    case 'V6':
+      return StructureItem.V6;
+    case 'V7':
+      return StructureItem.V7;
+    case 'C':
+      return StructureItem.C;
+    case 'Chorus':
+      return StructureItem.C1;
+    case 'C2':
+      return StructureItem.C2;
+    case 'C3':
+      return StructureItem.C3;
+    case 'Bridge':
+      return StructureItem.B;
+    case 'I':
+      return StructureItem.I;
+    case 'I1':
+      return StructureItem.I1;
+    case 'I2':
+      return StructureItem.I2;
+    case 'I3':
+      return StructureItem.I3;
+    case 'B1':
+      return StructureItem.B1;
+    case 'B2':
+      return StructureItem.B2;
+    case 'B3':
+      return StructureItem.B3;
+    case 'E':
+      return StructureItem.E;
+    default:
+      return StructureItem.none;
+  }
 }
 
 extension StructureItemExtension on StructureItem {
@@ -64,6 +113,8 @@ extension StructureItemExtension on StructureItem {
         return 'B3';
       case StructureItem.E:
         return 'E';
+      case StructureItem.none:
+        return '';
     }
   }
 
@@ -109,6 +160,8 @@ extension StructureItemExtension on StructureItem {
         return 'Bridge 3';
       case StructureItem.E:
         return 'Ending';
+      case StructureItem.none:
+        return '';
     }
   }
 
@@ -153,6 +206,8 @@ extension StructureItemExtension on StructureItem {
       case StructureItem.I3:
         return 0xFF9FFFA3;
       case StructureItem.E:
+        return 0xFFB29FFF;
+      case StructureItem.none:
         return 0xFFB29FFF;
     }
   }

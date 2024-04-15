@@ -13,4 +13,16 @@ class WidgetUtils {
       ),
     );
   }
+
+  static TextStyle LYRICS_DEFAULT_STYLE = const TextStyle(
+    fontFamily: 'DMSans',
+    fontSize: 16,
+    color: Colors.black,
+  );
+  static TextStyle CHORDS_DEFAULT_STYLE = const TextStyle(
+    fontFamily: 'DMSans',
+    fontSize: 16,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  );
 }

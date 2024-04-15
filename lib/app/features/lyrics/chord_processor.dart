@@ -1,32 +1,39 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/lyrics/chord_processor_state.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
+import 'package:on_stage_app/app/features/song/application/song/helpers/metadata_handler.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class ChordProcessor {
-  ChordProcessor(this.context, [this.chordNotation = ChordNotation.american])
-      : chordTransposer = ChordTransposer(chordNotation),
-        media = MediaQuery.of(context).size.width;
-  final BuildContext context;
-  final ChordNotation chordNotation;
-  final ChordTransposer chordTransposer;
-  final double media;
+part 'chord_processor.g.dart';
+
+@Riverpod(keepAlive: true)
+class ChordProcessor extends _$ChordProcessor {
+  @override
+  ChordProcessorState build() {
+    return const ChordProcessorState();
+  }
+
   late double _textScaleFactor;
 
   bool isChorus = false;
 
   /// Process the text to get the parsed ChordLyricsDocument
-  ChordLyricsDocument processText({
+  void processText({
     required String text,
     required TextStyle lyricsStyle,
     required TextStyle chordStyle,
-    required TextStyle chorusStyle,
+    // required TextStyle chorusStyle,
+    required double media,
     double scaleFactor = 1.0,
     int widgetPadding = 0,
     int transposeIncrement = 0,
   }) {
+    var chordTransposer =
+        ChordTransposer(ChordNotation.american, transpose: transposeIncrement);
     text = _breakOnStructure(text);
     final lines = text.split(RegExp(r'(\{[^\}]*\})|\n'));
     final metadata = MetadataHandler();
@@ -41,12 +48,13 @@ class ChordProcessor {
     for (var i = 0; i < lines.length; i++) {
       currentLine = lines[i];
 
-      if (_isLongLine(currentLine, lyricsStyle)) {
+      if (_isLongLine(currentLine, lyricsStyle, media)) {
         _handleLongLine(
           currentLine: currentLine,
           newLines: newLines,
           lyricsStyle: lyricsStyle,
           widgetPadding: widgetPadding,
+          media: media,
         );
       } else {
         //otherwise just add the regular line
@@ -60,21 +68,24 @@ class ChordProcessor {
             line,
             lyricsStyle,
             chordStyle,
-            chorusStyle,
+            // chorusStyle,
+            chordTransposer,
           ),
         )
         .toList();
 
-    return ChordLyricsDocument(
-      chordLyricsLines,
-      capo: metadata.capo,
-      artist: metadata.artist,
-      title: metadata.title,
-      key: metadata.key,
+    state = state.copyWith(
+      document: ChordLyricsDocument(
+        chordLyricsLines,
+        capo: metadata.capo,
+        artist: metadata.artist,
+        title: metadata.title,
+        key: metadata.key,
+      ),
     );
   }
 
-  bool _isLongLine(String currentLine, TextStyle lyricsStyle) =>
+  bool _isLongLine(String currentLine, TextStyle lyricsStyle, double media) =>
       _getTextWidthFromStyle(currentLine, lyricsStyle) >= media;
 
   String _breakOnStructure(String text) {
@@ -88,6 +99,7 @@ class ChordProcessor {
     required String currentLine,
     required TextStyle lyricsStyle,
     required int widgetPadding,
+    required double media,
   }) {
     var character = '';
     var characterIndex = 0;
@@ -130,12 +142,13 @@ class ChordProcessor {
   /// Return the textwidth of the text in the given style
   double _getTextWidthFromStyle(String text, TextStyle textStyle) {
     final layout = TextPainter(
-      textScaleFactor: _textScaleFactor,
+      textScaler: TextScaler.linear(_textScaleFactor),
       text: TextSpan(text: text, style: textStyle),
       maxLines: 1,
       textDirection: TextDirection.ltr,
     )..layout();
 
+    // print('layout.size.width: ${layout.size.width}, text: $text');
     return layout.size.width;
   }
 
@@ -143,7 +156,8 @@ class ChordProcessor {
     String line,
     TextStyle lyricsStyle,
     TextStyle chordStyle,
-    TextStyle chorusStyle,
+    // TextStyle chorusStyle,
+    ChordTransposer chordTransposer,
   ) {
     final chordLyricsLine = ChordLyricsLine();
     var lyricsSoFar = '';
@@ -162,9 +176,8 @@ class ChordProcessor {
       line.split('').forEach(
         (character) {
           if (character == ']') {
-            final sizeOfLeadingLyrics = isChorus
-                ? _getTextWidthFromStyle(lyricsSoFar, chorusStyle)
-                : _getTextWidthFromStyle(lyricsSoFar, lyricsStyle);
+            final sizeOfLeadingLyrics =
+                _getTextWidthFromStyle(lyricsSoFar, lyricsStyle);
 
             final lastChordText = chordLyricsLine.chords.isNotEmpty
                 ? chordLyricsLine.chords.last.chordText
@@ -175,9 +188,15 @@ class ChordProcessor {
 
             final double leadingSpace =
                 max(0, sizeOfLeadingLyrics - lastChordWidth);
+            // print('last chord: $lastChordText');
+            // print('lyricsSoFar: $lyricsSoFar');
+            // print('text: $lastChordText');
+            // print('leadingLyrics: $sizeOfLeadingLyrics');
+            // print('widthOfLastChord: $lastChordWidth');
+            // print('leadingSpace: $leadingSpace');
 
             final transposedChord = chordTransposer.transposeChord(chordsSoFar);
-
+            print('current TRANSPOSED Chord: $transposedChord');
             chordLyricsLine.chords.add(Chord(leadingSpace, transposedChord));
             chordLyricsLine.lyrics += lyricsSoFar;
             lyricsSoFar = '';
@@ -206,69 +225,5 @@ class ChordProcessor {
       return match.group(1)!;
     });
     chordLyricsLine.structure = modifiedLine;
-  }
-}
-
-//let it here for now
-class MetadataHandler {
-  /// As specifications says "meta data is specified using “tags” surrounded by { and } characters"
-  final RegExp regMetadata = RegExp(r'^ *\{.*}');
-  final RegExp regCapo = RegExp(r'^\{capo:.*[0-9]+\}');
-  final RegExp regArtist = RegExp(r'^\{artist:.*\}');
-  final RegExp regTitle = RegExp(r'^\{title:.*\}');
-  final RegExp regKey = RegExp(r'^\{key:.*\}');
-  int? capo;
-  String? artist;
-  String? title;
-  String? key;
-
-  /// Try to find and parse metadata in the string.
-  /// Return true if there was a match
-  bool parseLine(String line) {
-    return _setCapoIfMatch(line) ||
-        _setArtistIfMatch(line) ||
-        _setKeyIfMatch(line) ||
-        _setTitleIfMatch(line);
-  }
-
-  /// Get key in line if it's present
-  /// Return true if match was found
-  bool _setKeyIfMatch(String line) {
-    final tmpKey =
-        regKey.hasMatch(line) ? _getMetadataFromLine(line, 'key:') : null;
-    key ??= tmpKey;
-    return tmpKey != null;
-  }
-
-  /// Get capo in line if it's present
-  /// Return true if match was found
-  bool _setCapoIfMatch(String line) {
-    final tmpCapo = regCapo.hasMatch(line)
-        ? int.parse(_getMetadataFromLine(line, 'capo:'))
-        : null;
-    capo ??= tmpCapo;
-    return tmpCapo != null;
-  }
-
-  /// Get artist in line if it's present
-  /// Return true if match was found
-  bool _setArtistIfMatch(String line) {
-    final tmpArtist =
-        regArtist.hasMatch(line) ? _getMetadataFromLine(line, 'artist:') : null;
-    artist ??= tmpArtist;
-    return tmpArtist != null;
-  }
-
-  /// Get title in line if it's present
-  /// Return true if match was found
-  bool _setTitleIfMatch(String line) {
-    final tmpTitle =
-        regTitle.hasMatch(line) ? _getMetadataFromLine(line, 'title:') : null;
-    title ??= tmpTitle;
-    return tmpTitle != null;
-  }
-
-  String _getMetadataFromLine(String line, String key) {
-    return line.split(key).last.split('}').first.trim();
   }
 }

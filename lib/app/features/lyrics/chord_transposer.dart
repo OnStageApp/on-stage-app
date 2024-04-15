@@ -1,10 +1,6 @@
 enum ChordNotation {
   italian,
   american,
-  german,
-  traditionalGerman,
-  french,
-  portuguese
 }
 
 class ChordTransposer {
@@ -14,8 +10,6 @@ class ChordTransposer {
         cycle = italianNotes;
       case ChordNotation.american:
         cycle = americanNotes;
-      default:
-        throw 'Other languages not implemented yet';
     }
   }
 
