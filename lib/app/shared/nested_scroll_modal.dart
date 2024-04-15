@@ -26,7 +26,7 @@ class NestedScrollModal extends StatefulWidget {
 }
 
 class _NestedScrollModalState extends State<NestedScrollModal> {
-  final ScrollPhysics _physics = const ClampingScrollPhysics();
+  final ScrollPhysics _physics = const BouncingScrollPhysics();
 
   @override
   void initState() {
@@ -91,6 +91,8 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
           ),
         if (hasFooter)
           Positioned(
+            right: 0,
+            left: 0,
             bottom: 0,
             child: footer,
           ),

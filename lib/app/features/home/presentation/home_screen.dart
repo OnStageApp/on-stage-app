@@ -77,9 +77,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           final song = songs[index];
           return Column(
             children: [
-              SongTile(
-                song: song,
-              ),
+              // SongTile(
+              //   song: song,
+              // ),
               Divider(
                 color: context.colorScheme.outlineVariant,
                 thickness: 1,

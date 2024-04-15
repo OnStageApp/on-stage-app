@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -50,30 +51,11 @@ class SongRepository extends _$SongRepository {
     return [];
   }
 
-  Future<SongModel?> getSongById(String songId) async {
-    try {
-      final uri = API.getSong(songId);
-      final response = await http.get(uri);
-      logger.fetchedRequestResponse(
-        'song',
-        response.statusCode,
-        response.body,
-      );
-
-      switch (response.statusCode) {
-        case 200:
-          final songJson = jsonDecode(response.body) as Map<String, dynamic>;
-          final song = SongModel.fromJson(songJson);
-          return song;
-        case 404:
-          logger.e('Song not found.');
-          return null;
-        default:
-          logger.e('Internal server error, please try again later.');
-      }
-    } on HttpException catch (e, s) {
-      logger.e('Failed fetching song: $e with stacktrace: $s');
-    }
-    return null;
+  Future<SongModel> fetchSong(int id) async {
+    final song = await Future.delayed(
+      const Duration(seconds: 1),
+      () => SongDummy.playlist.firstWhere((element) => element.id == id),
+    );
+    return song;
   }
 }

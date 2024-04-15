@@ -100,7 +100,7 @@ final TextTheme _onStageTextTheme = TextTheme(
     fontSize: 16,
     height: 24.0 / 16.0,
     letterSpacing: 0.15,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
   ),
   bodyMedium: GoogleFonts.dmSans(
     fontSize: 14,
@@ -109,7 +109,7 @@ final TextTheme _onStageTextTheme = TextTheme(
     fontWeight: FontWeight.w400,
   ),
   bodySmall: GoogleFonts.dmSans(
-    fontSize: 12,
+    fontSize: 16,
     height: 16.0 / 12.0,
     letterSpacing: 0.40,
     fontWeight: FontWeight.w400,
@@ -135,11 +135,11 @@ const lightColorScheme = ColorScheme(
   onError: Color(0xFFFFFFFF),
   onErrorContainer: Color(0xFF410002),
   background: Color(0xFFF4F4F4),
-  onBackground: Color(0xFFE2E2E5),
+  onBackground: Color(0xFFF3F2EA),
   surface: Color(0xFF3D3D3D),
   onSurface: Color(0xFF1C1B1E),
   surfaceVariant: Color(0xFFE0E2EC),
-  onSurfaceVariant: Color(0xFF7F818B),
+  onSurfaceVariant: Color(0xFF49454F),
   outline: Color(0xFF938F99),
   outlineVariant: Color(0xFFE3E3E3),
   onInverseSurface: Color(0xFFBBC6C8),
@@ -193,7 +193,7 @@ class Insets {
   static const double huge = 64;
 }
 
-const defaultScreenPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
-const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 12);
-const defaultAppBarPadding = EdgeInsets.fromLTRB(24, 64, 24, 0);
+const defaultScreenPadding = EdgeInsets.fromLTRB(16, 16, 16, 0);
+const defaultScreenHorizontalPadding = EdgeInsets.symmetric(horizontal: 16);
+const defaultAppBarPadding = EdgeInsets.fromLTRB(16, 64, 16, 0);
 const defaultAppBarHeight = 48.0;
