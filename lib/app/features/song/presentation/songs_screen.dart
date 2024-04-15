@@ -50,8 +50,28 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   Widget build(BuildContext context) {
     _songs = ref.watch(songsNotifierProvider).filteredSongs;
     return Scaffold(
-      appBar: const StageAppBar(
-        title: 'Songs',
+      appBar: StageAppBar(
+        titleWidget: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: ref.read(songsNotifierProvider).songs.length.toString(),
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontSize: 28,
+                  color: const Color(0xFF7F818B),
+                ),
+              ),
+              TextSpan(
+                text: ' Songs',
+                style: context.textTheme.headlineMedium?.copyWith(
+                  fontSize: 28,
+                  color: context.colorScheme.shadow,
+                ),
+              ),
+            ],
+          ),
+        ),
+        title: '',
       ),
       body: ref.watch(songsNotifierProvider).isLoading
           ? const OnStageLoadingIndicator()
@@ -86,21 +106,6 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             ),
           ),
         ),
-        if (!_isSearching) ...[
-          const SizedBox(height: Insets.medium),
-          Padding(
-            padding: defaultScreenHorizontalPadding,
-            child: Text(
-              'Upcoming Events',
-              style: context.textTheme.headlineMedium,
-            ),
-          ),
-          const SizedBox(height: Insets.medium),
-          Container(
-            padding: EdgeInsets.zero,
-            child: _buildUpcomingEvents(),
-          ),
-        ],
         const SizedBox(height: Insets.large),
         Padding(
           padding: defaultScreenHorizontalPadding,
@@ -131,17 +136,13 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
       itemCount: _songs.length,
       itemBuilder: (context, index) {
         final song = _songs[index];
-        final isLastSong = index == _songs.length -1;
+        final isLastSong = index == _songs.length - 1;
 
         return Column(
           children: [
+            SizedBox(height: 6),
             SongTile(song: song),
-            if(!isLastSong)
-            Divider(
-              color: context.colorScheme.outlineVariant,
-              thickness: 1,
-              height: Insets.medium,
-            ),
+            SizedBox(height: 6),
           ],
         );
       },
