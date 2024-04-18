@@ -13,7 +13,7 @@ class PreferencesSongStructure extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        SongStructureModal.show(context: context);
+        SongStructureModal.show(context: context, ref: ref);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

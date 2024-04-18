@@ -7,7 +7,7 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/structure/structure.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -94,7 +94,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   List<Section> _sections = List.empty(growable: true);
   ChordLyricsDocument? _chordLyricsDocument;
 
-  List<Structure> _structures = List.empty(growable: true);
+  List<SongStructure> _structures = List.empty(growable: true);
   final Map<int, GlobalKey> _itemKey = {};
   final _scrollController = ScrollController();
 
@@ -169,7 +169,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           const SizedBox(
             height: 12,
           ),
-          EditableStructureList(structure: _structures),
+          const EditableStructureList(),
           const SizedBox(
             height: 24,
           ),
@@ -389,5 +389,5 @@ class Section {
   Section(this.lines, this.structure);
 
   final List<ChordLyricsLine> lines;
-  final Structure structure;
+  final SongStructure structure;
 }
