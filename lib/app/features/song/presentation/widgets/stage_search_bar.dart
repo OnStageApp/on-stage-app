@@ -58,6 +58,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
   Widget build(BuildContext context) {
     const animationDuration = Duration(milliseconds: 300);
     return SearchBar(
+      constraints: const BoxConstraints(maxHeight: 44),
       controller: _internalController,
       focusNode: widget.focusNode,
       shadowColor:
@@ -69,7 +70,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
       ),
       shape: MaterialStateProperty.all(
         RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
       leading: Padding(
@@ -102,7 +103,7 @@ class _StageSearchBarState extends State<StageSearchBar> {
       ],
       hintText: 'Search',
       hintStyle: MaterialStateProperty.all(
-        context.textTheme.titleLarge!.copyWith(
+        context.textTheme.titleMedium!.copyWith(
           color: context.colorScheme.onSurfaceVariant,
         ),
       ),

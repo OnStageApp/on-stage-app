@@ -22,9 +22,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: AppBar(
+    return AppBar(
         backgroundColor: background ?? context.colorScheme.background,
         leading: _buildLeading(context),
         leadingWidth: 8,
@@ -41,7 +39,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: false,
         actions: [trailing ?? const SizedBox()],
         surfaceTintColor: context.colorScheme.background,
-      ),
+
     );
   }
 

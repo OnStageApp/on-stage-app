@@ -19,7 +19,7 @@ class FriendsEnhancedTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.colorScheme.onSecondary,
+        color: context.colorScheme.onSecondary.withOpacity(0.6),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
