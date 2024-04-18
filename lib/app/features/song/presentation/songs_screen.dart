@@ -86,7 +86,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   Widget _buildContent(BuildContext context) {
     return ListView(
       children: [
-        const SizedBox(height: Insets.medium),
+        const SizedBox(height: Insets.small),
         Padding(
           padding: defaultScreenHorizontalPadding,
           child: Hero(

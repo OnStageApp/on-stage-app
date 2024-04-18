@@ -56,7 +56,7 @@ class _SongTileState extends State<SongTile> {
                           'widget.song.artist' ?? '',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyMedium!
+                              .titleSmall!
                               .copyWith(color: Color(0xFF7F818B)),
                         ),
                         // _buildCircle(context),

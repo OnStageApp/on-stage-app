@@ -181,7 +181,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             SizedBox(
               width: MediaQuery.of(context).size.width / 2,
               height: 112,

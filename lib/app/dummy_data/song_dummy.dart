@@ -168,7 +168,7 @@ class SongDummy {
   static const List<SongModel> playlist = [
     SongModel(
       id: "8",
-      title: 'Soarele neprihanirii',
+      title: 'Nu e munte prea mare',
       lyrics: "<Verse> Esti Marele \"Eu sunt\" [G] \n"
           "In lumina umbrei Tale ma ascund [Am]\n"
           "[Em]Acoperit de har [G]"
