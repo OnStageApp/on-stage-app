@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/structure/structure.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -34,7 +34,7 @@ class SongNotifier extends _$SongNotifier {
     final sections = <Section>[];
     var items = <ChordLyricsLine>[];
 
-    var structure = Structure(StructureItem.none, 0);
+    var structure = const SongStructure(StructureItem.none, 0);
     for (var i = 0; i < lines.length; i++) {
       if (lines[i].structure.isNotNullEmptyOrWhitespace ||
           i == lines.length - 1) {
@@ -43,7 +43,7 @@ class SongNotifier extends _$SongNotifier {
             Section(items, structure),
           );
         }
-        structure = Structure(
+        structure = SongStructure(
           stringToEnum(
             lines[i].structure,
           ),
@@ -58,6 +58,10 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(
       sections: sections,
     );
+  }
+
+  void updateSongSections(List<Section> newSections) {
+    state = state.copyWith(sections: newSections);
   }
 
   void transpose(SongKey newTonality) {

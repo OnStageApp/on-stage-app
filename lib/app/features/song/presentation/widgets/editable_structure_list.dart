@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/structure/structure.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class EditableStructureList extends ConsumerStatefulWidget {
-  const EditableStructureList({required this.structure, super.key});
-
-  final List<Structure> structure;
+  const EditableStructureList({super.key});
 
   @override
   EditableStructureListState createState() => EditableStructureListState();
@@ -16,19 +16,25 @@ class EditableStructureList extends ConsumerStatefulWidget {
 
 class EditableStructureListState extends ConsumerState<EditableStructureList> {
   List<Widget> _widgets = [];
+  List<SongStructure> _structures = [];
 
   List<Widget> calculate() {
+    _structures = ref
+        .watch(songNotifierProvider)
+        .sections
+        .map((e) => e.structure)
+        .toList();
     final widgets = <Widget>[];
     var xTimes = 1;
-    for (var i = 0; i < widget.structure.length; i++) {
-      if (i == widget.structure.length - 1) {
-        widgets.add(_buildTile(widget.structure[i], xTimes));
+    for (var i = 0; i < _structures.length; i++) {
+      if (i == _structures.length - 1) {
+        widgets.add(_buildTile(_structures[i], xTimes));
         break;
       }
-      if (widget.structure[i].item == widget.structure[i + 1].item) {
+      if (_structures[i].item == _structures[i + 1].item) {
         xTimes++;
       } else {
-        widgets.add(_buildTile(widget.structure[i], xTimes));
+        widgets.add(_buildTile(_structures[i], xTimes));
         xTimes = 1;
       }
     }
@@ -48,6 +54,7 @@ class EditableStructureListState extends ConsumerState<EditableStructureList> {
 
   @override
   Widget build(BuildContext context) {
+    _listenChangesForStructure();
     return SizedBox(
       height: 36,
       child: ListView(
@@ -57,13 +64,22 @@ class EditableStructureListState extends ConsumerState<EditableStructureList> {
     );
   }
 
-  Widget _buildTile(Structure item, int xTimes) {
+  void _listenChangesForStructure() {
+    // TODO(antonio): In future, listen just section changes
+    ref.listen<SongState>(songNotifierProvider, (previous, next) {
+      setState(() {
+        _widgets = calculate();
+      });
+    });
+  }
+
+  Widget _buildTile(SongStructure item, int xTimes) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
           ref.read(songNotifierProvider.notifier).selectSection(item.item);
-          print('selected ${item.item.name}');
+          logger.i('selected ${item.item.name}');
         },
         child: Container(
           padding: EdgeInsets.only(right: xTimes > 1 ? 16 : 0),

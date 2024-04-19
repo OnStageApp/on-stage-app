@@ -5,12 +5,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ModalHeader extends StatelessWidget {
   const ModalHeader({
     required this.title,
-    this.onAddButtonPressed,
+    this.leadingButton = const SizedBox(
+      width: 80 - 12,
+    ),
     super.key,
   });
 
   final String title;
-  final VoidCallback? onAddButtonPressed;
+  final Widget leadingButton;
 
   @override
   Widget build(BuildContext context) {
@@ -38,27 +40,7 @@ class ModalHeader extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 80 - 12,
-                  child: onAddButtonPressed != null
-                      ? InkWell(
-                          onTap: () {},
-                          child: SizedBox(
-                            child: Row(
-                              children: [
-                                const Icon(Icons.add, color: Colors.blue),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Add',
-                                  style: context.textTheme.titleMedium!
-                                      .copyWith(color: Colors.blue),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                ),
+                leadingButton,
                 Expanded(
                   child: Text(
                     title,
