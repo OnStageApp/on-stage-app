@@ -4,7 +4,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -38,6 +37,8 @@ class SongStructureModal extends ConsumerStatefulWidget {
 
 class SongStructureModalState extends ConsumerState<SongStructureModal> {
   List<Section> _sections = [];
+  List<Section> _addedSections = [];
+  bool isAddPage = false;
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       footerHeight: () {
         return 64;
       },
-      buildContent: _buildSongStructures,
+      buildContent: !isAddPage ? _buildSongStructures : _buildAddStructures,
     );
   }
 
@@ -91,26 +92,37 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
           width: 80 - 12,
           child: InkWell(
             onTap: () {
-              ref
-                  .read(songPreferencesControllerProvider.notifier)
-                  .toggleAddStructurePage(isOnAddStructurePage: true);
+              setState(() {
+                isAddPage = !isAddPage;
+              });
             },
-            child: SizedBox(
-              child: Row(
-                children: [
-                  const Icon(Icons.add, color: Colors.blue),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Add',
-                    style: context.textTheme.titleMedium!
-                        .copyWith(color: Colors.blue),
-                  ),
-                ],
-              ),
-            ),
+            child: _buildLeadingTile(context),
           )),
       title: 'Song Structure',
     );
+  }
+
+  Widget _buildLeadingTile(BuildContext context) {
+    return isAddPage
+        ? Text(
+            'Back',
+            style: context.textTheme.titleMedium!.copyWith(
+              color: const Color(0xFF828282),
+            ),
+          )
+        : SizedBox(
+            child: Row(
+              children: [
+                const Icon(Icons.add, color: Colors.blue),
+                const SizedBox(width: 4),
+                Text(
+                  'Add',
+                  style: context.textTheme.titleMedium!
+                      .copyWith(color: Colors.blue),
+                ),
+              ],
+            ),
+          );
   }
 
   void _onReorder(int oldIndex, int newIndex) {
@@ -236,4 +248,89 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       ),
     );
   }
+
+  Widget _buildAddStructures() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: _sections.length,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 48,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      alignment: Alignment.center,
+                      key: ValueKey(_sections[index].structure.id),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Color(_sections[index].structure.item.color),
+                          width: 3,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        _sections[index].structure.item.shortName,
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.titleSmall,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(
+                        _sections[index].structure.item.name,
+                        style: context.textTheme.titleSmall,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (_isItemChecked(index)) {
+                            _addedSections.remove(_sections[index]);
+                          } else {
+                            _addedSections.add(_sections[index]);
+                          }
+                        });
+
+                        ref
+                            .read(songNotifierProvider.notifier)
+                            .updateSongSections(_sections);
+                      },
+                      icon: Icon(
+                        _isItemChecked(index)
+                            ? Icons.check_circle
+                            : Icons.circle_outlined,
+                        size: 24,
+                        color: _isItemChecked(index)
+                            ? Colors.blue
+                            : const Color(0xFFE3E3E3),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isItemChecked(int index) => _addedSections.contains(_sections[index]);
 }
