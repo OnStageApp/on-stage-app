@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
+import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
+import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/order_structure_items_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -26,7 +26,8 @@ class SongStructureModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.75,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.7,
         maxWidth: MediaQuery.of(context).size.width,
       ),
       context: context,
@@ -36,18 +37,11 @@ class SongStructureModal extends ConsumerStatefulWidget {
 }
 
 class SongStructureModalState extends ConsumerState<SongStructureModal> {
-  List<Section> _sections = [];
-  List<Section> _addedSections = [];
-  bool isAddPage = false;
+  bool isOrderPage = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _sections = ref.watch(songNotifierProvider).sections;
-      });
-    });
   }
 
   @override
@@ -61,7 +55,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       footerHeight: () {
         return 64;
       },
-      buildContent: !isAddPage ? _buildSongStructures : _buildAddStructures,
+      buildContent: isOrderPage ? _buildSongStructures : _buildAddStructures,
     );
   }
 
@@ -76,9 +70,26 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
         ),
         child: ContinueButton(
           hasShadow: true,
-          text: 'Save',
+          text: isOrderPage ? 'Save' : 'Add',
           onPressed: () {
-            context.popDialog();
+            if (!isOrderPage) {
+              var newSections =
+                  ref.watch(songPreferencesControllerProvider).songSections;
+              var existingSections = ref.watch(songNotifierProvider).sections;
+              existingSections.addAll(newSections);
+              ref
+                  .read(songNotifierProvider.notifier)
+                  .updateSongSections(existingSections);
+              ref
+                  .read(songPreferencesControllerProvider.notifier)
+                  .resetSongSections();
+
+              setState(() {
+                isOrderPage = true;
+              });
+            } else {
+              context.popDialog();
+            }
           },
           isEnabled: true,
         ),
@@ -89,28 +100,23 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   Widget _buildHeader(BuildContext context) {
     return ModalHeader(
       leadingButton: SizedBox(
-          width: 80 - 12,
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                isAddPage = !isAddPage;
-              });
-            },
-            child: _buildLeadingTile(context),
-          )),
+        width: 80 - 12,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              isOrderPage = !isOrderPage;
+            });
+          },
+          child: _buildLeadingTile(context),
+        ),
+      ),
       title: 'Song Structure',
     );
   }
 
   Widget _buildLeadingTile(BuildContext context) {
-    return isAddPage
-        ? Text(
-            'Back',
-            style: context.textTheme.titleMedium!.copyWith(
-              color: const Color(0xFF828282),
-            ),
-          )
-        : SizedBox(
+    return isOrderPage
+        ? SizedBox(
             child: Row(
               children: [
                 const Icon(Icons.add, color: Colors.blue),
@@ -122,215 +128,20 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                 ),
               ],
             ),
+          )
+        : Text(
+            'Back',
+            style: context.textTheme.titleMedium!.copyWith(
+              color: const Color(0xFF828282),
+            ),
           );
   }
 
-  void _onReorder(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-
-    setState(() {
-      _sections.insert(newIndex, _sections.removeAt(oldIndex));
-    });
-
-    ref.read(songNotifierProvider.notifier).updateSongSections(_sections);
-  }
-
   Widget _buildSongStructures() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          ReorderableListView.builder(
-            onReorder: _onReorder,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _sections.length,
-            proxyDecorator: (child, index, animation) => Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              child: child,
-            ),
-            itemBuilder: (context, index) {
-              return Material(
-                color: Colors.transparent,
-                key: ValueKey(_sections[index].structure.id),
-                child: Slidable(
-                  endActionPane: ActionPane(
-                    dragDismissible: false,
-                    // A motion is a widget used to control how the pane animates.
-                    motion: const ScrollMotion(),
-
-                    // A pane can dismiss the Slidable.
-                    dismissible: DismissiblePane(onDismissed: () {}),
-
-                    // All actions are defined in the children parameter.
-                    children: [
-                      // A SlidableAction can have an icon and/or a label.
-                      SlidableAction(
-                        spacing: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: (context) {},
-                        backgroundColor: Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
-                      ),
-                      SlidableAction(
-                        spacing: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: (context) {},
-                        backgroundColor: Color(0xFF21B7CA),
-                        foregroundColor: Colors.white,
-                        icon: Icons.share,
-                        label: 'Share',
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    height: 48,
-                    margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        ReorderableDragStartListener(
-                          index: index,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Icon(
-                              Icons.drag_indicator_rounded,
-                              color: Color(0xFF828282),
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 30,
-                          height: 30,
-                          alignment: Alignment.center,
-                          key: ValueKey(_sections[index].structure.id),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              color:
-                                  Color(_sections[index].structure.item.color),
-                              width: 3,
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            _sections[index].structure.item.shortName,
-                            textAlign: TextAlign.center,
-                            style: context.textTheme.titleSmall,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Text(
-                            _sections[index].structure.item.name,
-                            style: context.textTheme.titleSmall,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+    return const OrderStructureItemsWidget();
   }
 
   Widget _buildAddStructures() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _sections.length,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 48,
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 12),
-                    Container(
-                      width: 30,
-                      height: 30,
-                      alignment: Alignment.center,
-                      key: ValueKey(_sections[index].structure.id),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Color(_sections[index].structure.item.color),
-                          width: 3,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        _sections[index].structure.item.shortName,
-                        textAlign: TextAlign.center,
-                        style: context.textTheme.titleSmall,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: Text(
-                        _sections[index].structure.item.name,
-                        style: context.textTheme.titleSmall,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          if (_isItemChecked(index)) {
-                            _addedSections.remove(_sections[index]);
-                          } else {
-                            _addedSections.add(_sections[index]);
-                          }
-                        });
-
-                        ref
-                            .read(songNotifierProvider.notifier)
-                            .updateSongSections(_sections);
-                      },
-                      icon: Icon(
-                        _isItemChecked(index)
-                            ? Icons.check_circle
-                            : Icons.circle_outlined,
-                        size: 24,
-                        color: _isItemChecked(index)
-                            ? Colors.blue
-                            : const Color(0xFFE3E3E3),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+    return const AddStructureItemsWidget();
   }
-
-  bool _isItemChecked(int index) => _addedSections.contains(_sections[index]);
 }
