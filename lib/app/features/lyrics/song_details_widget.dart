@@ -390,4 +390,14 @@ class Section {
 
   final List<ChordLyricsLine> lines;
   final SongStructure structure;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Section &&
+          runtimeType == other.runtimeType &&
+          structure.item.name == other.structure.item.name;
+
+  @override
+  int get hashCode => structure.item.name.hashCode;
 }

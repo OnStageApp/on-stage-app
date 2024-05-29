@@ -23,9 +23,8 @@ enum StructureItem {
 }
 
 StructureItem stringToEnum(String value) {
-  // generetae for all
   switch (value) {
-    case 'Verse':
+    case 'V1':
       return StructureItem.V1;
     case 'V2':
       return StructureItem.V2;
@@ -41,13 +40,13 @@ StructureItem stringToEnum(String value) {
       return StructureItem.V7;
     case 'C':
       return StructureItem.C;
-    case 'Chorus':
+    case 'C1':
       return StructureItem.C1;
     case 'C2':
       return StructureItem.C2;
     case 'C3':
       return StructureItem.C3;
-    case 'Bridge':
+    case 'B':
       return StructureItem.B;
     case 'I':
       return StructureItem.I;
