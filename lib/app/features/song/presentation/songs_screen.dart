@@ -144,9 +144,9 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
         return Column(
           children: [
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             SongTile(song: song),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
           ],
         );
       },

@@ -64,7 +64,7 @@ class AddStructureItemsWidgetState
                   });
                 },
                 child: Container(
-                  height: 48,
+                  height: 52,
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,

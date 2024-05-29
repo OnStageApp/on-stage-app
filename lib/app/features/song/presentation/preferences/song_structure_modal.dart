@@ -55,7 +55,9 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       footerHeight: () {
         return 64;
       },
-      buildContent: isOrderPage ? _buildSongStructures : _buildAddStructures,
+      buildContent: isOrderPage
+          ? OrderStructureItemsWidget.new
+          : AddStructureItemsWidget.new,
     );
   }
 
@@ -73,9 +75,9 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
           text: isOrderPage ? 'Save' : 'Add',
           onPressed: () {
             if (!isOrderPage) {
-              var newSections =
+              final newSections =
                   ref.watch(songPreferencesControllerProvider).songSections;
-              var existingSections = ref.watch(songNotifierProvider).sections;
+              final existingSections = ref.watch(songNotifierProvider).sections;
               existingSections.addAll(newSections);
               ref
                   .read(songNotifierProvider.notifier)
@@ -135,13 +137,5 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
               color: const Color(0xFF828282),
             ),
           );
-  }
-
-  Widget _buildSongStructures() {
-    return const OrderStructureItemsWidget();
-  }
-
-  Widget _buildAddStructures() {
-    return const AddStructureItemsWidget();
   }
 }

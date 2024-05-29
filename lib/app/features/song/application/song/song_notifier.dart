@@ -1,9 +1,9 @@
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
@@ -22,12 +22,12 @@ class SongNotifier extends _$SongNotifier {
     return const SongState();
   }
 
-  Future<void> init() async {
-    if (state.song.id.isNotNullEmptyOrWhitespace) {
+  Future<void> init(SongModel song) async {
+    if (state.song.id.isNullEmptyOrWhitespace) {
       return;
     }
-    state = state.copyWith(song: SongDummy.playlist.first);
-    logger.i('init songs provider state starting...');
+    state = state.copyWith(song: song);
+    logger.i('init songs provider state starting... ${state.song.title}');
   }
 
   void getSections(List<ChordLyricsLine> lines) {

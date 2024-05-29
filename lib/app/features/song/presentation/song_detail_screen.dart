@@ -24,18 +24,8 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songNotifierProvider.notifier).init();
-      // ref.listen(preferencesNotifierProvider, (previous, next) {
-      //   print('asdasdasdasdasdasdasdasdasdsadsadasd');
-      //   setState(() {});
-      // });
+      ref.read(songNotifierProvider.notifier).init(widget.song);
     });
-
-    // ref.listen<PreferencesState>(preferencesNotifierProvider, (previous, next) {
-    //   print('asdasdasdasdasdasdasdasdasdsadsadasd');
-    //   setState(() {});
-    // });
-
     super.initState();
   }
 

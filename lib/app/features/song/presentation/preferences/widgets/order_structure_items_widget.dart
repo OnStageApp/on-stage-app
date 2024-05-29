@@ -47,41 +47,59 @@ class OrderStructureItemsWidgetState
               child: child,
             ),
             itemBuilder: (context, index) {
-              return Material(
-                color: Colors.transparent,
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
                 key: ValueKey('${_sections[index].structure.id}_$index'),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
                 child: Slidable(
                   endActionPane: ActionPane(
                     dragDismissible: false,
                     motion: const ScrollMotion(),
                     dismissible: DismissiblePane(onDismissed: () {}),
                     children: [
-                      SlidableAction(
-                        spacing: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: (context) {},
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: 'Delete',
+                      Expanded(
+                        child: InkWell(
+                          child: Container(
+                            height: double.infinity,
+                            alignment: Alignment.center,
+                            color: Colors.blue,
+                            child: Text(
+                              'Clone',
+                              style: context.textTheme.bodyLarge!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ),
                       ),
-                      SlidableAction(
-                        spacing: 0,
-                        padding: EdgeInsets.zero,
-                        onPressed: (context) {},
-                        backgroundColor: const Color(0xFF21B7CA),
-                        foregroundColor: Colors.white,
-                        icon: Icons.share,
-                        label: 'Share',
+                      Expanded(
+                        child: InkWell(
+                          child: Container(
+                            height: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              'Delete',
+                              style: context.textTheme.bodyLarge!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   child: Container(
-                    height: 48,
-                    margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
+                    height: 52,
+                    decoration: const BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     child: Row(
                       children: [
