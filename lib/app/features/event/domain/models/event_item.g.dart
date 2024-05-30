@@ -9,7 +9,7 @@ part of 'event_item.dart';
 _$EventItemImpl _$$EventItemImplFromJson(Map<String, dynamic> json) =>
     _$EventItemImpl(
       name: json['name'] as String?,
-      index: json['index'] as int?,
+      index: (json['index'] as num?)?.toInt(),
       eventType: json['eventType'] as String?,
       songId: json['songId'] as String?,
     );
