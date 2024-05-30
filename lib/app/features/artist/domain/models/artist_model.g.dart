@@ -7,9 +7,11 @@ part of 'artist_model.dart';
 // **************************************************************************
 
 _$ArtistImpl _$$ArtistImplFromJson(Map<String, dynamic> json) => _$ArtistImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       fullName: json['fullName'] as String,
-      songIds: (json['songIds'] as List<dynamic>).map((e) => e as int).toList(),
+      songIds: (json['songIds'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
       imageUrl: json['imageUrl'] as String?,
     );
 

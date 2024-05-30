@@ -10,7 +10,7 @@ _$SongOverviewImpl _$$SongOverviewImplFromJson(Map<String, dynamic> json) =>
     _$SongOverviewImpl(
       id: json['id'] as String?,
       title: json['title'] as String?,
-      bpm: json['bpm'] as int?,
+      bpm: (json['bpm'] as num?)?.toInt(),
       key: json['key'] as String?,
       artist: json['artist'] == null
           ? null

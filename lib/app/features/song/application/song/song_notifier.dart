@@ -23,11 +23,11 @@ class SongNotifier extends _$SongNotifier {
   }
 
   Future<void> init(SongModel song) async {
-    if (state.song.id.isNullEmptyOrWhitespace) {
+    if (song.id.isNullEmptyOrWhitespace) {
       return;
     }
     state = state.copyWith(song: song);
-    logger.i('init songs provider state starting... ${state.song.title}');
+    logger.i('init song with title: ${state.song.title}');
   }
 
   void getSections(List<ChordLyricsLine> lines) {
