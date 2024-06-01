@@ -11,34 +11,31 @@ class PreferencesSongStructure extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        SongStructureModal.show(context: context, ref: ref);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Structure',
-            style: context.textTheme.labelLarge,
-          ),
-          const SizedBox(height: Insets.smallNormal),
-          PreferencesActionTile(
-            leadingWidget: SvgPicture.asset(
-              'assets/icons/song_structure.svg',
-              width: 20,
-              height: 20,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFF74777F),
-                BlendMode.srcIn,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Structure',
+          style: context.textTheme.labelLarge,
+        ),
+        const SizedBox(height: Insets.smallNormal),
+        PreferencesActionTile(
+          leadingWidget: SvgPicture.asset(
+            'assets/icons/song_structure.svg',
+            width: 20,
+            height: 20,
+            colorFilter: const ColorFilter.mode(
+              Color(0xFF74777F),
+              BlendMode.srcIn,
             ),
-            title: 'Song Structure',
-            trailingIcon: Icons.keyboard_arrow_right_rounded,
-            onTap: () {},
           ),
-        ],
-      ),
+          title: 'Song Structure',
+          trailingIcon: Icons.keyboard_arrow_right_rounded,
+          onTap: () {
+            SongStructureModal.show(context: context, ref: ref);
+          },
+        ),
+      ],
     );
   }
 }

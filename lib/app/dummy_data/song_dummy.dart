@@ -169,38 +169,38 @@ class SongDummy {
     SongModel(
       id: "8",
       title: 'Nu e munte prea mare',
-      lyrics: "<Verse> Esti Marele \"Eu sunt\" [G] \n"
+      lyrics: "<V1> Esti Marele \"Eu sunt\" [G] \n"
           "In lumina umbrei Tale ma ascund [Am]\n"
           "[Em]Acoperit de har [G]"
-          "<Verse> Esti Marele \"Eu sunt\" [G]"
+          "<C> Esti Marele \"Eu sunt\" [G]"
           "In lumina umbrei Tale ma ascund [Am]\n"
           "[Em]Acoperit de har [G] \n"
           "Ma odihnesc atunci cand Tu apari [Am]"
-          "<Chorus> Nu e munte[G] prea mare [G] \n"
+          "<C1> Nu e munte[G] prea mare [G] \n"
           "Nu-i pustiu prea uscat [D] \n"
           "Nu e vale prea adanca [Am] \n"
           "Nu-i nimic mu[G]lt prea greu [C] \n"
           "Nimic mult prea greu [D]"
-          "<Verse> Est[G]e pace in furtuni \n"
+          "<B1> Est[G]e pace in furtuni \n"
           "La Cuvantul Tau si stele se supun \n"
           "Mi-ai dat pu[G]terea Ta \n"
           "Sa fiu mai mu[G]lt decat eu p[G]ot visa"
-          "<Bridge> Si or[G]ice s-ar in[G]tampla [C] \n"
+          "<B> Si or[G]ice s-ar in[G]tampla [C] \n"
           "Tu ra[G]mai de p[G]artea mea [G] \n"
           "Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n"
           "Universul de-ar cadea, Tu rescrii istoria [C] \n"
           "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
-          "<Bridge> Si orice s-ar intampla [C] \n"
+          "<B> Si orice s-ar intampla [C] \n"
           "Tu ramai de partea mea [G/B] \n"
           "Nu-i nimic prea greu, pentru Domnul meu [Am] \n"
           "Universul de-ar cadea, Tu rescrii istoria [C] \n"
           "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
-          "<Bridge> Si orice s-ar intampla [C] \n"
+          "<V> Si orice s-ar intampla [C] \n"
           "Tu ramai de partea mea [G/B] \n"
           "Nu-i nimic prea greu, pentru Domnul meu [Am] \n"
           "Universul de-ar cadea, Tu rescrii istoria [C] \n"
           "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
-          "<Verse> Esti Marele \"Eu sunt\" [G] \n"
+          "<V2> Esti Marele \"Eu sunt\" [G] \n"
           "In lumina umbrei Tale ma ascund [Am]\n"
           "[Em]Acoperit de har [G]",
       key: 'G major',
@@ -218,6 +218,62 @@ class SongDummy {
       originalKey: SongKey(
         name: 'G Major',
         chord: ChordsEnum.G,
+        isMajor: true,
+        isSharp: false,
+      ),
+    ),
+    SongModel(
+      id: "1",
+      title: 'Our Father',
+      lyrics: "<V1> Esti Marele \"Eu sunt\" [G] \n"
+          "In lumina umbrei Tale ma ascund [Am]\n"
+          "[Em]Acoperit de har [G]"
+          "<C> Esti Marele \"Eu sunt\" [G]"
+          "In lumina umbrei Tale ma ascund [Am]\n"
+          "[Em]Acoperit de har [G] \n"
+          "Ma odihnesc atunci cand Tu apari [Am]"
+          "<C1> Nu e munte[G] prea mare [G] \n"
+          "Nu-i pustiu prea uscat [D] \n"
+          "Nu e vale prea adanca [Am] \n"
+          "Nu-i nimic mu[G]lt prea greu [C] \n"
+          "Nimic mult prea greu [D]"
+          "<B1> Est[G]e pace in furtuni \n"
+          "La Cuvantul Tau si stele se supun \n"
+          "Mi-ai dat pu[G]terea Ta \n"
+          "Sa fiu mai mu[G]lt decat eu p[G]ot visa"
+          "<B> Si or[G]ice s-ar in[G]tampla [C] \n"
+          "Tu ra[G]mai de p[G]artea mea [G] \n"
+          "Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n"
+          "Universul de-ar cadea, Tu rescrii istoria [C] \n"
+          "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
+          "<B> Si orice s-ar intampla [C] \n"
+          "Tu ramai de partea mea [G/B] \n"
+          "Nu-i nimic prea greu, pentru Domnul meu [Am] \n"
+          "Universul de-ar cadea, Tu rescrii istoria [C] \n"
+          "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
+          "<V> Si orice s-ar intampla [C] \n"
+          "Tu ramai de partea mea [G/B] \n"
+          "Nu-i nimic prea greu, pentru Domnul meu [Am] \n"
+          "Universul de-ar cadea, Tu rescrii istoria [C] \n"
+          "Nu-i nimic prea greu, pentru Domnul meu [G] \n"
+          "<V2> Esti Marele \"Eu sunt\" [G] \n"
+          "In lumina umbrei Tale ma ascund [Am]\n"
+          "[Em]Acoperit de har [G]",
+      key: 'A major',
+      createdAt: '2021-08-01T00:00:00.000Z',
+      updatedAt: '2021-08-01T00:00:00.000Z',
+      artist: 'artist1',
+      album: 'Tabara 477',
+      capo: 1,
+      songKey: SongKey(
+        name: 'A Major',
+        chord: ChordsEnum.A,
+        isMajor: true,
+        isSharp: false,
+      ),
+      originalKey: SongKey(
+        name: 'A Major',
+        chord: ChordsEnum.A,
         isMajor: true,
         isSharp: false,
       ),

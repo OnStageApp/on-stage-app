@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/vocal_lead_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -36,18 +37,24 @@ class PreferencesVocalLead extends StatelessWidget {
               right: 0,
               top: 0,
               bottom: 0,
-              child: Container(
-                height: 30,
-                width: 30,
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                  color: const Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                child: const Icon(
-                  Icons.add,
-                  color: Color(0xFF828282),
+              child: InkWell(
+                onTap: () {
+                  VocalLeadModal.show(context: context);
+                },
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                    color: const Color(0xFFF4F4F4),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Color(0xFF828282),
+                  ),
                 ),
               ),
             ),

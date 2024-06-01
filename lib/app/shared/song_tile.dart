@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongTile extends StatefulWidget {
   const SongTile({
@@ -24,7 +22,7 @@ class _SongTileState extends State<SongTile> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamed(AppRoute.song.name, extra: SongDummy.playlist.first);
+        context.pushNamed(AppRoute.song.name, extra: widget.song);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -46,7 +44,9 @@ class _SongTileState extends State<SongTile> {
                     Text(
                       widget.song.title ?? '',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Colors.black, fontWeight: FontWeight.w600),
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
                       maxLines: 1,
                     ),
                     const SizedBox(height: Insets.smaller),
@@ -57,9 +57,8 @@ class _SongTileState extends State<SongTile> {
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
-                              .copyWith(color: Color(0xFF7F818B)),
+                              .copyWith(color: const Color(0xFF7F818B)),
                         ),
-                        // _buildCircle(context),
                         const SizedBox(
                           width: 8,
                         ),
@@ -89,15 +88,11 @@ class _SongTileState extends State<SongTile> {
     );
   }
 
-  Container _buildKey(BuildContext context) {
+  Widget _buildKey(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: const BoxDecoration(
         color: Color(0xFFF4F4F4),
-        // border: Border.all(
-        //   color: context.colorScheme.secondary.withOpacity(1),
-        //   width: 1.2,
-        // ),
         borderRadius: BorderRadius.all(
           Radius.circular(20),
         ),
@@ -111,17 +106,6 @@ class _SongTileState extends State<SongTile> {
               .titleSmall!
               .copyWith(color: const Color(0xFF7F818B)),
         ),
-      ),
-    );
-  }
-
-  Widget _buildCircle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Icon(
-        Icons.circle,
-        size: 8,
-        color: context.colorScheme.outline,
       ),
     );
   }

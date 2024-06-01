@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
@@ -123,7 +121,12 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
                 ),
               const SizedBox(height: Insets.medium),
               if (ref.watch(loadingProvider.notifier).state)
-                const OnStageLoadingIndicator()
+                Container(
+                  alignment: Alignment.center,
+                  height: 10,
+                  width: 10,
+                  child: const OnStageLoadingIndicator(),
+                )
               else
                 _buildSongs(),
             ],
@@ -144,51 +147,12 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
         return Column(
           children: [
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             SongTile(song: song),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildUpcomingEvents() {
-    return SizedBox(
-      height: 180,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: const [
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: EventTileEnhanced(
-              title: 'Duminică seara',
-              hour: '18:00',
-              location: 'Sala El-Shaddai',
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: EventTileEnhanced(
-              title: 'Duminică seara',
-              hour: '18:00',
-              location: 'Sala El-Shaddai',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Center _buildLoadingIndicator() {
-    return const Center(
-      child: SizedBox(
-        width: 50,
-        height: 50,
-        child: LoadingIndicator(
-          indicatorType: Indicator.ballClipRotateMultiple,
-        ),
-      ),
     );
   }
 }

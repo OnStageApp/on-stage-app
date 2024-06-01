@@ -27,6 +27,7 @@ enum AppRoute {
   song,
   notification,
   favorites,
+  vocalModal,
 }
 
 class AppRouter {
@@ -99,21 +100,22 @@ class AppRouter {
         ],
       ),
       GoRoute(
-          name: AppRoute.profile.name,
-          path: '/profile',
-          builder: (context, state) => const ProfileScreen(),
-          routes: [
-            GoRoute(
-              name: AppRoute.notification.name,
-              path: 'notification',
-              builder: (context, state) => const NotificationPage(),
-            ),
-            GoRoute(
-              name: AppRoute.favorites.name,
-              path: 'favorites',
-              builder: (context, state) => const FavoriteSongsScreen(),
-            ),
-          ]),
+        name: AppRoute.profile.name,
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+        routes: [
+          GoRoute(
+            name: AppRoute.notification.name,
+            path: 'notification',
+            builder: (context, state) => const NotificationPage(),
+          ),
+          GoRoute(
+            name: AppRoute.favorites.name,
+            path: 'favorites',
+            builder: (context, state) => const FavoriteSongsScreen(),
+          ),
+        ],
+      ),
     ],
   );
 
