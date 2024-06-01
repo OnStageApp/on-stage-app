@@ -85,10 +85,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               SongTile(
                 song: song,
               ),
-              Divider(
-                color: context.colorScheme.outlineVariant,
-                thickness: 1,
-                height: Insets.medium,
+              const SizedBox(
+                height: Insets.smallNormal,
               ),
             ],
           );
@@ -174,7 +172,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: const EdgeInsets.only(left: 8, right: 16),
                 child: GroupTile(
                   title: 'Group',
-                    hasUpcomingEvent: hasUpcomingEvent,
+                  hasUpcomingEvent: hasUpcomingEvent,
                 ),
               ),
             ),
