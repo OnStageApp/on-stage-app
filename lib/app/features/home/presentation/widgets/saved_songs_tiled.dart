@@ -33,23 +33,22 @@ class SavedSongsTile extends StatelessWidget {
               const SizedBox(width: Insets.small),
               Text(
                 'Saved songs',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: context.colorScheme.surface,
-                    ),
+                style: context.textTheme.titleLarge!.copyWith(
+                  color: context.colorScheme.surface,
+                ),
               ),
             ],
           ),
-          const Expanded(child: SizedBox()),
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "6",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: context.colorScheme.surface,
-                    ),
+                style: context.textTheme.titleLarge!.copyWith(
+                  color: context.colorScheme.surface,
+                ),
               ),
-              const Expanded(child: SizedBox()),
               Container(
                 height: 30,
                 width: 30,

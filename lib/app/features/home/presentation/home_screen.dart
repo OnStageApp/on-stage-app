@@ -11,7 +11,6 @@ import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/profile_image_inbox_widget.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -57,7 +56,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             Padding(
               padding: defaultScreenHorizontalPadding,
               child: Text(
-                'Upcoming events',
+                'Recently Added',
                 style: context.textTheme.headlineMedium,
               ),
             ),
@@ -70,7 +69,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildRecentlyAdded() {
-    // final songs = ref.watch(songsNotifierProvider).songs;
     _songs = SongDummy.playlist;
     return Padding(
       padding: defaultScreenHorizontalPadding,
@@ -114,18 +112,25 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           IconButton(
             onPressed: () => {context.pushNamed(AppRoute.notification.name)},
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(Insets.smallNormal),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Insets.small),
+              ),
+            ),
             icon: Stack(
               children: [
                 Assets.icons.filledNotificationBell.svg(
-                  height: 24,
-                  width: 24,
+                  height: 20,
+                  width: 20,
                 ),
                 Positioned(
                   top: 0,
                   right: 0,
                   child: Container(
-                    width: 12,
-                    height: 12,
+                    width: 10,
+                    height: 10,
                     decoration: BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
@@ -134,13 +139,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ],
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(Insets.smallNormal),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Insets.small),
-              ),
             ),
           ),
         ],

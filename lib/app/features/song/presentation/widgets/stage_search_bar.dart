@@ -51,7 +51,6 @@ class _StageSearchBarState extends State<StageSearchBar> {
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      // Call widget.onChanged with the debounced text input
       widget.onChanged?.call(_internalController.text);
     });
   }

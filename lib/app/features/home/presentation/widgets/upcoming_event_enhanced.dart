@@ -48,10 +48,10 @@ class UpcomingEventEnhanced extends StatelessWidget {
                 const SizedBox(height: Insets.medium),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.surface,
-                      ),
+                  style: context.textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -60,26 +60,20 @@ class UpcomingEventEnhanced extends StatelessWidget {
                   children: [
                     Text(
                       hour,
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: context.colorScheme.surface,
-                          ),
+                      style: context.textTheme.titleSmall!.copyWith(
+                        color: const Color(0xFF004788),
+                      ),
                     ),
                     _buildCircle(context),
                     Text(
                       "20 dec.",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: context.colorScheme.surface,
-                          ),
+                      style: context.textTheme.titleSmall!.copyWith(
+                        color: const Color(0xFF004788),
+                      ),
                     ),
                   ],
                 ),
-                Text(
-                  location ?? '',
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: context.colorScheme.surface,
-                      ),
-                ),
-                const Expanded(child: SizedBox()),
+                const Spacer(),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -109,9 +103,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
                     style: TextStyle(fontSize: 18, color: Colors.black),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Implement event creation functionality here
-                    },
+                    onPressed: () {},
                     icon: Assets.icons.plus.svg(),
                     label: const Text(
                       'Create Event',
@@ -134,12 +126,12 @@ class UpcomingEventEnhanced extends StatelessWidget {
   }
 
   Widget _buildCircle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4),
       child: Icon(
         Icons.circle,
-        size: 4,
-        color: context.colorScheme.surface,
+        size: 5,
+        color: Color(0xFF009CC7),
       ),
     );
   }
