@@ -13,7 +13,7 @@ flutter_native_splash:
 
 
 dependencies:
-  email_validator: ^2.1.17
+  email_validator: ^3.0.0
   equatable: ^2.0.5
   flutter:
     sdk: flutter
