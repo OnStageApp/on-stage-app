@@ -1,41 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
-class FriendsEnhancedTile extends StatelessWidget {
-  const FriendsEnhancedTile({
+class GroupTile extends StatelessWidget {
+  const GroupTile({
     required this.title,
-    required this.hour,
-    required this.location,
+    required this.hasUpcomingEvent,
     super.key,
   });
 
   final String title;
-  final String hour;
-  final String location;
+  final bool hasUpcomingEvent;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.colorScheme.onSecondary.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(24),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Assets.icons.userFriends.svg(),
+              const SizedBox(width: Insets.small),
               Text(
-                'Friends',
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: context.colorScheme.surface,
-                    ),
-              ),
-              Text(
-                "6",
+                title,
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: context.colorScheme.surface,
                     ),
@@ -44,10 +39,9 @@ class FriendsEnhancedTile extends StatelessWidget {
           ),
           const Expanded(child: SizedBox()),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const ParticipantsOnTile(
-                width: 32,
+              if (hasUpcomingEvent) const ParticipantsOnTile(
+                showOverlay: false,
                 participantsProfile: [
                   'assets/images/profile1.png',
                   'assets/images/profile2.png',
@@ -58,31 +52,22 @@ class FriendsEnhancedTile extends StatelessWidget {
                   'assets/images/profile5.png',
                   'assets/images/profile5.png',
                 ],
-              ),
+              ) else Text('Invite friends'),
               const Expanded(child: SizedBox()),
               Container(
-                alignment: Alignment.centerRight,
-                width: 14,
-                child: const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.black,
-                  size: 16,
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F2EA),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Center(
+                  child: Assets.icons.arrowForward.svg(),
                 ),
               ),
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCircle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Icon(
-        Icons.circle,
-        size: 4,
-        color: context.colorScheme.surface,
       ),
     );
   }

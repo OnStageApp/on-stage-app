@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class StageSearchBar extends StatefulWidget {
   const StageSearchBar({
@@ -49,7 +51,6 @@ class _StageSearchBarState extends State<StageSearchBar> {
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      // Call widget.onChanged with the debounced text input
       widget.onChanged?.call(_internalController.text);
     });
   }
@@ -57,58 +58,57 @@ class _StageSearchBarState extends State<StageSearchBar> {
   @override
   Widget build(BuildContext context) {
     const animationDuration = Duration(milliseconds: 300);
-    return SearchBar(
-      constraints: const BoxConstraints(maxHeight: 44),
-      controller: _internalController,
-      focusNode: widget.focusNode,
-      shadowColor:
-          MaterialStateColor.resolveWith((states) => Colors.transparent),
-      overlayColor:
-          MaterialStateColor.resolveWith((states) => Colors.transparent),
-      backgroundColor: MaterialStateColor.resolveWith(
-        (states) => const Color(0xFFE2E2E5),
-      ),
-      shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      height: Insets.extraLarge,
+      child: SearchBar(
+        controller: _internalController,
+        focusNode: widget.focusNode,
+        shadowColor:
+            MaterialStateColor.resolveWith((states) => Colors.transparent),
+        overlayColor:
+            MaterialStateColor.resolveWith((states) => Colors.transparent),
+        backgroundColor: MaterialStateColor.resolveWith(
+          (states) =>  const Color(0xFFE2E2E5),
         ),
-      ),
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: AnimatedOpacity(
-          opacity: widget.focusNode.hasFocus ? 1 : 0.7,
-          duration: animationDuration,
-          child: Icon(
-            Icons.search_rounded,
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8, right: 0),
+          child: AnimatedOpacity(
+            opacity: widget.focusNode.hasFocus ? 1 : 0.7,
+            duration: animationDuration,
+            child: Assets.icons.search.svg(),
+          ),
+        ),
+        trailing: [
+          AnimatedOpacity(
+            opacity: widget.focusNode.hasFocus ? 1 : 0,
+            duration: animationDuration,
+            child: IconButton(
+              icon: Icon(
+                Icons.close,
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+              onPressed: () {
+                widget.focusNode.unfocus();
+                _internalController.clear();
+                widget.onClosed?.call();
+              },
+            ),
+          ),
+        ],
+        hintText: 'Search',
+        hintStyle: MaterialStateProperty.all(
+          context.textTheme.titleLarge!.copyWith(
             color: context.colorScheme.onSurfaceVariant,
           ),
         ),
+        onChanged: (value) => _onSearchChanged(),
+        onTap: widget.onTap,
       ),
-      trailing: [
-        AnimatedOpacity(
-          opacity: widget.focusNode.hasFocus ? 1 : 0,
-          duration: animationDuration,
-          child: IconButton(
-            icon: Icon(
-              Icons.close,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-            onPressed: () {
-              widget.focusNode.unfocus();
-              _internalController.clear();
-              widget.onClosed?.call();
-            },
-          ),
-        ),
-      ],
-      hintText: 'Search',
-      hintStyle: MaterialStateProperty.all(
-        context.textTheme.titleMedium!.copyWith(
-          color: context.colorScheme.onSurfaceVariant,
-        ),
-      ),
-      onChanged: (value) => _onSearchChanged(),
-      onTap: widget.onTap,
     );
   }
 }
