@@ -38,7 +38,7 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   flutter_native_splash: ^2.3.10
   flutter_launcher_icons: ^0.13.1
-  flutter_reorderable_grid_view: ^4.0.0
+  flutter_reorderable_grid_view: ^5.0.0
   reorderables: ^0.6.0
   flutter_svg: ^2.0.10+1
   flutter_chord: ^0.1.2
