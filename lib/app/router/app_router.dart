@@ -15,6 +15,12 @@ import 'package:on_stage_app/app/main_screen.dart';
 
 export 'package:go_router/go_router.dart';
 
+GlobalKey<NavigatorState> _homeShellKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> _songsShellKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> _eventsShellKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> _profileShellKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 enum AppRoute {
   login,
   welcome,
@@ -31,8 +37,6 @@ enum AppRoute {
 }
 
 class AppRouter {
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-
   static final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
@@ -49,6 +53,90 @@ class AppRouter {
       ),
     ),
     routes: [
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: _homeShellKey,
+            routes: [
+              GoRoute(
+                name: AppRoute.home.name,
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _songsShellKey,
+            routes: [
+              GoRoute(
+                name: AppRoute.songs.name,
+                path: '/songs',
+                builder: (context, state) => const SongsScreen(),
+                routes: [
+                  GoRoute(
+                    name: AppRoute.song.name,
+                    path: 'song',
+                    builder: (context, state) {
+                      final song = state.extra! as SongModel;
+                      return SongDetailScreen(song);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _eventsShellKey,
+            routes: [
+              GoRoute(
+                name: AppRoute.events.name,
+                path: '/events',
+                builder: (context, state) => const EventsScreen(),
+                routes: [
+                  GoRoute(
+                    name: AppRoute.addEvent.name,
+                    path: 'addEvent',
+                    builder: (context, state) => const AddEventScreen(),
+                  ),
+                  GoRoute(
+                    name: AppRoute.eventDetails.name,
+                    path: 'eventDetails',
+                    builder: (context, state) {
+                      final eventId = state.uri.queryParameters['eventId'];
+                      return EventDetailsScreen(eventId!);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _profileShellKey,
+            routes: [
+              GoRoute(
+                name: AppRoute.profile.name,
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+                routes: [
+                  GoRoute(
+                    name: AppRoute.notification.name,
+                    path: 'notification',
+                    builder: (context, state) => const NotificationPage(),
+                  ),
+                  GoRoute(
+                    name: AppRoute.favorites.name,
+                    path: 'favorites',
+                    builder: (context, state) => const FavoriteSongsScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
         name: AppRoute.login.name,
         path: '/login',
@@ -57,64 +145,10 @@ class AppRouter {
       GoRoute(
         name: AppRoute.welcome.name,
         path: '/welcome',
-        builder: (context, state) => const MainScreen(),
-      ),
-      GoRoute(
-        name: AppRoute.home.name,
-        path: '/home',
         builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        name: AppRoute.songs.name,
-        path: '/songs',
-        builder: (context, state) => const SongsScreen(),
-        routes: [
-          GoRoute(
-            name: AppRoute.song.name,
-            path: 'song',
-            builder: (context, state) {
-              final song = state.extra! as SongModel;
-              return SongDetailScreen(song);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: AppRoute.events.name,
-        path: '/events',
-        builder: (context, state) => const EventsScreen(),
-        routes: [
-          GoRoute(
-            name: AppRoute.addEvent.name,
-            path: 'addEvent',
-            builder: (context, state) => const AddEventScreen(),
-          ),
-          GoRoute(
-            name: AppRoute.eventDetails.name,
-            path: 'eventDetails',
-            builder: (context, state) {
-              final eventId = state.uri.queryParameters['eventId'];
-              return EventDetailsScreen(eventId!);
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: AppRoute.profile.name,
-        path: '/profile',
-        builder: (context, state) => const ProfileScreen(),
-        routes: [
-          GoRoute(
-            name: AppRoute.notification.name,
-            path: 'notification',
-            builder: (context, state) => const NotificationPage(),
-          ),
-          GoRoute(
-            name: AppRoute.favorites.name,
-            path: 'favorites',
-            builder: (context, state) => const FavoriteSongsScreen(),
-          ),
-        ],
+        redirect: (context, state) {
+          return state.nameLocation(AppRoute.home.name);
+        },
       ),
     ],
   );

@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
-import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({
+    required this.navigationShell,
+    super.key,
+  });
+
+  final StatefulNavigationShell navigationShell;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
   List<Widget> screens = [
     const HomeScreen(),
     const SongsScreen(),
@@ -22,19 +27,20 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   void _onChangedScreen(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    widget.navigationShell.goBranch(
+      index,
+      initialLocation: index == widget.navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colorScheme.background,
+      backgroundColor: context.colorScheme.surface,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: widget.navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: context.colorScheme.background,
+        backgroundColor: context.colorScheme.surface,
         selectedLabelStyle: context.textTheme.labelMedium,
         unselectedLabelStyle: context.textTheme.labelMedium,
         selectedItemColor: context.colorScheme.primary,
@@ -76,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: screens[_currentIndex],
+      body: widget.navigationShell,
     );
   }
 }
