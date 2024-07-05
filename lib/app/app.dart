@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -25,8 +24,8 @@ class AppState extends ConsumerState<App> {
     return MaterialApp.router(
       routerConfig: AppRouter.router,
       theme: onStageLightTheme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      // localizationsDelegates: AppLocalizations.localizationsDelegates,
+      // supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

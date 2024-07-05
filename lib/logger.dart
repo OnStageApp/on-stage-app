@@ -1,20 +1,17 @@
-import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'package:logger/logger.dart';
 
 final logger = _OnStageLogger();
 
 class _OnStageLogger {
-  final Logger logger = Logger(
-    printer: PrettyPrinter(
-      printTime: true,
-      stackTraceBeginIndex: 4,
+  final logger = Logger(
+    printer: PrefixPrinter(
+      PrettyPrinter(
+        methodCount: 0,
+        errorMethodCount: 5,
+        lineLength: 50,
+        colors: false,
+      ),
     ),
-    output: MultiOutput(
-      [
-        ConsoleOutput(),
-      ],
-    ),
-    filter: kReleaseMode ? ProductionFilter() : DevelopmentFilter(),
   );
 
   void v(dynamic message, [dynamic error, StackTrace? stackTrace]) =>

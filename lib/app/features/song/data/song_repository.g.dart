@@ -3,24 +3,80 @@
 part of 'song_repository.dart';
 
 // **************************************************************************
-// RiverpodGenerator
+// RetrofitGenerator
 // **************************************************************************
 
-String _$songRepositoryHash() => r'55fa5c9ebedaa2870001f9e257a20955a6fa817c';
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-/// See also [SongRepository].
-@ProviderFor(SongRepository)
-final songRepositoryProvider =
-    AutoDisposeAsyncNotifierProvider<SongRepository, Object?>.internal(
-  SongRepository.new,
-  name: r'songRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$songRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+class _SongRepository implements SongRepository {
+  _SongRepository(
+    this._dio, {
+    this.baseUrl,
+  }) {
+    baseUrl ??= 'https://onstage-event-service.onrender.com/';
+  }
 
-typedef _$SongRepository = AutoDisposeAsyncNotifier<Object?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+  final Dio _dio;
+
+  String? baseUrl;
+
+  @override
+  Future<List<SongOverview>> getSongs({String? search}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'search': search};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<SongOverview>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'songs?{search}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var _value = _result.data!
+        .map((dynamic i) => SongOverview.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return _value;
+  }
+
+  RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
+      if (T == String) {
+        requestOptions.responseType = ResponseType.plain;
+      } else {
+        requestOptions.responseType = ResponseType.json;
+      }
+    }
+    return requestOptions;
+  }
+
+  String _combineBaseUrls(
+    String dioBaseUrl,
+    String? baseUrl,
+  ) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
+      return dioBaseUrl;
+    }
+
+    final url = Uri.parse(baseUrl);
+
+    if (url.isAbsolute) {
+      return url.toString();
+    }
+
+    return Uri.parse(dioBaseUrl).resolveUri(url).toString();
+  }
+}

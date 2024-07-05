@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
@@ -33,9 +32,7 @@ class SavedSongsTile extends StatelessWidget {
               const SizedBox(width: Insets.small),
               Text(
                 'Saved songs',
-                style: context.textTheme.titleLarge!.copyWith(
-                  color: context.colorScheme.surface,
-                ),
+                style: context.textTheme.titleLarge,
               ),
             ],
           ),
@@ -44,10 +41,8 @@ class SavedSongsTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "6",
-                style: context.textTheme.titleLarge!.copyWith(
-                  color: context.colorScheme.surface,
-                ),
+                '6',
+                style: context.textTheme.titleLarge,
               ),
               Container(
                 height: 30,
