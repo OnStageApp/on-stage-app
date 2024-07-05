@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/song/application/songs_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
+import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,8 +9,11 @@ part 'songs_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class SongsNotifier extends _$SongsNotifier {
+  late final SongRepository _songRepository;
   @override
   SongsState build() {
+    final dio = ref.read(dioProvider);
+    _songRepository = SongRepository(dio);
     return const SongsState();
   }
 
@@ -30,7 +34,7 @@ class SongsNotifier extends _$SongsNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final songs = await ref.read(songRepositoryProvider.notifier).getSongs();
+    final songs = await _songRepository.getSongs();
     state =
         state.copyWith(isLoading: false, songs: songs, filteredSongs: songs);
   }

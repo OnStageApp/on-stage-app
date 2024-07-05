@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class GroupTile extends StatelessWidget {
@@ -31,28 +30,29 @@ class GroupTile extends StatelessWidget {
               const SizedBox(width: Insets.small),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: context.colorScheme.surface,
-                    ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ],
           ),
           const Expanded(child: SizedBox()),
           Row(
             children: [
-              if (hasUpcomingEvent) const ParticipantsOnTile(
-                showOverlay: false,
-                participantsProfile: [
-                  'assets/images/profile1.png',
-                  'assets/images/profile2.png',
-                  'assets/images/profile4.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                ],
-              ) else Text('Invite friends'),
+              if (hasUpcomingEvent)
+                const ParticipantsOnTile(
+                  showOverlay: false,
+                  participantsProfile: [
+                    'assets/images/profile1.png',
+                    'assets/images/profile2.png',
+                    'assets/images/profile4.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                  ],
+                )
+              else
+                Text('Invite friends'),
               const Expanded(child: SizedBox()),
               Container(
                 height: 30,

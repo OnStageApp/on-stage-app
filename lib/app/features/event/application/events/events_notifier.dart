@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
-import 'package:on_stage_app/app/features/event/data/event_repository.dart';
+import 'package:on_stage_app/app/features/event/data/events_repository.dart';
+import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
@@ -11,9 +12,14 @@ part 'events_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class EventsNotifier extends _$EventsNotifier {
   final TimeUtils timeUtils = TimeUtils();
+  late final EventsRepository _eventsRepository;
 
   @override
-  EventsState build() => const EventsState();
+  EventsState build() {
+    final dio = ref.read(dioProvider);
+    _eventsRepository = EventsRepository(dio);
+    return const EventsState();
+  }
 
   Future<void> init() async {
     if (state.events.isNotNullOrEmpty) {
@@ -41,16 +47,13 @@ class EventsNotifier extends _$EventsNotifier {
       state = state.copyWith(filteredEvents: state.events, isLoading: false);
       return;
     }
-    final events = await ref
-        .read(eventRepositoryProvider.notifier)
-        .getEvents(search: search);
+    final events = await _eventsRepository.getEvents(search: search);
 
     state = state.copyWith(filteredEvents: events, isLoading: false);
   }
 
   Future<void> getEvents() async {
-    final events = await ref.read(eventRepositoryProvider.notifier).getEvents();
-
+    final events = await _eventsRepository.getEvents();
     state = state.copyWith(events: events, filteredEvents: events);
   }
 }
