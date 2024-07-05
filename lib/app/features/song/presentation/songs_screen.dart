@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
+import 'package:on_stage_app/app/features/search/application/search_provider.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
@@ -20,36 +20,19 @@ class SongsScreen extends ConsumerStatefulWidget {
 }
 
 class SongsScreenState extends ConsumerState<SongsScreen> {
-  List<SongModel> _songs = List.empty(growable: true);
-  final FocusNode _focusNode = FocusNode();
-  bool _isSearching = false;
-  TextEditingController _searchController = TextEditingController();
+  List<SongOverview> _songs = List.empty(growable: true);
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
-    _isSearchedFocused();
     super.initState();
-  }
-
-  void _isSearchedFocused() {
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        setState(() {
-          _isSearching = true;
-        });
-      } else {
-        setState(() {
-          _isSearching = false;
-        });
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     //TODO:uncomment
-    // _songs = ref.watch(songsNotifierProvider).filteredSongs;
-    _songs = SongDummy.playlist;
+    _songs = ref.watch(songsNotifierProvider).filteredSongs;
+    // _songs = SongDummy.playlist;
     return Scaffold(
       appBar: StageAppBar(
         titleWidget: RichText(
@@ -75,9 +58,6 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         title: '',
       ),
       body: _buildContent(context),
-      // body: ref.watch(songsNotifierProvider).isLoading
-      //     ? const OnStageLoadingIndicator()
-      //     : _buildContent(context),
     );
   }
 
@@ -90,16 +70,15 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
           child: Hero(
             tag: 'searchBar',
             child: StageSearchBar(
-              focusNode: _focusNode,
               controller: _searchController,
               onClosed: () {
-                if (context.canPop()) context.pop();
+                if (context.canPop()) {
+                  context.pop();
+                }
                 _searchController.clear();
               },
               onChanged: (value) {
-                if (value.isEmpty) {
-                  _focusNode.unfocus();
-                } else {
+                if (value.isNotEmpty) {
                   ref.read(songsNotifierProvider.notifier).searchSongs(
                         searchedText: value,
                       );
@@ -114,12 +93,21 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!_isSearching)
-                Text(
-                  'Recently added',
-                  style: context.textTheme.headlineMedium,
-                ),
-              const SizedBox(height: Insets.medium),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: ref.watch(searchNotifierProvider).isFocused
+                    ? const SizedBox.shrink()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Recently added',
+                            style: context.textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: Insets.medium),
+                        ],
+                      ),
+              ),
               if (ref.watch(loadingProvider.notifier).state)
                 Container(
                   alignment: Alignment.center,
@@ -137,22 +125,20 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   }
 
   Widget _buildSongs() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _songs.length,
-      itemBuilder: (context, index) {
-        final song = _songs[index];
-        final isLastSong = index == _songs.length - 1;
-
-        return Column(
-          children: [
-            const SizedBox(height: 6),
-            SongTile(song: song),
-            const SizedBox(height: 6),
-          ],
-        );
-      },
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 1000),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _songs.length,
+        itemBuilder: (context, index) {
+          final song = _songs[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: SongTile(song: song),
+          );
+        },
+      ),
     );
   }
 }

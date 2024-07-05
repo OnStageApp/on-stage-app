@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -78,6 +77,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ParticipantsOnTile(
+                      backgroundColor: Colors.white,
                       borderColor: Color(0xFFD8E1FE),
                       participantsProfile: [
                         'assets/images/profile1.png',
