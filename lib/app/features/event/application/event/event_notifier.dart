@@ -1,3 +1,4 @@
+import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
@@ -49,7 +50,7 @@ class EventNotifier extends _$EventNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final stagers = await _eventsRepository.getStagers();
+    final stagers = StagersDummy.stagers;
     state = state.copyWith(stagers: stagers, isLoading: false);
   }
 

@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -25,11 +23,12 @@ abstract class EventsRepository {
   @POST(API.createEvent)
   Future<void> createEvent(@Body() EventModel event);
 
-  Future<List<StagerOverview>> getStagers() async {
-    final stagers = await Future.delayed(
-      const Duration(seconds: 1),
-      () => StagersDummy.stagers,
-    );
-    return stagers;
-  }
+  // @GET(API.getEvents)
+  // Future<List<StagerOverview>> getStagers() async {
+  //   final stagers = await Future.delayed(
+  //     const Duration(seconds: 1),
+  //     () => StagersDummy.stagers,
+  //   );
+  //   return stagers;
+  // }
 }
