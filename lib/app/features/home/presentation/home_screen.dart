@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -24,8 +22,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
-  List<SongModel> _songs = List.empty(growable: true);
-  final FocusNode _focusNode = FocusNode();
+  List<SongOverview> _songs = List.empty(growable: true);
   final hasUpcomingEvent = true;
 
   @override
@@ -69,7 +66,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildRecentlyAdded() {
-    _songs = SongDummy.playlist;
+    _songs = ref.watch(songsNotifierProvider).filteredSongs;
     return Padding(
       padding: defaultScreenHorizontalPadding,
       child: ListView.builder(
@@ -102,7 +99,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Hero(
               tag: 'searchBar',
               child: StageSearchBar(
-                focusNode: _focusNode,
                 onTap: () => context.pushNamed(AppRoute.songs.name),
               ),
             ),

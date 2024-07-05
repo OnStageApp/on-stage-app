@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -56,7 +56,6 @@ class VocalLeadModal extends ConsumerStatefulWidget {
 }
 
 class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
-  final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
   final List<String> _allVocals = [
     'Marcelo',
@@ -93,7 +92,6 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
         children: [
           const SizedBox(height: 16),
           StageSearchBar(
-            focusNode: _focusNode,
             controller: _searchController,
             onClosed: () {
               setState(() {
@@ -204,7 +202,6 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
   void _clearSearch() {
     _searchController.clear();
     _searchedVocals = _allVocals;
-    _focusNode.unfocus();
   }
 
   bool _isItemChecked(int index) => _addedVocals.contains(

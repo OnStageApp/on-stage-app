@@ -22,7 +22,12 @@ class EventTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Row(
           children: [
             Expanded(
@@ -37,12 +42,12 @@ class EventTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        date,
+                        time,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       _buildCircle(context),
                       Text(
-                        time,
+                        date,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -79,7 +84,7 @@ class EventTile extends StatelessWidget {
       child: Icon(
         Icons.circle,
         size: 8,
-        color: context.colorScheme.outline,
+        color: context.colorScheme.outline.withOpacity(0.5),
       ),
     );
   }

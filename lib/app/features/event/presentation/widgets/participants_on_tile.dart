@@ -6,6 +6,7 @@ class ParticipantsOnTile extends StatelessWidget {
     this.width = 30,
     this.showOverlay = true,
     this.borderColor = Colors.white,
+    this.backgroundColor,
     super.key,
   });
 
@@ -15,6 +16,7 @@ class ParticipantsOnTile extends StatelessWidget {
   final double width;
   final bool showOverlay;
   final Color borderColor;
+  final Color? backgroundColor;
 
   bool get _isMoreThanMax => participantsProfile.length > _participantsMax;
 
@@ -52,7 +54,7 @@ class ParticipantsOnTile extends StatelessWidget {
                           )
                         : null,
                     color: index == _participantsMax && showOverlay
-                        ? Colors.white
+                        ? backgroundColor ?? const Color(0xFFD8E1FE)
                         : null,
                   ),
                   child: Center(
@@ -61,7 +63,8 @@ class ParticipantsOnTile extends StatelessWidget {
                             '+${_participantsLength - _participantsMax}',
                             style: const TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
                             ),
                           )
                         : const SizedBox(),

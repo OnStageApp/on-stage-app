@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
@@ -9,7 +10,7 @@ class SongTile extends StatefulWidget {
     super.key,
   });
 
-  final SongModel song;
+  final SongOverview song;
 
   @override
   State<SongTile> createState() => _SongTileState();
@@ -22,7 +23,7 @@ class _SongTileState extends State<SongTile> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamed(AppRoute.song.name, extra: widget.song);
+        context.pushNamed(AppRoute.song.name, extra: SongDummy.playlist.first);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -53,7 +54,7 @@ class _SongTileState extends State<SongTile> {
                     Row(
                       children: [
                         Text(
-                          'widget.song.artist' ?? '',
+                          '${widget.song.artist}' ?? '',
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
