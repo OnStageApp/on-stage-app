@@ -35,6 +35,8 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   }
 
   Future<void> _fetchEventDetails() async {
+    await ref.read(eventNotifierProvider.notifier).init();
+
     await ref.read(eventNotifierProvider.notifier).getEventById(widget.eventId);
     await ref.read(eventNotifierProvider.notifier).getStagers();
   }

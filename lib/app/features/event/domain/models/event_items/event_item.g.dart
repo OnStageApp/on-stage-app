@@ -10,7 +10,7 @@ _$EventItemImpl _$$EventItemImplFromJson(Map<String, dynamic> json) =>
     _$EventItemImpl(
       name: json['name'] as String?,
       index: (json['index'] as num?)?.toInt(),
-      eventType: json['eventType'] as String?,
+      eventType: $enumDecodeNullable(_$EventTypeEnumEnumMap, json['eventType']),
       songId: json['songId'] as String?,
     );
 
@@ -18,6 +18,11 @@ Map<String, dynamic> _$$EventItemImplToJson(_$EventItemImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'index': instance.index,
-      'eventType': instance.eventType,
+      'eventType': _$EventTypeEnumEnumMap[instance.eventType],
       'songId': instance.songId,
     };
+
+const _$EventTypeEnumEnumMap = {
+  EventTypeEnum.song: 'song',
+  EventTypeEnum.moment: 'moment',
+};

@@ -1,0 +1,1 @@
+enum EventTypeEnum { song, moment }

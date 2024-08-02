@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class EventTile extends StatelessWidget {
   const EventTile({
     required this.title,
-    required this.date,
-    required this.time,
+    required this.dateTime,
     required this.onTap,
     super.key,
   });
 
   final String title;
-  final String date;
+  final DateTime dateTime;
 
-  final String time;
   final VoidCallback onTap;
 
   @override
@@ -24,7 +23,7 @@ class EventTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(8),
         ),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -36,19 +35,23 @@ class EventTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
                   ),
                   Row(
                     children: [
                       Text(
-                        time,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        TimeUtils().formatOnlyTime(dateTime),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: context.colorScheme.surfaceDim,
+                            ),
                       ),
                       _buildCircle(context),
                       Text(
-                        date,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        TimeUtils().formatOnlyDate(dateTime),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: context.colorScheme.surfaceDim,
+                            ),
                       ),
                     ],
                   ),
@@ -65,6 +68,7 @@ class EventTile extends StatelessWidget {
 
   Widget _buildParticipantsTile() {
     return const ParticipantsOnTile(
+      borderColor: Colors.transparent,
       participantsProfile: [
         'assets/images/profile1.png',
         'assets/images/profile2.png',
@@ -84,7 +88,7 @@ class EventTile extends StatelessWidget {
       child: Icon(
         Icons.circle,
         size: 8,
-        color: context.colorScheme.outline.withOpacity(0.5),
+        color: context.colorScheme.outline.withOpacity(0.2),
       ),
     );
   }

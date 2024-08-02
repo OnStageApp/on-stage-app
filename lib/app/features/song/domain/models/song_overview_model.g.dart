@@ -8,7 +8,7 @@ part of 'song_overview_model.dart';
 
 _$SongOverviewImpl _$$SongOverviewImplFromJson(Map<String, dynamic> json) =>
     _$SongOverviewImpl(
-      id: json['id'] as String?,
+      id: json['id'] as String,
       title: json['title'] as String?,
       bpm: (json['bpm'] as num?)?.toInt(),
       key: json['key'] as String?,

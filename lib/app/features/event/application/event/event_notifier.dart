@@ -46,9 +46,6 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> getStagers() async {
-    if (state.stagers.isNotEmpty) {
-      return;
-    }
     state = state.copyWith(isLoading: true);
     final stagers = StagersDummy.stagers;
     state = state.copyWith(stagers: stagers, isLoading: false);

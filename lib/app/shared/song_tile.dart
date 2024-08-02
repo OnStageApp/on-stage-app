@@ -3,6 +3,7 @@ import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongTile extends StatefulWidget {
   const SongTile({
@@ -27,7 +28,7 @@ class _SongTileState extends State<SongTile> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -44,9 +45,8 @@ class _SongTileState extends State<SongTile> {
                   children: [
                     Text(
                       widget.song.title ?? '',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            color: context.colorScheme.onSurface,
                           ),
                       maxLines: 1,
                     ),
@@ -54,7 +54,7 @@ class _SongTileState extends State<SongTile> {
                     Row(
                       children: [
                         Text(
-                          '${widget.song.artist}' ?? '',
+                          '${widget.song.artist?.fullName}' ?? '',
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
@@ -63,7 +63,7 @@ class _SongTileState extends State<SongTile> {
                         const SizedBox(
                           width: 8,
                         ),
-                        _buildKey(context),
+                        // SongKeyLabelWidget(songKey: widget.song.key ?? ''),
                       ],
                     ),
                   ],
@@ -84,28 +84,6 @@ class _SongTileState extends State<SongTile> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildKey(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF4F4F4),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Text(
-          widget.song.key ?? '',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall!
-              .copyWith(color: const Color(0xFF7F818B)),
         ),
       ),
     );

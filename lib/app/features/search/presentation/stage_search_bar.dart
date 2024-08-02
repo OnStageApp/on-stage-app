@@ -83,7 +83,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
         overlayColor:
             WidgetStateProperty.resolveWith((states) => Colors.transparent),
         backgroundColor: WidgetStateProperty.resolveWith(
-          (states) => const Color(0xFFE2E2E5),
+          (states) => context.colorScheme.surfaceBright,
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
@@ -101,7 +101,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
             child: IconButton(
               icon: Icon(
                 Icons.close,
-                color: context.colorScheme.onSurfaceVariant,
+                color: context.colorScheme.outline,
               ),
               onPressed: () {
                 _focusNode.unfocus();
@@ -114,8 +114,8 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
         ],
         hintText: 'Search',
         hintStyle: WidgetStateProperty.all(
-          context.textTheme.titleLarge!.copyWith(
-            color: context.colorScheme.onSurfaceVariant,
+          context.textTheme.titleMedium!.copyWith(
+            color: context.colorScheme.outline,
           ),
         ),
         onChanged: (value) => _onSearchChanged(),

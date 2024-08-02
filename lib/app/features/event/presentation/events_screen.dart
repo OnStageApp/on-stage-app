@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
@@ -44,7 +43,10 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           padding: const EdgeInsets.only(right: Insets.normal),
           child: IconButton(
             onPressed: () => context.pushNamed(AppRoute.addEvent.name),
-            icon: const Icon(Icons.add),
+            icon: Icon(
+              Icons.add,
+              color: context.colorScheme.surfaceDim,
+            ),
           ),
         ),
       ),
@@ -52,11 +54,9 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
         child: ListView(
           children: [
-            const SizedBox(height: Insets.small),
-            _buildSearchBar(),
-            const SizedBox(height: Insets.medium),
+            const SizedBox(height: Insets.large),
             if (!eventsState.isLoading) ...[
-              Text('Upcoming Events', style: context.textTheme.titleSmall),
+              Text('Upcoming Events', style: context.textTheme.titleMedium),
               const SizedBox(height: Insets.normal),
               SizedBox(
                 height: 124,
@@ -74,8 +74,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: Insets.medium),
-              Text('Past Events', style: context.textTheme.titleSmall),
+              const SizedBox(height: Insets.large),
+              Text('Past Events', style: context.textTheme.titleMedium),
               const SizedBox(height: Insets.normal),
               _buildAllEvents(),
             ] else ...[
@@ -110,6 +110,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   Widget _buildAllEvents() {
     return ListView(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: ref
           .watch(eventsNotifierProvider)
           .filteredEvents
@@ -119,16 +120,13 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   Widget _buildEventTile(EventOverview event) {
-    final formattedDate =
-        DateFormat('EEEE, dd MMM').format(DateTime.parse(event.date));
     return EventTile(
       onTap: () => context.pushNamed(
         AppRoute.eventDetails.name,
         queryParameters: {'eventId': event.id},
       ),
       title: event.name,
-      date: formattedDate,
-      time: '11:00 AM',
+      dateTime: DateTime.parse(event.date),
     );
   }
 }

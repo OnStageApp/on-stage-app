@@ -22,7 +22,7 @@ EventItem _$EventItemFromJson(Map<String, dynamic> json) {
 mixin _$EventItem {
   String? get name => throw _privateConstructorUsedError;
   int? get index => throw _privateConstructorUsedError;
-  String? get eventType => throw _privateConstructorUsedError;
+  EventTypeEnum? get eventType => throw _privateConstructorUsedError;
   String? get songId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,7 +36,8 @@ abstract class $EventItemCopyWith<$Res> {
   factory $EventItemCopyWith(EventItem value, $Res Function(EventItem) then) =
       _$EventItemCopyWithImpl<$Res, EventItem>;
   @useResult
-  $Res call({String? name, int? index, String? eventType, String? songId});
+  $Res call(
+      {String? name, int? index, EventTypeEnum? eventType, String? songId});
 }
 
 /// @nodoc
@@ -69,7 +70,7 @@ class _$EventItemCopyWithImpl<$Res, $Val extends EventItem>
       eventType: freezed == eventType
           ? _value.eventType
           : eventType // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as EventTypeEnum?,
       songId: freezed == songId
           ? _value.songId
           : songId // ignore: cast_nullable_to_non_nullable
@@ -86,7 +87,8 @@ abstract class _$$EventItemImplCopyWith<$Res>
       __$$EventItemImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? name, int? index, String? eventType, String? songId});
+  $Res call(
+      {String? name, int? index, EventTypeEnum? eventType, String? songId});
 }
 
 /// @nodoc
@@ -117,7 +119,7 @@ class __$$EventItemImplCopyWithImpl<$Res>
       eventType: freezed == eventType
           ? _value.eventType
           : eventType // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as EventTypeEnum?,
       songId: freezed == songId
           ? _value.songId
           : songId // ignore: cast_nullable_to_non_nullable
@@ -128,12 +130,13 @@ class __$$EventItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EventItemImpl implements _EventItem {
+class _$EventItemImpl extends _EventItem {
   const _$EventItemImpl(
       {required this.name,
       required this.index,
       required this.eventType,
-      required this.songId});
+      this.songId})
+      : super._();
 
   factory _$EventItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventItemImplFromJson(json);
@@ -143,7 +146,7 @@ class _$EventItemImpl implements _EventItem {
   @override
   final int? index;
   @override
-  final String? eventType;
+  final EventTypeEnum? eventType;
   @override
   final String? songId;
 
@@ -182,12 +185,13 @@ class _$EventItemImpl implements _EventItem {
   }
 }
 
-abstract class _EventItem implements EventItem {
+abstract class _EventItem extends EventItem {
   const factory _EventItem(
       {required final String? name,
       required final int? index,
-      required final String? eventType,
-      required final String? songId}) = _$EventItemImpl;
+      required final EventTypeEnum? eventType,
+      final String? songId}) = _$EventItemImpl;
+  const _EventItem._() : super._();
 
   factory _EventItem.fromJson(Map<String, dynamic> json) =
       _$EventItemImpl.fromJson;
@@ -197,7 +201,7 @@ abstract class _EventItem implements EventItem {
   @override
   int? get index;
   @override
-  String? get eventType;
+  EventTypeEnum? get eventType;
   @override
   String? get songId;
   @override

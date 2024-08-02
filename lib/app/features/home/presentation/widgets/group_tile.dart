@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class GroupTile extends StatelessWidget {
@@ -18,7 +19,7 @@ class GroupTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -39,6 +40,7 @@ class GroupTile extends StatelessWidget {
             children: [
               if (hasUpcomingEvent)
                 const ParticipantsOnTile(
+                  borderColor: Colors.transparent,
                   showOverlay: false,
                   participantsProfile: [
                     'assets/images/profile1.png',

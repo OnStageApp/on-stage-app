@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventTileEnhanced extends StatelessWidget {
   const EventTileEnhanced({
@@ -20,7 +21,7 @@ class EventTileEnhanced extends StatelessWidget {
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFD8E1FE),
+        color: context.colorScheme.secondary,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -28,10 +29,9 @@ class EventTileEnhanced extends StatelessWidget {
         children: [
           Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall!
-                .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
             maxLines: 1,
           ),
           const SizedBox(height: 4),
@@ -39,17 +39,15 @@ class EventTileEnhanced extends StatelessWidget {
             children: [
               Text(
                 hour,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: const Color(0xFF004788),
-                      fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: context.colorScheme.onSecondary,
                     ),
               ),
               _buildCircle(context),
               Text(
                 date,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF004788),
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: context.colorScheme.onSecondary,
                     ),
               ),
             ],
@@ -60,7 +58,7 @@ class EventTileEnhanced extends StatelessWidget {
           ),
           const ParticipantsOnTile(
             backgroundColor: Colors.white,
-            borderColor: Color(0xFFD8E1FE),
+            borderColor: Colors.transparent,
             participantsProfile: [
               'assets/images/profile1.png',
               'assets/images/profile2.png',

@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/widget_utils.dart';
+import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
-  const DateTimeTextFieldWidget({super.key, this.controller});
+  const DateTimeTextFieldWidget({
+    super.key,
+    required this.dateController,
+    required this.timeController,
+  });
 
-  final TextEditingController? controller;
+  final TextEditingController dateController;
+  final TextEditingController timeController;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -15,43 +21,128 @@ class DateTimeTextFieldWidget extends StatefulWidget {
 }
 
 class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
-  DateTime date = DateTime.now();
-
-  //format date to be just date
-  // I want to format Like this: Friday, 8 Nov 2023
-  String get dateFormatted => DateFormat('EEEE, d MMM y').format(date);
   @override
   void initState() {
-    widget.controller?.text = dateFormatted;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      enabled: false,
-      controller: widget.controller,
-      style: context.textTheme.bodyMedium,
-      readOnly: true,
-      decoration: WidgetUtils.getDecorations(Icons.calendar_month),
-      onTap: () {
-        _showDialog(
-          CupertinoDatePicker(
-            initialDateTime: date,
-            mode: CupertinoDatePickerMode.date,
-            use24hFormat: true,
-            // This shows day of week alongside day of month
-            showDayOfWeek: true,
-            // This is called when the user changes the date.
-            onDateTimeChanged: (DateTime newDate) {
-              setState(() {
-                date = newDate;
-                widget.controller?.text = dateFormatted;
-              });
-            },
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Date',
+                style: context.textTheme.titleSmall,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: widget.dateController,
+                style: context.textTheme.titleSmall,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                  DateInputFormatter(),
+                ],
+                decoration: InputDecoration(
+                  hintStyle: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                  isDense: true,
+                  fillColor: context.colorScheme.onSurfaceVariant,
+                  filled: true,
+                  hintText: 'DD/MM/YYYY',
+                  suffixIcon: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 8,
+                    ),
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(Insets.small),
+                    ),
+                    child: Icon(
+                      Icons.calendar_today,
+                      color: context.colorScheme.outline,
+                    ),
+                  ),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(Insets.small),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+        const SizedBox(width: 24),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Time',
+                style: context.textTheme.titleSmall,
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: widget.timeController,
+                      style: context.textTheme.titleSmall,
+                      onChanged: (value) {},
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(5),
+                        TimeInputFormatter(),
+                      ],
+                      decoration: InputDecoration(
+                        hintStyle: context.textTheme.titleMedium!.copyWith(
+                          color: context.colorScheme.outline,
+                        ),
+                        isDense: true,
+                        fillColor: context.colorScheme.onSurfaceVariant,
+                        filled: true,
+                        hintText: 'HH:MM',
+                        suffixIcon: Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 8,
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(Insets.small),
+                          ),
+                          child: Icon(
+                            Icons.access_time,
+                            color: context.colorScheme.outline,
+                          ),
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(Insets.small),
+                          ),
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -60,7 +151,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
       context: context,
       builder: (BuildContext context) => Container(
         height: 216,
-        padding: const EdgeInsets.only(top: 6.0),
+        padding: const EdgeInsets.only(top: 6),
         // The Bottom margin is provided to align the popup above the system
         // navigation bar.
         margin: EdgeInsets.only(

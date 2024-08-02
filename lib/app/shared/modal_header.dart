@@ -18,7 +18,7 @@ class ModalHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F4F4),
+        color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
       width: MediaQuery.of(context).size.width,
@@ -30,7 +30,7 @@ class ModalHeader extends StatelessWidget {
             width: 82,
             height: 4,
             decoration: BoxDecoration(
-              color: const Color(0xFFD9D9D9),
+              color: context.colorScheme.surfaceContainer.withOpacity(0.3),
               borderRadius: BorderRadius.circular(5),
             ),
           ),
@@ -44,10 +44,7 @@ class ModalHeader extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: context.textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: context.textTheme.labelLarge,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -65,7 +62,8 @@ class ModalHeader extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFFE4E4E4),
+                            color: context.colorScheme.surfaceContainer
+                                .withOpacity(0.3),
                           ),
                         ),
                         child: const Icon(Icons.close, size: 16),
@@ -77,8 +75,8 @@ class ModalHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Insets.smallNormal),
-          const Divider(
-            color: Color(0xFFE4E4E4),
+          Divider(
+            color: context.colorScheme.surfaceContainer.withOpacity(0.3),
             height: 0,
           ),
         ],

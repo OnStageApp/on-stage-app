@@ -22,11 +22,10 @@ class ContinueButton extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: hasShadow
             ? [
-                const BoxShadow(
-                  color: Color(0xFFF4F4F4),
-                  blurRadius: 24,
-                  offset: Offset(0, -16),
-                  spreadRadius: 8,
+                BoxShadow(
+                  color: context.colorScheme.surface,
+                  blurRadius: 30,
+                  spreadRadius: 35,
                 ),
               ]
             : [],
@@ -35,20 +34,24 @@ class ContinueButton extends StatelessWidget {
       width: double.infinity,
       child: TextButton(
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(4),
-          shape: MaterialStateProperty.all(
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          backgroundColor: MaterialStateProperty.all(
-            isEnabled ? const Color(0xFF1996FF) : const Color(0xFFBDBDBD),
+          backgroundColor: WidgetStateProperty.all(
+            isEnabled
+                ? context.colorScheme.primary
+                : context.colorScheme.outlineVariant,
           ),
         ),
         onPressed: onPressed,
         child: Text(
           text,
-          style: context.textTheme.bodyLarge!.copyWith(color: Colors.white),
+          style: context.textTheme.titleMedium!.copyWith(
+            color: context.colorScheme.onPrimary,
+          ),
         ),
       ),
     );
