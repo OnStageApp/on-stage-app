@@ -20,7 +20,7 @@ SongOverview _$SongOverviewFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SongOverview {
-  String? get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   int? get bpm => throw _privateConstructorUsedError;
   String? get key => throw _privateConstructorUsedError;
@@ -38,7 +38,7 @@ abstract class $SongOverviewCopyWith<$Res> {
           SongOverview value, $Res Function(SongOverview) then) =
       _$SongOverviewCopyWithImpl<$Res, SongOverview>;
   @useResult
-  $Res call({String? id, String? title, int? bpm, String? key, Artist? artist});
+  $Res call({String id, String? title, int? bpm, String? key, Artist? artist});
 
   $ArtistCopyWith<$Res>? get artist;
 }
@@ -56,17 +56,17 @@ class _$SongOverviewCopyWithImpl<$Res, $Val extends SongOverview>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = freezed,
     Object? bpm = freezed,
     Object? key = freezed,
     Object? artist = freezed,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -107,7 +107,7 @@ abstract class _$$SongOverviewImplCopyWith<$Res>
       __$$SongOverviewImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, String? title, int? bpm, String? key, Artist? artist});
+  $Res call({String id, String? title, int? bpm, String? key, Artist? artist});
 
   @override
   $ArtistCopyWith<$Res>? get artist;
@@ -124,17 +124,17 @@ class __$$SongOverviewImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? title = freezed,
     Object? bpm = freezed,
     Object? key = freezed,
     Object? artist = freezed,
   }) {
     return _then(_$SongOverviewImpl(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -159,13 +159,13 @@ class __$$SongOverviewImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SongOverviewImpl implements _SongOverview {
   const _$SongOverviewImpl(
-      {this.id, this.title, this.bpm, this.key, this.artist});
+      {required this.id, this.title, this.bpm, this.key, this.artist});
 
   factory _$SongOverviewImpl.fromJson(Map<String, dynamic> json) =>
       _$$SongOverviewImplFromJson(json);
 
   @override
-  final String? id;
+  final String id;
   @override
   final String? title;
   @override
@@ -212,7 +212,7 @@ class _$SongOverviewImpl implements _SongOverview {
 
 abstract class _SongOverview implements SongOverview {
   const factory _SongOverview(
-      {final String? id,
+      {required final String id,
       final String? title,
       final int? bpm,
       final String? key,
@@ -222,7 +222,7 @@ abstract class _SongOverview implements SongOverview {
       _$SongOverviewImpl.fromJson;
 
   @override
-  String? get id;
+  String get id;
   @override
   String? get title;
   @override

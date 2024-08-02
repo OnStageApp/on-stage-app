@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
-import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/order_structure_items_widget.dart';
+import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -55,9 +55,8 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       footerHeight: () {
         return 64;
       },
-      buildContent: isOrderPage
-          ? OrderStructureItemsWidget.new
-          : AddStructureItemsWidget.new,
+      buildContent:
+          isOrderPage ? ReorderListWidget.new : AddStructureItemsWidget.new,
     );
   }
 

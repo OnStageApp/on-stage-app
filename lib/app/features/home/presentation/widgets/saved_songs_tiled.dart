@@ -20,7 +20,7 @@ class SavedSongsTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFD98F),
+        color: context.colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -28,7 +28,9 @@ class SavedSongsTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Assets.icons.heartFilled.svg(),
+              Assets.icons.heartFilled.svg(
+                color: context.colorScheme.outline,
+              ),
               const SizedBox(width: Insets.small),
               Text(
                 'Saved songs',
@@ -42,7 +44,7 @@ class SavedSongsTile extends StatelessWidget {
             children: [
               Text(
                 '6',
-                style: context.textTheme.titleLarge,
+                style: context.textTheme.headlineLarge,
               ),
               Container(
                 height: 30,

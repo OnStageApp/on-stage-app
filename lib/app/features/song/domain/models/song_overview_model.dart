@@ -7,7 +7,7 @@ part 'song_overview_model.g.dart';
 @Freezed()
 class SongOverview with _$SongOverview {
   const factory SongOverview({
-    String? id,
+    required String id,
     String? title,
     int? bpm,
     String? key,

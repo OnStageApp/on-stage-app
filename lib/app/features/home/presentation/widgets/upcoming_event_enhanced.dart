@@ -23,7 +23,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFD8E1FE),
+        color: context.colorScheme.secondary,
         borderRadius: BorderRadius.circular(10),
       ),
       child: hasUpcomingEvent
@@ -32,14 +32,14 @@ class UpcomingEventEnhanced extends StatelessWidget {
               children: [
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Text(
                     'Upcoming',
-                    style: context.textTheme.bodyMedium!.copyWith(
+                    style: context.textTheme.bodySmall!.copyWith(
                       color: Colors.black,
                     ),
                   ),
@@ -47,9 +47,8 @@ class UpcomingEventEnhanced extends StatelessWidget {
                 const SizedBox(height: Insets.medium),
                 Text(
                   title,
-                  style: context.textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  style: context.textTheme.headlineLarge!.copyWith(
+                    color: context.colorScheme.onSurface,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -60,14 +59,14 @@ class UpcomingEventEnhanced extends StatelessWidget {
                     Text(
                       hour,
                       style: context.textTheme.titleSmall!.copyWith(
-                        color: const Color(0xFF004788),
+                        color: context.colorScheme.onSecondary,
                       ),
                     ),
                     _buildCircle(context),
                     Text(
                       "20 dec.",
                       style: context.textTheme.titleSmall!.copyWith(
-                        color: const Color(0xFF004788),
+                        color: context.colorScheme.onSecondary,
                       ),
                     ),
                   ],
@@ -78,7 +77,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
                   children: [
                     ParticipantsOnTile(
                       backgroundColor: Colors.white,
-                      borderColor: Color(0xFFD8E1FE),
+                      borderColor: Colors.transparent,
                       participantsProfile: [
                         'assets/images/profile1.png',
                         'assets/images/profile2.png',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_event_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
@@ -34,6 +35,7 @@ enum AppRoute {
   notification,
   favorites,
   vocalModal,
+  addEventSongs,
 }
 
 class AppRouter {
@@ -99,7 +101,12 @@ class AppRouter {
                   GoRoute(
                     name: AppRoute.addEvent.name,
                     path: 'addEvent',
-                    builder: (context, state) => const AddEventScreen(),
+                    builder: (context, state) => const AddEventDetailsScreen(),
+                  ),
+                  GoRoute(
+                    name: AppRoute.addEventSongs.name,
+                    path: 'addEventSongs',
+                    builder: (context, state) => const AddEventMomentsScreen(),
                   ),
                   GoRoute(
                     name: AppRoute.eventDetails.name,

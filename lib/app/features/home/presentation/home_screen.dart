@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.dart';
+import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
@@ -12,7 +13,6 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -45,8 +45,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       body: SafeArea(
         child: ListView(
           children: [
-            const SizedBox(height: Insets.large),
-            _buildSearchBar(),
+            _buildTopBar(),
             const SizedBox(height: Insets.large),
             _buildEnhanced(hasUpcomingEvent),
             const SizedBox(height: Insets.extraLarge),
@@ -90,7 +89,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildTopBar() {
     return Padding(
       padding: defaultScreenHorizontalPadding,
       child: Row(
@@ -106,37 +105,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(
             width: Insets.smallNormal,
           ),
-          IconButton(
-            onPressed: () => {context.pushNamed(AppRoute.notification.name)},
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(Insets.smallNormal),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Insets.small),
-              ),
-            ),
-            icon: Stack(
-              children: [
-                Assets.icons.filledNotificationBell.svg(
-                  height: 20,
-                  width: 20,
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const NotificationWidget(),
         ],
       ),
     );

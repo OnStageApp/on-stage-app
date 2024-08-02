@@ -26,4 +26,17 @@ class TimeUtils {
   String formatDate(DateTime? datetime) {
     return datetime != null ? DateFormat('EEEE, dd MMMM').format(datetime) : '';
   }
+
+  String formatOnlyDate(DateTime dateTime) {
+    try {
+      final formattedDate = DateFormat('d MMMM').format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  }
+
+  String formatOnlyTime(DateTime? dateTime) {
+    return dateTime != null ? DateFormat('HH:mm').format(dateTime) : '';
+  }
 }
