@@ -42,6 +42,7 @@ dependencies:
   reorderables: ^0.6.0
   flutter_svg: ^2.0.10+1
   flutter_chord: ^0.1.2
+  flutter_range_slider: ^1.5.0
   flutter_slidable: ^3.1.1
   ansi: ^0.4.2
   dio: ^5.5.0+1

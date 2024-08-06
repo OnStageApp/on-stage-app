@@ -16,7 +16,7 @@ class ComposerModal extends ConsumerStatefulWidget {
   });
 
   @override
-  ComposerModalState createState() => ComposerModalState();
+  ArtistModalState createState() => ArtistModalState();
 
   static void show({
     required BuildContext context,
@@ -36,7 +36,7 @@ class ComposerModal extends ConsumerStatefulWidget {
   }
 }
 
-class ComposerModalState extends ConsumerState<ComposerModal> {
+class ArtistModalState extends ConsumerState<ComposerModal> {
 
   // List<Section> _sections = [];
    List<Artist> _addedArtists = [];

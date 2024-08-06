@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_composer.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_vocal_lead.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_tempo.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_tempo_range.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_view_mode.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/search_filter.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -60,38 +64,21 @@ class AdvancedSongSearchModalState
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // SearchFilter(
-          //     leadingIconPath: 'assets/images/band2.png',
-          //     labelText: 'Composer',
-          //     title: 'Bbso',
-          //     onTap: () {}),
-          PreferenceComposer(),
+          PreferenceArtist(),
           SizedBox(height: Insets.medium),
           Row(
             children: [
-              PreferencesTempo(),
+              PreferenceGenre(),
               SizedBox(width: Insets.medium),
-              PreferencesTextSize(),
+              PreferenceTheme(),
             ],
           ),
           SizedBox(height: Insets.medium),
           PreferencesViewMode(),
           SizedBox(height: Insets.medium),
-          SearchFilter(
-              leadingIconPath: 'assets/icons/music_note.svg',
-              labelText: 'key',
-              title: 'D Major',
-              onTap: () {}),
+          //PreferencesKey(),
+        PreferencesTempoRange(),
           SizedBox(height: Insets.medium),
-          // PreferencesSongStructure(),
-          PreferencesActionTile(
-            leadingWidget: Icon(Icons.settings),
-            title: 'title',
-            trailingIcon: Icons.keyboard_arrow_down_rounded,
-            onTap: () {},
-          ),
-          SizedBox(height: Insets.medium),
-          // const SizedBox(height: Insets.normal),
           // ContinueButton(
           //   text: 'Save',
           //   onPressed: _submitForm,

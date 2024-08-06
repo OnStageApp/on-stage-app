@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-
-
-
 class StageSearchBar extends StatefulWidget {
   const StageSearchBar({
     required this.focusNode,
@@ -121,13 +118,12 @@ class _StageSearchBarState extends State<StageSearchBar> {
                   // tonality: ref.watch(songNotifierProvider).song.songKey!,
                 );
               },
-              child:  Row(
-
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Icon(
                     Icons.filter_list,
-                    color:  context.colorScheme.onSurfaceVariant,
+                    color: context.colorScheme.onSurfaceVariant,
                     size: 15,
                   ),
                   Text(
@@ -141,8 +137,6 @@ class _StageSearchBarState extends State<StageSearchBar> {
               ),
             ),
           ),
-
-
       ],
       hintText: 'Search',
       hintStyle: MaterialStateProperty.all(
