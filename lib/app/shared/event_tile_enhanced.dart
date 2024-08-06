@@ -7,18 +7,22 @@ class EventTileEnhanced extends StatelessWidget {
     required this.title,
     required this.hour,
     required this.date,
+    this.locationName,
+    this.isSingleEvent = false,
     super.key,
   });
 
   final String title;
   final String hour;
   final String date;
+  final bool isSingleEvent;
+  final String? locationName;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 300,
-      margin: const EdgeInsets.only(right: 12),
+      margin: EdgeInsets.only(right: isSingleEvent ? 0 : 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: context.colorScheme.secondary,
@@ -26,7 +30,9 @@ class EventTileEnhanced extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          if (isSingleEvent) _buildDateTimeOnSingleEventShown(context),
           Text(
             title,
             style: Theme.of(context).textTheme.headlineLarge!.copyWith(
@@ -34,25 +40,17 @@ class EventTileEnhanced extends StatelessWidget {
                 ),
             maxLines: 1,
           ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Text(
-                hour,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: context.colorScheme.onSecondary,
-                    ),
-              ),
-              _buildCircle(context),
-              Text(
-                date,
-                style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: context.colorScheme.onSecondary,
-                    ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
+          if (isSingleEvent)
+            Text(
+              locationName ?? '',
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.onSecondary,
+                  ),
+            )
+          else
+            _buildDateTime(context),
+          const SizedBox(height: 8),
           const Expanded(
             child: SizedBox(),
           ),
@@ -69,6 +67,68 @@ class EventTileEnhanced extends StatelessWidget {
               'assets/images/profile5.png',
               'assets/images/profile5.png',
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateTimeOnSingleEventShown(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: context.colorScheme.onSurfaceVariant,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            hour,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: context.colorScheme.onSecondary,
+                ),
+          ),
+          _buildCircle(context),
+          Text(
+            date,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: context.colorScheme.onSecondary,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateTime(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: isSingleEvent ? 8 : 0),
+      padding: isSingleEvent
+          ? const EdgeInsets.symmetric(vertical: 4, horizontal: 8)
+          : EdgeInsets.zero,
+      decoration: isSingleEvent
+          ? BoxDecoration(
+              color: context.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadius.circular(10),
+            )
+          : null,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            hour,
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.onSecondary,
+                ),
+          ),
+          _buildCircle(context),
+          Text(
+            date,
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.onSecondary,
+                ),
           ),
         ],
       ),

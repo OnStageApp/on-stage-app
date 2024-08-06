@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/event/application/event/controller/eve
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/moment_event_item_tile.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
@@ -34,7 +35,9 @@ class AddEventSongsScreenState extends ConsumerState<AddEventMomentsScreen> {
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
           text: 'Publish',
-          onPressed: () {},
+          onPressed: () {
+            context.pushNamed(AppRoute.adminEventOverview.name);
+          },
           isEnabled: true,
         ),
       ),

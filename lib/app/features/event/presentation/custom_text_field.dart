@@ -11,6 +11,8 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     super.key,
     this.enabled,
+    this.onChanged,
+    this.validator,
   });
 
   final String label;
@@ -18,6 +20,8 @@ class CustomTextField extends StatelessWidget {
   final IconData? icon;
   final TextEditingController? controller;
   final bool? enabled;
+  final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +35,21 @@ class CustomTextField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Insets.small),
-        TextField(
+        TextFormField(
           enabled: enabled ?? true,
           style: context.textTheme.titleMedium!.copyWith(
             color: context.colorScheme.onSurface,
           ),
+          onChanged: onChanged,
           controller: controller,
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint),
+          validator: validator ??
+              (value) {
+                if (value == null || value.isEmpty) {
+                  return 'This field cannot be empty';
+                }
+                return null;
+              },
         ),
       ],
     );

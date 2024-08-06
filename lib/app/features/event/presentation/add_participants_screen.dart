@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
@@ -20,7 +20,6 @@ class AddParticipantsScreen extends ConsumerStatefulWidget {
     required BuildContext context,
   }) {
     showModalBottomSheet(
-      enableDrag: false,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(

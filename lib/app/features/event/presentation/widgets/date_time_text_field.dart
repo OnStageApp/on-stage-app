@@ -10,10 +10,14 @@ class DateTimeTextFieldWidget extends StatefulWidget {
     super.key,
     required this.dateController,
     required this.timeController,
+    this.onDateChanged,
+    this.onTimeChanged,
   });
 
   final TextEditingController dateController;
   final TextEditingController timeController;
+  final void Function(String)? onDateChanged;
+  final void Function(String)? onTimeChanged;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -29,20 +33,27 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Date',
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: 12),
-              TextField(
+              TextFormField(
                 controller: widget.dateController,
                 style: context.textTheme.titleSmall,
+                onChanged: widget.onDateChanged,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a date';
+                  }
+                  return null;
+                },
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(10),
@@ -55,7 +66,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                   isDense: true,
                   fillColor: context.colorScheme.onSurfaceVariant,
                   filled: true,
-                  hintText: 'DD/MM/YYYY',
+                  hintText: 'YYYY/MM/DD',
                   suffixIcon: Container(
                     margin: const EdgeInsets.symmetric(
                       vertical: 8,
@@ -95,10 +106,16 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: TextFormField(
                       controller: widget.timeController,
                       style: context.textTheme.titleSmall,
-                      onChanged: (value) {},
+                      onChanged: widget.onTimeChanged,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a time';
+                        }
+                        return null;
+                      },
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(5),

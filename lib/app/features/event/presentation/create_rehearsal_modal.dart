@@ -47,7 +47,7 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
   final TextEditingController rehearsalNameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -57,32 +57,44 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
   Widget build(BuildContext context) {
     return Padding(
       padding: defaultScreenPadding,
-      child: Column(
-        children: [
-          CustomTextField(
-            label: 'Rehearsal Name',
-            hint: 'Sunday Morning',
-            icon: null,
-            controller: rehearsalNameController,
-          ),
-          const SizedBox(height: 24),
-          DateTimeTextFieldWidget(
-            dateController: dateController,
-            timeController: timeController,
-          ),
-          const SizedBox(height: 24),
-          ContinueButton(
-            text: 'Create',
-            onPressed: _createRehearsal,
-            isEnabled: true,
-          ),
-          const SizedBox(height: 24),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CustomTextField(
+              label: 'Rehearsal Name',
+              hint: 'Sunday Morning',
+              icon: null,
+              controller: rehearsalNameController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a rehearsal name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 24),
+            DateTimeTextFieldWidget(
+              dateController: dateController,
+              timeController: timeController,
+            ),
+            const SizedBox(height: 24),
+            ContinueButton(
+              text: 'Create',
+              onPressed: _createRehearsal,
+              isEnabled: true,
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
 
   void _createRehearsal() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     final dateTime = parseDateTime(dateController.text, timeController.text);
     final rehearsal = Rehearsal(
       id: Random().nextInt(1000).toString(),

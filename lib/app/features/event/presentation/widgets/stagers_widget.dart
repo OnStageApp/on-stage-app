@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/shared/participant_profile.dart';
 
 class StagersList extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class EventsState extends Equatable {
