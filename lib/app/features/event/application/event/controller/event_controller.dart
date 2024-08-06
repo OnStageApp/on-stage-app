@@ -2,7 +2,7 @@ import 'package:on_stage_app/app/features/event/application/event/controller/eve
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_type_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -19,6 +19,39 @@ class EventController extends _$EventController {
 
   Future<void> init() async {
     logger.i('init event controller state');
+  }
+
+  void setEventName(String name) {
+    state = state.copyWith(eventName: name);
+  }
+
+  void setEventLocation(String location) {
+    state = state.copyWith(eventLocation: location);
+  }
+
+  void setDateTime(String date, String time) {
+    try {
+      final dateParts = date.split('/');
+      final timeParts = time.split(':');
+
+      if (dateParts.length != 3 || timeParts.length != 2) {
+        throw const FormatException('Invalid date or time format');
+      }
+
+      final year = int.parse(dateParts[2]);
+      final month = int.parse(dateParts[0]);
+      final day = int.parse(dateParts[1]);
+      final hour = int.parse(timeParts[0]);
+      final minute = int.parse(timeParts[1]);
+
+      final combinedDateTime = DateTime(year, month, day, hour, minute);
+
+      state = state.copyWith(
+        dateTime: combinedDateTime,
+      );
+    } catch (e) {
+      logger.e('Error parsing date or time: $e');
+    }
   }
 
   void addParticipant(StagerOverview participant) {

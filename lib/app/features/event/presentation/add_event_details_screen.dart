@@ -25,10 +25,11 @@ class AddEventDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
-  TextEditingController eventNameController = TextEditingController();
-  TextEditingController eventLocationController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-  TextEditingController timeController = TextEditingController();
+  final _eventNameController = TextEditingController();
+  final _eventLocationController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _timeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -38,36 +39,6 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ContinueButton(
-          text: 'Create',
-          onPressed: () {
-            context.pushNamed(AppRoute.addEventSongs.name);
-          },
-          isEnabled: true,
-        ),
-      ),
-      // floatingActionButton: Container(
-      //   decoration: const BoxDecoration(
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Color(0xFFF4F4F4),
-      //         blurRadius: 30,
-      //         spreadRadius: 35,
-      //       ),
-      //     ],
-      //   ),
-      //   padding: const EdgeInsets.symmetric(horizontal: 12),
-      //   child: ContinueButton(
-      //     text: 'Create',
-      //     onPressed: () {
-      //       context.pushNamed(AppRoute.addEventSongs.name);
-      //     },
-      //     isEnabled: true,
-      //   ),
-      // ),
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: 'Create Event',
@@ -79,62 +50,95 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       ),
       body: Padding(
         padding: defaultScreenPadding,
-        child: ListView(
-          children: [
-            CustomTextField(
-              label: 'Event Name',
-              hint: 'Prayer Meeting',
-              icon: Icons.church,
-              controller: eventNameController,
-            ),
-            const SizedBox(height: Insets.medium),
-            CustomTextField(
-              label: 'Event Location',
-              hint: 'Elevation Church',
-              icon: Icons.church,
-              controller: eventLocationController,
-            ),
-            const SizedBox(height: Insets.medium),
-            DateTimeTextFieldWidget(
-              dateController: dateController,
-              timeController: timeController,
-            ),
-            const SizedBox(height: Insets.medium),
-            Text(
-              'Participants',
-              style: context.textTheme.titleSmall,
-            ),
-            if (ref
-                .watch(eventControllerProvider)
-                .addedParticipants
-                .isNotEmpty) ...[
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              CustomTextField(
+                label: 'Event Name',
+                hint: 'Prayer Meeting',
+                icon: Icons.church,
+                controller: _eventNameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an event name';
+                  }
+                  return null;
+                },
+                onChanged: (value) {},
+              ),
+              const SizedBox(height: Insets.medium),
+              CustomTextField(
+                label: 'Event Location',
+                hint: 'Elevation Church',
+                icon: Icons.church,
+                controller: _eventLocationController,
+                onChanged: (value) {},
+              ),
+              const SizedBox(height: Insets.medium),
+              DateTimeTextFieldWidget(
+                dateController: _dateController,
+                timeController: _timeController,
+                onDateChanged: (date) {},
+                onTimeChanged: (time) {},
+              ),
+              const SizedBox(height: Insets.medium),
+              Text(
+                'Participants',
+                style: context.textTheme.titleSmall,
+              ),
+              if (ref
+                  .watch(eventControllerProvider)
+                  .addedParticipants
+                  .isNotEmpty) ...[
+                const SizedBox(height: Insets.smallNormal),
+                _buildParticipantsList(),
+              ],
               const SizedBox(height: Insets.smallNormal),
-              _buildParticipantsList(),
+              _buildInvitePeopleButton(),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: DashedLineDivider(),
+              ),
+              Text(
+                'Rehearsals',
+                style: context.textTheme.titleSmall,
+              ),
+              const SizedBox(height: Insets.smallNormal),
+              ...ref.watch(eventControllerProvider).rehearsals.map(
+                (rehearsal) {
+                  return EventTile(
+                    title: rehearsal.name ?? '',
+                    dateTime: rehearsal.dateTime ?? DateTime.now(),
+                    onTap: () {},
+                  );
+                },
+              ),
+              _buildCreateRehearsalButton(),
+              const SizedBox(height: 42),
+              ContinueButton(
+                text: 'Create',
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ref
+                        .read(eventControllerProvider.notifier)
+                        .setEventName(_eventNameController.text);
+                    ref
+                        .read(eventControllerProvider.notifier)
+                        .setEventLocation(_eventLocationController.text);
+                    ref.read(eventControllerProvider.notifier).setDateTime(
+                        _dateController.text, _timeController.text);
+
+                    context.pushNamed(AppRoute.addEventSongs.name);
+                  } else {
+                    print('error');
+                  }
+                },
+                isEnabled: true,
+              ),
+              const SizedBox(height: 42),
             ],
-            const SizedBox(height: Insets.smallNormal),
-            _buildInvitePeopleButton(),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
-              child: DashedLineDivider(),
-            ),
-            Text(
-              'Rehearsals',
-              style: context.textTheme.titleSmall,
-            ),
-            const SizedBox(height: Insets.smallNormal),
-            ...ref.watch(eventControllerProvider).rehearsals.map(
-              (rehearsal) {
-                return EventTile(
-                  title: rehearsal.name ?? '',
-                  dateTime: rehearsal.dateTime ?? DateTime.now(),
-                  onTap: () {},
-                );
-              },
-            ),
-            _buildCreateRehearsalButton(),
-            const SizedBox(height: 64),
-            const SizedBox(height: 42),
-          ],
+          ),
         ),
       ),
     );
@@ -159,6 +163,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             name:
                 '${addedParticipants[index].firstName} ${addedParticipants[index].lastName}',
             assetPath: 'assets/images/profile1.png',
+            status: addedParticipants.elementAt(index).status,
           );
         },
       ),

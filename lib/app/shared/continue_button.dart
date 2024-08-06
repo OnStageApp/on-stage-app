@@ -6,7 +6,7 @@ class ContinueButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     required this.isEnabled,
-    this.hasShadow = false,
+    this.hasShadow = true,
     super.key,
   });
 
@@ -26,14 +26,17 @@ class ContinueButton extends StatelessWidget {
                   color: context.colorScheme.surface,
                   blurRadius: 30,
                   spreadRadius: 35,
+                  offset: const Offset(0, 24),
                 ),
               ]
             : [],
       ),
-      height: 54,
-      width: double.infinity,
       child: TextButton(
         style: ButtonStyle(
+          minimumSize: WidgetStateProperty.all(
+            const Size(double.infinity, 54),
+          ),
+          splashFactory: InkRipple.splashFactory,
           elevation: WidgetStateProperty.all(4),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
@@ -44,6 +47,14 @@ class ContinueButton extends StatelessWidget {
             isEnabled
                 ? context.colorScheme.primary
                 : context.colorScheme.outlineVariant,
+          ),
+          overlayColor: WidgetStateProperty.resolveWith<Color?>(
+            (Set<WidgetState> states) {
+              if (states.contains(WidgetState.pressed)) {
+                return context.colorScheme.surface.withOpacity(0.1);
+              }
+              return null;
+            },
           ),
         ),
         onPressed: onPressed,
