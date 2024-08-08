@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/artists_dummy.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -44,7 +44,20 @@ class ArtistModal extends ConsumerStatefulWidget {
             ),
           ),
         ),
-        buildHeader: () => const ModalHeader(title: 'Select an Artist'),
+        buildHeader: () => ModalHeader(
+          title: 'Select an Artist',
+          leadingButton: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: InkWell(
+              onTap: () {},
+              child: Text(
+                'Reset',
+                style: context.textTheme.titleSmall!
+                    .copyWith(color: context.colorScheme.primary),
+              ),
+            ),
+          ),
+        ),
         headerHeight: () {
           return 64;
         },
@@ -86,8 +99,8 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
               setState(() {
                 _searchedArtists = _allArtists.where((element) {
                   return element.fullName.toLowerCase().contains(
-                    _searchController.text.toLowerCase(),
-                  );
+                        _searchController.text.toLowerCase(),
+                      );
                 }).toList();
               });
 
@@ -100,8 +113,8 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
               setState(() {
                 _searchedArtists = _allArtists.where((element) {
                   return element.fullName.toLowerCase().contains(
-                    _searchController.text.toLowerCase(),
-                  );
+                        _searchController.text.toLowerCase(),
+                      );
                 }).toList();
               });
             },
@@ -117,12 +130,16 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                   setState(() {
                     _selectedArtist = _searchedArtists.elementAt(index);
                   });
+
+                  //TODO: Implement the logic for selecting an artist
                 },
                 child: Container(
                   height: 48,
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: _isItemChecked(index) ? Colors.blue.withOpacity(0.1) : Colors.white,
+                    color: _isItemChecked(index)
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: _isItemChecked(index) ? Colors.blue : Colors.white,
@@ -142,7 +159,8 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Image.asset(_searchedArtists.elementAt(index).imageUrl!),
+                        child: Image.asset(
+                            _searchedArtists.elementAt(index).imageUrl!),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
@@ -168,5 +186,6 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
     _focusNode.unfocus();
   }
 
-  bool _isItemChecked(int index) => _selectedArtist == _searchedArtists.elementAt(index);
+  bool _isItemChecked(int index) =>
+      _selectedArtist == _searchedArtists.elementAt(index);
 }

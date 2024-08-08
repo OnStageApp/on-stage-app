@@ -84,6 +84,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
         children: [
           const SizedBox(height: 16),
           StageSearchBar(
+            focusNode: FocusNode(),
             controller: _searchController,
             onClosed: _clearSearch,
             onChanged: (value) {

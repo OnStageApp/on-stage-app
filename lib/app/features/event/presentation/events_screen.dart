@@ -89,6 +89,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   Widget _buildSearchBar() {
     return StageSearchBar(
+      focusNode: FocusNode(),
       controller: searchController,
       onClosed: () {
         ref.read(eventsNotifierProvider.notifier).searchEvents('');

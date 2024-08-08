@@ -116,6 +116,7 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
                 }).toList();
               });
             },
+            focusNode: FocusNode(),
           ),
           const SizedBox(height: 12),
           ListView.builder(

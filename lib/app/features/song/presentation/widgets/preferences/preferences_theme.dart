@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -37,17 +37,9 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
-
-            title: selectedTheme,
+            title:
+                ref.watch(searchControllerProvider).themeFilter?.value ?? 'All',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
-            // onTap: () async {
-            //   String? selected = await ThemeModal.show(context: context, initialTheme: selectedTheme);
-            //   if (selected != null) {
-            //     setState(() {
-            //       selectedTheme = selected;
-            //     });
-            //   }
-            // },
             onTap: () {
               ThemeModal.show(context: context);
             },

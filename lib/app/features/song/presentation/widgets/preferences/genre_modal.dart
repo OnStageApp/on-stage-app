@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
+import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -15,7 +18,7 @@ class GenreModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),
@@ -26,23 +29,9 @@ class GenreModal extends ConsumerStatefulWidget {
       ),
       context: context,
       builder: (context) => NestedScrollModal(
-        buildFooter: () => SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
-            child: ContinueButton(
-              hasShadow: true,
-              text: 'Add',
-              onPressed: () {},
-              isEnabled: true,
-            ),
-          ),
+        buildHeader: () => const ModalHeader(
+          title: 'Select a Genre',
         ),
-        buildHeader: () => const ModalHeader(title: 'Select a Genre'),
         headerHeight: () {
           return 64;
         },
@@ -67,63 +56,16 @@ class GenreModalState extends ConsumerState<GenreModal> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
+          _buildTile('All'),
+          const SizedBox(height: 6),
+          const DashedLineDivider(),
+          const SizedBox(height: 12),
           ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: _allGenres.length,
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    _selectedGenre = _allGenres[index];
-                  });
-                },
-                child: Container(
-                  height: 48,
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: _isItemSelected(index) ? Colors.blue.withOpacity(0.1) : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: _isItemSelected(index) ? Colors.blue : Colors.white,
-                      width: 1.6,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        key: ValueKey(
-                          _allGenres[index].hashCode.toString(),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.green,
-                            width: 3,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          _allGenres[index].substring(0, 1),
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.titleSmall,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Text(
-                          _allGenres[index],
-                          style: context.textTheme.titleSmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              return _buildTile(_allGenres[index]);
             },
           ),
         ],
@@ -131,5 +73,71 @@ class GenreModalState extends ConsumerState<GenreModal> {
     );
   }
 
-  bool _isItemSelected(int index) => _selectedGenre == _allGenres[index];
+  Widget _buildTile(String genre) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedGenre = genre;
+        });
+        if (genre.toLowerCase() == 'all') {
+          ref.read(searchControllerProvider.notifier).setGenreFilter(null);
+          return;
+        }
+        final searchFilter = SearchFilter(
+          type: SearchFilterEnum.genre,
+          value: genre,
+        );
+        ref.read(searchControllerProvider.notifier).setGenreFilter(
+              searchFilter,
+            );
+      },
+      child: Container(
+        height: 48,
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: _isItemSelected(genre)
+              ? Colors.blue.withOpacity(0.1)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: _isItemSelected(genre) ? Colors.blue : Colors.white,
+            width: 1.6,
+          ),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              key: ValueKey(genre.hashCode.toString()),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.green,
+                  width: 3,
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                genre.substring(0, 1),
+                textAlign: TextAlign.center,
+                style: context.textTheme.titleSmall,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                genre,
+                style: context.textTheme.titleSmall,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _isItemSelected(String genre) => _selectedGenre == genre;
 }
