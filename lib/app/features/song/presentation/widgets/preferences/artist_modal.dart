@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/dummy_data/artists_dummy.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class VocalLeadModal extends ConsumerStatefulWidget {
-  const VocalLeadModal({super.key});
+class ArtistModal extends ConsumerStatefulWidget {
+  const ArtistModal({super.key});
 
   @override
-  VocalLeadModalState createState() => VocalLeadModalState();
+  ArtistModalState createState() => ArtistModalState();
 
   static void show({
     required BuildContext context,
@@ -42,44 +44,43 @@ class VocalLeadModal extends ConsumerStatefulWidget {
             ),
           ),
         ),
-        buildHeader: () => const ModalHeader(title: 'Add Vocal Lead'),
+        buildHeader: () => ModalHeader(
+          title: 'Select an Artist',
+          leadingButton: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: InkWell(
+              onTap: () {},
+              child: Text(
+                'Reset',
+                style: context.textTheme.titleSmall!
+                    .copyWith(color: context.colorScheme.primary),
+              ),
+            ),
+          ),
+        ),
         headerHeight: () {
           return 64;
         },
         footerHeight: () {
           return 64;
         },
-        buildContent: VocalLeadModal.new,
+        buildContent: ArtistModal.new,
       ),
     );
   }
 }
 
-class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
+class ArtistModalState extends ConsumerState<ArtistModal> {
+  final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _allVocals = [
-    'Marcelo',
-    'Ricardo',
-    'Jorge',
-    'Lucas1',
-    'Lucas2',
-    'Lucas3',
-    'Lucas4',
-    'Lucas5',
-    'Lucas6',
-    'Lucas7',
-    'Lucas8',
-    'Lucas9',
-    'Lucas10',
-    'Lucas',
-    'Lucas',
-  ];
-  List<String> _searchedVocals = [];
-  final List<String> _addedVocals = [];
+  final List<Artist> _allArtists = ArtistsDummy.artists;
+
+  List<Artist> _searchedArtists = [];
+  Artist? _selectedArtist;
 
   @override
   void initState() {
-    _searchedVocals = _allVocals;
+    _searchedArtists = _allArtists;
     super.initState();
   }
 
@@ -92,11 +93,12 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
         children: [
           const SizedBox(height: 16),
           StageSearchBar(
+            focusNode: _focusNode,
             controller: _searchController,
             onClosed: () {
               setState(() {
-                _searchedVocals = _allVocals.where((element) {
-                  return element.toLowerCase().contains(
+                _searchedArtists = _allArtists.where((element) {
+                  return element.fullName.toLowerCase().contains(
                         _searchController.text.toLowerCase(),
                       );
                 }).toList();
@@ -109,36 +111,35 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
                 _clearSearch();
               }
               setState(() {
-                _searchedVocals = _allVocals.where((element) {
-                  return element.toLowerCase().contains(
+                _searchedArtists = _allArtists.where((element) {
+                  return element.fullName.toLowerCase().contains(
                         _searchController.text.toLowerCase(),
                       );
                 }).toList();
               });
             },
-            focusNode: FocusNode(),
           ),
           const SizedBox(height: 12),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: _searchedVocals.length,
+            itemCount: _searchedArtists.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
                   setState(() {
-                    if (_isItemChecked(index)) {
-                      _addedVocals.remove(_searchedVocals.elementAt(index));
-                    } else {
-                      _addedVocals.add(_searchedVocals.elementAt(index));
-                    }
+                    _selectedArtist = _searchedArtists.elementAt(index);
                   });
+
+                  //TODO: Implement the logic for selecting an artist
                 },
                 child: Container(
                   height: 48,
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: _isItemChecked(index)
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: _isItemChecked(index) ? Colors.blue : Colors.white,
@@ -153,40 +154,19 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                          _searchedVocals.elementAt(index).hashCode.toString(),
+                          _searchedArtists.elementAt(index).hashCode.toString(),
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            color: Colors.green,
-                            width: 3,
-                          ),
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: Text(
-                          _searchedVocals.elementAt(index).substring(0, 1),
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.titleSmall,
-                        ),
+                        child: Image.asset(
+                            _searchedArtists.elementAt(index).imageUrl!),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _searchedVocals.elementAt(index),
+                          _searchedArtists.elementAt(index).fullName,
                           style: context.textTheme.titleSmall,
-                        ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Icon(
-                          _isItemChecked(index)
-                              ? Icons.check_circle_rounded
-                              : Icons.circle_outlined,
-                          size: 20,
-                          color: _isItemChecked(index)
-                              ? Colors.blue
-                              : const Color(0xFFE3E3E3),
                         ),
                       ),
                     ],
@@ -202,10 +182,10 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
 
   void _clearSearch() {
     _searchController.clear();
-    _searchedVocals = _allVocals;
+    _searchedArtists = _allArtists;
+    _focusNode.unfocus();
   }
 
-  bool _isItemChecked(int index) => _addedVocals.contains(
-        _searchedVocals.elementAt(index),
-      );
+  bool _isItemChecked(int index) =>
+      _selectedArtist == _searchedArtists.elementAt(index);
 }

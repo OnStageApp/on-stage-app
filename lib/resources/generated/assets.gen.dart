@@ -21,6 +21,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/check_icon.svg
   SvgGenImage get checkIcon => const SvgGenImage('assets/icons/check_icon.svg');
 
+  /// File path: assets/icons/close-icon.svg
+  SvgGenImage get closeIcon => const SvgGenImage('assets/icons/close-icon.svg');
+
   /// File path: assets/icons/filled-notification-bell.svg
   SvgGenImage get filledNotificationBell => const SvgGenImage('assets/icons/filled-notification-bell.svg');
 
@@ -47,7 +50,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values =>
-      [arrowForward, checkIcon, filledNotificationBell, heartFilled, mixerHorizontal, musicNote, plus, search, songStructure, userFriends];
+      [arrowForward, checkIcon, closeIcon, filledNotificationBell, heartFilled, mixerHorizontal, musicNote, plus, search, songStructure, userFriends];
 }
 
 class $AssetsImagesGen {

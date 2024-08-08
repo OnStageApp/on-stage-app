@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
+import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+
+class PreferenceTheme extends ConsumerStatefulWidget {
+  const PreferenceTheme({Key? key}) : super(key: key);
+
+  @override
+  PreferenceThemeState createState() => PreferenceThemeState();
+}
+
+class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
+  late String selectedTheme;
+
+  final List<String> themes = ThemesDummy.themes;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTheme = themes.first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Theme',
+            style: context.textTheme.labelLarge,
+          ),
+          const SizedBox(height: Insets.small),
+          PreferencesActionTile(
+            title:
+                ref.watch(searchControllerProvider).themeFilter?.value ?? 'All',
+            trailingIcon: Icons.keyboard_arrow_right_rounded,
+            onTap: () {
+              ThemeModal.show(context: context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
