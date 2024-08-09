@@ -1,17 +1,5 @@
+import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
+
 class GenresDummy {
-  static List<String> genres = [
-    'Jazz',
-    'Gosple',
-    'Gosple1',
-    'Gosple2',
-    'Worship',
-    'Praise',
-    'Praise2',
-    'Christmas',
-    'Christmas1',
-    'Christmas2',
-    'Christmas3',
-    'Christmas4',
-    'Christmas5',
-  ];
+  static List<GenreFilterEnum> genres = GenreFilterEnum.values;
 }

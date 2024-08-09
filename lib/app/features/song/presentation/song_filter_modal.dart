@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
@@ -28,13 +29,21 @@ class SongFilterModal extends ConsumerStatefulWidget {
             leadingButton: Container(
               width: 68,
               padding: const EdgeInsets.only(left: 8),
-              child: InkWell(
-                onTap: () {},
-                child: Text(
-                  'Reset',
-                  style: context.textTheme.titleSmall!
-                      .copyWith(color: context.colorScheme.primary),
-                ),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  return InkWell(
+                    onTap: () {
+                      ref
+                          .read(searchControllerProvider.notifier)
+                          .resetAllFilters();
+                    },
+                    child: Text(
+                      'Reset',
+                      style: context.textTheme.titleSmall!
+                          .copyWith(color: context.colorScheme.primary),
+                    ),
+                  );
+                },
               ),
             ),
           ),

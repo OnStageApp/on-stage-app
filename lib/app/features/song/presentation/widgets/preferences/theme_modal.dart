@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/dash_divider.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -27,21 +27,6 @@ class ThemeModal extends ConsumerStatefulWidget {
       ),
       context: context,
       builder: (context) => NestedScrollModal(
-        buildFooter: () => SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
-            child: ContinueButton(
-              text: 'Add',
-              onPressed: () {},
-              isEnabled: true,
-            ),
-          ),
-        ),
         buildHeader: () => const ModalHeader(
           title: 'Select a Theme',
         ),
@@ -58,8 +43,7 @@ class ThemeModal extends ConsumerStatefulWidget {
 }
 
 class ThemeModalState extends ConsumerState<ThemeModal> {
-  final List<String> _allThemes = ThemesDummy.themes;
-  String? _selectedTheme;
+  final List<ThemeFilterEnum> _allThemes = ThemesDummy.themes;
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +53,6 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          _buildTile('All'),
-          const SizedBox(height: 6),
-          const DashedLineDivider(),
-          const SizedBox(height: 12),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -86,12 +66,12 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
     );
   }
 
-  InkWell _buildTile(String theme) {
+  InkWell _buildTile(ThemeFilterEnum theme) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _selectedTheme = theme;
-        });
+        ref.read(searchControllerProvider.notifier).setThemeFilter(
+              _isItemSelected(theme) ? null : theme,
+            );
       },
       child: Container(
         height: 48,
@@ -125,7 +105,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
                 shape: BoxShape.circle,
               ),
               child: Text(
-                theme.substring(0, 1),
+                theme.name.substring(0, 1),
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleSmall,
               ),
@@ -133,7 +113,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
             Padding(
               padding: const EdgeInsets.only(left: 12),
               child: Text(
-                theme,
+                theme.name,
                 style: context.textTheme.titleSmall,
               ),
             ),
@@ -143,5 +123,6 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
     );
   }
 
-  bool _isItemSelected(String theme) => _selectedTheme == theme;
+  bool _isItemSelected(ThemeFilterEnum theme) =>
+      ref.watch(searchControllerProvider).themeFilter == theme;
 }
