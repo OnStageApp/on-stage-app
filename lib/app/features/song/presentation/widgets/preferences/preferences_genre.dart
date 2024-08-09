@@ -34,7 +34,7 @@ class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
         children: [
           Text(
             'Genre',
-            style: context.textTheme.labelLarge,
+            style: context.textTheme.titleMedium,
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(

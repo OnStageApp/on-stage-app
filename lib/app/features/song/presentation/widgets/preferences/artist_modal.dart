@@ -85,12 +85,12 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                   height: 48,
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: _isItemChecked(index)
-                        ? Colors.blue.withOpacity(0.1)
-                        : Colors.white,
+                    color: context.colorScheme.onSurfaceVariant,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _isItemChecked(index) ? Colors.blue : Colors.white,
+                      color: _isItemChecked(index)
+                          ? context.colorScheme.primary
+                          : context.colorScheme.onSurfaceVariant,
                       width: 1.6,
                     ),
                   ),

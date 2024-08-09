@@ -99,8 +99,8 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
             child: AnimatedOpacity(
               opacity: widget.focusNode.hasFocus ? 1 : 0.7,
               duration: animationDuration,
-              child: Icon(
-                Icons.search_rounded,
+              child: SvgPicture.asset(
+                'assets/icons/search_icon.svg',
                 color: context.colorScheme.outline,
               ),
             ),
@@ -224,9 +224,13 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
           const SizedBox(width: 6),
           Text(filter.value, style: context.textTheme.titleMedium),
           const SizedBox(width: 6),
-          SvgPicture.asset(
-            'assets/icons/close-icon.svg',
-            color: context.colorScheme.surfaceDim,
+          InkWell(
+            onTap: () {
+              ref.read(searchControllerProvider.notifier).removeFilter(filter);
+            },
+            child: SvgPicture.asset(
+              'assets/icons/close-icon.svg',
+            ),
           ),
         ],
       ),

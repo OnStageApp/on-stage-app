@@ -13,7 +13,7 @@ class PreferencesTempo extends StatelessWidget {
         children: [
           Text(
             'Tempo',
-            style: context.textTheme.labelLarge,
+            style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: Insets.small),
           Container(
@@ -24,7 +24,6 @@ class PreferencesTempo extends StatelessWidget {
               vertical: 6,
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFFE3E3E3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text('120 bpm', style: context.textTheme.bodyLarge),

@@ -34,7 +34,7 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
       children: [
         Text(
           'Artist',
-          style: context.textTheme.labelLarge,
+          style: context.textTheme.titleMedium,
         ),
         const SizedBox(height: Insets.small),
         PreferencesActionTile(

@@ -206,7 +206,7 @@ class SongDummy {
       key: 'G major',
       createdAt: '2021-08-01T00:00:00.000Z',
       updatedAt: '2021-08-01T00:00:00.000Z',
-      artist: 'artist1',
+      artist: 'BBOS',
       album: 'Tabara 477',
       capo: 1,
       songKey: SongKey(

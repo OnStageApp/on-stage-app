@@ -47,6 +47,21 @@ class SearchController extends _$SearchController {
     );
   }
 
+  void removeFilter(SearchFilter filter) {
+    switch (filter.type) {
+      case SearchFilterEnum.genre:
+        state = state.copyWith(genreFilter: null);
+
+      case SearchFilterEnum.artist:
+        state = state.copyWith(artistFilter: null);
+      case SearchFilterEnum.theme:
+        state = state.copyWith(themeFilter: null);
+
+      case SearchFilterEnum.all:
+      case SearchFilterEnum.bpm:
+    }
+  }
+
   List<SearchFilter?> getAllFilters() {
     final filters = <SearchFilter?>[];
     if (state.genreFilter != null) {

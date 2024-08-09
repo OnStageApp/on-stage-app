@@ -17,7 +17,7 @@ class PreferencesKey extends ConsumerWidget {
       children: [
         Text(
           'Key',
-          style: context.textTheme.labelLarge,
+          style: context.textTheme.titleSmall,
         ),
         const SizedBox(height: Insets.small),
         PreferencesActionTile(

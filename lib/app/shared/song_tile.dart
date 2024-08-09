@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -54,7 +55,7 @@ class _SongTileState extends State<SongTile> {
                     Row(
                       children: [
                         Text(
-                          '${widget.song.artist?.fullName}' ?? '',
+                          '${widget.song.artist}' ?? '',
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
@@ -63,7 +64,7 @@ class _SongTileState extends State<SongTile> {
                         const SizedBox(
                           width: 8,
                         ),
-                        // SongKeyLabelWidget(songKey: widget.song.key ?? ''),
+                        SongKeyLabelWidget(songKey: widget.song.key ?? ''),
                       ],
                     ),
                   ],

@@ -13,7 +13,7 @@ class PreferencesVocalLead extends StatelessWidget {
       children: [
         Text(
           'Vocal Lead',
-          style: context.textTheme.labelLarge,
+          style: context.textTheme.titleSmall,
         ),
         const SizedBox(height: Insets.small),
         Stack(
@@ -22,7 +22,7 @@ class PreferencesVocalLead extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6),
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colorScheme.onSurfaceVariant,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListView.builder(
@@ -47,7 +47,8 @@ class PreferencesVocalLead extends StatelessWidget {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(
+                        color: context.colorScheme.onSurfaceVariant, width: 2),
                     color: const Color(0xFFF4F4F4),
                     borderRadius: BorderRadius.circular(7),
                   ),
