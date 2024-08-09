@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/artists_dummy.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -28,35 +28,8 @@ class ArtistModal extends ConsumerStatefulWidget {
       ),
       context: context,
       builder: (context) => NestedScrollModal(
-        buildFooter: () => SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
-            child: ContinueButton(
-              hasShadow: true,
-              text: 'Add',
-              onPressed: () {},
-              isEnabled: true,
-            ),
-          ),
-        ),
-        buildHeader: () => ModalHeader(
+        buildHeader: () => const ModalHeader(
           title: 'Select an Artist',
-          leadingButton: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: InkWell(
-              onTap: () {},
-              child: Text(
-                'Reset',
-                style: context.textTheme.titleSmall!
-                    .copyWith(color: context.colorScheme.primary),
-              ),
-            ),
-          ),
         ),
         headerHeight: () {
           return 64;
@@ -76,7 +49,6 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
   final List<Artist> _allArtists = ArtistsDummy.artists;
 
   List<Artist> _searchedArtists = [];
-  Artist? _selectedArtist;
 
   @override
   void initState() {
@@ -95,29 +67,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
           StageSearchBar(
             focusNode: _focusNode,
             controller: _searchController,
-            onClosed: () {
-              setState(() {
-                _searchedArtists = _allArtists.where((element) {
-                  return element.fullName.toLowerCase().contains(
-                        _searchController.text.toLowerCase(),
-                      );
-                }).toList();
-              });
-
-              _clearSearch();
-            },
-            onChanged: (value) {
-              if (value.isEmpty) {
-                _clearSearch();
-              }
-              setState(() {
-                _searchedArtists = _allArtists.where((element) {
-                  return element.fullName.toLowerCase().contains(
-                        _searchController.text.toLowerCase(),
-                      );
-                }).toList();
-              });
-            },
+            onChanged: _searchArtists,
           ),
           const SizedBox(height: 12),
           ListView.builder(
@@ -127,11 +77,9 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  setState(() {
-                    _selectedArtist = _searchedArtists.elementAt(index);
-                  });
-
-                  //TODO: Implement the logic for selecting an artist
+                  ref.read(searchControllerProvider.notifier).setArtistFilter(
+                        _isItemChecked(index) ? null : _searchedArtists[index],
+                      );
                 },
                 child: Container(
                   height: 48,
@@ -160,7 +108,8 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                           shape: BoxShape.circle,
                         ),
                         child: Image.asset(
-                            _searchedArtists.elementAt(index).imageUrl!),
+                          _searchedArtists.elementAt(index).imageUrl ?? '',
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
@@ -180,6 +129,19 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
     );
   }
 
+  void _searchArtists(String value) {
+    if (value.isEmpty) {
+      _clearSearch();
+    }
+    setState(() {
+      _searchedArtists = _allArtists.where((element) {
+        return element.fullName.toLowerCase().contains(
+              _searchController.text.toLowerCase(),
+            );
+      }).toList();
+    });
+  }
+
   void _clearSearch() {
     _searchController.clear();
     _searchedArtists = _allArtists;
@@ -187,5 +149,6 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
   }
 
   bool _isItemChecked(int index) =>
-      _selectedArtist == _searchedArtists.elementAt(index);
+      ref.watch(searchControllerProvider).artistFilter ==
+      _searchedArtists.elementAt(index);
 }

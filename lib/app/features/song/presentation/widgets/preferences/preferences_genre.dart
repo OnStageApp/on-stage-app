@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -15,9 +16,9 @@ class PreferenceGenre extends ConsumerStatefulWidget {
 }
 
 class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
-  late String selectedGenre;
+  late GenreFilterEnum selectedGenre;
 
-  final List<String> genres = GenresDummy.genres;
+  final List<GenreFilterEnum> genres = GenresDummy.genres;
 
   @override
   void initState() {
@@ -37,8 +38,8 @@ class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
-            title:
-                ref.watch(searchControllerProvider).genreFilter?.value ?? 'All',
+            title: ref.watch(searchControllerProvider).genreFilter?.value ??
+                'All Genres',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {
               GenreModal.show(context: context);

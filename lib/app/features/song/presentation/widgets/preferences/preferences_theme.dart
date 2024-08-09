@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -15,9 +16,9 @@ class PreferenceTheme extends ConsumerStatefulWidget {
 }
 
 class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
-  late String selectedTheme;
+  late ThemeFilterEnum selectedTheme;
 
-  final List<String> themes = ThemesDummy.themes;
+  final List<ThemeFilterEnum> themes = ThemesDummy.themes;
 
   @override
   void initState() {
@@ -37,8 +38,8 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
-            title:
-                ref.watch(searchControllerProvider).themeFilter?.value ?? 'All',
+            title: ref.watch(searchControllerProvider).themeFilter?.name ??
+                'All Themes',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {
               ThemeModal.show(context: context);

@@ -72,7 +72,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             child: StageSearchBar(
               focusNode: FocusNode(),
               controller: _searchController,
-              showFilterButton: true,
+              showFilter: true,
               onClosed: () {
                 if (context.canPop()) {
                   context.pop();

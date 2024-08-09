@@ -17,7 +17,7 @@ class StageSearchBar extends ConsumerStatefulWidget {
     this.onChanged,
     this.onClosed,
     this.onTap,
-    this.showFilterButton = false,
+    this.showFilter = false,
     super.key,
   });
 
@@ -25,7 +25,7 @@ class StageSearchBar extends ConsumerStatefulWidget {
   final void Function(String)? onChanged;
   final void Function()? onClosed;
   final void Function()? onTap;
-  final bool showFilterButton;
+  final bool showFilter;
 
   final TextEditingController? controller;
 
@@ -67,9 +67,10 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
   @override
   Widget build(BuildContext context) {
     _isFilteringActive = ref
-        .watch(searchControllerProvider.notifier)
-        .getAllFilters()
-        .isNotNullOrEmpty;
+            .watch(searchControllerProvider.notifier)
+            .getAllFilters()
+            .isNotNullOrEmpty &&
+        widget.showFilter;
     const animationDuration = Duration(milliseconds: 300);
     return Column(
       children: [
@@ -120,7 +121,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
                 },
               ),
             ),
-            if (widget.showFilterButton)
+            if (widget.showFilter)
               Container(
                 height: 28,
                 width: 84,

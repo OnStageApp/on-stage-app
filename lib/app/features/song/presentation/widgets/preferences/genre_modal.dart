@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
-import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
-import 'package:on_stage_app/app/shared/dash_divider.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -45,8 +43,7 @@ class GenreModal extends ConsumerStatefulWidget {
 }
 
 class GenreModalState extends ConsumerState<GenreModal> {
-  final List<String> _allGenres = GenresDummy.genres;
-  String? _selectedGenre;
+  final List<GenreFilterEnum> _allGenres = GenresDummy.genres;
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +53,6 @@ class GenreModalState extends ConsumerState<GenreModal> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          _buildTile('All'),
-          const SizedBox(height: 6),
-          const DashedLineDivider(),
-          const SizedBox(height: 12),
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -73,22 +66,11 @@ class GenreModalState extends ConsumerState<GenreModal> {
     );
   }
 
-  Widget _buildTile(String genre) {
+  Widget _buildTile(GenreFilterEnum genre) {
     return InkWell(
       onTap: () {
-        setState(() {
-          _selectedGenre = genre;
-        });
-        if (genre.toLowerCase() == 'all') {
-          ref.read(searchControllerProvider.notifier).setGenreFilter(null);
-          return;
-        }
-        final searchFilter = SearchFilter(
-          type: SearchFilterEnum.genre,
-          value: genre,
-        );
         ref.read(searchControllerProvider.notifier).setGenreFilter(
-              searchFilter,
+              _isItemSelected(genre) ? null : genre,
             );
       },
       child: Container(
@@ -121,7 +103,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
                 shape: BoxShape.circle,
               ),
               child: Text(
-                genre.substring(0, 1),
+                genre.name.substring(0, 1),
                 textAlign: TextAlign.center,
                 style: context.textTheme.titleSmall,
               ),
@@ -129,7 +111,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
             Padding(
               padding: const EdgeInsets.only(left: 12),
               child: Text(
-                genre,
+                genre.name,
                 style: context.textTheme.titleSmall,
               ),
             ),
@@ -139,5 +121,6 @@ class GenreModalState extends ConsumerState<GenreModal> {
     );
   }
 
-  bool _isItemSelected(String genre) => _selectedGenre == genre;
+  bool _isItemSelected(GenreFilterEnum genre) =>
+      ref.watch(searchControllerProvider).genreFilter == genre;
 }

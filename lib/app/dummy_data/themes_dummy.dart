@@ -1,10 +1,5 @@
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 
 class ThemesDummy {
-  static  List<String> themes = [
-    'Iertare',
-    'Dragoste',
-    'Lauda',
-    'Paste',
-    'Craciun'
-  ];
+  static List<ThemeFilterEnum> themes = ThemeFilterEnum.values;
 }

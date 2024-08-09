@@ -1,4 +1,8 @@
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller_state.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,28 +27,51 @@ class SearchController extends _$SearchController {
     state = const SearchControllerState(isFocused: false, text: '');
   }
 
-  void setGenreFilter(SearchFilter? searchFilter) {
+  void setGenreFilter(GenreFilterEnum? searchFilter) {
     state = state.copyWith(genreFilter: searchFilter);
   }
 
-  void setArtistFilter(SearchFilter? searchFilter) {
-    state = state.copyWith(artistFilter: searchFilter);
+  void setArtistFilter(Artist? selectedArtist) {
+    state = state.copyWith(artistFilter: selectedArtist);
   }
 
-  void setThemeFilter(SearchFilter? searchFilter) {
+  void setThemeFilter(ThemeFilterEnum? searchFilter) {
     state = state.copyWith(themeFilter: searchFilter);
+  }
+
+  void resetAllFilters() {
+    state = state.copyWith(
+      genreFilter: null,
+      artistFilter: null,
+      themeFilter: null,
+    );
   }
 
   List<SearchFilter?> getAllFilters() {
     final filters = <SearchFilter?>[];
     if (state.genreFilter != null) {
-      filters.add(state.genreFilter);
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.genre,
+          value: state.genreFilter!.value,
+        ),
+      );
     }
     if (state.artistFilter != null) {
-      filters.add(state.artistFilter);
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.artist,
+          value: state.artistFilter!.fullName,
+        ),
+      );
     }
     if (state.themeFilter != null) {
-      filters.add(state.themeFilter);
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.theme,
+          value: state.themeFilter!.value,
+        ),
+      );
     }
     return filters;
   }
