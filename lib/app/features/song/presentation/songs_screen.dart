@@ -30,9 +30,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO:uncomment
     _songs = ref.watch(songsNotifierProvider).filteredSongs;
-    // _songs = SongDummy.playlist;
     return Scaffold(
       appBar: StageAppBar(
         titleWidget: RichText(
@@ -40,16 +38,14 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             children: [
               TextSpan(
                 text: ref.read(songsNotifierProvider).songs.length.toString(),
-                style: context.textTheme.headlineMedium?.copyWith(
-                  fontSize: 28,
-                  color: const Color(0xFF7F818B),
+                style: context.textTheme.headlineLarge?.copyWith(
+                  color: context.colorScheme.surfaceDim,
                 ),
               ),
               TextSpan(
                 text: ' Songs',
-                style: context.textTheme.headlineMedium?.copyWith(
-                  fontSize: 28,
-                  color: context.colorScheme.shadow,
+                style: context.textTheme.headlineLarge!.copyWith(
+                  color: context.colorScheme.onSurface,
                 ),
               ),
             ],

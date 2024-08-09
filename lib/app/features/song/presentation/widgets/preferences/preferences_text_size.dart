@@ -25,7 +25,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
         children: [
           Text(
             'Text Size',
-            style: context.textTheme.labelLarge,
+            style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: Insets.small),
           Container(
@@ -36,7 +36,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
               vertical: 6,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -67,8 +67,8 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
         decoration: BoxDecoration(
           color: ref.watch(preferencesNotifierProvider).lyricsChordsSize ==
                   textSize
-              ? const Color(0xFF1996FF)
-              : Colors.white,
+              ? context.colorScheme.primary
+              : context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(5),
         ),
         child: Text(
@@ -76,8 +76,8 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
           style: context.textTheme.bodyLarge!.copyWith(
             color: ref.watch(preferencesNotifierProvider).lyricsChordsSize ==
                     textSize
-                ? Colors.white
-                : Colors.black,
+                ? context.colorScheme.onSurfaceVariant
+                : context.colorScheme.onSurface,
             fontSize: textSize.size,
           ),
         ),

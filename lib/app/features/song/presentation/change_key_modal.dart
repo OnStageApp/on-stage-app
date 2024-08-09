@@ -26,8 +26,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required SongKey tonality,
   }) {
     showModalBottomSheet(
-      enableDrag: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Change Key'),
@@ -84,12 +83,12 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           children: [
             Text(
               'Key',
-              style: context.textTheme.labelLarge,
+              style: context.textTheme.titleSmall,
             ),
             Text(
               widget.tonality.name ?? '',
-              style: context.textTheme.labelLarge!.copyWith(
-                color: const Color(0xFF1996FF),
+              style: context.textTheme.titleSmall!.copyWith(
+                color: context.colorScheme.primary,
               ),
             ),
           ],
@@ -126,15 +125,17 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
           decoration: BoxDecoration(
-            color:
-                isSelected ? const Color(0xFF1996FF) : const Color(0xFFF4F4F4),
+            color: isSelected
+                ? context.colorScheme.primary
+                : context.colorScheme.surface,
             borderRadius: BorderRadius.circular(5),
           ),
           alignment: Alignment.center,
           child: Text(
             chord.name,
             style: isSelected
-                ? _getStyling().copyWith(color: Colors.white)
+                ? _getStyling()
+                    .copyWith(color: context.colorScheme.onSurfaceVariant)
                 : _getStyling(),
           ),
         ),
@@ -146,7 +147,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     return Container(
       height: 48,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -183,7 +184,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   TextStyle _getStyling() {
-    return context.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600);
+    return context.textTheme.titleMedium!;
   }
 
   Future<void> _submitForm() async {

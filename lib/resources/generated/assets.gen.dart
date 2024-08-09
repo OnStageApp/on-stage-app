@@ -42,6 +42,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/search.svg
   SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
 
+  /// File path: assets/icons/search_icon.svg
+  SvgGenImage get searchIcon => const SvgGenImage('assets/icons/search_icon.svg');
+
   /// File path: assets/icons/song_structure.svg
   SvgGenImage get songStructure => const SvgGenImage('assets/icons/song_structure.svg');
 
@@ -49,8 +52,20 @@ class $AssetsIconsGen {
   SvgGenImage get userFriends => const SvgGenImage('assets/icons/user-friends.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [arrowForward, checkIcon, closeIcon, filledNotificationBell, heartFilled, mixerHorizontal, musicNote, plus, search, songStructure, userFriends];
+  List<SvgGenImage> get values => [
+        arrowForward,
+        checkIcon,
+        closeIcon,
+        filledNotificationBell,
+        heartFilled,
+        mixerHorizontal,
+        musicNote,
+        plus,
+        search,
+        searchIcon,
+        songStructure,
+        userFriends
+      ];
 }
 
 class $AssetsImagesGen {

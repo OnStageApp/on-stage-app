@@ -44,7 +44,7 @@ class ModalHeader extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: context.textTheme.labelLarge,
+                    style: context.textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -66,7 +66,11 @@ class ModalHeader extends StatelessWidget {
                                 .withOpacity(0.3),
                           ),
                         ),
-                        child: const Icon(Icons.close, size: 16),
+                        child: Icon(
+                          Icons.close,
+                          size: 16,
+                          color: context.colorScheme.outline,
+                        ),
                       ),
                     ),
                   ),

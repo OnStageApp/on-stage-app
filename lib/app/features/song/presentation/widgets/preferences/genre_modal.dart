@@ -77,12 +77,12 @@ class GenreModalState extends ConsumerState<GenreModal> {
         height: 48,
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: _isItemSelected(genre)
-              ? Colors.blue.withOpacity(0.1)
-              : Colors.white,
+          color: context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: _isItemSelected(genre) ? Colors.blue : Colors.white,
+            color: _isItemSelected(genre)
+                ? context.colorScheme.primary
+                : context.colorScheme.onSurfaceVariant,
             width: 1.6,
           ),
         ),
@@ -97,7 +97,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(
-                  color: Colors.green,
+                  color: context.colorScheme.primary,
                   width: 3,
                 ),
                 shape: BoxShape.circle,

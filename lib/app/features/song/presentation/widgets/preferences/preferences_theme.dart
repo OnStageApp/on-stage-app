@@ -34,7 +34,7 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
         children: [
           Text(
             'Theme',
-            style: context.textTheme.labelLarge,
+            style: context.textTheme.titleMedium,
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
