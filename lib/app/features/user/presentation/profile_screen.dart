@@ -45,7 +45,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ],
                     ),
                     const Spacer(),
-                    const ProfileImageWidget(canChangeProfilePicture: true,),
+                    const ProfileImageWidget(
+                      canChangeProfilePicture: true,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 48),
@@ -105,7 +107,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       icon: Icons.logout,
                       title: 'Logout',
                       iconColor: context.colorScheme.error,
-                      onTap: () {},
+                      onTap: () {
+                        context.goNamed(AppRoute.login.name);
+                      },
                     ),
                   ],
                 ),
