@@ -41,7 +41,6 @@ class EventNotifier extends _$EventNotifier {
     }
     state = state.copyWith(isLoading: true);
     final playlist = [];
-    // await ref.read(eventRepositoryProvider.notifier).fetchPlaylist();
     state = state.copyWith(playlist: [], isLoading: false);
   }
 

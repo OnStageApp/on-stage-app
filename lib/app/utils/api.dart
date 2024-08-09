@@ -33,4 +33,6 @@ class API {
 
   //Songs
   static const String getSongs = 'songs?{search}';
+
+  static const String verifyToken = 'verifyToken';
 }
