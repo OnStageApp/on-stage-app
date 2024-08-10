@@ -21,7 +21,7 @@ abstract class EventsRepository {
   Future<EventModel> getEventById(@Path('eventId') String eventId);
 
   @POST(API.createEvent)
-  Future<void> createEvent(@Body() EventModel event);
+  Future<EventModel> createEvent(@Body() EventModel event);
 
   // @GET(API.getEvents)
   // Future<List<StagerOverview>> getStagers() async {
