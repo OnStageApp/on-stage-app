@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
@@ -43,7 +42,7 @@ class AdminEventOverviewState extends ConsumerState<AdminEventOverview> {
         title: 'Event',
         trailing: SettingsTrailingAppBarButton(
           onTap: () {
-            SetReminderModal.show(context: context);
+            context.pushNamed(AppRoute.eventSettings.name);
           },
         ),
       ),

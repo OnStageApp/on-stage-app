@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/event/presentation/add_event_details_s
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/admin_event_overview.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
@@ -38,6 +39,7 @@ enum AppRoute {
   vocalModal,
   addEventSongs,
   adminEventOverview,
+  eventSettings,
 }
 
 class AppRouter {
@@ -122,8 +124,17 @@ class AppRouter {
                     name: AppRoute.adminEventOverview.name,
                     path: 'adminEventOverview',
                     builder: (context, state) {
-                      return AdminEventOverview();
+                      return const AdminEventOverview();
                     },
+                    routes: [
+                      GoRoute(
+                        name: AppRoute.eventSettings.name,
+                        path: 'eventSettings',
+                        builder: (context, state) {
+                          return const EventSettingsScreen();
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

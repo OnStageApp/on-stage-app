@@ -36,7 +36,7 @@ class AddEventSongsScreenState extends ConsumerState<AddEventMomentsScreen> {
         child: ContinueButton(
           text: 'Publish',
           onPressed: () {
-            context.pushNamed(AppRoute.adminEventOverview.name);
+            context.goNamed(AppRoute.adminEventOverview.name);
           },
           isEnabled: true,
         ),
