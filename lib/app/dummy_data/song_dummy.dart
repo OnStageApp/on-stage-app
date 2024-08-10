@@ -42,7 +42,7 @@ class SongDummy {
     ),
     StageNotification(
       id: 1,
-      title: 'Ready to go live?',
+      title: 'Old Notification',
       dateTime: DateTime(2024, 7, 10, 18, 30), // 6:30 PM
       createdAt: 'today',
       isInvitationConfirmed: false,

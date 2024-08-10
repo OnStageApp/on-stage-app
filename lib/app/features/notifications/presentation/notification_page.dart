@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
+import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -14,9 +15,12 @@ class NotificationPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationNotifierProvider);
     return Scaffold(
-      appBar: const StageAppBar(
-        title: 'Notifications',
+      appBar: StageAppBar(
         isBackButtonVisible: true,
+        title: 'Notifications',
+        trailing: SettingsTrailingAppBarButton(
+          onTap: () {}
+        ),
       ),
       body: notifications.isNotEmpty
           ? SingleChildScrollView(child: _buildBody(notifications, context))
@@ -26,21 +30,30 @@ class NotificationPage extends ConsumerWidget {
 
   Widget _buildBody(
       List<StageNotification> notifications, BuildContext context) {
-    final unconfirmedInvitations =
-    notifications.where((n) => !n.isInvitationConfirmed).toList();
-    final confirmedInvitations =
-    notifications.where((n) => n.isInvitationConfirmed).toList();
-    final lastWeekInvitations = _getLastWeekInvitations(confirmedInvitations);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final oneWeekAgo = today.subtract(const Duration(days: 7));
+    final oneMonthAgo = today.subtract(const Duration(days: 30));
+
+    final Map<String, List<StageNotification>> categorizedNotifications = {
+      'New': notifications.where((n) => n.dateTime.isAfter(today)).toList(),
+      'Last 7 days': notifications
+          .where(
+            (n) => n.dateTime.isAfter(oneWeekAgo) && n.dateTime.isBefore(today)
+          )
+          .toList(),
+      'Last 30 days':
+          notifications.where((n) => n.dateTime.isBefore(oneMonthAgo)).toList(),
+    };
 
     return Padding(
       padding: defaultScreenHorizontalPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSection(context, 'Unread', lastWeekInvitations),
-          // _buildSection(context, 'Upcoming', confirmedInvitations),
-          _buildSection(context, 'Last Week', unconfirmedInvitations),
-        ],
+        children: categorizedNotifications.entries
+            .where((entry) => entry.value.isNotEmpty)
+            .map((entry) => _buildSection(context, entry.key, entry.value))
+            .toList(),
       ),
     );
   }
@@ -67,28 +80,24 @@ class NotificationPage extends ConsumerWidget {
       itemBuilder: (context, index) {
         final notification = notifications[index];
         final leftTime = _getLeftTime(notification.dateTime);
+        final isNotificationNew = notification.dateTime
+            .isAfter(DateTime.now().subtract(const Duration(days: 1)));
 
         return EventTile(
           title: notification.title,
           dateTime: notification.dateTime,
           onTap: () {},
-          isInvitationConfirmed: notification.isInvitationConfirmed,
+          isNotificationHasActionButtons: notification.isInvitationConfirmed,
           isNotification: true,
           leftTime: leftTime,
+          isNotificationNew: isNotificationNew,
         );
       },
     );
   }
 
-  List<StageNotification> _getLastWeekInvitations(
-      List<StageNotification> notifications) {
-    final oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
-    return notifications.where((n) => n.dateTime.isAfter(oneWeekAgo)).toList();
-  }
-
   String _getLeftTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = dateTime.difference(now).inDays;
+    final difference = dateTime.difference(DateTime.now()).inDays;
 
     if (difference == 1) {
       return 'Tomorrow';
@@ -99,4 +108,3 @@ class NotificationPage extends ConsumerWidget {
     }
   }
 }
-

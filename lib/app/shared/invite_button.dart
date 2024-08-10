@@ -33,6 +33,14 @@ class InviteButton extends StatelessWidget {
               ? context.colorScheme.tertiary
               : context.colorScheme.surface,
         ),
+        overlayColor: WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
+                if (states.contains(WidgetState.pressed)) {
+                  return context.colorScheme.primary.withOpacity(0.1);
+                }
+                return null;
+          },
+        ),
       ),
       onPressed: onPressed,
       child: Row(

@@ -32,7 +32,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: titleWidget ??
             Text(
               title,
-              style: context.textTheme.titleLarge?.copyWith(
+              style: context.textTheme.headlineSmall?.copyWith(
                 fontSize: isBackButtonVisible ? 16 : 28,
                 color: context.colorScheme.onSurface,
               ),

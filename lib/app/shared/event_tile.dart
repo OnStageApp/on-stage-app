@@ -9,16 +9,18 @@ class EventTile extends StatelessWidget {
     required this.title,
     required this.dateTime,
     required this.onTap,
-    this.isNotification,
-    this.isInvitationConfirmed,
+    this.isNotification = false,
+    this.isNotificationHasActionButtons = false,
+    this.isNotificationNew = false,
     this.leftTime,
     super.key,
   });
 
   final String title;
   final DateTime dateTime;
-  final bool? isNotification;
-  final bool? isInvitationConfirmed;
+  final bool isNotification;
+  final bool isNotificationHasActionButtons;
+  final bool isNotificationNew;
   final String? leftTime;
   final VoidCallback onTap;
 
@@ -36,28 +38,32 @@ class EventTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (isNotification != false)
-              Column(
-                children: [
-                  Text(
-                    '$leftTime',
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colorScheme.surfaceDim,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                ],
+            if (isNotification) ...[
+              Text(
+                leftTime ?? '',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.surfaceDim,
+                ),
               ),
+              const SizedBox(height: 3),
+            ],
             Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.headlineMedium,
-                        maxLines: 1,
+                      Row(
+                        children: [
+                          if (isNotificationNew)
+                            _buildCircle(context, context.colorScheme.error),
+                          Text(
+                            title,
+                            style: context.textTheme.headlineMedium,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 3),
                       Row(
@@ -68,53 +74,61 @@ class EventTile extends StatelessWidget {
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  color: context.colorScheme.surfaceDim,
-                                ),
+                              color: context.colorScheme.surfaceDim,
+                            ),
                           ),
-                          _buildCircle(context),
+                          _buildCircle(context, context.colorScheme.outline.withOpacity(0.2)),
                           Text(
                             TimeUtils().formatOnlyDate(dateTime),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
                                 .copyWith(
-                                  color: context.colorScheme.surfaceDim,
-                                ),
+                              color: context.colorScheme.surfaceDim,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                _buildParticipantsTile(),
-                const Divider(),
+                const ParticipantsOnTile(
+                  borderColor: Colors.transparent,
+                  participantsProfile: [
+                    'assets/images/profile1.png',
+                    'assets/images/profile2.png',
+                    'assets/images/profile4.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                    'assets/images/profile5.png',
+                  ],
+                ),
               ],
             ),
-            if (isInvitationConfirmed != false)
-              Column(
-                children: [
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: InviteButton(
-                          text: 'Decline',
-                          onPressed: () {},
-                          isConfirm: false,
-                        ),
+            if (isNotificationHasActionButtons)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: InviteButton(
+                        text: 'Decline',
+                        onPressed: () {},
+                        isConfirm: false,
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: InviteButton(
-                          text: 'Confirm',
-                          onPressed: () {},
-                          isConfirm: true,
-                        ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: InviteButton(
+                        text: 'Confirm',
+                        onPressed: () {},
+                        isConfirm: true,
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                  ],
+                ),
               )
           ],
         ),
@@ -122,30 +136,26 @@ class EventTile extends StatelessWidget {
     );
   }
 
-  Widget _buildParticipantsTile() {
-    return const ParticipantsOnTile(
-      borderColor: Colors.transparent,
-      participantsProfile: [
-        'assets/images/profile1.png',
-        'assets/images/profile2.png',
-        'assets/images/profile4.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-      ],
-    );
-  }
-
-  Widget _buildCircle(BuildContext context) {
+  Widget _buildCircle(BuildContext context, Color backgroundColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Icon(
         Icons.circle,
         size: 8,
-        color: context.colorScheme.outline.withOpacity(0.2),
+        color: backgroundColor,
       ),
+    );
+  }
+
+  Widget _buildTextWithCircle(BuildContext context, String text, Color color) {
+    return Row(
+      children: [
+        Text(
+          text,
+          style: context.textTheme.bodyMedium?.copyWith(color: color),
+        ),
+        _buildCircle(context, context.colorScheme.outline.withOpacity(0.2)),
+      ],
     );
   }
 }
