@@ -147,15 +147,4 @@ class EventTile extends StatelessWidget {
     );
   }
 
-  Widget _buildTextWithCircle(BuildContext context, String text, Color color) {
-    return Row(
-      children: [
-        Text(
-          text,
-          style: context.textTheme.bodyMedium?.copyWith(color: color),
-        ),
-        _buildCircle(context, context.colorScheme.outline.withOpacity(0.2)),
-      ],
-    );
-  }
 }
