@@ -205,10 +205,12 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
 
   Widget _buildSearchBar() {
     return StageSearchBar(
+      focusNode: FocusNode(),
       controller: _searchController,
       onClosed: () {
         setState(() {
-          _searchedParticipants = _allParticipants.where((element) {
+          _searchedParticipants =
+              _allParticipants.where((StagerOverview element) {
             return element.firstName.toLowerCase().contains(
                   _searchController.text.toLowerCase(),
                 );

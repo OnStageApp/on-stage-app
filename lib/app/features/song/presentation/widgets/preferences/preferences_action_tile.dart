@@ -4,16 +4,16 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferencesActionTile extends StatelessWidget {
   const PreferencesActionTile({
-    required this.leadingWidget,
+    this.leadingWidget,
     required this.title,
-    required this.trailingIcon,
+    this.trailingIcon,
     required this.onTap,
     super.key,
   });
 
-  final Widget leadingWidget;
+  final Widget? leadingWidget;
   final String title;
-  final IconData trailingIcon;
+  final IconData? trailingIcon;
   final VoidCallback onTap;
 
   @override
@@ -32,8 +32,10 @@ class PreferencesActionTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            leadingWidget,
-            const SizedBox(width: Insets.smallNormal),
+            if (leadingWidget != null) ...[
+              leadingWidget!,
+              const SizedBox(width: Insets.smallNormal),
+            ],
             Text(
               title,
               style: context.textTheme.bodyLarge,

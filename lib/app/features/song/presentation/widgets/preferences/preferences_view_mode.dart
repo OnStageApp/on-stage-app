@@ -16,13 +16,14 @@ class PreferencesViewMode extends ConsumerWidget {
       children: [
         Text(
           'View Mode',
-          style: context.textTheme.labelLarge,
+          style: context.textTheme.titleSmall,
         ),
         const SizedBox(height: Insets.small),
         PreferencesActionTile(
           leadingWidget: Text(
             ref.watch(preferencesNotifierProvider).chordViewMode.example,
-            style: context.textTheme.bodyLarge!.copyWith(color: Colors.grey),
+            style: context.textTheme.bodyLarge!
+                .copyWith(color: context.colorScheme.outline),
           ),
           title: ref.watch(preferencesNotifierProvider).chordViewMode.name,
           trailingIcon: Icons.keyboard_arrow_down_rounded,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/search/application/search_provider.dart';
+import 'package:on_stage_app/app/features/search/application/search_controller.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
@@ -30,9 +30,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO:uncomment
     _songs = ref.watch(songsNotifierProvider).filteredSongs;
-    // _songs = SongDummy.playlist;
     return Scaffold(
       appBar: StageAppBar(
         titleWidget: RichText(
@@ -40,16 +38,14 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             children: [
               TextSpan(
                 text: ref.read(songsNotifierProvider).songs.length.toString(),
-                style: context.textTheme.headlineMedium?.copyWith(
-                  fontSize: 28,
-                  color: const Color(0xFF7F818B),
+                style: context.textTheme.headlineLarge?.copyWith(
+                  color: context.colorScheme.surfaceDim,
                 ),
               ),
               TextSpan(
                 text: ' Songs',
-                style: context.textTheme.headlineMedium?.copyWith(
-                  fontSize: 28,
-                  color: context.colorScheme.shadow,
+                style: context.textTheme.headlineLarge!.copyWith(
+                  color: context.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -70,7 +66,9 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
           child: Hero(
             tag: 'searchBar',
             child: StageSearchBar(
+              focusNode: FocusNode(),
               controller: _searchController,
+              showFilter: true,
               onClosed: () {
                 if (context.canPop()) {
                   context.pop();
@@ -95,7 +93,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             children: [
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: ref.watch(searchNotifierProvider).isFocused
+                child: ref.watch(searchControllerProvider).isFocused
                     ? const SizedBox.shrink()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

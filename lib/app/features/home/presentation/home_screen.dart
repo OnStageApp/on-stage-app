@@ -98,6 +98,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             child: Hero(
               tag: 'searchBar',
               child: StageSearchBar(
+                focusNode: FocusNode(),
                 onTap: () => context.pushNamed(AppRoute.songs.name),
               ),
             ),

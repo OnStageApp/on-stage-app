@@ -16,7 +16,7 @@ class PreferencesSongStructure extends ConsumerWidget {
       children: [
         Text(
           'Structure',
-          style: context.textTheme.labelLarge,
+          style: context.textTheme.titleSmall,
         ),
         const SizedBox(height: Insets.smallNormal),
         PreferencesActionTile(

@@ -59,7 +59,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               Text('Upcoming Events', style: context.textTheme.titleMedium),
               const SizedBox(height: Insets.normal),
               SizedBox(
-                height: 124,
+                height: 130,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -89,6 +89,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   Widget _buildSearchBar() {
     return StageSearchBar(
+      focusNode: FocusNode(),
       controller: searchController,
       onClosed: () {
         ref.read(eventsNotifierProvider.notifier).searchEvents('');
