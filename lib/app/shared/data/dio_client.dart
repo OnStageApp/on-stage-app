@@ -9,22 +9,16 @@ part 'dio_client.g.dart';
 
 @riverpod
 Dio dio(DioRef ref) {
-  final dio = Dio(BaseOptions(baseUrl: API.baseUrl));
-  const storage = FlutterSecureStorage();
-
-  dio.interceptors.add(
-    InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-      onError: (DioException e, handler) {
-        return handler.next(e);
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: API.baseUrl,
+      headers: {
+        'Content-Type': 'application/json',
       },
     ),
   );
+  const storage = FlutterSecureStorage();
+
   dio.interceptors.add(LoggerInterceptor());
   dio.interceptors.add(TokenInterceptor(storage));
 

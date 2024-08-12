@@ -7,11 +7,13 @@ class BlueActionButton extends StatelessWidget {
     required this.text,
     super.key,
     this.icon,
+    this.textColor,
   });
 
   final void Function() onTap;
   final String text;
   final IconData? icon;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class BlueActionButton extends StatelessWidget {
             Text(
               text,
               style: context.textTheme.titleMedium!.copyWith(
-                color: context.colorScheme.primary,
+                color: textColor ?? context.colorScheme.primary,
               ),
             ),
           ],
