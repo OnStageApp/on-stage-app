@@ -6,15 +6,17 @@ class EventItemTile extends StatefulWidget {
   const EventItemTile({
     required this.name,
     required this.isSong,
-    required this.onClone,
-    required this.onDelete,
+    required this.isAdmin,
+    this.onClone,
+    this.onDelete,
     super.key,
   });
 
   final String name;
   final bool isSong;
-  final void Function() onClone;
-  final void Function() onDelete;
+  final void Function()? onClone;
+  final void Function()? onDelete;
+  final bool isAdmin;
 
   @override
   _EventItemTileState createState() => _EventItemTileState();
@@ -35,48 +37,7 @@ class _EventItemTileState extends State<EventItemTile> {
       margin: const EdgeInsets.only(bottom: 8),
       child: Slidable(
         key: ValueKey(widget.name),
-        endActionPane: ActionPane(
-          dragDismissible: false,
-          motion: const ScrollMotion(),
-          dismissible: DismissiblePane(onDismissed: () {}),
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: widget.onClone,
-                child: Container(
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  color: Colors.blue,
-                  child: Text(
-                    'Clone',
-                    style: context.textTheme.bodyLarge!
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: widget.onDelete,
-                child: Container(
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.horizontal(
-                      right: Radius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    'Delete',
-                    style: context.textTheme.bodyLarge!
-                        .copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        endActionPane: widget.isAdmin ? _buildActionPane(context) : null,
         child: Builder(
           builder: (context) {
             final controller = Slidable.of(context);
@@ -110,13 +71,9 @@ class _EventItemTileState extends State<EventItemTile> {
               ),
               child: Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Icon(
-                      Icons.drag_indicator_rounded,
-                      color: Color(0xFF828282),
-                      size: 20,
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: _buildIcon(),
                   ),
                   const SizedBox(width: 12),
                   Column(
@@ -164,6 +121,73 @@ class _EventItemTileState extends State<EventItemTile> {
           },
         ),
       ),
+    );
+  }
+
+  Icon _buildIcon() {
+    if (widget.isAdmin) {
+      return const Icon(
+        Icons.drag_indicator_rounded,
+        color: Color(0xFF828282),
+        size: 20,
+      );
+    } else if (widget.isSong) {
+      return Icon(
+        Icons.music_note_rounded,
+        color: context.colorScheme.error,
+        size: 20,
+      );
+    } else {
+      return Icon(
+        Icons.mic,
+        color: context.colorScheme.primary,
+        size: 20,
+      );
+    }
+  }
+
+  ActionPane _buildActionPane(BuildContext context) {
+    return ActionPane(
+      dragDismissible: false,
+      motion: const ScrollMotion(),
+      dismissible: DismissiblePane(onDismissed: () {}),
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: widget.onClone,
+            child: Container(
+              height: double.infinity,
+              alignment: Alignment.center,
+              color: Colors.blue,
+              child: Text(
+                'Clone',
+                style:
+                    context.textTheme.bodyLarge!.copyWith(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: widget.onDelete,
+            child: Container(
+              height: double.infinity,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.horizontal(
+                  right: Radius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Delete',
+                style:
+                    context.textTheme.bodyLarge!.copyWith(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

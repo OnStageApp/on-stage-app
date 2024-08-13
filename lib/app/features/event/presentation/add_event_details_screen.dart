@@ -39,6 +39,31 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(12),
+        child: ContinueButton(
+          text: 'Create',
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              ref
+                  .read(eventControllerProvider.notifier)
+                  .setEventName(_eventNameController.text);
+              ref
+                  .read(eventControllerProvider.notifier)
+                  .setEventLocation(_eventLocationController.text);
+              ref
+                  .read(eventControllerProvider.notifier)
+                  .setDateTime(_dateController.text, _timeController.text);
+
+              context.pushNamed(AppRoute.addEventSongs.name);
+            } else {
+              print('error');
+            }
+          },
+          isEnabled: true,
+        ),
+      ),
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: 'Create Event',
@@ -115,28 +140,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 },
               ),
               _buildCreateRehearsalButton(),
-              const SizedBox(height: 42),
-              ContinueButton(
-                text: 'Create',
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ref
-                        .read(eventControllerProvider.notifier)
-                        .setEventName(_eventNameController.text);
-                    ref
-                        .read(eventControllerProvider.notifier)
-                        .setEventLocation(_eventLocationController.text);
-                    ref.read(eventControllerProvider.notifier).setDateTime(
-                        _dateController.text, _timeController.text);
-
-                    context.pushNamed(AppRoute.addEventSongs.name);
-                  } else {
-                    print('error');
-                  }
-                },
-                isEnabled: true,
-              ),
-              const SizedBox(height: 42),
+              const SizedBox(height: 120),
             ],
           ),
         ),

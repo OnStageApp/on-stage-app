@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
-import 'package:on_stage_app/app/features/event/presentation/admin_event_overview.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
@@ -38,7 +37,6 @@ enum AppRoute {
   favorites,
   vocalModal,
   addEventSongs,
-  adminEventOverview,
   eventSettings,
 }
 
@@ -118,13 +116,6 @@ class AppRouter {
                     builder: (context, state) {
                       final eventId = state.uri.queryParameters['eventId'];
                       return EventDetailsScreen(eventId!);
-                    },
-                  ),
-                  GoRoute(
-                    name: AppRoute.adminEventOverview.name,
-                    path: 'adminEventOverview',
-                    builder: (context, state) {
-                      return const AdminEventOverview();
                     },
                     routes: [
                       GoRoute(

@@ -14,12 +14,12 @@ class EventNotifier extends _$EventNotifier {
 
   @override
   EventState build() {
+    final dio = ref.read(dioProvider);
+    _eventsRepository = EventsRepository(dio);
     return const EventState();
   }
 
   Future<void> init() async {
-    final dio = ref.read(dioProvider);
-    _eventsRepository = EventsRepository(dio);
     if (state.event != null) {
       return;
     }
@@ -31,7 +31,7 @@ class EventNotifier extends _$EventNotifier {
     final event = await _eventsRepository.getEventById(eventId);
 
     state = state.copyWith(event: event, isLoading: false);
-    await getPlaylist();
+    // await getPlaylist();
   }
 
   Future<void> getPlaylist() async {
