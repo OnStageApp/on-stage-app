@@ -27,12 +27,12 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: background ?? context.colorScheme.surface,
         leading: _buildLeading(context),
-        leadingWidth: 8,
+        leadingWidth: 16,
         centerTitle: false,
         title: titleWidget ??
             Text(
               title,
-              style: context.textTheme.headlineSmall?.copyWith(
+              style: context.textTheme.labelLarge?.copyWith(
                 fontSize: isBackButtonVisible ? 16 : 28,
                 color: context.colorScheme.onSurface,
               ),
@@ -47,13 +47,16 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget? _buildLeading(BuildContext context) {
     if (isBackButtonVisible) {
-      return InkWell(
-        child: Icon(
+      return IconButton(
+        icon: Icon(
           Icons.arrow_back_ios,
-          size: 16,
+          size: 20,
           color: context.colorScheme.outline,
         ),
-        onTap: () => context.pop(),
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+        ),
+        onPressed: () => context.pop(),
       );
     }
     return null;

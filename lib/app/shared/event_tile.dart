@@ -26,15 +26,18 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: TextButton(
+        onPressed: onTap,
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          backgroundColor: context.colorScheme.onSurfaceVariant,
+          overlayColor: context.colorScheme.outline.withOpacity(0.1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

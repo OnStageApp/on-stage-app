@@ -9,6 +9,13 @@ class API {
 
   static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
+  static Future<Map<String, String>> getHeaders() async {
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+    return headers;
+  }
+
   static String get apiUrl {
     switch (flavor) {
       case _FLAVOR_DEV:

@@ -21,6 +21,7 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 class AddEventSongsScreenState extends ConsumerState<AddEventMomentsScreen> {
   TextEditingController eventNameController = TextEditingController();
   TextEditingController eventLocationController = TextEditingController();
+  final _isAdmin = false;
 
   @override
   void initState() {
@@ -33,64 +34,97 @@ class AddEventSongsScreenState extends ConsumerState<AddEventMomentsScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(12),
-        child: ContinueButton(
-          text: 'Publish',
-          onPressed: () {
-            context.pushNamed(AppRoute.adminEventOverview.name);
-          },
-          isEnabled: true,
-        ),
+        child: _isAdmin ? _buildSaveButton(context) : null,
       ),
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: 'Create Event',
-        trailing: SettingsTrailingAppBarButton(
-          onTap: () {
-            SetReminderModal.show(context: context);
-          },
-        ),
+        trailing: _isAdmin
+            ? SettingsTrailingAppBarButton(
+                onTap: () {
+                  SetReminderModal.show(context: context);
+                },
+              )
+            : null,
       ),
       body: Padding(
         padding: defaultScreenPadding,
-        child: ReorderableListView.builder(
-          proxyDecorator: (child, index, animation) => Material(
-            color: Colors.transparent,
-            elevation: 6,
-            shadowColor: Colors.black.withOpacity(0.1),
-            child: child,
-          ),
-          itemCount: ref.watch(eventControllerProvider).eventItems.length,
-          onReorder: (oldIndex, newIndex) {
-            if (newIndex > oldIndex) {
-              newIndex -= 1;
-            }
-            ref
-                .read(eventControllerProvider.notifier)
-                .reorderEventItems(oldIndex, newIndex);
-          },
-          itemBuilder: (context, index) {
-            final eventItem =
-                ref.watch(eventControllerProvider).eventItems[index];
-            return EventItemTile(
-              isSong: eventItem.songId != null,
-              key: ValueKey(eventItem.hashCode),
-              name: eventItem.name ?? '',
-              onClone: () {
-                ref
-                    .read(eventControllerProvider.notifier)
-                    .addEventItem(eventItem);
-              },
-              onDelete: () {
-                ref
-                    .read(eventControllerProvider.notifier)
-                    .removeEventItem(eventItem);
-              },
-            );
-          },
-          footer: _buildAddSongsOrMomentsButton(),
-        ),
+        child: _isAdmin ? _buildReordableList() : _buildStaticList(),
       ),
     );
+  }
+
+  ContinueButton _buildSaveButton(BuildContext context) {
+    return ContinueButton(
+      text: 'Save',
+      onPressed: () {
+        context.goNamed(
+          AppRoute.eventDetails.name,
+          queryParameters: {
+            'eventId': '65d8a5138ae10c121bcc37d5',
+          },
+        );
+      },
+      isEnabled: true,
+    );
+  }
+
+  Widget _buildStaticList() {
+    return ListView.builder(
+      itemCount: ref.watch(eventControllerProvider).eventItems.length,
+      itemBuilder: (context, index) {
+        final eventItem = ref.watch(eventControllerProvider).eventItems[index];
+
+        return EventItemTile(
+          isSong: eventItem.songId != null,
+          key: ValueKey(eventItem.hashCode),
+          name: eventItem.name ?? '',
+          isAdmin: _isAdmin,
+        );
+      },
+    );
+  }
+
+  Widget _buildReordableList() {
+    return ReorderableListView.builder(
+      proxyDecorator: (child, index, animation) => Material(
+        color: Colors.transparent,
+        elevation: 6,
+        shadowColor: Colors.black.withOpacity(0.1),
+        child: child,
+      ),
+      itemCount: ref.watch(eventControllerProvider).eventItems.length,
+      onReorder: (oldIndex, newIndex) {
+        _onReorder(newIndex, oldIndex);
+      },
+      itemBuilder: (context, index) {
+        final eventItem = ref.watch(eventControllerProvider).eventItems[index];
+        return EventItemTile(
+          isSong: eventItem.songId != null,
+          key: ValueKey(eventItem.hashCode),
+          name: eventItem.name ?? '',
+          onClone: () {
+            ref.read(eventControllerProvider.notifier).addEventItem(eventItem);
+          },
+          onDelete: () {
+            ref
+                .read(eventControllerProvider.notifier)
+                .removeEventItem(eventItem);
+          },
+          isAdmin: true,
+        );
+      },
+      footer: _isAdmin ? _buildAddSongsOrMomentsButton() : const SizedBox(),
+    );
+  }
+
+  void _onReorder(int newIndex, int oldIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    ref
+        .read(eventControllerProvider.notifier)
+        .reorderEventItems(oldIndex, newIndex);
   }
 
   Widget _buildAddSongsOrMomentsButton() {

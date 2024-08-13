@@ -4,7 +4,6 @@ import 'package:on_stage_app/app/features/event/domain/models/event_items/event_
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
-import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -158,9 +157,6 @@ class EventController extends _$EventController {
         moments: [] // Clear the moments list
         );
   }
-
-  int? _getLastIndexOfEventItems() =>
-      state.eventItems.isNotNullOrEmpty ? state.eventItems.last.index : 0;
 
   void reorderEventItems(int oldIndex, int newIndex) {
     final items = state.eventItems.toList();

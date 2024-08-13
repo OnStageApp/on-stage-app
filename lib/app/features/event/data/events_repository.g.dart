@@ -90,7 +90,8 @@ class _EventsRepository implements EventsRepository {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = event;
+    final _data = <String, dynamic>{};
+    _data.addAll(event.toJson());
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<EventModel>(Options(
       method: 'POST',
@@ -110,6 +111,31 @@ class _EventsRepository implements EventsRepository {
             ))));
     final _value = EventModel.fromJson(_result.data!);
     return _value;
+  }
+
+  RequestOptions newRequestOptions(Object? options) {
+    if (options is RequestOptions) {
+      return options as RequestOptions;
+    }
+    if (options is Options) {
+      return RequestOptions(
+        method: options.method,
+        sendTimeout: options.sendTimeout,
+        receiveTimeout: options.receiveTimeout,
+        extra: options.extra,
+        headers: options.headers,
+        responseType: options.responseType,
+        contentType: options.contentType.toString(),
+        validateStatus: options.validateStatus,
+        receiveDataWhenStatusError: options.receiveDataWhenStatusError,
+        followRedirects: options.followRedirects,
+        maxRedirects: options.maxRedirects,
+        requestEncoder: options.requestEncoder,
+        responseDecoder: options.responseDecoder,
+        path: '',
+      );
+    }
+    return RequestOptions(path: '');
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
