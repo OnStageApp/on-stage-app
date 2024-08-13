@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/bpm_filter.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
@@ -69,7 +70,7 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: defaultScreenPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,6 +86,7 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
             ],
           ),
           SizedBox(height: Insets.medium),
+          BPMRangeSlider(onChanged: (value) {})
         ],
       ),
     );
