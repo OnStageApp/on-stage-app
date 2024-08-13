@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventTileEnhanced extends StatelessWidget {
@@ -21,54 +22,67 @@ class EventTileEnhanced extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
+      alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(right: isSingleEvent ? 0 : 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.colorScheme.secondary,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isSingleEvent) _buildDateTimeOnSingleEventShown(context),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-            maxLines: 1,
+      child: TextButton(
+        onPressed: () {
+          context.pushNamed(AppRoute.eventDetails.name, queryParameters: {
+            'eventId': '65d8a5138ae10c121bcc37d5',
+          });
+        },
+        style: TextButton.styleFrom(
+          backgroundColor: context.colorScheme.secondary,
+          overlayColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+          padding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          const SizedBox(height: 6),
-          if (isSingleEvent)
-            Text(
-              locationName ?? '',
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: context.colorScheme.onSecondary,
-                  ),
-            )
-          else
-            _buildDateTime(context),
-          const SizedBox(height: 8),
-          const Expanded(
-            child: SizedBox(),
-          ),
-          const ParticipantsOnTile(
-            backgroundColor: Colors.white,
-            borderColor: Colors.transparent,
-            participantsProfile: [
-              'assets/images/profile1.png',
-              'assets/images/profile2.png',
-              'assets/images/profile4.png',
-              'assets/images/profile5.png',
-              'assets/images/profile5.png',
-              'assets/images/profile5.png',
-              'assets/images/profile5.png',
-              'assets/images/profile5.png',
+        ),
+        child: SizedBox(
+          width: isSingleEvent ? double.infinity : 300,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isSingleEvent) _buildDateTimeOnSingleEventShown(context),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                maxLines: 1,
+              ),
+              const SizedBox(height: 6),
+              if (isSingleEvent)
+                Text(
+                  locationName ?? '',
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: context.colorScheme.onSecondary,
+                      ),
+                )
+              else
+                _buildDateTime(context),
+              const SizedBox(height: 8),
+              const Expanded(
+                child: SizedBox(),
+              ),
+              const ParticipantsOnTile(
+                backgroundColor: Colors.white,
+                borderColor: Colors.transparent,
+                participantsProfile: [
+                  'assets/images/profile1.png',
+                  'assets/images/profile2.png',
+                  'assets/images/profile4.png',
+                  'assets/images/profile5.png',
+                  'assets/images/profile5.png',
+                  'assets/images/profile5.png',
+                  'assets/images/profile5.png',
+                  'assets/images/profile5.png',
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

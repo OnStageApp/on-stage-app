@@ -65,6 +65,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: eventsState.events.length,
                   itemBuilder: (context, index) {
+                    print('EVENT ID: ${eventsState.events[index].id}');
                     final event = eventsState.events[index];
                     return EventTileEnhanced(
                       title: event.name,

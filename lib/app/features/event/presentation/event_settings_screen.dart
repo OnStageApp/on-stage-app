@@ -6,7 +6,6 @@ import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_mo
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -154,12 +153,6 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
             const SizedBox(height: 16),
             _buildDeleteEventButton(),
             const SizedBox(height: 32),
-            ContinueButton(
-              text: 'Preview Event',
-              onPressed: () {},
-              isEnabled: true,
-            ),
-            const SizedBox(height: 42),
           ],
         ),
       ),
