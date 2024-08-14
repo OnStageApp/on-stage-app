@@ -33,7 +33,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
-    this.chordNotation = ChordNotation.american,
+    this.chordNotation = ChordNotation.italian,
   });
 
   final String lyrics;

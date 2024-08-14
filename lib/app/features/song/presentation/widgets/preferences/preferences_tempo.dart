@@ -26,7 +26,7 @@ class PreferencesTempo extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text('120 bpm', style: context.textTheme.bodyLarge),
+            child: Text('120 bpm', style: context.textTheme.titleMedium),
           ),
         ],
       ),
