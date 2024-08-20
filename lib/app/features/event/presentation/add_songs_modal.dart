@@ -146,7 +146,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
                                           .songs
                                           .elementAt(index)
                                           .artist
-                                          ?.fullName ??
+                                          ?.name ??
                                       '',
                                   style: context.textTheme.titleSmall,
                                 ),

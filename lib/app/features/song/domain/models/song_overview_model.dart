@@ -9,7 +9,7 @@ class SongOverview with _$SongOverview {
   const factory SongOverview({
     required String id,
     String? title,
-    int? bpm,
+    int? tempo,
     String? key,
     Artist? artist,
   }) = _SongOverview;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/dummy_data/user_dummy.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
@@ -16,8 +15,7 @@ class FavoriteSongsScreen extends ConsumerStatefulWidget {
 }
 
 class FavoriteSongsScreenState extends ConsumerState<FavoriteSongsScreen> {
-  final List<SongOverview> _favSongs =
-      UserDummy.userModel.profile.favoriteSongs;
+  final List<SongOverview> _favSongs = [];
 
   @override
   void initState() {

@@ -13,7 +13,7 @@ class _SongRepository implements SongRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://onstage-event-service.onrender.com/';
+    baseUrl ??= 'http://localhost:9000/';
   }
 
   final Dio _dio;
@@ -48,31 +48,6 @@ class _SongRepository implements SongRepository {
         .map((dynamic i) => SongOverview.fromJson(i as Map<String, dynamic>))
         .toList();
     return _value;
-  }
-
-  RequestOptions newRequestOptions(Object? options) {
-    if (options is RequestOptions) {
-      return options as RequestOptions;
-    }
-    if (options is Options) {
-      return RequestOptions(
-        method: options.method,
-        sendTimeout: options.sendTimeout,
-        receiveTimeout: options.receiveTimeout,
-        extra: options.extra,
-        headers: options.headers,
-        responseType: options.responseType,
-        contentType: options.contentType.toString(),
-        validateStatus: options.validateStatus,
-        receiveDataWhenStatusError: options.receiveDataWhenStatusError,
-        followRedirects: options.followRedirects,
-        maxRedirects: options.maxRedirects,
-        requestEncoder: options.requestEncoder,
-        responseDecoder: options.responseDecoder,
-        path: '',
-      );
-    }
-    return RequestOptions(path: '');
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

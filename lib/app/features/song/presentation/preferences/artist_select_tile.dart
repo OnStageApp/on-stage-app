@@ -26,7 +26,7 @@ class ArtistSelectTile extends StatelessWidget {
             ),
             SizedBox(width: 12),
             Text(
-              artist.fullName,
+              artist.name,
               style: TextStyle(fontSize: 16),
             ),
             Spacer(),

@@ -76,7 +76,7 @@ class SearchController extends _$SearchController {
       filters.add(
         SearchFilter(
           type: SearchFilterEnum.artist,
-          value: state.artistFilter!.fullName,
+          value: state.artistFilter!.name,
         ),
       );
     }

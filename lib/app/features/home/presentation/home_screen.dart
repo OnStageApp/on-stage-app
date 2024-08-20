@@ -34,7 +34,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void initializeNotifiers() {
-    ref.read(songsNotifierProvider.notifier).init();
+    // ref.read(songsNotifierProvider.notifier).init();
     ref.read(notificationNotifierProvider.notifier).getNotifications();
     ref.read(eventsNotifierProvider.notifier).init();
   }
