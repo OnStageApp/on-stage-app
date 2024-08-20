@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/features/event/domain/models/create_event_model
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
-import 'package:on_stage_app/app/utils/patch_operation.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'events_repository.g.dart';
@@ -28,7 +27,7 @@ abstract class EventsRepository {
   @PATCH(API.eventById)
   Future<CreateEventModel> updateEvent(
     @Path('id') String eventId,
-    @Body() List<PatchOperation> operations,
+    @Body() EventModel event,
   );
 
 // @GET(API.getEvents)

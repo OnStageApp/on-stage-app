@@ -32,7 +32,6 @@ class EventNotifier extends _$EventNotifier {
     final event = await _eventsRepository.getEventById(eventId);
 
     state = state.copyWith(event: event, isLoading: false);
-    // await getPlaylist();
   }
 
   Future<void> getPlaylist() async {
@@ -41,7 +40,6 @@ class EventNotifier extends _$EventNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final playlist = [];
     state = state.copyWith(playlist: [], isLoading: false);
   }
 
