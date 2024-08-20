@@ -60,19 +60,19 @@ final TextTheme _onStageTextTheme = TextTheme(
     fontSize: 18,
     height: 28.0 / 22.0,
     letterSpacing: 0,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   ),
   titleMedium: GoogleFonts.dmSans(
     fontSize: 16,
     height: 24.0 / 16.0,
     letterSpacing: 0,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   ),
   titleSmall: GoogleFonts.dmSans(
     fontSize: 14,
     height: 20.0 / 14.0,
     letterSpacing: 0.1,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   ),
   labelLarge: GoogleFonts.dmSans(
     fontSize: 16,

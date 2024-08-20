@@ -38,7 +38,7 @@ class PreferencesActionTile extends StatelessWidget {
             ],
             Text(
               title,
-              style: context.textTheme.bodyLarge,
+              style: context.textTheme.titleMedium,
             ),
             const Spacer(),
             Container(

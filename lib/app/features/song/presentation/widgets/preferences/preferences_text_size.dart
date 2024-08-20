@@ -73,7 +73,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
         ),
         child: Text(
           'A',
-          style: context.textTheme.bodyLarge!.copyWith(
+          style: context.textTheme.titleMedium!.copyWith(
             color: ref.watch(preferencesNotifierProvider).lyricsChordsSize ==
                     textSize
                 ? context.colorScheme.onSurfaceVariant

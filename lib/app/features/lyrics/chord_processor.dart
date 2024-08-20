@@ -5,7 +5,6 @@ import 'package:on_stage_app/app/features/lyrics/chord_processor_state.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
-import 'package:on_stage_app/app/features/song/application/song/helpers/metadata_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chord_processor.g.dart';
@@ -19,7 +18,7 @@ class ChordProcessor extends _$ChordProcessor {
 
   late double _textScaleFactor;
 
-  bool isChorus = false;
+  // bool isChorus = false;
 
   /// Process the text to get the parsed ChordLyricsDocument
   void processText({
@@ -34,9 +33,10 @@ class ChordProcessor extends _$ChordProcessor {
   }) {
     var chordTransposer =
         ChordTransposer(ChordNotation.american, transpose: transposeIncrement);
+    //Here it goes and search for structure text and put it on a new line
     text = _breakOnStructure(text);
     final lines = text.split(RegExp(r'(\{[^\}]*\})|\n'));
-    final metadata = MetadataHandler();
+    // final metadata = MetadataHandler();
     _textScaleFactor = scaleFactor;
     chordTransposer.transpose = transposeIncrement;
 
@@ -77,10 +77,11 @@ class ChordProcessor extends _$ChordProcessor {
     state = state.copyWith(
       document: ChordLyricsDocument(
         chordLyricsLines,
-        capo: metadata.capo,
-        artist: metadata.artist,
-        title: metadata.title,
-        key: metadata.key,
+        //TODO: see if it's needed, i just commented these and the metadata class from the model
+        // capo: metadata.capo,
+        // artist: metadata.artist,
+        // title: metadata.title,
+        // key: metadata.key,
       ),
     );
   }
@@ -164,11 +165,11 @@ class ChordProcessor extends _$ChordProcessor {
     var chordsSoFar = '';
     var chordHasStarted = false;
 
-    if (line.contains('{soc}') || line.contains('{start_of_chorus}')) {
-      isChorus = true;
-    } else if (line.contains('{eoc}') || line.contains('{end_of_chorus}')) {
-      isChorus = false;
-    }
+    // if (line.contains('{soc}') || line.contains('{start_of_chorus}')) {
+    //   isChorus = true;
+    // } else if (line.contains('{eoc}') || line.contains('{end_of_chorus}')) {
+    //   isChorus = false;
+    // }
 
     if (RegExp(r'^.*<[^>]*>.*$').hasMatch(line)) {
       _handleStructure(line, chordLyricsLine);
@@ -188,15 +189,9 @@ class ChordProcessor extends _$ChordProcessor {
 
             final double leadingSpace =
                 max(0, sizeOfLeadingLyrics - lastChordWidth);
-            // print('last chord: $lastChordText');
-            // print('lyricsSoFar: $lyricsSoFar');
-            // print('text: $lastChordText');
-            // print('leadingLyrics: $sizeOfLeadingLyrics');
-            // print('widthOfLastChord: $lastChordWidth');
-            // print('leadingSpace: $leadingSpace');
 
             final transposedChord = chordTransposer.transposeChord(chordsSoFar);
-            print('current TRANSPOSED Chord: $transposedChord');
+            // print('current TRANSPOSED Chord: $transposedChord');
             chordLyricsLine.chords.add(Chord(leadingSpace, transposedChord));
             chordLyricsLine.lyrics += lyricsSoFar;
             lyricsSoFar = '';
