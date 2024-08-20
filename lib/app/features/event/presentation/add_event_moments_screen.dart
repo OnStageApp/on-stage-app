@@ -21,7 +21,7 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 class AddEventSongsScreenState extends ConsumerState<AddEventMomentsScreen> {
   TextEditingController eventNameController = TextEditingController();
   TextEditingController eventLocationController = TextEditingController();
-  final _isAdmin = false;
+  final _isAdmin = true;
 
   @override
   void initState() {

@@ -55,7 +55,7 @@ class _SongTileState extends State<SongTile> {
                     Row(
                       children: [
                         Text(
-                          '${widget.song.artist}' ?? '',
+                          '${widget.song.artist?.name}' ?? '',
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!

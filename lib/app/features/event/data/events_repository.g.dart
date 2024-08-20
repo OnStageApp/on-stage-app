@@ -13,7 +13,7 @@ class _EventsRepository implements EventsRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://localhost:9000/';
+    baseUrl ??= 'https://9cff-79-119-53-200.ngrok-free.app/';
   }
 
   final Dio _dio;
@@ -72,7 +72,7 @@ class _EventsRepository implements EventsRepository {
     )
             .compose(
               _dio.options,
-              'events/${eventId}',
+              'events/{id}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -86,14 +86,14 @@ class _EventsRepository implements EventsRepository {
   }
 
   @override
-  Future<EventModel> createEvent(EventModel event) async {
+  Future<CreateEventModel> createEvent(CreateEventModel event) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(event.toJson());
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<EventModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -109,7 +109,37 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = EventModel.fromJson(_result.data!);
+    final _value = CreateEventModel.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<CreateEventModel> updateEvent(
+    String eventId,
+    List<PatchOperation> operations,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = operations.map((e) => e.toJson()).toList();
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'events/${eventId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final _value = CreateEventModel.fromJson(_result.data!);
     return _value;
   }
 
