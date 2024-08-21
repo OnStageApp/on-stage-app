@@ -8,8 +8,8 @@ part 'event_model.g.dart';
 class EventModel with _$EventModel {
   const factory EventModel({
     required String id,
-    required String name,
-    required DateTime date,
+    required String? name,
+    required DateTime? date,
     required List<DateTime>? rehearsalDates,
     required List<EventItem>? eventItems,
     required String location,

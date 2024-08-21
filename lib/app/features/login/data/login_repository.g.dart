@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'song_repository.dart';
+part of 'login_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'song_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _SongRepository implements SongRepository {
-  _SongRepository(
+class _LoginRepository implements LoginRepository {
+  _LoginRepository(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,32 +21,28 @@ class _SongRepository implements SongRepository {
   String? baseUrl;
 
   @override
-  Future<List<SongOverview>> getSongs({String? search}) async {
+  Future<dynamic> login(LoginRequest loginRequest) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'search': search};
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<SongOverview>>(Options(
-      method: 'GET',
+    final _data = loginRequest;
+    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
-            .compose(
-              _dio.options,
-              'songs?{search}',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    var _value = _result.data!
-        .map((dynamic i) => SongOverview.fromJson(i as Map<String, dynamic>))
-        .toList();
+        .compose(
+          _dio.options,
+          'auth/login',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    final _value = _result.data;
     return _value;
   }
 

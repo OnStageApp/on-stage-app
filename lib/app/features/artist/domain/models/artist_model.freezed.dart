@@ -20,9 +20,8 @@ Artist _$ArtistFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Artist {
-  int get id => throw _privateConstructorUsedError;
-  String get fullName => throw _privateConstructorUsedError;
-  List<int> get songIds => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +34,7 @@ abstract class $ArtistCopyWith<$Res> {
   factory $ArtistCopyWith(Artist value, $Res Function(Artist) then) =
       _$ArtistCopyWithImpl<$Res, Artist>;
   @useResult
-  $Res call({int id, String fullName, List<int> songIds, String? imageUrl});
+  $Res call({String id, String name, String? imageUrl});
 }
 
 /// @nodoc
@@ -52,23 +51,18 @@ class _$ArtistCopyWithImpl<$Res, $Val extends Artist>
   @override
   $Res call({
     Object? id = null,
-    Object? fullName = null,
-    Object? songIds = null,
+    Object? name = null,
     Object? imageUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      fullName: null == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
               as String,
-      songIds: null == songIds
-          ? _value.songIds
-          : songIds // ignore: cast_nullable_to_non_nullable
-              as List<int>,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -84,7 +78,7 @@ abstract class _$$ArtistImplCopyWith<$Res> implements $ArtistCopyWith<$Res> {
       __$$ArtistImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String fullName, List<int> songIds, String? imageUrl});
+  $Res call({String id, String name, String? imageUrl});
 }
 
 /// @nodoc
@@ -99,23 +93,18 @@ class __$$ArtistImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? fullName = null,
-    Object? songIds = null,
+    Object? name = null,
     Object? imageUrl = freezed,
   }) {
     return _then(_$ArtistImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      fullName: null == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
               as String,
-      songIds: null == songIds
-          ? _value._songIds
-          : songIds // ignore: cast_nullable_to_non_nullable
-              as List<int>,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -128,33 +117,21 @@ class __$$ArtistImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ArtistImpl implements _Artist {
   const _$ArtistImpl(
-      {required this.id,
-      required this.fullName,
-      required final List<int> songIds,
-      this.imageUrl})
-      : _songIds = songIds;
+      {required this.id, required this.name, required this.imageUrl});
 
   factory _$ArtistImpl.fromJson(Map<String, dynamic> json) =>
       _$$ArtistImplFromJson(json);
 
   @override
-  final int id;
+  final String id;
   @override
-  final String fullName;
-  final List<int> _songIds;
-  @override
-  List<int> get songIds {
-    if (_songIds is EqualUnmodifiableListView) return _songIds;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_songIds);
-  }
-
+  final String name;
   @override
   final String? imageUrl;
 
   @override
   String toString() {
-    return 'Artist(id: $id, fullName: $fullName, songIds: $songIds, imageUrl: $imageUrl)';
+    return 'Artist(id: $id, name: $name, imageUrl: $imageUrl)';
   }
 
   @override
@@ -163,17 +140,14 @@ class _$ArtistImpl implements _Artist {
         (other.runtimeType == runtimeType &&
             other is _$ArtistImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.fullName, fullName) ||
-                other.fullName == fullName) &&
-            const DeepCollectionEquality().equals(other._songIds, _songIds) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, fullName,
-      const DeepCollectionEquality().hash(_songIds), imageUrl);
+  int get hashCode => Object.hash(runtimeType, id, name, imageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -191,19 +165,16 @@ class _$ArtistImpl implements _Artist {
 
 abstract class _Artist implements Artist {
   const factory _Artist(
-      {required final int id,
-      required final String fullName,
-      required final List<int> songIds,
-      final String? imageUrl}) = _$ArtistImpl;
+      {required final String id,
+      required final String name,
+      required final String? imageUrl}) = _$ArtistImpl;
 
   factory _Artist.fromJson(Map<String, dynamic> json) = _$ArtistImpl.fromJson;
 
   @override
-  int get id;
+  String get id;
   @override
-  String get fullName;
-  @override
-  List<int> get songIds;
+  String get name;
   @override
   String? get imageUrl;
   @override

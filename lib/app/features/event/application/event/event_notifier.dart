@@ -1,6 +1,7 @@
 import 'package:on_stage_app/app/dummy_data/participants_dummy.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
+import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -31,7 +32,6 @@ class EventNotifier extends _$EventNotifier {
     final event = await _eventsRepository.getEventById(eventId);
 
     state = state.copyWith(event: event, isLoading: false);
-    // await getPlaylist();
   }
 
   Future<void> getPlaylist() async {
@@ -40,7 +40,6 @@ class EventNotifier extends _$EventNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final playlist = [];
     state = state.copyWith(playlist: [], isLoading: false);
   }
 
@@ -50,9 +49,26 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(stagers: stagers, isLoading: false);
   }
 
-  Future<void> addEvent(EventModel event) async {
+  Future<void> addEvent(CreateEventModel createdEvent) async {
     state = state.copyWith(isLoading: true);
-    await _eventsRepository.createEvent(event);
+    await _eventsRepository.createEvent(createdEvent);
+    state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> updateEvent() async {
+    state = state.copyWith(isLoading: true);
+    // await _eventsRepository.updateEvent(state.event!.id, updatedEvent);
+    await _eventsRepository.updateEvent(
+      '65d8a5138ae10c121bcc37d5',
+      const EventModel(
+        id: '65d8a5138ae10c121bcc37d5',
+        name: null,
+        date: null,
+        rehearsalDates: null,
+        eventItems: null,
+        location: 'NOUA MEA LOCATIE',
+      ),
+    );
     state = state.copyWith(isLoading: false);
   }
 }

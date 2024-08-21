@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'events_repository.dart';
+part of 'rehearsal_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,12 +8,12 @@ part of 'events_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _EventsRepository implements EventsRepository {
-  _EventsRepository(
+class _RehearsalRepository implements RehearsalRepository {
+  _RehearsalRepository(
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://9cff-79-119-53-200.ngrok-free.app/';
+    baseUrl ??= 'http://localhost:9000/';
   }
 
   final Dio _dio;
@@ -21,29 +21,20 @@ class _EventsRepository implements EventsRepository {
   String? baseUrl;
 
   @override
-  Future<List<EventOverview>> getEvents({
-    String? startDate,
-    String? endDate,
-    String? search,
-  }) async {
+  Future<List<Rehearsal>> getRehearsals({required String eventId}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'startDate': startDate,
-      r'endDate': endDate,
-      r'search': search,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{r'eventId': eventId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<EventOverview>>(Options(
+    final _result =
+        await _dio.fetch<List<dynamic>>(_setStreamType<List<Rehearsal>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'events?{startDate}&{endDate}&{search}',
+              'rehearsals',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -53,54 +44,27 @@ class _EventsRepository implements EventsRepository {
               baseUrl,
             ))));
     var _value = _result.data!
-        .map((dynamic i) => EventOverview.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) => Rehearsal.fromJson(i as Map<String, dynamic>))
         .toList();
     return _value;
   }
 
   @override
-  Future<EventModel> getEventById(String eventId) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<EventModel>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              'events/{id}',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    final _value = EventModel.fromJson(_result.data!);
-    return _value;
-  }
-
-  @override
-  Future<CreateEventModel> createEvent(CreateEventModel event) async {
+  Future<Rehearsal> addRehearsal(Rehearsal rehearsal) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(event.toJson());
+    _data.addAll(rehearsal.toJson());
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<Rehearsal>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'events',
+              'rehearsals',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -109,28 +73,29 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = CreateEventModel.fromJson(_result.data!);
+    final _value = Rehearsal.fromJson(_result.data!);
     return _value;
   }
 
   @override
-  Future<CreateEventModel> updateEvent(
-    String eventId,
-    List<PatchOperation> operations,
+  Future<Rehearsal> updateRehearsal(
+    String id,
+    Rehearsal rehearsal,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = operations.map((e) => e.toJson()).toList();
+    final _data = <String, dynamic>{};
+    _data.addAll(rehearsal.toJson());
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<Rehearsal>(Options(
       method: 'PATCH',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'events/${eventId}',
+              'rehearsals/${id}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -139,7 +104,33 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = CreateEventModel.fromJson(_result.data!);
+    final _value = Rehearsal.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<String> deleteRehearsal(String id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<String>(_setStreamType<String>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'rehearsals/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    final _value = _result.data!;
     return _value;
   }
 

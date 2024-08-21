@@ -1,13 +1,7 @@
 class API {
-  static const String _API_URL_DEV = 'onstage-event-service.onrender.com';
-  static const String _API_URL_PROD = 'onstage-event-service.onrender.com';
-  static const String _API_URL_STAGE = 'onstage-event-service.onrender.com';
+  // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
-  static const String _FLAVOR_DEV = 'development';
-  static const String _FLAVOR_PROD = 'production';
-  static const String _FLAVOR_STAGE = 'stage';
-
-  static const String baseUrl = 'https://onstage-event-service.onrender.com/';
+  static const String baseUrl = 'https://9cff-79-119-53-200.ngrok-free.app/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {
@@ -16,27 +10,10 @@ class API {
     return headers;
   }
 
-  static String get apiUrl {
-    switch (flavor) {
-      case _FLAVOR_DEV:
-        return _API_URL_DEV;
-      case _FLAVOR_PROD:
-        return _API_URL_PROD;
-      case _FLAVOR_STAGE:
-        return _API_URL_STAGE;
-      default:
-        return _API_URL_DEV;
-    }
-  }
-
-  static String get flavor {
-    return _FLAVOR_DEV;
-  }
-
   //Events
-  static const String getEvents = 'events?{startDate}&{endDate}&{search}';
-  static const String getEventById = 'events/{eventId}';
-  static const String createEvent = 'events';
+  static const String eventsByFilter = 'events?{startDate}&{endDate}&{search}';
+  static const String eventById = 'events/{id}';
+  static const String events = 'events';
 
   //Songs
   static const String getSongs = 'songs?{search}';

@@ -114,7 +114,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _searchedArtists.elementAt(index).fullName,
+                          _searchedArtists.elementAt(index).name,
                           style: context.textTheme.titleSmall,
                         ),
                       ),
@@ -135,7 +135,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
     }
     setState(() {
       _searchedArtists = _allArtists.where((element) {
-        return element.fullName.toLowerCase().contains(
+        return element.name.toLowerCase().contains(
               _searchController.text.toLowerCase(),
             );
       }).toList();

@@ -22,7 +22,7 @@ SongOverview _$SongOverviewFromJson(Map<String, dynamic> json) {
 mixin _$SongOverview {
   String get id => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
-  int? get bpm => throw _privateConstructorUsedError;
+  int? get tempo => throw _privateConstructorUsedError;
   String? get key => throw _privateConstructorUsedError;
   Artist? get artist => throw _privateConstructorUsedError;
 
@@ -38,7 +38,8 @@ abstract class $SongOverviewCopyWith<$Res> {
           SongOverview value, $Res Function(SongOverview) then) =
       _$SongOverviewCopyWithImpl<$Res, SongOverview>;
   @useResult
-  $Res call({String id, String? title, int? bpm, String? key, Artist? artist});
+  $Res call(
+      {String id, String? title, int? tempo, String? key, Artist? artist});
 
   $ArtistCopyWith<$Res>? get artist;
 }
@@ -58,7 +59,7 @@ class _$SongOverviewCopyWithImpl<$Res, $Val extends SongOverview>
   $Res call({
     Object? id = null,
     Object? title = freezed,
-    Object? bpm = freezed,
+    Object? tempo = freezed,
     Object? key = freezed,
     Object? artist = freezed,
   }) {
@@ -71,9 +72,9 @@ class _$SongOverviewCopyWithImpl<$Res, $Val extends SongOverview>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
-      bpm: freezed == bpm
-          ? _value.bpm
-          : bpm // ignore: cast_nullable_to_non_nullable
+      tempo: freezed == tempo
+          ? _value.tempo
+          : tempo // ignore: cast_nullable_to_non_nullable
               as int?,
       key: freezed == key
           ? _value.key
@@ -107,7 +108,8 @@ abstract class _$$SongOverviewImplCopyWith<$Res>
       __$$SongOverviewImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String? title, int? bpm, String? key, Artist? artist});
+  $Res call(
+      {String id, String? title, int? tempo, String? key, Artist? artist});
 
   @override
   $ArtistCopyWith<$Res>? get artist;
@@ -126,7 +128,7 @@ class __$$SongOverviewImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? title = freezed,
-    Object? bpm = freezed,
+    Object? tempo = freezed,
     Object? key = freezed,
     Object? artist = freezed,
   }) {
@@ -139,9 +141,9 @@ class __$$SongOverviewImplCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
-      bpm: freezed == bpm
-          ? _value.bpm
-          : bpm // ignore: cast_nullable_to_non_nullable
+      tempo: freezed == tempo
+          ? _value.tempo
+          : tempo // ignore: cast_nullable_to_non_nullable
               as int?,
       key: freezed == key
           ? _value.key
@@ -159,7 +161,7 @@ class __$$SongOverviewImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SongOverviewImpl implements _SongOverview {
   const _$SongOverviewImpl(
-      {required this.id, this.title, this.bpm, this.key, this.artist});
+      {required this.id, this.title, this.tempo, this.key, this.artist});
 
   factory _$SongOverviewImpl.fromJson(Map<String, dynamic> json) =>
       _$$SongOverviewImplFromJson(json);
@@ -169,7 +171,7 @@ class _$SongOverviewImpl implements _SongOverview {
   @override
   final String? title;
   @override
-  final int? bpm;
+  final int? tempo;
   @override
   final String? key;
   @override
@@ -177,7 +179,7 @@ class _$SongOverviewImpl implements _SongOverview {
 
   @override
   String toString() {
-    return 'SongOverview(id: $id, title: $title, bpm: $bpm, key: $key, artist: $artist)';
+    return 'SongOverview(id: $id, title: $title, tempo: $tempo, key: $key, artist: $artist)';
   }
 
   @override
@@ -187,14 +189,14 @@ class _$SongOverviewImpl implements _SongOverview {
             other is _$SongOverviewImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.bpm, bpm) || other.bpm == bpm) &&
+            (identical(other.tempo, tempo) || other.tempo == tempo) &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.artist, artist) || other.artist == artist));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, bpm, key, artist);
+  int get hashCode => Object.hash(runtimeType, id, title, tempo, key, artist);
 
   @JsonKey(ignore: true)
   @override
@@ -214,7 +216,7 @@ abstract class _SongOverview implements SongOverview {
   const factory _SongOverview(
       {required final String id,
       final String? title,
-      final int? bpm,
+      final int? tempo,
       final String? key,
       final Artist? artist}) = _$SongOverviewImpl;
 
@@ -226,7 +228,7 @@ abstract class _SongOverview implements SongOverview {
   @override
   String? get title;
   @override
-  int? get bpm;
+  int? get tempo;
   @override
   String? get key;
   @override

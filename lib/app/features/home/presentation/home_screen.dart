@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
@@ -35,6 +36,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   void initializeNotifiers() {
     ref.read(songsNotifierProvider.notifier).init();
+    ref.read(eventNotifierProvider.notifier).updateEvent();
     ref.read(notificationNotifierProvider.notifier).getNotifications();
     ref.read(eventsNotifierProvider.notifier).init();
   }

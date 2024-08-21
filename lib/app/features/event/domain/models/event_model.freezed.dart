@@ -21,8 +21,8 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$EventModel {
   String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  DateTime get date => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  DateTime? get date => throw _privateConstructorUsedError;
   List<DateTime>? get rehearsalDates => throw _privateConstructorUsedError;
   List<EventItem>? get eventItems => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
@@ -41,8 +41,8 @@ abstract class $EventModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String name,
-      DateTime date,
+      String? name,
+      DateTime? date,
       List<DateTime>? rehearsalDates,
       List<EventItem>? eventItems,
       String location});
@@ -62,8 +62,8 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? date = null,
+    Object? name = freezed,
+    Object? date = freezed,
     Object? rehearsalDates = freezed,
     Object? eventItems = freezed,
     Object? location = null,
@@ -73,14 +73,14 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
+              as String?,
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       rehearsalDates: freezed == rehearsalDates
           ? _value.rehearsalDates
           : rehearsalDates // ignore: cast_nullable_to_non_nullable
@@ -106,8 +106,8 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String name,
-      DateTime date,
+      String? name,
+      DateTime? date,
       List<DateTime>? rehearsalDates,
       List<EventItem>? eventItems,
       String location});
@@ -125,8 +125,8 @@ class __$$EventImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? date = null,
+    Object? name = freezed,
+    Object? date = freezed,
     Object? rehearsalDates = freezed,
     Object? eventItems = freezed,
     Object? location = null,
@@ -136,14 +136,14 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
+              as String?,
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as DateTime?,
       rehearsalDates: freezed == rehearsalDates
           ? _value._rehearsalDates
           : rehearsalDates // ignore: cast_nullable_to_non_nullable
@@ -179,9 +179,9 @@ class _$EventImpl implements _Event {
   @override
   final String id;
   @override
-  final String name;
+  final String? name;
   @override
-  final DateTime date;
+  final DateTime? date;
   final List<DateTime>? _rehearsalDates;
   @override
   List<DateTime>? get rehearsalDates {
@@ -254,8 +254,8 @@ class _$EventImpl implements _Event {
 abstract class _Event implements EventModel {
   const factory _Event(
       {required final String id,
-      required final String name,
-      required final DateTime date,
+      required final String? name,
+      required final DateTime? date,
       required final List<DateTime>? rehearsalDates,
       required final List<EventItem>? eventItems,
       required final String location}) = _$EventImpl;
@@ -265,9 +265,9 @@ abstract class _Event implements EventModel {
   @override
   String get id;
   @override
-  String get name;
+  String? get name;
   @override
-  DateTime get date;
+  DateTime? get date;
   @override
   List<DateTime>? get rehearsalDates;
   @override

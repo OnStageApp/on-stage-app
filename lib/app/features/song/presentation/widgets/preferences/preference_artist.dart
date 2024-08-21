@@ -44,7 +44,7 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
                   radius: 12,
                 )
               : const Icon(Icons.account_circle),
-          title: ref.watch(searchControllerProvider).artistFilter?.fullName ??
+          title: ref.watch(searchControllerProvider).artistFilter?.name ??
               'All Artists',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
