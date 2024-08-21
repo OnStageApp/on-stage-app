@@ -17,7 +17,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'profile': instance.profile,
+      'profile': instance.profile.toJson(),
       'username': instance.username,
       'password': instance.password,
       'email': instance.email,

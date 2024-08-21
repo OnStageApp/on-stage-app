@@ -19,7 +19,7 @@ abstract class EventsRepository {
   });
 
   @GET(API.eventById)
-  Future<EventModel> getEventById(@Path('eventId') String eventId);
+  Future<EventModel> getEventById(@Path('id') String id);
 
   @POST(API.events)
   Future<CreateEventModel> createEvent(@Body() CreateEventModel event);

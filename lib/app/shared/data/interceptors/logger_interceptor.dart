@@ -19,7 +19,8 @@ class LoggerInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    logger.e('Error: ${err.message} ${err.stackTrace}');
+    logger.e(
+        'Error: ${err.message} ${err.stackTrace} ${err.response} ${err.requestOptions}');
     handler.next(err);
   }
 }

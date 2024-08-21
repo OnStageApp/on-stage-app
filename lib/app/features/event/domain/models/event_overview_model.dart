@@ -7,8 +7,8 @@ part 'event_overview_model.g.dart';
 class EventOverview with _$EventOverview {
   const factory EventOverview({
     required String id,
-    required String name,
-    required String date,
+    required String? name,
+    required String? date,
   }) = _EventOverview;
 
   factory EventOverview.fromJson(Map<String, dynamic> json) =>

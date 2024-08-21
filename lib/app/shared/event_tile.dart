@@ -12,7 +12,7 @@ class EventTile extends StatelessWidget {
   });
 
   final String title;
-  final DateTime dateTime;
+  final DateTime? dateTime;
 
   final VoidCallback onTap;
 
@@ -51,7 +51,9 @@ class EventTile extends StatelessWidget {
                       ),
                       _buildCircle(context),
                       Text(
-                        TimeUtils().formatOnlyDate(dateTime),
+                        dateTime != null
+                            ? TimeUtils().formatOnlyDate(dateTime!)
+                            : '',
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                               color: context.colorScheme.surfaceDim,
                             ),

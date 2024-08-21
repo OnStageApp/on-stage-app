@@ -23,5 +23,5 @@ Map<String, dynamic> _$$SongOverviewImplToJson(_$SongOverviewImpl instance) =>
       'title': instance.title,
       'tempo': instance.tempo,
       'key': instance.key,
-      'artist': instance.artist,
+      'artist': instance.artist?.toJson(),
     };

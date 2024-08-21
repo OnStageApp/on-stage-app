@@ -59,7 +59,7 @@ class _EventsRepository implements EventsRepository {
   }
 
   @override
-  Future<EventModel> getEventById(String eventId) async {
+  Future<EventModel> getEventById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -72,7 +72,7 @@ class _EventsRepository implements EventsRepository {
     )
             .compose(
               _dio.options,
-              'events/{id}',
+              'events/${id}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -116,12 +116,13 @@ class _EventsRepository implements EventsRepository {
   @override
   Future<CreateEventModel> updateEvent(
     String eventId,
-    List<PatchOperation> operations,
+    EventModel event,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = operations.map((e) => e.toJson()).toList();
+    final _data = <String, dynamic>{};
+    _data.addAll(event.toJson());
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
       method: 'PATCH',

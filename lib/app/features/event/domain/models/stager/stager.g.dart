@@ -8,8 +8,8 @@ part of 'stager.dart';
 
 _$StagerImpl _$$StagerImplFromJson(Map<String, dynamic> json) => _$StagerImpl(
       id: json['id'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['first_name'] as String,
+      lastName: json['last_name'] as String,
       picture: json['picture'] as String,
       email: json['email'] as String,
       phone: json['phone'] as String,
@@ -19,8 +19,8 @@ _$StagerImpl _$$StagerImplFromJson(Map<String, dynamic> json) => _$StagerImpl(
 Map<String, dynamic> _$$StagerImplToJson(_$StagerImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
       'picture': instance.picture,
       'email': instance.email,
       'phone': instance.phone,
