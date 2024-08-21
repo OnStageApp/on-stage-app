@@ -97,8 +97,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                         event?.date ?? DateTime.now(),
                       ),
                       hour: TimeUtils().formatOnlyTime(
-                        // event.date ?? DateTime.now(),
-                        DateTime.now(),
+                        event?.date ?? DateTime.now(),
                       ),
                       isSingleEvent: true,
                     ),

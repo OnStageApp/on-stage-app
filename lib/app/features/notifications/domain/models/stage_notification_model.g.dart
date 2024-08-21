@@ -12,10 +12,10 @@ _$StageNotificationImpl _$$StageNotificationImplFromJson(
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
       body: json['body'] as String,
-      createdAt: json['createdAt'] as String,
-      friendId: json['friendId'] as String?,
-      friendPhotoUrl: json['friendPhotoUrl'] as String?,
-      eventId: json['eventId'] as String?,
+      createdAt: json['created_at'] as String,
+      friendId: json['friend_id'] as String?,
+      friendPhotoUrl: json['friend_photo_url'] as String?,
+      eventId: json['event_id'] as String?,
     );
 
 Map<String, dynamic> _$$StageNotificationImplToJson(
@@ -24,8 +24,8 @@ Map<String, dynamic> _$$StageNotificationImplToJson(
       'id': instance.id,
       'title': instance.title,
       'body': instance.body,
-      'createdAt': instance.createdAt,
-      'friendId': instance.friendId,
-      'friendPhotoUrl': instance.friendPhotoUrl,
-      'eventId': instance.eventId,
+      'created_at': instance.createdAt,
+      'friend_id': instance.friendId,
+      'friend_photo_url': instance.friendPhotoUrl,
+      'event_id': instance.eventId,
     };

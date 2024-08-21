@@ -21,8 +21,8 @@ EventOverview _$EventOverviewFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$EventOverview {
   String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get date => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  String? get date => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +36,7 @@ abstract class $EventOverviewCopyWith<$Res> {
           EventOverview value, $Res Function(EventOverview) then) =
       _$EventOverviewCopyWithImpl<$Res, EventOverview>;
   @useResult
-  $Res call({String id, String name, String date});
+  $Res call({String id, String? name, String? date});
 }
 
 /// @nodoc
@@ -53,22 +53,22 @@ class _$EventOverviewCopyWithImpl<$Res, $Val extends EventOverview>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? date = null,
+    Object? name = freezed,
+    Object? date = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
+              as String?,
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -81,7 +81,7 @@ abstract class _$$EventOverviewImplCopyWith<$Res>
       __$$EventOverviewImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String date});
+  $Res call({String id, String? name, String? date});
 }
 
 /// @nodoc
@@ -96,22 +96,22 @@ class __$$EventOverviewImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? name = null,
-    Object? date = null,
+    Object? name = freezed,
+    Object? date = freezed,
   }) {
     return _then(_$EventOverviewImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
+              as String?,
+      date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -128,9 +128,9 @@ class _$EventOverviewImpl implements _EventOverview {
   @override
   final String id;
   @override
-  final String name;
+  final String? name;
   @override
-  final String date;
+  final String? date;
 
   @override
   String toString() {
@@ -168,8 +168,8 @@ class _$EventOverviewImpl implements _EventOverview {
 abstract class _EventOverview implements EventOverview {
   const factory _EventOverview(
       {required final String id,
-      required final String name,
-      required final String date}) = _$EventOverviewImpl;
+      required final String? name,
+      required final String? date}) = _$EventOverviewImpl;
 
   factory _EventOverview.fromJson(Map<String, dynamic> json) =
       _$EventOverviewImpl.fromJson;
@@ -177,9 +177,9 @@ abstract class _EventOverview implements EventOverview {
   @override
   String get id;
   @override
-  String get name;
+  String? get name;
   @override
-  String get date;
+  String? get date;
   @override
   @JsonKey(ignore: true)
   _$$EventOverviewImplCopyWith<_$EventOverviewImpl> get copyWith =>

@@ -9,8 +9,8 @@ part of 'stager_overview.dart';
 _$StagerOverviewImpl _$$StagerOverviewImplFromJson(Map<String, dynamic> json) =>
     _$StagerOverviewImpl(
       id: json['id'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['first_name'] as String,
+      lastName: json['last_name'] as String,
       picture: json['picture'] as String,
       status: $enumDecode(_$StagerStatusEnumEnumMap, json['status']),
     );
@@ -19,8 +19,8 @@ Map<String, dynamic> _$$StagerOverviewImplToJson(
         _$StagerOverviewImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
+      'first_name': instance.firstName,
+      'last_name': instance.lastName,
       'picture': instance.picture,
       'status': _$StagerStatusEnumEnumMap[instance.status]!,
     };

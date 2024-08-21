@@ -9,11 +9,11 @@ part of 'song_configuration.dart';
 _$SongConfigurationImpl _$$SongConfigurationImplFromJson(
         Map<String, dynamic> json) =>
     _$SongConfigurationImpl(
-      teamId: json['teamId'] as String?,
-      songId: json['songId'] as String?,
-      songKey: json['songKey'] == null
+      teamId: json['team_id'] as String?,
+      songId: json['song_id'] as String?,
+      songKey: json['song_key'] == null
           ? null
-          : SongKey.fromJson(json['songKey'] as Map<String, dynamic>),
+          : SongKey.fromJson(json['song_key'] as Map<String, dynamic>),
       structure: (json['structure'] as List<dynamic>?)
           ?.map((e) => SongStructure.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -22,8 +22,8 @@ _$SongConfigurationImpl _$$SongConfigurationImplFromJson(
 Map<String, dynamic> _$$SongConfigurationImplToJson(
         _$SongConfigurationImpl instance) =>
     <String, dynamic>{
-      'teamId': instance.teamId,
-      'songId': instance.songId,
-      'songKey': instance.songKey,
-      'structure': instance.structure,
+      'team_id': instance.teamId,
+      'song_id': instance.songId,
+      'song_key': instance.songKey?.toJson(),
+      'structure': instance.structure?.map((e) => e.toJson()).toList(),
     };

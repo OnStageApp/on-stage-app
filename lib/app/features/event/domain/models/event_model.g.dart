@@ -11,13 +11,8 @@ _$EventImpl _$$EventImplFromJson(Map<String, dynamic> json) => _$EventImpl(
       name: json['name'] as String?,
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
-      rehearsalDates: (json['rehearsalDates'] as List<dynamic>?)
-          ?.map((e) => DateTime.parse(e as String))
-          .toList(),
-      eventItems: (json['eventItems'] as List<dynamic>?)
-          ?.map((e) => EventItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      location: json['location'] as String,
+      location: json['location'] as String?,
+      status: $enumDecodeNullable(_$EventStatusEnumMap, json['eventStatus']),
     );
 
 Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
@@ -25,8 +20,11 @@ Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'date': instance.date?.toIso8601String(),
-      'rehearsalDates':
-          instance.rehearsalDates?.map((e) => e.toIso8601String()).toList(),
-      'eventItems': instance.eventItems,
       'location': instance.location,
+      'eventStatus': _$EventStatusEnumMap[instance.status],
     };
+
+const _$EventStatusEnumMap = {
+  EventStatus.draft: 'draft',
+  EventStatus.published: 'published',
+};

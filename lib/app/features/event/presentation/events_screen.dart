@@ -68,7 +68,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                     print('EVENT ID: ${eventsState.events[index].id}');
                     final event = eventsState.events[index];
                     return EventTileEnhanced(
-                      title: event.name,
+                      title: event.name ?? '',
                       hour: '11:00',
                       date: 'Monday, 12th July',
                     );
@@ -127,8 +127,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         AppRoute.eventDetails.name,
         queryParameters: {'eventId': event.id},
       ),
-      title: event.name,
-      dateTime: DateTime.parse(event.date),
+      title: event.name ?? '',
+      dateTime: event.date?.let(DateTime.parse),
     );
   }
 }

@@ -10,14 +10,14 @@ _$RehearsalImpl _$$RehearsalImplFromJson(Map<String, dynamic> json) =>
     _$RehearsalImpl(
       id: json['id'] as String?,
       name: json['name'] as String?,
-      dateTime: json['dateTime'] == null
+      dateTime: json['date_time'] == null
           ? null
-          : DateTime.parse(json['dateTime'] as String),
+          : DateTime.parse(json['date_time'] as String),
     );
 
 Map<String, dynamic> _$$RehearsalImplToJson(_$RehearsalImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'dateTime': instance.dateTime?.toIso8601String(),
+      'date_time': instance.dateTime?.toIso8601String(),
     };

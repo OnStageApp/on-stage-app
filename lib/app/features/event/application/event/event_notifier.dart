@@ -55,20 +55,10 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false);
   }
 
-  Future<void> updateEvent() async {
+  Future<void> updateEvent(EventModel updatedEvent) async {
     state = state.copyWith(isLoading: true);
-    // await _eventsRepository.updateEvent(state.event!.id, updatedEvent);
-    await _eventsRepository.updateEvent(
-      '65d8a5138ae10c121bcc37d5',
-      const EventModel(
-        id: '65d8a5138ae10c121bcc37d5',
-        name: null,
-        date: null,
-        rehearsalDates: null,
-        eventItems: null,
-        location: 'NOUA MEA LOCATIE',
-      ),
-    );
+    await _eventsRepository.updateEvent(state.event!.id, updatedEvent);
+
     state = state.copyWith(isLoading: false);
   }
 }
