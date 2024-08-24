@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
@@ -16,6 +18,7 @@ import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class AddEventDetailsScreen extends ConsumerStatefulWidget {
   const AddEventDetailsScreen({super.key});
@@ -27,9 +30,8 @@ class AddEventDetailsScreen extends ConsumerStatefulWidget {
 class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   final _eventNameController = TextEditingController();
   final _eventLocationController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _timeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? _dateTimeString;
 
   @override
   void initState() {
@@ -43,22 +45,14 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
-          text: 'Create',
+          text: 'Create Draft Event',
           onPressed: () {
+            _setFieldsOnController();
             if (_formKey.currentState!.validate()) {
-              ref
-                  .read(eventControllerProvider.notifier)
-                  .setEventName(_eventNameController.text);
-              ref
-                  .read(eventControllerProvider.notifier)
-                  .setEventLocation(_eventLocationController.text);
-              ref
-                  .read(eventControllerProvider.notifier)
-                  .setDateTime(_dateController.text, _timeController.text);
-
-              context.pushNamed(AppRoute.addEventSongs.name);
+              ref.read(eventNotifierProvider.notifier).addEvent();
+              context.pushReplacementNamed(AppRoute.addEventSongs.name);
             } else {
-              print('error');
+              logger.e('error');
             }
           },
           isEnabled: true,
@@ -78,6 +72,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         child: Form(
           key: _formKey,
           child: ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               CustomTextField(
                 label: 'Event Name',
@@ -102,20 +97,18 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               const SizedBox(height: Insets.medium),
               DateTimeTextFieldWidget(
-                dateController: _dateController,
-                timeController: _timeController,
-                onDateChanged: (date) {},
-                onTimeChanged: (time) {},
+                onDateTimeChanged: (dateTime) {
+                  setState(() {
+                    _dateTimeString = dateTime;
+                  });
+                },
               ),
               const SizedBox(height: Insets.medium),
               Text(
                 'Participants',
                 style: context.textTheme.titleSmall,
               ),
-              if (ref
-                  .watch(eventControllerProvider)
-                  .addedParticipants
-                  .isNotEmpty) ...[
+              if (ref.watch(eventControllerProvider).addedUsers.isNotEmpty) ...[
                 const SizedBox(height: Insets.smallNormal),
                 _buildParticipantsList(),
               ],
@@ -148,9 +141,20 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     );
   }
 
+  void _setFieldsOnController() {
+    ref
+        .read(eventControllerProvider.notifier)
+        .setEventLocation(_eventLocationController.text);
+    ref
+        .read(eventControllerProvider.notifier)
+        .setEventName(_eventNameController.text);
+    ref
+        .read(eventControllerProvider.notifier)
+        .setDateTime(_dateTimeString ?? '');
+  }
+
   Widget _buildParticipantsList() {
-    final addedParticipants =
-        ref.watch(eventControllerProvider).addedParticipants;
+    final addedUsers = ref.watch(eventControllerProvider).addedUsers;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -161,13 +165,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: addedParticipants.length,
+        itemCount: addedUsers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            name:
-                '${addedParticipants[index].firstName} ${addedParticipants[index].lastName}',
+            name: '${addedUsers[index].name}',
             assetPath: 'assets/images/profile1.png',
-            status: addedParticipants.elementAt(index).status,
+            status: StagerStatusEnum.UNINVINTED,
           );
         },
       ),
@@ -187,7 +190,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   Widget _buildInvitePeopleButton() {
     return BlueActionButton(
       onTap: () {
-        AddParticipantsScreen.show(context: context);
+        if (mounted) {
+          AddParticipantsScreen.show(
+            context: context,
+            onPressed: () {},
+          );
+        }
       },
       text: 'Invite People',
       icon: Icons.add,

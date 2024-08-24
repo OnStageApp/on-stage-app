@@ -3,14 +3,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'rehearsal_model.freezed.dart';
 part 'rehearsal_model.g.dart';
 
-@Freezed()
-class Rehearsal with _$Rehearsal {
-  const factory Rehearsal({
-    required String? id,
-    required String? name,
-    required DateTime? dateTime,
-  }) = _Rehearsal;
+@freezed
+class RehearsalModel with _$RehearsalModel {
+  const factory RehearsalModel({
+    String? id,
+    String? name,
+    String? location,
+    DateTime? dateTime,
+  }) = _RehearsalModel;
 
-  factory Rehearsal.fromJson(Map<String, dynamic> json) =>
-      _$RehearsalFromJson(json);
+  factory RehearsalModel.fromJson(Map<String, dynamic> json) =>
+      _$RehearsalModelFromJson(json);
 }

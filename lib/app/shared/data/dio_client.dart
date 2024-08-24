@@ -19,8 +19,8 @@ Dio dio(DioRef ref) {
   );
   const storage = FlutterSecureStorage();
 
-  dio.interceptors.add(LoggerInterceptor());
   dio.interceptors.add(TokenInterceptor(storage));
+  dio.interceptors.add(LoggerInterceptor());
 
   return dio;
 }

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
@@ -43,12 +46,22 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   }
 
   Future<void> _init() async {
-    await ref.read(eventNotifierProvider.notifier).getEventById(widget.eventId);
+    unawaited(
+      ref.read(eventNotifierProvider.notifier).getEventById(widget.eventId),
+    );
+    unawaited(
+      ref.read(eventNotifierProvider.notifier).getRehearsals(widget.eventId),
+    );
+    unawaited(
+      ref.read(eventNotifierProvider.notifier).getStagers(widget.eventId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final event = ref.watch(eventNotifierProvider).event;
+    final rehearsals = ref.watch(eventNotifierProvider).rehearsals;
+    final stagers = ref.watch(eventNotifierProvider).stagers;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
@@ -62,9 +75,10 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
             ref
                 .read(eventControllerProvider.notifier)
                 .setEventLocation(eventLocationController.text);
-            ref
-                .read(eventControllerProvider.notifier)
-                .setDateTime(dateController.text, timeController.text);
+
+            // ref
+            //     .read(eventControllerProvider.notifier)
+            //     .setDateTime(dateController.text, timeController.text);
 
             context.pushNamed(AppRoute.addEventSongs.name);
           },
@@ -107,9 +121,8 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                     'Rehearsals',
                     style: context.textTheme.titleSmall,
                   ),
-                  // const SizedBox(height: Insets.smallNormal),
-                  if (ref.watch(eventControllerProvider).rehearsals.isNotEmpty)
-                    ...ref.watch(eventControllerProvider).rehearsals.map(
+                  if (rehearsals.isNotEmpty)
+                    ...rehearsals.map(
                       (rehearsal) {
                         return EventTile(
                           title: rehearsal.name ?? '',
@@ -118,7 +131,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                         );
                       },
                     )
-                  else
+                  else if (!_isAdmin)
                     Container(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Text(
@@ -129,6 +142,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                       ),
                     ),
                   if (_isAdmin) ...[
+                    const SizedBox(height: Insets.smallNormal),
                     _buildCreateRehearsalButton(),
                   ],
                   const SizedBox(height: Insets.medium),
@@ -140,20 +154,19 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                         style: context.textTheme.titleSmall,
                       ),
                       Text(
-                        '5/10 confirmed',
+                        ref
+                            .watch(eventControllerProvider.notifier)
+                            .getAcceptedInviteesLabel(),
                         style: context.textTheme.bodyMedium!.copyWith(
                           color: context.colorScheme.outline,
                         ),
                       ),
                     ],
                   ),
-                  if (ref
-                      .watch(eventControllerProvider)
-                      .addedParticipants
-                      .isNotEmpty) ...[
+                  if (stagers.isNotEmpty) ...[
                     const SizedBox(height: Insets.smallNormal),
                     _buildParticipantsList(),
-                  ] else ...[
+                  ] else if (!_isAdmin)
                     Container(
                       padding: const EdgeInsets.only(top: 12),
                       child: Text(
@@ -163,7 +176,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                         ),
                       ),
                     ),
-                  ],
                   if (_isAdmin) ...[
                     const SizedBox(height: Insets.smallNormal),
                     _buildInvitePeopleButton(),
@@ -176,8 +188,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final addedParticipants =
-        ref.watch(eventControllerProvider).addedParticipants;
+    final stagers = ref.read(eventNotifierProvider).stagers;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -188,13 +199,13 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: addedParticipants.length,
+        itemCount: stagers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            name:
-                '${addedParticipants[index].firstName} ${addedParticipants[index].lastName}',
+            name: stagers[index].name ?? '',
             assetPath: 'assets/images/profile1.png',
-            status: addedParticipants.elementAt(index).status,
+            status: stagers[index].participationStatus!,
+            // status: addedParticipants.elementAt(index).status,
           );
         },
       ),
@@ -214,10 +225,32 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   Widget _buildInvitePeopleButton() {
     return BlueActionButton(
       onTap: () {
-        AddParticipantsScreen.show(context: context);
+        // ref
+        //     .read(userNotifierProvider.notifier)
+        //     .getUninvitedUsersByEventId(widget.eventId);
+        if (mounted) {
+          AddParticipantsScreen.show(
+            context: context,
+            onPressed: _addStagersToEvent,
+            eventId: widget.eventId,
+          );
+        }
       },
       text: 'Invite People',
       icon: Icons.add,
     );
+  }
+
+  void _addStagersToEvent() {
+    ref.read(eventNotifierProvider.notifier).addStagerToEvent(
+          CreateStagerRequest(
+            eventId: widget.eventId,
+            userId: ref
+                .watch(eventControllerProvider)
+                .addedUsers
+                .map((e) => e.id)
+                .toList(),
+          ),
+        );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
@@ -25,18 +23,17 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet(
       useRootNavigator: true,
+      isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Add a Rehearsal'),
-        headerHeight: () {
-          return 64;
-        },
-        buildContent: () {
-          return const SingleChildScrollView(
+      builder: (context) => SafeArea(
+        child: NestedScrollModal(
+          buildHeader: () => const ModalHeader(title: 'Add a Rehearsal'),
+          headerHeight: () => 64,
+          buildContent: () => const SingleChildScrollView(
             child: CreateRehearsalModal(),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -47,10 +44,22 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
   final TextEditingController rehearsalNameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
+  final FocusNode _rehearsalNameFocus = FocusNode();
+
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_rehearsalNameFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _rehearsalNameFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,6 +74,7 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
               label: 'Rehearsal Name',
               hint: 'Sunday Morning',
               icon: null,
+              focusNode: _rehearsalNameFocus,
               controller: rehearsalNameController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -75,10 +85,9 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
             ),
             const SizedBox(height: 24),
             DateTimeTextFieldWidget(
-              dateController: dateController,
-              timeController: timeController,
+              onDateTimeChanged: (dateTime) {},
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             ContinueButton(
               text: 'Create',
               onPressed: _createRehearsal,
@@ -95,12 +104,14 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    FocusScope.of(context).unfocus();
     final dateTime = parseDateTime(dateController.text, timeController.text);
-    final rehearsal = Rehearsal(
-      id: Random().nextInt(1000).toString(),
+    final rehearsal = RehearsalModel(
       name: rehearsalNameController.text,
       dateTime: dateTime,
+      location: '',
     );
+
     ref.read(eventControllerProvider.notifier).addRehearsal(rehearsal);
     context.popDialog();
   }

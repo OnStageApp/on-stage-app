@@ -39,38 +39,33 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
             style: context.textTheme.titleMedium,
           ),
           const Spacer(),
-          if (widget.status != StagerStatusEnum.uninvited)
-            Icon(
-              _statusIcon(widget.status).icon,
-              color: context.colorScheme.primary,
-            ),
+          if (widget.status != StagerStatusEnum.UNINVINTED)
+            _statusIcon(widget.status),
         ],
       ),
     );
   }
 
-  Icon _statusIcon(StagerStatusEnum status) {
+  Widget _statusIcon(StagerStatusEnum status) {
     switch (widget.status) {
-      case StagerStatusEnum.accepted:
+      case StagerStatusEnum.CONFIRMED:
+        return const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+        );
+      case StagerStatusEnum.PENDING:
         return Icon(
           Icons.check_circle,
-          color: context.colorScheme.primary,
+          color: context.colorScheme.surfaceBright,
         );
-      case StagerStatusEnum.pending:
-        return Icon(
-          Icons.error,
-          color: context.colorScheme.error,
-        );
-      case StagerStatusEnum.rejected:
+      case StagerStatusEnum.DECLINED:
         return Icon(
           Icons.cancel,
           color: context.colorScheme.error,
         );
-      default:
-        return Icon(
-          Icons.cancel,
-          color: context.colorScheme.error,
-        );
+
+      case StagerStatusEnum.UNINVINTED:
+        return const SizedBox();
     }
   }
 }

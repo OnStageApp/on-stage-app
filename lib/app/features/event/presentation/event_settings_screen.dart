@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/edit_field_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
@@ -21,6 +23,7 @@ class EventSettingsScreen extends ConsumerStatefulWidget {
 class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
   final _locationNameController = TextEditingController();
   final _eventNameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -28,9 +31,9 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final event = ref.watch(eventControllerProvider);
-    _locationNameController.text = event.eventLocation;
-    _eventNameController.text = event.eventName;
+    final event = ref.watch(eventNotifierProvider).event;
+    _locationNameController.text = event?.location ?? '';
+    _eventNameController.text = event?.name ?? '';
     return Scaffold(
       appBar: const StageAppBar(
         isBackButtonVisible: true,
@@ -40,24 +43,54 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
         padding: defaultScreenPadding,
         child: ListView(
           children: [
-            CustomTextField(
-              label: 'Event Name',
-              hint: 'Sunday Morning Service',
-              icon: Icons.church,
-              controller: _eventNameController,
-              onChanged: (value) {},
-            ),
-            const SizedBox(height: Insets.smallNormal),
-            CustomTextField(
-              label: 'Event Location',
-              hint: 'Elevation Church',
-              icon: Icons.church,
-              controller: _locationNameController,
-              onChanged: (value) {
-                //TODO:  set event location name
+            CustomSettingTile(
+              backgroundColor: context.colorScheme.surfaceBright,
+              title: event?.name ?? '',
+              headline: 'Event Name',
+              suffix: Icon(
+                Icons.edit,
+                size: 20,
+                color: context.colorScheme.outline,
+              ),
+              onTap: () {
+                EditFieldModal.show(
+                  context: context,
+                  fieldName: 'Event Name',
+                  value: event?.name ?? '',
+                  onSubmitted: (String value) {
+                    ref
+                        .read(eventNotifierProvider.notifier)
+                        .updateEventName(value);
+                  },
+                );
               },
             ),
             const SizedBox(height: Insets.smallNormal),
+            CustomSettingTile(
+              backgroundColor: context.colorScheme.surfaceBright,
+              title: event?.location ?? '',
+              headline: 'Event Location',
+              suffix: Icon(
+                Icons.edit,
+                size: 20,
+                color: context.colorScheme.outline,
+              ),
+              onTap: () {
+                EditFieldModal.show(
+                  context: context,
+                  fieldName: 'Event Location',
+                  value: event?.location ?? '',
+                  onSubmitted: (String value) {
+                    ref
+                        .read(eventNotifierProvider.notifier)
+                        .updateEventLocation(value);
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            const DashedLineDivider(),
+            const SizedBox(height: 24),
             Text(
               'Reminders',
               style: context.textTheme.titleSmall,
@@ -65,48 +98,24 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
             const SizedBox(height: Insets.smallNormal),
             Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(10),
+                CustomSettingTile(
+                  title: 'Alert 1',
+                  suffix: Text(
+                    '3 days before',
+                    style: context.textTheme.titleMedium!
+                        .copyWith(color: context.colorScheme.outline),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Alert 1',
-                        style: context.textTheme.titleMedium,
-                      ),
-                      Text(
-                        '3 days before',
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: context.colorScheme.outline),
-                      ),
-                    ],
-                  ),
+                  onTap: () {},
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(10),
+                CustomSettingTile(
+                  title: 'Alert 2',
+                  suffix: Text(
+                    '2 days before',
+                    style: context.textTheme.titleMedium!
+                        .copyWith(color: context.colorScheme.outline),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Alert 2',
-                        style: context.textTheme.titleMedium,
-                      ),
-                      Text(
-                        '3 days before',
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: context.colorScheme.outline),
-                      ),
-                    ],
-                  ),
+                  onTap: () {},
                 ),
               ],
             ),
@@ -183,8 +192,7 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final addedParticipants =
-        ref.watch(eventControllerProvider).addedParticipants;
+    final addedParticipants = ref.watch(eventControllerProvider).addedUsers;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -198,10 +206,11 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
         itemCount: addedParticipants.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            name:
-                '${addedParticipants[index].firstName} ${addedParticipants[index].lastName}',
+            name: addedParticipants[index].name ?? '',
             assetPath: 'assets/images/profile1.png',
-            status: addedParticipants.elementAt(index).status,
+            //TODO: unDO THIS AFTER REFACTOR STAGERS AND USERS
+            status: StagerStatusEnum.UNINVINTED,
+            // status: addedParticipants.elementAt(index).status,
           );
         },
       ),
@@ -221,7 +230,7 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
   Widget _buildInvitePeopleButton() {
     return BlueActionButton(
       onTap: () {
-        AddParticipantsScreen.show(context: context);
+        // AddParticipantsScreen.show(context: context, users: []);
       },
       text: 'Invite People',
       icon: Icons.add,
@@ -231,7 +240,7 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
   Widget _buildDuplicateEvent() {
     return BlueActionButton(
       onTap: () {
-        AddParticipantsScreen.show(context: context);
+        // AddParticipantsScreen.show(context: context);
       },
       text: 'Duplicate Event',
       textColor: context.colorScheme.onSurface,
@@ -241,7 +250,7 @@ class EventSettingsScreenState extends ConsumerState<EventSettingsScreen> {
   Widget _buildDeleteEventButton() {
     return BlueActionButton(
       onTap: () {
-        AddParticipantsScreen.show(context: context);
+        // AddParticipantsScreen.show(context: context);
       },
       text: 'Delete Event',
       textColor: context.colorScheme.error,

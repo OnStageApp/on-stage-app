@@ -8,12 +8,9 @@ part 'stager.g.dart';
 class Stager with _$Stager {
   const factory Stager({
     required String id,
-    required String firstName,
-    required String lastName,
-    required String picture,
-    required String email,
-    required String phone,
-    required StagerStatusEnum status,
+    required String? name,
+    required String? profilePicture,
+    required StagerStatusEnum? participationStatus,
   }) = _Stager;
 
   factory Stager.fromJson(Map<String, dynamic> json) => _$StagerFromJson(json);

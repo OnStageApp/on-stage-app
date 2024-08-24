@@ -13,7 +13,7 @@ class _EventsRepository implements EventsRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://9cff-79-119-53-200.ngrok-free.app/';
+    baseUrl ??= 'https://c96c-86-125-110-196.ngrok-free.app/';
   }
 
   final Dio _dio;
@@ -86,14 +86,71 @@ class _EventsRepository implements EventsRepository {
   }
 
   @override
-  Future<CreateEventModel> createEvent(CreateEventModel event) async {
+  Future<List<RehearsalModel>> getRehearsalsByEventId(String eventId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'eventId': eventId};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<RehearsalModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'rehearsals',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var _value = _result.data!
+        .map((dynamic i) => RehearsalModel.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return _value;
+  }
+
+  @override
+  Future<List<Stager>> getStagersByEventId(String eventId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'eventId': eventId};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result =
+        await _dio.fetch<List<dynamic>>(_setStreamType<List<Stager>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'stagers',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    var _value = _result.data!
+        .map((dynamic i) => Stager.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return _value;
+  }
+
+  @override
+  Future<EventModel> createEvent(CreateEventModel event) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(event.toJson());
+    final _data = event;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<EventModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -109,23 +166,50 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = CreateEventModel.fromJson(_result.data!);
+    final _value = EventModel.fromJson(_result.data!);
     return _value;
   }
 
   @override
-  Future<CreateEventModel> updateEvent(
+  Future<Stager> addStagerToEvent(
+      CreateStagerRequest createStagerRequest) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = createStagerRequest;
+    final _result =
+        await _dio.fetch<Map<String, dynamic>>(_setStreamType<Stager>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'stagers',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final _value = Stager.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<EventModel> updateEvent(
     String eventId,
     EventModel event,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(event.toJson());
+    final _data = event;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<CreateEventModel>(Options(
-      method: 'PATCH',
+        .fetch<Map<String, dynamic>>(_setStreamType<EventModel>(Options(
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
@@ -140,7 +224,7 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = CreateEventModel.fromJson(_result.data!);
+    final _value = EventModel.fromJson(_result.data!);
     return _value;
   }
 

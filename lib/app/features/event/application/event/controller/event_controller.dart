@@ -1,15 +1,17 @@
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller_state.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_type_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_controller.g.dart';
 
-@Riverpod(keepAlive: true)
+@Riverpod()
 class EventController extends _$EventController {
   @override
   EventControllerState build() {
@@ -28,57 +30,60 @@ class EventController extends _$EventController {
     state = state.copyWith(eventLocation: location);
   }
 
-  void setDateTime(String date, String time) {
+  void setDateTime(String dateTime) {
     try {
-      final dateParts = date.split('/');
-      final timeParts = time.split(':');
+      final parts = dateTime.split(' ');
+      if (parts.length != 2)
+        throw const FormatException('Invalid datetime format');
+
+      final dateParts = parts[0].split('/');
+      final timeParts = parts[1].split(':');
 
       if (dateParts.length != 3 || timeParts.length != 2) {
         throw const FormatException('Invalid date or time format');
       }
 
-      final year = int.parse(dateParts[2]);
-      final month = int.parse(dateParts[0]);
-      final day = int.parse(dateParts[1]);
+      final year = int.parse(dateParts[0]);
+      final month = int.parse(dateParts[1]);
+      final day = int.parse(dateParts[2]);
       final hour = int.parse(timeParts[0]);
       final minute = int.parse(timeParts[1]);
 
       final combinedDateTime = DateTime(year, month, day, hour, minute);
-
-      state = state.copyWith(
-        dateTime: combinedDateTime,
-      );
+      logger.i('combinedDateTime: $combinedDateTime');
+      state = state.copyWith(dateTime: combinedDateTime);
     } catch (e) {
-      logger.e('Error parsing date or time: $e');
+      logger.e('Error parsing datetime: $e');
     }
   }
 
-  void addParticipant(StagerOverview participant) {
+  //TODO: a user has to be added as a stager, i have to update this method, maybe create a new user_controller class
+  void addParticipant(User participant) {
+    print('addParticipant ${participant.name}');
     state = state.copyWith(
-      addedParticipants: [...state.addedParticipants, participant],
+      addedUsers: [...state.addedUsers, participant],
     );
-    if (state.addedParticipants.isNotEmpty) {
+    if (state.addedUsers.isNotEmpty) {
       state = state.copyWith(
-          invitePeopleButtonText:
-              'Invite ${state.addedParticipants.length} people');
+          invitePeopleButtonText: 'Invite ${state.addedUsers.length} people');
     }
   }
 
-  void removeParticipant(StagerOverview participant) {
+  void removeParticipant(User participant) {
     state = state.copyWith(
-      addedParticipants:
-          state.addedParticipants.where((p) => p.id != participant.id).toList(),
+      addedUsers:
+          state.addedUsers.where((p) => p.id != participant.id).toList(),
     );
-    if (state.addedParticipants.isEmpty) {
+    if (state.addedUsers.isEmpty) {
       state = state.copyWith(invitePeopleButtonText: 'Invite People');
     }
   }
 
-  void addRehearsal(Rehearsal rehearsal) {
+  void addRehearsal(RehearsalModel rehearsal) {
     state = state.copyWith(rehearsals: [...state.rehearsals, rehearsal]);
   }
 
-  void removeRehearsal(Rehearsal rehearsal) {
+  void removeRehearsal(RehearsalModel rehearsal) {
     state = state.copyWith(
       rehearsals: state.rehearsals.where((r) => r.id != rehearsal.id).toList(),
     );
@@ -163,5 +168,19 @@ class EventController extends _$EventController {
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
     state = state.copyWith(eventItems: items);
+  }
+
+  String getAcceptedInviteesLabel() {
+    final stagers = ref.read(eventNotifierProvider).stagers;
+    final acceptedStagers = stagers
+        .where(
+          (stager) => stager.participationStatus == StagerStatusEnum.CONFIRMED,
+        )
+        .toList();
+    if (acceptedStagers.isNotEmpty) {
+      return '${acceptedStagers.length}/${stagers.length} confirmed';
+    } else {
+      return '';
+    }
   }
 }

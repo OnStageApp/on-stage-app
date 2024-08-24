@@ -10,16 +10,16 @@ _$TonalityImpl _$$TonalityImplFromJson(Map<String, dynamic> json) =>
     _$TonalityImpl(
       name: json['name'] as String?,
       chord: $enumDecodeNullable(_$ChordsEnumEnumMap, json['chord']),
-      isSharp: json['is_sharp'] as bool?,
-      isMajor: json['is_major'] as bool?,
+      isSharp: json['isSharp'] as bool?,
+      isMajor: json['isMajor'] as bool?,
     );
 
 Map<String, dynamic> _$$TonalityImplToJson(_$TonalityImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'chord': _$ChordsEnumEnumMap[instance.chord],
-      'is_sharp': instance.isSharp,
-      'is_major': instance.isMajor,
+      'isSharp': instance.isSharp,
+      'isMajor': instance.isMajor,
     };
 
 const _$ChordsEnumEnumMap = {

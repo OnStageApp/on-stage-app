@@ -7,11 +7,11 @@ part 'event_model.g.dart';
 @Freezed()
 class EventModel with _$EventModel {
   const factory EventModel({
-    required String id,
-    required String? name,
-    @JsonKey(name: 'date') required DateTime? date,
-    required String? location,
-    @JsonKey(name: 'eventStatus') required EventStatus? status,
+    String? id,
+    String? name,
+    DateTime? date,
+    String? location,
+    EventStatus? eventStatus,
   }) = _Event;
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>

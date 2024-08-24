@@ -7,12 +7,13 @@ part of 'event_model.dart';
 // **************************************************************************
 
 _$EventImpl _$$EventImplFromJson(Map<String, dynamic> json) => _$EventImpl(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       name: json['name'] as String?,
       date:
           json['date'] == null ? null : DateTime.parse(json['date'] as String),
       location: json['location'] as String?,
-      status: $enumDecodeNullable(_$EventStatusEnumMap, json['eventStatus']),
+      eventStatus:
+          $enumDecodeNullable(_$EventStatusEnumMap, json['eventStatus']),
     );
 
 Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
@@ -21,7 +22,7 @@ Map<String, dynamic> _$$EventImplToJson(_$EventImpl instance) =>
       'name': instance.name,
       'date': instance.date?.toIso8601String(),
       'location': instance.location,
-      'eventStatus': _$EventStatusEnumMap[instance.status],
+      'eventStatus': _$EventStatusEnumMap[instance.eventStatus],
     };
 
 const _$EventStatusEnumMap = {

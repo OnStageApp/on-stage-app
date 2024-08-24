@@ -10,12 +10,12 @@ _$UserOverviewImpl _$$UserOverviewImplFromJson(Map<String, dynamic> json) =>
     _$UserOverviewImpl(
       id: json['id'] as String?,
       name: json['name'] as String?,
-      profileImage: json['profile_image'] as String?,
+      profileImage: json['profileImage'] as String?,
     );
 
 Map<String, dynamic> _$$UserOverviewImplToJson(_$UserOverviewImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'profile_image': instance.profileImage,
+      'profileImage': instance.profileImage,
     };

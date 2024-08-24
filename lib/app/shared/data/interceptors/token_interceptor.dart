@@ -16,7 +16,6 @@ class TokenInterceptor extends Interceptor {
       logger.i('Token: $token');
       options.headers['Authorization'] = 'Bearer $token';
     }
-    // options.headers['Content-Type'] = 'application/json';
     return handler.next(options);
   }
 }

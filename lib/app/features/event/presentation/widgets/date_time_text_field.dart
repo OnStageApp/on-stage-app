@@ -8,16 +8,10 @@ import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
     super.key,
-    required this.dateController,
-    required this.timeController,
-    this.onDateChanged,
-    this.onTimeChanged,
+    required this.onDateTimeChanged,
   });
 
-  final TextEditingController dateController;
-  final TextEditingController timeController;
-  final void Function(String)? onDateChanged;
-  final void Function(String)? onTimeChanged;
+  final void Function(String?) onDateTimeChanged;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -25,9 +19,34 @@ class DateTimeTextFieldWidget extends StatefulWidget {
 }
 
 class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+
   @override
   void initState() {
+    dateController.addListener(_updateCombinedDateTime);
+    timeController.addListener(_updateCombinedDateTime);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    dateController.removeListener(_updateCombinedDateTime);
+    timeController.removeListener(_updateCombinedDateTime);
+    super.dispose();
+  }
+
+  void _updateCombinedDateTime() {
+    final combinedString = '${dateController.text} ${timeController.text}';
+    widget.onDateTimeChanged(combinedString);
+  }
+
+  DateTime? _parseDateTime(String input) {
+    try {
+      return DateTime.parse(input.replaceAll('/', '-'));
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
@@ -45,9 +64,8 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                controller: widget.dateController,
+                controller: dateController,
                 style: context.textTheme.titleSmall,
-                onChanged: widget.onDateChanged,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a date';
@@ -107,9 +125,8 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      controller: widget.timeController,
+                      controller: timeController,
                       style: context.textTheme.titleSmall,
-                      onChanged: widget.onTimeChanged,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a time';

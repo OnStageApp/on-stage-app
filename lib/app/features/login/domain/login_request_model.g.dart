@@ -8,10 +8,10 @@ part of 'login_request_model.dart';
 
 _$LoginRequestImpl _$$LoginRequestImplFromJson(Map<String, dynamic> json) =>
     _$LoginRequestImpl(
-      firebaseToken: json['firebase_token'] as String,
+      firebaseToken: json['firebaseToken'] as String,
     );
 
 Map<String, dynamic> _$$LoginRequestImplToJson(_$LoginRequestImpl instance) =>
     <String, dynamic>{
-      'firebase_token': instance.firebaseToken,
+      'firebaseToken': instance.firebaseToken,
     };

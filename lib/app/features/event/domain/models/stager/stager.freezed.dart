@@ -21,12 +21,10 @@ Stager _$StagerFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Stager {
   String get id => throw _privateConstructorUsedError;
-  String get firstName => throw _privateConstructorUsedError;
-  String get lastName => throw _privateConstructorUsedError;
-  String get picture => throw _privateConstructorUsedError;
-  String get email => throw _privateConstructorUsedError;
-  String get phone => throw _privateConstructorUsedError;
-  StagerStatusEnum get status => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  String? get profilePicture => throw _privateConstructorUsedError;
+  StagerStatusEnum? get participationStatus =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,12 +38,9 @@ abstract class $StagerCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String firstName,
-      String lastName,
-      String picture,
-      String email,
-      String phone,
-      StagerStatusEnum status});
+      String? name,
+      String? profilePicture,
+      StagerStatusEnum? participationStatus});
 }
 
 /// @nodoc
@@ -62,42 +57,27 @@ class _$StagerCopyWithImpl<$Res, $Val extends Stager>
   @override
   $Res call({
     Object? id = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? picture = null,
-    Object? email = null,
-    Object? phone = null,
-    Object? status = null,
+    Object? name = freezed,
+    Object? profilePicture = freezed,
+    Object? participationStatus = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      firstName: null == firstName
-          ? _value.firstName
-          : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
-          ? _value.lastName
-          : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
-      picture: null == picture
-          ? _value.picture
-          : picture // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as StagerStatusEnum,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profilePicture: freezed == profilePicture
+          ? _value.profilePicture
+          : profilePicture // ignore: cast_nullable_to_non_nullable
+              as String?,
+      participationStatus: freezed == participationStatus
+          ? _value.participationStatus
+          : participationStatus // ignore: cast_nullable_to_non_nullable
+              as StagerStatusEnum?,
     ) as $Val);
   }
 }
@@ -111,12 +91,9 @@ abstract class _$$StagerImplCopyWith<$Res> implements $StagerCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String firstName,
-      String lastName,
-      String picture,
-      String email,
-      String phone,
-      StagerStatusEnum status});
+      String? name,
+      String? profilePicture,
+      StagerStatusEnum? participationStatus});
 }
 
 /// @nodoc
@@ -131,42 +108,27 @@ class __$$StagerImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? firstName = null,
-    Object? lastName = null,
-    Object? picture = null,
-    Object? email = null,
-    Object? phone = null,
-    Object? status = null,
+    Object? name = freezed,
+    Object? profilePicture = freezed,
+    Object? participationStatus = freezed,
   }) {
     return _then(_$StagerImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      firstName: null == firstName
-          ? _value.firstName
-          : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
-          ? _value.lastName
-          : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
-      picture: null == picture
-          ? _value.picture
-          : picture // ignore: cast_nullable_to_non_nullable
-              as String,
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as StagerStatusEnum,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profilePicture: freezed == profilePicture
+          ? _value.profilePicture
+          : profilePicture // ignore: cast_nullable_to_non_nullable
+              as String?,
+      participationStatus: freezed == participationStatus
+          ? _value.participationStatus
+          : participationStatus // ignore: cast_nullable_to_non_nullable
+              as StagerStatusEnum?,
     ));
   }
 }
@@ -176,12 +138,9 @@ class __$$StagerImplCopyWithImpl<$Res>
 class _$StagerImpl implements _Stager {
   const _$StagerImpl(
       {required this.id,
-      required this.firstName,
-      required this.lastName,
-      required this.picture,
-      required this.email,
-      required this.phone,
-      required this.status});
+      required this.name,
+      required this.profilePicture,
+      required this.participationStatus});
 
   factory _$StagerImpl.fromJson(Map<String, dynamic> json) =>
       _$$StagerImplFromJson(json);
@@ -189,21 +148,15 @@ class _$StagerImpl implements _Stager {
   @override
   final String id;
   @override
-  final String firstName;
+  final String? name;
   @override
-  final String lastName;
+  final String? profilePicture;
   @override
-  final String picture;
-  @override
-  final String email;
-  @override
-  final String phone;
-  @override
-  final StagerStatusEnum status;
+  final StagerStatusEnum? participationStatus;
 
   @override
   String toString() {
-    return 'Stager(id: $id, firstName: $firstName, lastName: $lastName, picture: $picture, email: $email, phone: $phone, status: $status)';
+    return 'Stager(id: $id, name: $name, profilePicture: $profilePicture, participationStatus: $participationStatus)';
   }
 
   @override
@@ -212,20 +165,17 @@ class _$StagerImpl implements _Stager {
         (other.runtimeType == runtimeType &&
             other is _$StagerImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.firstName, firstName) ||
-                other.firstName == firstName) &&
-            (identical(other.lastName, lastName) ||
-                other.lastName == lastName) &&
-            (identical(other.picture, picture) || other.picture == picture) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.profilePicture, profilePicture) ||
+                other.profilePicture == profilePicture) &&
+            (identical(other.participationStatus, participationStatus) ||
+                other.participationStatus == participationStatus));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, firstName, lastName, picture, email, phone, status);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, profilePicture, participationStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -244,29 +194,20 @@ class _$StagerImpl implements _Stager {
 abstract class _Stager implements Stager {
   const factory _Stager(
       {required final String id,
-      required final String firstName,
-      required final String lastName,
-      required final String picture,
-      required final String email,
-      required final String phone,
-      required final StagerStatusEnum status}) = _$StagerImpl;
+      required final String? name,
+      required final String? profilePicture,
+      required final StagerStatusEnum? participationStatus}) = _$StagerImpl;
 
   factory _Stager.fromJson(Map<String, dynamic> json) = _$StagerImpl.fromJson;
 
   @override
   String get id;
   @override
-  String get firstName;
+  String? get name;
   @override
-  String get lastName;
+  String? get profilePicture;
   @override
-  String get picture;
-  @override
-  String get email;
-  @override
-  String get phone;
-  @override
-  StagerStatusEnum get status;
+  StagerStatusEnum? get participationStatus;
   @override
   @JsonKey(ignore: true)
   _$$StagerImplCopyWith<_$StagerImpl> get copyWith =>

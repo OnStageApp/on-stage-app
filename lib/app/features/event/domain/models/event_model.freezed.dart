@@ -20,13 +20,11 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$EventModel {
-  String get id => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'date')
   DateTime? get date => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
-  @JsonKey(name: 'eventStatus')
-  EventStatus? get status => throw _privateConstructorUsedError;
+  EventStatus? get eventStatus => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,11 +39,11 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {String id,
+      {String? id,
       String? name,
-      @JsonKey(name: 'date') DateTime? date,
+      DateTime? date,
       String? location,
-      @JsonKey(name: 'eventStatus') EventStatus? status});
+      EventStatus? eventStatus});
 }
 
 /// @nodoc
@@ -61,17 +59,17 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? date = freezed,
     Object? location = freezed,
-    Object? status = freezed,
+    Object? eventStatus = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -84,9 +82,9 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      eventStatus: freezed == eventStatus
+          ? _value.eventStatus
+          : eventStatus // ignore: cast_nullable_to_non_nullable
               as EventStatus?,
     ) as $Val);
   }
@@ -100,11 +98,11 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {String? id,
       String? name,
-      @JsonKey(name: 'date') DateTime? date,
+      DateTime? date,
       String? location,
-      @JsonKey(name: 'eventStatus') EventStatus? status});
+      EventStatus? eventStatus});
 }
 
 /// @nodoc
@@ -118,17 +116,17 @@ class __$$EventImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? date = freezed,
     Object? location = freezed,
-    Object? status = freezed,
+    Object? eventStatus = freezed,
   }) {
     return _then(_$EventImpl(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -141,9 +139,9 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      eventStatus: freezed == eventStatus
+          ? _value.eventStatus
+          : eventStatus // ignore: cast_nullable_to_non_nullable
               as EventStatus?,
     ));
   }
@@ -153,31 +151,25 @@ class __$$EventImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$EventImpl implements _Event {
   const _$EventImpl(
-      {required this.id,
-      required this.name,
-      @JsonKey(name: 'date') required this.date,
-      required this.location,
-      @JsonKey(name: 'eventStatus') required this.status});
+      {this.id, this.name, this.date, this.location, this.eventStatus});
 
   factory _$EventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventImplFromJson(json);
 
   @override
-  final String id;
+  final String? id;
   @override
   final String? name;
   @override
-  @JsonKey(name: 'date')
   final DateTime? date;
   @override
   final String? location;
   @override
-  @JsonKey(name: 'eventStatus')
-  final EventStatus? status;
+  final EventStatus? eventStatus;
 
   @override
   String toString() {
-    return 'EventModel(id: $id, name: $name, date: $date, location: $location, status: $status)';
+    return 'EventModel(id: $id, name: $name, date: $date, location: $location, eventStatus: $eventStatus)';
   }
 
   @override
@@ -190,13 +182,14 @@ class _$EventImpl implements _Event {
             (identical(other.date, date) || other.date == date) &&
             (identical(other.location, location) ||
                 other.location == location) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.eventStatus, eventStatus) ||
+                other.eventStatus == eventStatus));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, name, date, location, status);
+      Object.hash(runtimeType, id, name, date, location, eventStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -214,27 +207,24 @@ class _$EventImpl implements _Event {
 
 abstract class _Event implements EventModel {
   const factory _Event(
-          {required final String id,
-          required final String? name,
-          @JsonKey(name: 'date') required final DateTime? date,
-          required final String? location,
-          @JsonKey(name: 'eventStatus') required final EventStatus? status}) =
-      _$EventImpl;
+      {final String? id,
+      final String? name,
+      final DateTime? date,
+      final String? location,
+      final EventStatus? eventStatus}) = _$EventImpl;
 
   factory _Event.fromJson(Map<String, dynamic> json) = _$EventImpl.fromJson;
 
   @override
-  String get id;
+  String? get id;
   @override
   String? get name;
   @override
-  @JsonKey(name: 'date')
   DateTime? get date;
   @override
   String? get location;
   @override
-  @JsonKey(name: 'eventStatus')
-  EventStatus? get status;
+  EventStatus? get eventStatus;
   @override
   @JsonKey(ignore: true)
   _$$EventImplCopyWith<_$EventImpl> get copyWith =>

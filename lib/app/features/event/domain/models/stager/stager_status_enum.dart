@@ -1,7 +1,6 @@
 enum StagerStatusEnum {
-  uninvited,
-  pending,
-
-  accepted,
-  rejected,
+  UNINVINTED,
+  PENDING,
+  CONFIRMED,
+  DECLINED,
 }

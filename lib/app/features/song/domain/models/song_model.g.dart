@@ -13,14 +13,14 @@ _$SongModelImpl _$$SongModelImplFromJson(Map<String, dynamic> json) =>
       lyrics: json['lyrics'] as String?,
       bpm: (json['bpm'] as num?)?.toInt(),
       key: json['key'] as String?,
-      songKey: json['song_key'] == null
+      songKey: json['songKey'] == null
           ? null
-          : SongKey.fromJson(json['song_key'] as Map<String, dynamic>),
-      originalKey: json['original_key'] == null
+          : SongKey.fromJson(json['songKey'] as Map<String, dynamic>),
+      originalKey: json['originalKey'] == null
           ? null
-          : SongKey.fromJson(json['original_key'] as Map<String, dynamic>),
-      createdAt: json['created_at'] as String?,
-      updatedAt: json['updated_at'] as String?,
+          : SongKey.fromJson(json['originalKey'] as Map<String, dynamic>),
+      createdAt: json['createdAt'] as String?,
+      updatedAt: json['updatedAt'] as String?,
       artist: json['artist'] as String?,
       album: json['album'] as String?,
       capo: (json['capo'] as num?)?.toInt(),
@@ -33,10 +33,10 @@ Map<String, dynamic> _$$SongModelImplToJson(_$SongModelImpl instance) =>
       'lyrics': instance.lyrics,
       'bpm': instance.bpm,
       'key': instance.key,
-      'song_key': instance.songKey?.toJson(),
-      'original_key': instance.originalKey?.toJson(),
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
+      'songKey': instance.songKey?.toJson(),
+      'originalKey': instance.originalKey?.toJson(),
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
       'artist': instance.artist,
       'album': instance.album,
       'capo': instance.capo,

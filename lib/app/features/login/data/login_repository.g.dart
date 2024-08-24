@@ -13,7 +13,7 @@ class _LoginRepository implements LoginRepository {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://9cff-79-119-53-200.ngrok-free.app/';
+    baseUrl ??= 'https://c96c-86-125-110-196.ngrok-free.app/';
   }
 
   final Dio _dio;
