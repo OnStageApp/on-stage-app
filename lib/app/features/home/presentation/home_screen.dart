@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -8,7 +9,6 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_eve
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -22,7 +22,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
-  List<SongOverview> _songs = List.empty(growable: true);
   final hasUpcomingEvent = true;
 
   @override
@@ -41,50 +40,66 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final songs = ref.watch(songsNotifierProvider).filteredSongs;
+
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          children: [
-            _buildTopBar(),
-            const SizedBox(height: Insets.large),
-            _buildEnhanced(hasUpcomingEvent),
-            const SizedBox(height: Insets.extraLarge),
-            Padding(
-              padding: defaultScreenHorizontalPadding,
-              child: Text(
-                'Recently Added',
-                style: context.textTheme.headlineMedium,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async {
+                // Implement refresh logic here
+                await Future.wait([
+                  ref.read(songsNotifierProvider.notifier).getSongs(),
+                  ref
+                      .read(notificationNotifierProvider.notifier)
+                      .getNotifications(),
+                  ref.read(eventsNotifierProvider.notifier).getEvents(),
+                ]);
+              },
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  _buildTopBar(),
+                  const SizedBox(height: Insets.large),
+                  _buildEnhanced(hasUpcomingEvent),
+                  const SizedBox(height: Insets.extraLarge),
+                ],
               ),
             ),
-            const SizedBox(height: Insets.large),
-            _buildRecentlyAdded(),
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Recently Added',
+                  style: context.textTheme.headlineMedium,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(top: Insets.large),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final song = songs[index];
+                    return Padding(
+                      padding: defaultScreenHorizontalPadding,
+                      child: Column(
+                        children: [
+                          SongTile(song: song),
+                          const SizedBox(height: Insets.smallNormal),
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: songs.length,
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildRecentlyAdded() {
-    _songs = ref.watch(songsNotifierProvider).filteredSongs;
-    return Padding(
-      padding: defaultScreenHorizontalPadding,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _songs.length,
-        itemBuilder: (context, index) {
-          final song = _songs[index];
-          return Column(
-            children: [
-              SongTile(
-                song: song,
-              ),
-              const SizedBox(
-                height: Insets.smallNormal,
-              ),
-            ],
-          );
-        },
       ),
     );
   }
@@ -103,9 +118,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(
-            width: Insets.smallNormal,
-          ),
+          const SizedBox(width: Insets.smallNormal),
           const NotificationWidget(),
         ],
       ),

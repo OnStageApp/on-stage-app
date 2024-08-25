@@ -115,6 +115,87 @@ class _EventsRepository implements EventsRepository {
   }
 
   @override
+  Future<RehearsalModel> addRehearsal(RehearsalModel rehearsal) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = rehearsal;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<RehearsalModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'rehearsals',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final _value = RehearsalModel.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<RehearsalModel> updateRehearsal(
+    String rehearsalId,
+    RehearsalModel rehearsal,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = rehearsal;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<RehearsalModel>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'rehearsals/${rehearsalId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final _value = RehearsalModel.fromJson(_result.data!);
+    return _value;
+  }
+
+  @override
+  Future<void> deleteRehearsal(String rehearsalId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'rehearsals/${rehearsalId}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
   Future<List<Stager>> getStagersByEventId(String eventId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'eventId': eventId};
@@ -171,14 +252,14 @@ class _EventsRepository implements EventsRepository {
   }
 
   @override
-  Future<Stager> addStagerToEvent(
+  Future<List<Stager>> addStagerToEvent(
       CreateStagerRequest createStagerRequest) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = createStagerRequest;
     final _result =
-        await _dio.fetch<Map<String, dynamic>>(_setStreamType<Stager>(Options(
+        await _dio.fetch<List<dynamic>>(_setStreamType<List<Stager>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -194,7 +275,9 @@ class _EventsRepository implements EventsRepository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final _value = Stager.fromJson(_result.data!);
+    var _value = _result.data!
+        .map((dynamic i) => Stager.fromJson(i as Map<String, dynamic>))
+        .toList();
     return _value;
   }
 

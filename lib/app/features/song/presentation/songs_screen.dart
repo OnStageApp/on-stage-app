@@ -1,16 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/search/application/search_controller.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/loading_widget.dart';
-import 'package:on_stage_app/app/shared/providers/loading_provider/loading_provider.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SongsScreen extends ConsumerStatefulWidget {
   const SongsScreen({super.key});
@@ -20,24 +19,26 @@ class SongsScreen extends ConsumerStatefulWidget {
 }
 
 class SongsScreenState extends ConsumerState<SongsScreen> {
-  List<SongOverview> _songs = List.empty(growable: true);
   final _searchController = TextEditingController();
 
   @override
   void initState() {
+    ref.read(songsNotifierProvider.notifier).getSongs();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _songs = ref.watch(songsNotifierProvider).filteredSongs;
+    final songsState = ref.watch(songsNotifierProvider);
+    final isFocused = ref.watch(searchControllerProvider).isFocused;
+
     return Scaffold(
       appBar: StageAppBar(
         titleWidget: RichText(
           text: TextSpan(
             children: [
               TextSpan(
-                text: ref.read(songsNotifierProvider).songs.length.toString(),
+                text: songsState.songs.length.toString(),
                 style: context.textTheme.headlineLarge?.copyWith(
                   color: context.colorScheme.surfaceDim,
                 ),
@@ -53,89 +54,104 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         ),
         title: '',
       ),
-      body: _buildContent(context),
-    );
-  }
-
-  Widget _buildContent(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(height: Insets.small),
-        Padding(
-          padding: defaultScreenHorizontalPadding,
-          child: Hero(
-            tag: 'searchBar',
-            child: StageSearchBar(
-              focusNode: FocusNode(),
-              controller: _searchController,
-              showFilter: true,
-              onClosed: () {
-                if (context.canPop()) {
-                  context.pop();
-                }
-                _searchController.clear();
-              },
-              onChanged: (value) {
-                if (value.isNotEmpty) {
-                  ref.read(songsNotifierProvider.notifier).searchSongs(
-                        searchedText: value,
-                      );
-                }
-              },
+      body: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await ref.read(songsNotifierProvider.notifier).getSongs();
+            },
+          ),
+          SliverPadding(
+            padding: defaultScreenHorizontalPadding,
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: Insets.small),
+                  Hero(
+                    tag: 'searchBar',
+                    child: StageSearchBar(
+                      focusNode: FocusNode(),
+                      controller: _searchController,
+                      showFilter: true,
+                      onClosed: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        }
+                        _searchController.clear();
+                      },
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          ref.read(songsNotifierProvider.notifier).searchSongs(
+                                searchedText: value,
+                              );
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: Insets.large),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: !isFocused
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Recently added',
+                                style: context.textTheme.headlineMedium,
+                              ),
+                              const SizedBox(height: Insets.medium),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: Insets.large),
-        Padding(
-          padding: defaultScreenHorizontalPadding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: ref.watch(searchControllerProvider).isFocused
-                    ? const SizedBox.shrink()
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Recently added',
-                            style: context.textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: Insets.medium),
-                        ],
-                      ),
-              ),
-              if (ref.watch(loadingProvider.notifier).state)
-                Container(
-                  alignment: Alignment.center,
-                  height: 10,
-                  width: 10,
-                  child: const OnStageLoadingIndicator(),
-                )
-              else
-                _buildSongs(),
-            ],
+          SliverPadding(
+            padding: defaultScreenHorizontalPadding,
+            sliver: songsState.isLoading
+                ? _buildShimmerList()
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final song = songsState.filteredSongs[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: SongTile(song: song),
+                        );
+                      },
+                      childCount: songsState.filteredSongs.length,
+                    ),
+                  ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildSongs() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 1000),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _songs.length,
-        itemBuilder: (context, index) {
-          final song = _songs[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: SongTile(song: song),
+  Widget _buildShimmerList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Container(
+                height: 70, // Adjust this height to match your SongTile height
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
           );
         },
+        childCount: 10, // Show 10 shimmer items while loading
       ),
     );
   }

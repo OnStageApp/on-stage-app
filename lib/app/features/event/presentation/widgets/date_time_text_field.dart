@@ -8,10 +8,12 @@ import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
     super.key,
+    this.initialDateTime,
     required this.onDateTimeChanged,
   });
 
   final void Function(String?) onDateTimeChanged;
+  final DateTime? initialDateTime;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -26,6 +28,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
   void initState() {
     dateController.addListener(_updateCombinedDateTime);
     timeController.addListener(_updateCombinedDateTime);
+    _initControllers();
     super.initState();
   }
 
@@ -36,17 +39,16 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
     super.dispose();
   }
 
+  void _initControllers() {
+    dateController.text =
+        widget.initialDateTime?.toIso8601String().substring(0, 10) ?? '';
+    timeController.text =
+        widget.initialDateTime?.toIso8601String().substring(11, 16) ?? '';
+  }
+
   void _updateCombinedDateTime() {
     final combinedString = '${dateController.text} ${timeController.text}';
     widget.onDateTimeChanged(combinedString);
-  }
-
-  DateTime? _parseDateTime(String input) {
-    try {
-      return DateTime.parse(input.replaceAll('/', '-'));
-    } catch (_) {
-      return null;
-    }
   }
 
   @override

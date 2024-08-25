@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
@@ -11,9 +12,9 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/participant
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/event_tile.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
+import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -124,10 +125,25 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                   if (rehearsals.isNotEmpty)
                     ...rehearsals.map(
                       (rehearsal) {
-                        return EventTile(
+                        return RehearsalTile(
+                          onDelete: () {
+                            ref
+                                .read(eventNotifierProvider.notifier)
+                                .deleteRehearsal(rehearsal.id!);
+                          },
                           title: rehearsal.name ?? '',
                           dateTime: rehearsal.dateTime ?? DateTime.now(),
-                          onTap: () {},
+                          onTap: () {
+                            CreateRehearsalModal.show(
+                              context: context,
+                              rehearsal: rehearsal,
+                              onRehearsalCreated: (RehearsalModel rehearsal) {
+                                ref
+                                    .read(eventNotifierProvider.notifier)
+                                    .updateRehearsal(rehearsal);
+                              },
+                            );
+                          },
                         );
                       },
                     )
@@ -142,7 +158,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                       ),
                     ),
                   if (_isAdmin) ...[
-                    const SizedBox(height: Insets.smallNormal),
+                    const SizedBox(height: Insets.extraSmall),
                     _buildCreateRehearsalButton(),
                   ],
                   const SizedBox(height: Insets.medium),
@@ -215,7 +231,12 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   Widget _buildCreateRehearsalButton() {
     return BlueActionButton(
       onTap: () {
-        CreateRehearsalModal.show(context: context);
+        CreateRehearsalModal.show(
+          context: context,
+          onRehearsalCreated: (RehearsalModel rehearsal) {
+            ref.read(eventNotifierProvider.notifier).addRehearsal(rehearsal);
+          },
+        );
       },
       text: 'Create new Rehearsal',
       icon: Icons.add,
@@ -225,9 +246,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   Widget _buildInvitePeopleButton() {
     return BlueActionButton(
       onTap: () {
-        // ref
-        //     .read(userNotifierProvider.notifier)
-        //     .getUninvitedUsersByEventId(widget.eventId);
         if (mounted) {
           AddParticipantsScreen.show(
             context: context,
@@ -245,7 +263,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
     ref.read(eventNotifierProvider.notifier).addStagerToEvent(
           CreateStagerRequest(
             eventId: widget.eventId,
-            userId: ref
+            userIds: ref
                 .watch(eventControllerProvider)
                 .addedUsers
                 .map((e) => e.id)

@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -10,6 +11,7 @@ part 'songs_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class SongsNotifier extends _$SongsNotifier {
   late final SongRepository _songRepository;
+
   @override
   SongsState build() {
     final dio = ref.read(dioProvider);
@@ -34,7 +36,10 @@ class SongsNotifier extends _$SongsNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final songs = await _songRepository.getSongs();
+    var songs = List<SongOverview>.empty(growable: true);
+    await Future.delayed(const Duration(milliseconds: 10090), () async {
+      songs = await _songRepository.getSongs();
+    });
     state =
         state.copyWith(isLoading: false, songs: songs, filteredSongs: songs);
   }

@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
@@ -39,19 +40,43 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(event: event, isLoading: false);
   }
 
-  Future<void> getPlaylist() async {
-    if (state.playlist.isNotEmpty) {
-      state = state.copyWith(playlist: state.playlist);
-      return;
-    }
-    state = state.copyWith(isLoading: true);
-    state = state.copyWith(playlist: [], isLoading: false);
-  }
-
   Future<void> getRehearsals(String eventId) async {
     state = state.copyWith(isLoading: true);
     final rehearsals = await _eventsRepository.getRehearsalsByEventId(eventId);
     state = state.copyWith(rehearsals: rehearsals, isLoading: false);
+  }
+
+  Future<void> addRehearsal(RehearsalModel rehearsal) async {
+    state = state.copyWith(isLoading: true);
+    final rehearsals = await _eventsRepository.addRehearsal(rehearsal);
+    final updatedRehearsals = [...state.rehearsals, rehearsals];
+    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+  }
+
+  //updateRehearsal
+  Future<void> updateRehearsal(RehearsalModel rehearsalRequest) async {
+    state = state.copyWith(isLoading: true);
+    final updatedRehearsal = await _eventsRepository.updateRehearsal(
+      rehearsalRequest.id!,
+      rehearsalRequest,
+    );
+    final updatedRehearsals = state.rehearsals
+        .map(
+          (rehearsal) => rehearsal.id == updatedRehearsal.id
+              ? updatedRehearsal
+              : rehearsal,
+        )
+        .toList();
+    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+  }
+
+  Future<void> deleteRehearsal(String rehearsalId) async {
+    state = state.copyWith(isLoading: true);
+    await _eventsRepository.deleteRehearsal(rehearsalId);
+    final updatedRehearsals = state.rehearsals
+        .where((rehearsal) => rehearsal.id != rehearsalId)
+        .toList();
+    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
   }
 
   Future<void> getStagers(String eventId) async {
@@ -75,8 +100,12 @@ class EventNotifier extends _$EventNotifier {
 
   Future<void> addStagerToEvent(CreateStagerRequest createStagerRequest) async {
     state = state.copyWith(isLoading: true);
-    final stager = _eventsRepository.addStagerToEvent(createStagerRequest);
-    state = state.copyWith(isLoading: false);
+    final stagers =
+        await _eventsRepository.addStagerToEvent(createStagerRequest);
+    state = state.copyWith(
+      stagers: [...state.stagers, ...stagers],
+      isLoading: false,
+    );
   }
 
   void updateEventLocation(String location) {

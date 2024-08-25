@@ -10,6 +10,7 @@ class RehearsalModel with _$RehearsalModel {
     String? name,
     String? location,
     DateTime? dateTime,
+    String? eventId,
   }) = _RehearsalModel;
 
   factory RehearsalModel.fromJson(Map<String, dynamic> json) =>

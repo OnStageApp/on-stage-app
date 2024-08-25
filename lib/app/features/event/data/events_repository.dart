@@ -29,6 +29,22 @@ abstract class EventsRepository {
     @Query('eventId') String eventId,
   );
 
+  @POST(API.rehearsals)
+  Future<RehearsalModel> addRehearsal(
+    @Body() RehearsalModel rehearsal,
+  );
+
+  @PUT(API.rehearsalById)
+  Future<RehearsalModel> updateRehearsal(
+    @Path('id') String rehearsalId,
+    @Body() RehearsalModel rehearsal,
+  );
+
+  @DELETE(API.rehearsalById)
+  Future<void> deleteRehearsal(
+    @Path('id') String rehearsalId,
+  );
+
   @GET(API.stagers)
   Future<List<Stager>> getStagersByEventId(
     @Query('eventId') String eventId,
@@ -38,7 +54,7 @@ abstract class EventsRepository {
   Future<EventModel> createEvent(@Body() CreateEventModel event);
 
   @POST(API.stagers)
-  Future<Stager> addStagerToEvent(
+  Future<List<Stager>> addStagerToEvent(
     @Body() CreateStagerRequest createStagerRequest,
   );
 

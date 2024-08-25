@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsa
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -30,31 +31,9 @@ class EventController extends _$EventController {
     state = state.copyWith(eventLocation: location);
   }
 
-  void setDateTime(String dateTime) {
-    try {
-      final parts = dateTime.split(' ');
-      if (parts.length != 2)
-        throw const FormatException('Invalid datetime format');
-
-      final dateParts = parts[0].split('/');
-      final timeParts = parts[1].split(':');
-
-      if (dateParts.length != 3 || timeParts.length != 2) {
-        throw const FormatException('Invalid date or time format');
-      }
-
-      final year = int.parse(dateParts[0]);
-      final month = int.parse(dateParts[1]);
-      final day = int.parse(dateParts[2]);
-      final hour = int.parse(timeParts[0]);
-      final minute = int.parse(timeParts[1]);
-
-      final combinedDateTime = DateTime(year, month, day, hour, minute);
-      logger.i('combinedDateTime: $combinedDateTime');
-      state = state.copyWith(dateTime: combinedDateTime);
-    } catch (e) {
-      logger.e('Error parsing datetime: $e');
-    }
+  void setDateTime(String dateTimeString) {
+    final dateTime = TimeUtils().parseDateTime(dateTimeString);
+    state = state.copyWith(dateTime: dateTime);
   }
 
   //TODO: a user has to be added as a stager, i have to update this method, maybe create a new user_controller class

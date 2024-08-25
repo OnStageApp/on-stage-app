@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -19,16 +22,17 @@ class EventsScreen extends ConsumerStatefulWidget {
 }
 
 class EventsScreenState extends ConsumerState<EventsScreen> {
-  final TextEditingController searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
+    unawaited(ref.read(eventsNotifierProvider.notifier).getEvents());
     super.initState();
   }
 
   @override
   void dispose() {
-    searchController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -50,44 +54,58 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-        child: ListView(
-          children: [
-            const SizedBox(height: Insets.large),
-            if (!eventsState.isLoading) ...[
-              Text('Upcoming Events', style: context.textTheme.titleMedium),
-              const SizedBox(height: Insets.normal),
-              SizedBox(
-                height: 130,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: eventsState.events.length,
-                  itemBuilder: (context, index) {
-                    print('EVENT ID: ${eventsState.events[index].id}');
-                    final event = eventsState.events[index];
-                    return EventTileEnhanced(
-                      title: event.name ?? '',
-                      hour: '11:00',
-                      date: 'Monday, 12th July',
-                    );
-                  },
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () =>
+                ref.read(eventsNotifierProvider.notifier).getEvents(),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                const SizedBox(height: Insets.large),
+                if (!eventsState.isLoading) ...[
+                  Text('Upcoming Events', style: context.textTheme.titleMedium),
+                  const SizedBox(height: Insets.normal),
+                  SizedBox(
+                    height: 130,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: eventsState.events.length,
+                      itemBuilder: (context, index) {
+                        final event = eventsState.events[index];
+                        return EventTileEnhanced(
+                          title: event.name ?? '',
+                          hour: '11:00',
+                          date: 'Monday, 12th July',
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: Insets.large),
+                  Text('Past Events', style: context.textTheme.titleMedium),
+                  const SizedBox(height: Insets.normal),
+                ] else ...[
+                  const OnStageLoadingIndicator(),
+                ],
+              ]),
+            ),
+          ),
+          if (!eventsState.isLoading)
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) =>
+                      _buildEventTile(eventsState.filteredEvents[index]),
+                  childCount: eventsState.filteredEvents.length,
                 ),
               ),
-              // const SizedBox(height: Insets.large),
-              // Text('Upcming Events', style: context.textTheme.titleMedium),
-              // const SizedBox(height: Insets.normal),
-              // _buildAllEvents(),
-              const SizedBox(height: Insets.large),
-              Text('Past Events', style: context.textTheme.titleMedium),
-              const SizedBox(height: Insets.normal),
-              _buildAllEvents(),
-            ] else ...[
-              const OnStageLoadingIndicator(),
-            ],
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -95,7 +113,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   Widget _buildSearchBar() {
     return StageSearchBar(
       focusNode: FocusNode(),
-      controller: searchController,
+      controller: _searchController,
       onClosed: () {
         ref.read(eventsNotifierProvider.notifier).searchEvents('');
         _clearSearch();
@@ -110,19 +128,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   void _clearSearch() {
-    searchController.clear();
-  }
-
-  Widget _buildAllEvents() {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: ref
-          .watch(eventsNotifierProvider)
-          .filteredEvents
-          .map(_buildEventTile)
-          .toList(),
-    );
+    _searchController.clear();
   }
 
   Widget _buildEventTile(EventOverview event) {
@@ -132,7 +138,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         queryParameters: {'eventId': event.id},
       ),
       title: event.name ?? '',
-      dateTime: event.date?.let(DateTime.parse),
+      dateTime: event.dateTime?.let(DateTime.parse),
     );
   }
 }
