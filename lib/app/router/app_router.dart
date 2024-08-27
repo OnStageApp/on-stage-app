@@ -108,7 +108,18 @@ class AppRouter {
                   GoRoute(
                     name: AppRoute.addEventSongs.name,
                     path: 'addEventSongs',
-                    builder: (context, state) => const AddEventMomentsScreen(),
+                    builder: (context, state) {
+                      final eventId = state.uri.queryParameters['eventId']!;
+
+                      final isCreatingEvent =
+                          state.uri.queryParameters['isCreatingEvent'] ==
+                              'true';
+
+                      return AddEventMomentsScreen(
+                        eventId: eventId,
+                        isCreatingEvent: isCreatingEvent,
+                      );
+                    },
                   ),
                   GoRoute(
                     name: AppRoute.eventDetails.name,

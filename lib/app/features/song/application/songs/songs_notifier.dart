@@ -1,6 +1,5 @@
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -19,27 +18,16 @@ class SongsNotifier extends _$SongsNotifier {
     return const SongsState();
   }
 
-  Future<void> init() async {
-    logger.i('init songs provider state starting...');
-    try {
-      await getSongs();
-    } catch (error) {
-      logger.e('Error loading songs: $error');
-    } finally {
-      logger.i('init songs provider state completed');
-    }
-  }
-
   Future<void> getSongs() async {
     if (state.songs.isNotEmpty) {
       state = state.copyWith(filteredSongs: state.songs);
       return;
     }
+
     state = state.copyWith(isLoading: true);
-    var songs = List<SongOverview>.empty(growable: true);
-    await Future.delayed(const Duration(milliseconds: 10090), () async {
-      songs = await _songRepository.getSongs();
-    });
+
+    final songs = await _songRepository.getSongs();
+
     state =
         state.copyWith(isLoading: false, songs: songs, filteredSongs: songs);
   }

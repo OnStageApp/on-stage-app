@@ -1,0 +1,4 @@
+enum EventItemType {
+  song,
+  other,
+}

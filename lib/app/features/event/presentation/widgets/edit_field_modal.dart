@@ -28,7 +28,7 @@ class EditFieldModal extends ConsumerStatefulWidget {
     required String value,
     required void Function(String) onSubmitted,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       useRootNavigator: true,
       backgroundColor: context.colorScheme.surface,
       context: context,

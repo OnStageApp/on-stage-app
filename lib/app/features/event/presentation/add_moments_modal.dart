@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
-import 'package:on_stage_app/app/features/event/application/event_items/event_items_notifier.dart';
+import 'package:on_stage_app/app/features/event_items/application/controller/moments_controller.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -19,7 +19,7 @@ class AddMomentsModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       useRootNavigator: true,
       backgroundColor: context.colorScheme.surface,
       context: context,
@@ -44,8 +44,7 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
 
   @override
   void initState() {
-    _moments =
-        ref.read(eventItemsNotifierProvider.notifier).getStructureItems();
+    _moments = ref.read(momentsControllerProvider.notifier).getStructureItems();
     super.initState();
   }
 
@@ -65,11 +64,11 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
                 onTap: () {
                   setState(() {
                     if (_isItemChecked(index)) {
-                      ref.read(eventControllerProvider.notifier).removeMoment(
+                      ref.read(momentsControllerProvider.notifier).removeMoment(
                             _moments.elementAt(index),
                           );
                     } else {
-                      ref.read(eventControllerProvider.notifier).addMoment(
+                      ref.read(momentsControllerProvider.notifier).addMoment(
                             _moments.elementAt(index),
                           );
                     }
@@ -92,7 +91,7 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
                     children: [
                       const SizedBox(width: 12),
                       Text(
-                        _moments.elementAt(index) ?? '',
+                        _moments.elementAt(index),
                         style: context.textTheme.titleMedium,
                       ),
                       const Spacer(),
@@ -118,9 +117,10 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
           ContinueButton(
             text: 'Add Moment',
             onPressed: () {
+              final moments = ref.watch(momentsControllerProvider).moments;
               ref
-                  .read(eventControllerProvider.notifier)
-                  .addSelectedMomentsToEventItems();
+                  .read(eventItemsNotifierProvider.notifier)
+                  .addSelectedMomentsToEventItemsCache(moments);
               context.popDialog();
             },
             isEnabled: true,
@@ -132,7 +132,7 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
   }
 
   bool _isItemChecked(int index) =>
-      ref.watch(eventControllerProvider).moments.contains(
+      ref.watch(momentsControllerProvider).moments.contains(
             _moments.elementAt(index),
           );
 }

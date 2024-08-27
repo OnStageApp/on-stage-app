@@ -17,7 +17,7 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(

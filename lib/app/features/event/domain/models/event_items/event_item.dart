@@ -1,24 +1,36 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_type_enum.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item_type.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 part 'event_item.freezed.dart';
 part 'event_item.g.dart';
 
 @Freezed()
 class EventItem with _$EventItem {
-  // Private constructor for custom methods
-
   const factory EventItem({
-    required String? name,
-    required int? index,
-    required EventTypeEnum? eventType,
-    String? songId,
+    String? id,
+    String? name,
+    int? index,
+    EventItemType? eventType,
+    SongOverview? song,
+    String? eventId,
   }) = _EventItem;
 
   const EventItem._();
 
+  factory EventItem.fromSong(SongOverview song, int index) => EventItem(
+        name: song.title,
+        index: index,
+        song: song,
+        eventType: EventItemType.song,
+      );
+
+  factory EventItem.fromMoment(String momentName, int index) => EventItem(
+        name: momentName,
+        index: index,
+        eventType: EventItemType.other,
+      );
+
   factory EventItem.fromJson(Map<String, dynamic> json) =>
       _$EventItemFromJson(json);
-
-  bool get isSong => songId != null;
 }

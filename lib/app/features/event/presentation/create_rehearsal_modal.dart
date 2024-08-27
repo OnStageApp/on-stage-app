@@ -30,7 +30,7 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
     RehearsalModel? rehearsal,
     void Function(RehearsalModel)? onRehearsalCreated,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
