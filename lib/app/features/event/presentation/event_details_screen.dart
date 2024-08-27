@@ -77,11 +77,13 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                 .read(eventControllerProvider.notifier)
                 .setEventLocation(eventLocationController.text);
 
-            // ref
-            //     .read(eventControllerProvider.notifier)
-            //     .setDateTime(dateController.text, timeController.text);
-
-            context.pushNamed(AppRoute.addEventSongs.name);
+            context.pushNamed(
+              AppRoute.addEventSongs.name,
+              queryParameters: {
+                'eventId': widget.eventId,
+                'isCreatingEvent': 'false',
+              },
+            );
           },
           isEnabled: true,
         ),

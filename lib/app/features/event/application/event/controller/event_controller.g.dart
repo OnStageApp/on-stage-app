@@ -6,7 +6,7 @@ part of 'event_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$eventControllerHash() => r'd6335c4d0088126592417ec9f699c8e85755e444';
+String _$eventControllerHash() => r'63e385640f4c6ef2b96a9d73c1adfea603ee0492';
 
 /// See also [EventController].
 @ProviderFor(EventController)

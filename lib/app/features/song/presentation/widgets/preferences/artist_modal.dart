@@ -17,7 +17,7 @@ class ArtistModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),

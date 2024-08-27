@@ -29,7 +29,7 @@ class AddParticipantsScreen extends ConsumerStatefulWidget {
     String? eventId,
     void Function()? onPressed,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_items/event_items_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
@@ -32,6 +34,11 @@ abstract class EventsRepository {
   @POST(API.rehearsals)
   Future<RehearsalModel> addRehearsal(
     @Body() RehearsalModel rehearsal,
+  );
+
+  @POST(API.eventItems)
+  Future<List<EventItem>> addEventItems(
+    @Body() EventItemsRequest eventItemsRequest,
   );
 
   @PUT(API.rehearsalById)

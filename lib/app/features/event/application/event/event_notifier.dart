@@ -15,6 +15,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_notifier.g.dart';
 
+//This has to be kept alive because we need to keep the state of the event
 @Riverpod(keepAlive: true)
 class EventNotifier extends _$EventNotifier {
   late final EventsRepository _eventsRepository;
@@ -85,7 +86,7 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(stagers: stagers, isLoading: false);
   }
 
-  Future<void> addEvent() async {
+  Future<void> createEvent() async {
     state = state.copyWith(isLoading: true);
     final eventToCreate = _createDraftEvent();
     final event = await _eventsRepository.createEvent(eventToCreate);

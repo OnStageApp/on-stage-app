@@ -46,14 +46,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
           text: 'Create Draft Event',
-          onPressed: () {
-            _setFieldsOnController();
-            if (_formKey.currentState!.validate()) {
-              ref.read(eventNotifierProvider.notifier).addEvent();
-              context.pushReplacementNamed(AppRoute.addEventSongs.name);
-            } else {
-              logger.e('error');
-            }
+          onPressed: () async {
+            await _createDraftEvent(context);
           },
           isEnabled: true,
         ),
@@ -139,6 +133,26 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _createDraftEvent(BuildContext context) async {
+    _setFieldsOnController();
+
+    if (_formKey.currentState!.validate()) {
+      await ref.read(eventNotifierProvider.notifier).createEvent();
+
+      if (mounted) {
+        context.pushReplacementNamed(
+          AppRoute.addEventSongs.name,
+          queryParameters: {
+            'eventId': ref.watch(eventNotifierProvider).event!.id,
+            'isCreatingEvent': 'true',
+          },
+        );
+      }
+    } else {
+      logger.e('error');
+    }
   }
 
   void _setFieldsOnController() {

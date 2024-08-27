@@ -23,7 +23,9 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
   @override
   void initState() {
-    ref.read(songsNotifierProvider.notifier).getSongs();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(songsNotifierProvider.notifier).getSongs();
+    });
     super.initState();
   }
 

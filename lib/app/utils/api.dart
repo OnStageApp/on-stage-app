@@ -2,6 +2,7 @@ class API {
   // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
   static const String baseUrl = 'https://c96c-86-125-110-196.ngrok-free.app/';
+
   // static const String baseUrl = 'http://localhost:9000/';
 
   static Future<Map<String, String>> getHeaders() async {
@@ -18,6 +19,7 @@ class API {
   static const String rehearsals = 'rehearsals';
   static const String rehearsalById = 'rehearsals/{id}';
   static const String stagers = 'stagers';
+  static const String eventItems = 'event-items';
 
   //Songs
   static const String getSongs = 'songs?{search}';

@@ -25,7 +25,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required SongKey tonality,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(

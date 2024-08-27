@@ -33,9 +33,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void initializeNotifiers() {
-    ref.read(songsNotifierProvider.notifier).init();
-    ref.read(notificationNotifierProvider.notifier).getNotifications();
-    ref.read(eventsNotifierProvider.notifier).init();
+    ref.read(songsNotifierProvider.notifier).getSongs();
   }
 
   @override
@@ -49,7 +47,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           slivers: [
             CupertinoSliverRefreshControl(
               onRefresh: () async {
-                // Implement refresh logic here
                 await Future.wait([
                   ref.read(songsNotifierProvider.notifier).getSongs(),
                   ref
