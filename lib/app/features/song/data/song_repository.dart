@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_filter/song_filter.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -11,6 +12,6 @@ abstract class SongRepository {
 
   @GET(API.getSongs)
   Future<List<SongOverview>> getSongs({
-    @Query('search') String? search,
+    @Body() required SongFilter songFilter,
   });
 }

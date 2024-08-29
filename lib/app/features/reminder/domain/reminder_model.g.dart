@@ -8,12 +8,12 @@ part of 'reminder_model.dart';
 
 _$ReminderImpl _$$ReminderImplFromJson(Map<String, dynamic> json) =>
     _$ReminderImpl(
-      id: json['id'] as String,
-      name: json['name'] as String?,
+      daysBefore: (json['daysBefore'] as num).toInt(),
+      isSent: json['isSent'] as bool,
     );
 
 Map<String, dynamic> _$$ReminderImplToJson(_$ReminderImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
+      'daysBefore': instance.daysBefore,
+      'isSent': instance.isSent,
     };

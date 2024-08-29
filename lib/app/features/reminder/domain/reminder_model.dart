@@ -6,8 +6,8 @@ part 'reminder_model.g.dart';
 @Freezed()
 class Reminder with _$Reminder {
   const factory Reminder({
-    required String id,
-    required String? name,
+    required int daysBefore,
+    required bool isSent,
   }) = _Reminder;
 
   factory Reminder.fromJson(Map<String, dynamic> json) =>

@@ -20,8 +20,8 @@ Reminder _$ReminderFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Reminder {
-  String get id => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
+  int get daysBefore => throw _privateConstructorUsedError;
+  bool get isSent => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,7 @@ abstract class $ReminderCopyWith<$Res> {
   factory $ReminderCopyWith(Reminder value, $Res Function(Reminder) then) =
       _$ReminderCopyWithImpl<$Res, Reminder>;
   @useResult
-  $Res call({String id, String? name});
+  $Res call({int daysBefore, bool isSent});
 }
 
 /// @nodoc
@@ -50,18 +50,18 @@ class _$ReminderCopyWithImpl<$Res, $Val extends Reminder>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = freezed,
+    Object? daysBefore = null,
+    Object? isSent = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
+      daysBefore: null == daysBefore
+          ? _value.daysBefore
+          : daysBefore // ignore: cast_nullable_to_non_nullable
+              as int,
+      isSent: null == isSent
+          ? _value.isSent
+          : isSent // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -74,7 +74,7 @@ abstract class _$$ReminderImplCopyWith<$Res>
       __$$ReminderImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String? name});
+  $Res call({int daysBefore, bool isSent});
 }
 
 /// @nodoc
@@ -88,18 +88,18 @@ class __$$ReminderImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = freezed,
+    Object? daysBefore = null,
+    Object? isSent = null,
   }) {
     return _then(_$ReminderImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
+      daysBefore: null == daysBefore
+          ? _value.daysBefore
+          : daysBefore // ignore: cast_nullable_to_non_nullable
+              as int,
+      isSent: null == isSent
+          ? _value.isSent
+          : isSent // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -107,19 +107,19 @@ class __$$ReminderImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ReminderImpl implements _Reminder {
-  const _$ReminderImpl({required this.id, required this.name});
+  const _$ReminderImpl({required this.daysBefore, required this.isSent});
 
   factory _$ReminderImpl.fromJson(Map<String, dynamic> json) =>
       _$$ReminderImplFromJson(json);
 
   @override
-  final String id;
+  final int daysBefore;
   @override
-  final String? name;
+  final bool isSent;
 
   @override
   String toString() {
-    return 'Reminder(id: $id, name: $name)';
+    return 'Reminder(daysBefore: $daysBefore, isSent: $isSent)';
   }
 
   @override
@@ -127,13 +127,14 @@ class _$ReminderImpl implements _Reminder {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ReminderImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.daysBefore, daysBefore) ||
+                other.daysBefore == daysBefore) &&
+            (identical(other.isSent, isSent) || other.isSent == isSent));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name);
+  int get hashCode => Object.hash(runtimeType, daysBefore, isSent);
 
   @JsonKey(ignore: true)
   @override
@@ -151,15 +152,16 @@ class _$ReminderImpl implements _Reminder {
 
 abstract class _Reminder implements Reminder {
   const factory _Reminder(
-      {required final String id, required final String? name}) = _$ReminderImpl;
+      {required final int daysBefore,
+      required final bool isSent}) = _$ReminderImpl;
 
   factory _Reminder.fromJson(Map<String, dynamic> json) =
       _$ReminderImpl.fromJson;
 
   @override
-  String get id;
+  int get daysBefore;
   @override
-  String? get name;
+  bool get isSent;
   @override
   @JsonKey(ignore: true)
   _$$ReminderImplCopyWith<_$ReminderImpl> get copyWith =>

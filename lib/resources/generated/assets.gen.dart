@@ -86,6 +86,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_launcher.png
   AssetGenImage get icLauncher => const AssetGenImage('assets/images/ic_launcher.png');
 
+  /// File path: assets/images/no_events_image.svg
+  SvgGenImage get noEventsImage => const SvgGenImage('assets/images/no_events_image.svg');
+
   /// File path: assets/images/onstageapp_logo.png
   AssetGenImage get onstageappLogo => const AssetGenImage('assets/images/onstageapp_logo.png');
 
@@ -105,7 +108,8 @@ class $AssetsImagesGen {
   AssetGenImage get profile5 => const AssetGenImage('assets/images/profile5.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [band1, band2, band3, eventTileBackground, icLauncher, onstageappLogo, pattern1, profile1, profile2, profile4, profile5];
+  List<dynamic> get values =>
+      [band1, band2, band3, eventTileBackground, icLauncher, noEventsImage, onstageappLogo, pattern1, profile1, profile2, profile4, profile5];
 }
 
 class Assets {

@@ -24,12 +24,11 @@ class _SongRepository implements SongRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<SongOverview>> getSongs({String? search}) async {
+  Future<List<SongOverview>> getSongs({required SongFilter songFilter}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'search': search};
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = songFilter;
     final _options = _setStreamType<List<SongOverview>>(Options(
       method: 'GET',
       headers: _headers,
@@ -37,7 +36,7 @@ class _SongRepository implements SongRepository {
     )
         .compose(
           _dio.options,
-          'songs?{search}',
+          'songs',
           queryParameters: queryParameters,
           data: _data,
         )

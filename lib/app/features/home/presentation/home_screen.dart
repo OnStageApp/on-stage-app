@@ -6,13 +6,13 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.d
 import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
-import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -34,6 +34,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   void initializeNotifiers() {
     ref.read(songsNotifierProvider.notifier).getSongs();
+    ref.read(eventsNotifierProvider.notifier).getUpcomingEvent();
   }
 
   @override
@@ -49,10 +50,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               onRefresh: () async {
                 await Future.wait([
                   ref.read(songsNotifierProvider.notifier).getSongs(),
-                  ref
-                      .read(notificationNotifierProvider.notifier)
-                      .getNotifications(),
-                  ref.read(eventsNotifierProvider.notifier).getEvents(),
+                  ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
                 ]);
               },
             ),
@@ -71,12 +69,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               sliver: SliverToBoxAdapter(
                 child: Text(
                   'Recently Added',
-                  style: context.textTheme.headlineMedium,
+                  style: context.textTheme.titleMedium,
                 ),
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.only(top: Insets.large),
+              padding: const EdgeInsets.only(top: Insets.smallNormal),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -123,6 +121,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
+    final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
     return Row(
       children: [
         SizedBox(
@@ -131,9 +130,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 8),
             child: UpcomingEventEnhanced(
-              title: 'Duminică seara la elsh',
-              hour: '18:00',
-              hasUpcomingEvent: hasUpcomingEvent,
+              onTap: () => context.pushNamed(
+                AppRoute.eventDetails.name,
+                queryParameters: {'eventId': upcomingEvent!.id},
+              ),
+              title: upcomingEvent?.name ?? 'Loading...',
+              hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
+              date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
+              hasUpcomingEvent: upcomingEvent != null,
             ),
           ),
         ),

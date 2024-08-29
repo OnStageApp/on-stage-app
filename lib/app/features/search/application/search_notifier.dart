@@ -1,18 +1,18 @@
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller_state.dart';
+import 'package:on_stage_app/app/features/search/application/search_state.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'search_controller.g.dart';
+part 'search_notifier.g.dart';
 
 @riverpod
-class SearchController extends _$SearchController {
+class SearchNotifier extends _$SearchNotifier {
   @override
-  SearchControllerState build() {
-    return const SearchControllerState(isFocused: false, text: '');
+  SearchState build() {
+    return const SearchState(isFocused: false, text: '');
   }
 
   void setFocus({required bool isFocused}) {
@@ -24,7 +24,7 @@ class SearchController extends _$SearchController {
   }
 
   void clear() {
-    state = const SearchControllerState(isFocused: false, text: '');
+    state = const SearchState(isFocused: false, text: '');
   }
 
   void setGenreFilter(GenreFilterEnum? searchFilter) {

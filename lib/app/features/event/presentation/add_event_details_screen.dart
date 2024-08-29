@@ -6,9 +6,10 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/stager_stat
 import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
-import 'package:on_stage_app/app/features/event/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
+import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -32,6 +33,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   final _eventLocationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _dateTimeString;
+  var _reminders = <int>[];
 
   @override
   void initState() {
@@ -57,7 +59,16 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         title: 'Create Event',
         trailing: SettingsTrailingAppBarButton(
           onTap: () {
-            SetReminderModal.show(context: context);
+            SetReminderModal.show(
+              cacheReminders: _reminders,
+              context: context,
+              ref: ref,
+              onSaved: (List<int> reminders) {
+                setState(() {
+                  _reminders = reminders;
+                });
+              },
+            );
           },
         ),
       ),
@@ -140,6 +151,16 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
     if (_formKey.currentState!.validate()) {
       await ref.read(eventNotifierProvider.notifier).createEvent();
+
+      final eventId = ref.watch(eventNotifierProvider).event?.id;
+      if (eventId == null) {
+        return;
+      }
+
+      await ref.read(reminderNotifierProvider.notifier).createReminders(
+            _reminders,
+            ref.watch(eventNotifierProvider).event!.id!,
+          );
 
       if (mounted) {
         context.pushReplacementNamed(

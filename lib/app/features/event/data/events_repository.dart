@@ -3,7 +3,8 @@ import 'package:on_stage_app/app/features/event/domain/models/create_event_model
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_items_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/events_filter.dart';
+import 'package:on_stage_app/app/features/event/domain/models/events_response.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
@@ -17,11 +18,12 @@ abstract class EventsRepository {
   factory EventsRepository(Dio dio) = _EventsRepository;
 
   @GET(API.eventsByFilter)
-  Future<List<EventOverview>> getEvents({
-    @Query('startDate') String? startDate,
-    @Query('endDate') String? endDate,
-    @Query('search') String? search,
+  Future<EventsResponse> getEvents({
+    @Body() EventsFilter? eventsFilter,
   });
+
+  @GET(API.upcomingEvent)
+  Future<EventModel> getUpcomingEvent();
 
   @GET(API.eventById)
   Future<EventModel> getEventById(@Path('id') String id);

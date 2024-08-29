@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class EventTileEnhanced extends StatelessWidget {
   const EventTileEnhanced({
     required this.title,
-    required this.hour,
-    required this.date,
-    this.locationName,
+    required this.dateTime,
+    required this.onTap,
+    required this.locationName,
     this.isSingleEvent = false,
     super.key,
   });
 
   final String title;
-  final String hour;
-  final String date;
+
+  final DateTime? dateTime;
   final bool isSingleEvent;
   final String? locationName;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +26,7 @@ class EventTileEnhanced extends StatelessWidget {
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(right: isSingleEvent ? 0 : 12),
       child: TextButton(
-        onPressed: () {
-          context.pushNamed(AppRoute.eventDetails.name, queryParameters: {
-            'eventId': '65d8a5138ae10c121bcc37d5',
-          });
-        },
+        onPressed: onTap,
         style: TextButton.styleFrom(
           backgroundColor: context.colorScheme.secondary,
           overlayColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
@@ -88,32 +85,34 @@ class EventTileEnhanced extends StatelessWidget {
   }
 
   Widget _buildDateTimeOnSingleEventShown(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            hour,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: context.colorScheme.onSecondary,
+    return dateTime != null
+        ? Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            decoration: BoxDecoration(
+              color: context.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  TimeUtils().formatOnlyTime(dateTime),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: context.colorScheme.onSecondary,
+                      ),
                 ),
-          ),
-          _buildCircle(context),
-          Text(
-            date,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: context.colorScheme.onSecondary,
+                _buildCircle(context),
+                Text(
+                  TimeUtils().formatOnlyDate(dateTime),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: context.colorScheme.onSecondary,
+                      ),
                 ),
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget _buildDateTime(BuildContext context) {
@@ -132,14 +131,14 @@ class EventTileEnhanced extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            hour,
+            TimeUtils().formatOnlyTime(dateTime),
             style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   color: context.colorScheme.onSecondary,
                 ),
           ),
           _buildCircle(context),
           Text(
-            date,
+            TimeUtils().formatOnlyDate(dateTime),
             style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   color: context.colorScheme.onSecondary,
                 ),

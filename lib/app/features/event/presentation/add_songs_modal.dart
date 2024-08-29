@@ -84,11 +84,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
             focusNode: FocusNode(),
             controller: _searchController,
             onClosed: _clearSearch,
-            onChanged: (value) {
-              ref
-                  .read(songsNotifierProvider.notifier)
-                  .searchSongs(searchedText: value);
-            },
+            onChanged: (value) {},
           ),
           const SizedBox(height: 12),
           ListView.builder(

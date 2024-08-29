@@ -19,7 +19,6 @@ import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class EventDetailsScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -68,7 +67,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16),
         child: ContinueButton(
-          text: 'Preview Event',
+          text: 'View Event Schedule',
           onPressed: () {
             ref
                 .read(eventControllerProvider.notifier)
@@ -110,13 +109,9 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                     child: EventTileEnhanced(
                       title: event?.name ?? '',
                       locationName: event?.location ?? '',
-                      date: TimeUtils().formatOnlyDate(
-                        event?.date ?? DateTime.now(),
-                      ),
-                      hour: TimeUtils().formatOnlyTime(
-                        event?.date ?? DateTime.now(),
-                      ),
+                      dateTime: event?.dateTime ?? DateTime.now(),
                       isSingleEvent: true,
+                      onTap: () {},
                     ),
                   ),
                   const SizedBox(height: Insets.medium),

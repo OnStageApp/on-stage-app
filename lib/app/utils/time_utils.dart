@@ -23,14 +23,13 @@ class TimeUtils {
     return startOfTheNextWeek;
   }
 
-  String formatDate(DateTime? datetime) {
+  String formatDateTime(DateTime? datetime) {
     return datetime != null ? DateFormat('EEEE, dd MMMM').format(datetime) : '';
   }
 
-  String formatOnlyDate(DateTime dateTime) {
+  String formatOnlyDate(DateTime? dateTime) {
     try {
-      final formattedDate = DateFormat('d MMMM').format(dateTime);
-      return formattedDate;
+      return dateTime != null ? DateFormat('d MMMM').format(dateTime) : '';
     } catch (e) {
       return 'Invalid date';
     }

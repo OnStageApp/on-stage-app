@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_filter_modal.dart';
@@ -26,16 +26,19 @@ class StageSearchBar extends ConsumerStatefulWidget {
   final void Function()? onClosed;
   final void Function()? onTap;
   final bool showFilter;
-
   final TextEditingController? controller;
 
   @override
   ConsumerState<StageSearchBar> createState() => _StageSearchBarState();
 }
 
-class _StageSearchBarState extends ConsumerState<StageSearchBar> {
+class _StageSearchBarState extends ConsumerState<StageSearchBar>
+    with SingleTickerProviderStateMixin {
   Timer? _debounce;
   late final TextEditingController _internalController;
+  late final AnimationController _animationController;
+  late final Animation<double> _animation;
+  final FocusNode _focusNode = FocusNode();
 
   var _isFilteringActive = false;
 
@@ -43,17 +46,25 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
   void initState() {
     super.initState();
     _internalController = widget.controller ?? TextEditingController();
-
     _internalController.addListener(_onSearchChanged);
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
   }
 
-  @override
   @override
   void dispose() {
     if (widget.controller == null) {
       _internalController.dispose();
     }
     _debounce?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -66,142 +77,212 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    _updateFilteringState();
+    return Column(
+      children: [
+        _buildSearchBar(),
+        _buildFilterChips(),
+      ],
+    );
+  }
+
+  void _updateFilteringState() {
     _isFilteringActive = ref
-            .watch(searchControllerProvider.notifier)
+            .watch(searchNotifierProvider.notifier)
             .getAllFilters()
             .isNotNullOrEmpty &&
         widget.showFilter;
-    const animationDuration = Duration(milliseconds: 300);
-    return Column(
-      children: [
-        SearchBar(
-          constraints: const BoxConstraints(maxHeight: 44),
-          controller: _internalController,
-          focusNode: widget.focusNode,
-          shadowColor:
-              WidgetStateProperty.resolveWith((states) => Colors.transparent),
-          overlayColor:
-              WidgetStateProperty.resolveWith((states) => Colors.transparent),
-          backgroundColor: WidgetStateProperty.resolveWith(
-            (states) => context.colorScheme.surfaceBright,
-          ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: _isFilteringActive
-                  ? const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    )
-                  : BorderRadius.circular(12),
-            ),
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: AnimatedOpacity(
-              opacity: widget.focusNode.hasFocus ? 1 : 0.7,
-              duration: animationDuration,
-              child: SvgPicture.asset(
-                'assets/icons/search_icon.svg',
-                color: context.colorScheme.outline,
-              ),
-            ),
-          ),
-          trailing: [
-            AnimatedOpacity(
-              opacity: widget.focusNode.hasFocus ? 1 : 0,
-              duration: animationDuration,
-              child: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: context.colorScheme.outline,
-                ),
-                onPressed: () {
-                  widget.focusNode.unfocus();
-                  _internalController.clear();
-                  widget.onClosed?.call();
-                },
-              ),
-            ),
-            if (widget.showFilter)
-              Container(
-                height: 28,
-                width: 84,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: _isFilteringActive
-                      ? context.colorScheme.primary
-                      : context.colorScheme.onSurfaceVariant,
-                ),
-                child: InkWell(
-                  onTap: () {
-                    SongFilterModal.show(context: context);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.filter_list,
-                        color: _isFilteringActive
-                            ? context.colorScheme.onSurfaceVariant
-                            : context.colorScheme.onSurface,
-                        size: 15,
-                      ),
-                      Text(
-                        'Filter',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: _isFilteringActive
-                                      ? context.colorScheme.onSurfaceVariant
-                                      : context.colorScheme.onSurface,
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-          hintText: 'Search',
-          hintStyle: WidgetStateProperty.all(
-            context.textTheme.titleMedium!.copyWith(
-              color: context.colorScheme.outline,
-            ),
-          ),
-          onChanged: (value) => _onSearchChanged(),
-          onTap: widget.onTap,
+
+    if (_isFilteringActive) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+  }
+
+  Widget _buildSearchBar() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      decoration: _getSearchBarDecoration(),
+      child: SearchBar(
+        constraints: const BoxConstraints(maxHeight: 44),
+        controller: _internalController,
+        focusNode: _focusNode,
+        shadowColor: MaterialStateProperty.all(Colors.transparent),
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        backgroundColor:
+            MaterialStateProperty.all(context.colorScheme.surfaceBright),
+        shape: MaterialStateProperty.all(_getSearchBarShape()),
+        leading: _buildSearchIcon(),
+        trailing: _buildTrailingWidgets(),
+        hintText: 'Search',
+        hintStyle: MaterialStateProperty.all(_getHintTextStyle()),
+        onChanged: (value) => _onSearchChanged(),
+        onTap: widget.onTap,
+      ),
+    );
+  }
+
+  BoxDecoration _getSearchBarDecoration() {
+    return BoxDecoration(
+      color: context.colorScheme.surfaceBright,
+      borderRadius: BorderRadius.vertical(
+        top: const Radius.circular(12),
+        bottom: Radius.circular(_isFilteringActive ? 0 : 12),
+      ),
+    );
+  }
+
+  RoundedRectangleBorder _getSearchBarShape() {
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: const Radius.circular(12),
+        bottom: Radius.circular(_isFilteringActive ? 0 : 12),
+      ),
+    );
+  }
+
+  Widget _buildSearchIcon() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: AnimatedOpacity(
+        opacity: widget.focusNode.hasFocus ? 1 : 0.7,
+        duration: const Duration(milliseconds: 300),
+        child: SvgPicture.asset(
+          'assets/icons/search_icon.svg',
+          color: context.colorScheme.outline,
         ),
-        if (_isFilteringActive)
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: context.colorScheme.surfaceBright,
-              border: const Border(
-                top: BorderSide(
-                  color: Color(0xFFD5D5D9),
-                ),
-              ),
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(12),
-              ),
+      ),
+    );
+  }
+
+  List<Widget> _buildTrailingWidgets() {
+    return [
+      _buildClearButton(),
+      if (widget.showFilter) _buildFilterButton(),
+    ];
+  }
+
+  Widget _buildClearButton() {
+    return AnimatedOpacity(
+      opacity: widget.focusNode.hasFocus ? 1 : 0,
+      duration: const Duration(milliseconds: 300),
+      child: IconButton(
+        icon: Icon(
+          Icons.close,
+          color: context.colorScheme.outline,
+        ),
+        onPressed: _clearSearch,
+      ),
+    );
+  }
+
+  void _clearSearch() {
+    widget.focusNode.unfocus();
+    _internalController.clear();
+    widget.onClosed?.call();
+  }
+
+  Widget _buildFilterButton() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      height: 28,
+      width: 84,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: _isFilteringActive
+            ? context.colorScheme.primary
+            : context.colorScheme.onSurfaceVariant,
+      ),
+      child: InkWell(
+        onTap: () => SongFilterModal.show(context: context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Icon(
+              Icons.filter_list,
+              color: _getFilterIconColor(),
+              size: 15,
             ),
+            Text(
+              'Filter',
+              style: _getFilterTextStyle(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getFilterIconColor() {
+    return _isFilteringActive
+        ? context.colorScheme.onSurfaceVariant
+        : context.colorScheme.onSurface;
+  }
+
+  TextStyle _getFilterTextStyle() {
+    return Theme.of(context).textTheme.titleMedium!.copyWith(
+          color: _isFilteringActive
+              ? context.colorScheme.onSurfaceVariant
+              : context.colorScheme.onSurface,
+        );
+  }
+
+  TextStyle _getHintTextStyle() {
+    return context.textTheme.titleMedium!.copyWith(
+      color: context.colorScheme.outline,
+    );
+  }
+
+  Widget _buildFilterChips() {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      child: SizeTransition(
+        sizeFactor: _animation,
+        axisAlignment: -1,
+        child: Container(
+          width: double.infinity,
+          decoration: _getFilterChipsContainerDecoration(),
+          child: FadeTransition(
+            opacity: _animation,
             child: Wrap(
-              children: List.generate(
-                  ref
-                      .watch(searchControllerProvider.notifier)
-                      .getAllFilters()
-                      .length, (index) {
-                final filter = ref
-                    .watch(searchControllerProvider.notifier)
-                    .getAllFilters()[index];
-                if (filter != null) {
-                  return IntrinsicWidth(
-                    child: _buildAddedFilter(filter),
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              }),
+              children: _buildFilterChipsList(),
             ),
           ),
-      ],
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _getFilterChipsContainerDecoration() {
+    return BoxDecoration(
+      color: context.colorScheme.surfaceBright,
+      border: const Border(
+        top: BorderSide(
+          color: Color(0xFFD5D5D9),
+        ),
+      ),
+      borderRadius: const BorderRadius.vertical(
+        bottom: Radius.circular(12),
+      ),
+    );
+  }
+
+  List<Widget> _buildFilterChipsList() {
+    return List.generate(
+      ref.watch(searchNotifierProvider.notifier).getAllFilters().length,
+      (index) {
+        final filter =
+            ref.watch(searchNotifierProvider.notifier).getAllFilters()[index];
+        if (filter != null) {
+          return IntrinsicWidth(
+            child: _buildAddedFilter(filter),
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
     );
   }
 
@@ -225,9 +306,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
           Text(filter.value, style: context.textTheme.titleMedium),
           const SizedBox(width: 6),
           InkWell(
-            onTap: () {
-              ref.read(searchControllerProvider.notifier).removeFilter(filter);
-            },
+            onTap: () => _removeFilter(filter),
             child: SvgPicture.asset(
               'assets/icons/close-icon.svg',
             ),
@@ -235,5 +314,9 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar> {
         ],
       ),
     );
+  }
+
+  void _removeFilter(SearchFilter filter) {
+    ref.read(searchNotifierProvider.notifier).removeFilter(filter);
   }
 }

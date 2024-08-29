@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
-import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/event_tile.dart';
-import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
-import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -23,16 +25,36 @@ class EventsScreen extends ConsumerStatefulWidget {
 
 class EventsScreenState extends ConsumerState<EventsScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchFocused = false;
 
   @override
   void initState() {
-    unawaited(ref.read(eventsNotifierProvider.notifier).getEvents());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initializeEvents());
+  }
+
+  Future<void> _initializeEvents() async {
+    final notifier = ref.read(eventsNotifierProvider.notifier);
+    _searchFocusNode.addListener(_onSearchFocusChange);
+    await Future.wait([
+      notifier.getUpcomingEvents(),
+      notifier.getPastEvents(),
+      notifier.getUpcomingEvent(),
+    ]);
+  }
+
+  void _onSearchFocusChange() {
+    setState(() => _isSearchFocused = _searchFocusNode.hasFocus);
+    if (_isSearchFocused) {
+      ref.read(eventsNotifierProvider.notifier).searchEvents('');
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -46,63 +68,63 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         trailing: Padding(
           padding: const EdgeInsets.only(right: Insets.normal),
           child: IconButton(
-            onPressed: () => context.pushNamed(AppRoute.addEvent.name),
-            icon: Icon(
-              Icons.add,
-              color: context.colorScheme.surfaceDim,
+            style: IconButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              highlightColor: context.colorScheme.surfaceBright,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
             ),
+            onPressed: () => context.pushNamed(AppRoute.addEvent.name),
+            icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
           ),
         ),
       ),
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: () =>
-                ref.read(eventsNotifierProvider.notifier).getEvents(),
+          CupertinoSliverRefreshControl(onRefresh: _initializeEvents),
+          EventsSearchBar(
+            focusNode: _searchFocusNode,
+            controller: _searchController,
+            notifier: ref.read(eventsNotifierProvider.notifier),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                const SizedBox(height: Insets.large),
-                if (!eventsState.isLoading) ...[
-                  Text('Upcoming Events', style: context.textTheme.titleMedium),
-                  const SizedBox(height: Insets.normal),
-                  SizedBox(
-                    height: 130,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: eventsState.events.length,
-                      itemBuilder: (context, index) {
-                        final event = eventsState.events[index];
-                        return EventTileEnhanced(
-                          title: event.name ?? '',
-                          hour: '11:00',
-                          date: 'Monday, 12th July',
-                        );
-                      },
+          if (eventsState.isLoading)
+            EventShimmerList(isSearchContent: _isSearchFocused)
+          else if (!_eventsListIsEmpty(eventsState))
+            SliverAnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: (_isSearchFocused
+                  ? SearchResultsList(
+                      key: const ValueKey('search'),
+                      events: eventsState.filteredEventsResponse.events,
+                    )
+                  : EventsContent(
+                      key: const ValueKey('content'),
+                      eventsState: eventsState,
+                    )),
+            )
+          else
+            SliverFillRemaining(
+              child: Column(
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/no_events_image.svg',
+                    height: 100,
+                    width: 100,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurfaceVariant,
+                      BlendMode.srcIn,
                     ),
                   ),
-                  const SizedBox(height: Insets.large),
-                  Text('Past Events', style: context.textTheme.titleMedium),
-                  const SizedBox(height: Insets.normal),
-                ] else ...[
-                  const OnStageLoadingIndicator(),
+                  Text(
+                    'You have no upcoming events',
+                    style: context.textTheme.titleMedium,
+                  ),
                 ],
-              ]),
-            ),
-          ),
-          if (!eventsState.isLoading)
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) =>
-                      _buildEventTile(eventsState.filteredEvents[index]),
-                  childCount: eventsState.filteredEvents.length,
-                ),
               ),
             ),
         ],
@@ -110,35 +132,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
-    return StageSearchBar(
-      focusNode: FocusNode(),
-      controller: _searchController,
-      onClosed: () {
-        ref.read(eventsNotifierProvider.notifier).searchEvents('');
-        _clearSearch();
-      },
-      onChanged: (value) {
-        if (value.isEmpty) {
-          _clearSearch();
-        }
-        ref.read(eventsNotifierProvider.notifier).searchEvents(value);
-      },
-    );
-  }
-
-  void _clearSearch() {
-    _searchController.clear();
-  }
-
-  Widget _buildEventTile(EventOverview event) {
-    return EventTile(
-      onTap: () => context.pushNamed(
-        AppRoute.eventDetails.name,
-        queryParameters: {'eventId': event.id},
-      ),
-      title: event.name ?? '',
-      dateTime: event.dateTime?.let(DateTime.parse),
-    );
+  bool _eventsListIsEmpty(EventsState eventsState) {
+    return eventsState.upcomingEventsResponse.events.isEmpty &&
+        eventsState.pastEventsResponse.events.isEmpty;
   }
 }

@@ -22,7 +22,7 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 mixin _$EventModel {
   String? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  DateTime? get date => throw _privateConstructorUsedError;
+  DateTime? get dateTime => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
   EventStatus? get eventStatus => throw _privateConstructorUsedError;
 
@@ -41,7 +41,7 @@ abstract class $EventModelCopyWith<$Res> {
   $Res call(
       {String? id,
       String? name,
-      DateTime? date,
+      DateTime? dateTime,
       String? location,
       EventStatus? eventStatus});
 }
@@ -61,7 +61,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
-    Object? date = freezed,
+    Object? dateTime = freezed,
     Object? location = freezed,
     Object? eventStatus = freezed,
   }) {
@@ -74,9 +74,9 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      date: freezed == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
+      dateTime: freezed == dateTime
+          ? _value.dateTime
+          : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       location: freezed == location
           ? _value.location
@@ -100,7 +100,7 @@ abstract class _$$EventImplCopyWith<$Res> implements $EventModelCopyWith<$Res> {
   $Res call(
       {String? id,
       String? name,
-      DateTime? date,
+      DateTime? dateTime,
       String? location,
       EventStatus? eventStatus});
 }
@@ -118,7 +118,7 @@ class __$$EventImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
-    Object? date = freezed,
+    Object? dateTime = freezed,
     Object? location = freezed,
     Object? eventStatus = freezed,
   }) {
@@ -131,9 +131,9 @@ class __$$EventImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      date: freezed == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
+      dateTime: freezed == dateTime
+          ? _value.dateTime
+          : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       location: freezed == location
           ? _value.location
@@ -151,7 +151,7 @@ class __$$EventImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$EventImpl implements _Event {
   const _$EventImpl(
-      {this.id, this.name, this.date, this.location, this.eventStatus});
+      {this.id, this.name, this.dateTime, this.location, this.eventStatus});
 
   factory _$EventImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventImplFromJson(json);
@@ -161,7 +161,7 @@ class _$EventImpl implements _Event {
   @override
   final String? name;
   @override
-  final DateTime? date;
+  final DateTime? dateTime;
   @override
   final String? location;
   @override
@@ -169,7 +169,7 @@ class _$EventImpl implements _Event {
 
   @override
   String toString() {
-    return 'EventModel(id: $id, name: $name, date: $date, location: $location, eventStatus: $eventStatus)';
+    return 'EventModel(id: $id, name: $name, dateTime: $dateTime, location: $location, eventStatus: $eventStatus)';
   }
 
   @override
@@ -179,7 +179,8 @@ class _$EventImpl implements _Event {
             other is _$EventImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.date, date) || other.date == date) &&
+            (identical(other.dateTime, dateTime) ||
+                other.dateTime == dateTime) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.eventStatus, eventStatus) ||
@@ -189,7 +190,7 @@ class _$EventImpl implements _Event {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, name, date, location, eventStatus);
+      Object.hash(runtimeType, id, name, dateTime, location, eventStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -209,7 +210,7 @@ abstract class _Event implements EventModel {
   const factory _Event(
       {final String? id,
       final String? name,
-      final DateTime? date,
+      final DateTime? dateTime,
       final String? location,
       final EventStatus? eventStatus}) = _$EventImpl;
 
@@ -220,7 +221,7 @@ abstract class _Event implements EventModel {
   @override
   String? get name;
   @override
-  DateTime? get date;
+  DateTime? get dateTime;
   @override
   String? get location;
   @override

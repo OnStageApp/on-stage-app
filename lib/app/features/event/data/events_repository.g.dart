@@ -24,21 +24,13 @@ class _EventsRepository implements EventsRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<EventOverview>> getEvents({
-    String? startDate,
-    String? endDate,
-    String? search,
-  }) async {
+  Future<EventsResponse> getEvents({EventsFilter? eventsFilter}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'startDate': startDate,
-      r'endDate': endDate,
-      r'search': search,
-    };
+    final queryParameters = <String, dynamic>{};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<EventOverview>>(Options(
+    final _data = eventsFilter;
+    final _options = _setStreamType<EventsResponse>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -54,12 +46,43 @@ class _EventsRepository implements EventsRepository {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<EventOverview> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late EventsResponse _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) => EventOverview.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = EventsResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<EventModel> getUpcomingEvent() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<EventModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'events/upcoming',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late EventModel _value;
+    try {
+      _value = EventModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

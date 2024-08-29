@@ -9,7 +9,7 @@ class EventModel with _$EventModel {
   const factory EventModel({
     String? id,
     String? name,
-    DateTime? date,
+    DateTime? dateTime,
     String? location,
     EventStatus? eventStatus,
   }) = _Event;

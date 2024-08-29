@@ -20,9 +20,14 @@ class API {
   static const String rehearsalById = 'rehearsals/{id}';
   static const String stagers = 'stagers';
   static const String eventItems = 'event-items';
+  static const String upcomingEvent = 'events/upcoming';
+
+  static const String artists = 'artists';
+
+  static const String reminders = 'reminders';
 
   //Songs
-  static const String getSongs = 'songs?{search}';
+  static const String getSongs = 'songs';
 
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';

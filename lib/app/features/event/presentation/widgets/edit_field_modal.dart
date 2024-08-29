@@ -30,38 +30,43 @@ class EditFieldModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
+      isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Event Settings'),
-        headerHeight: () {
-          return 64;
-        },
-        buildContent: () {
-          return SingleChildScrollView(
-            child: EditFieldModal(
-              fieldName: fieldName,
-              onSubmitted: onSubmitted,
-              value: value,
-            ),
-          );
-        },
+      builder: (context) => SafeArea(
+        child: NestedScrollModal(
+          buildHeader: () => const ModalHeader(title: 'Event Settings'),
+          headerHeight: () => 64,
+          buildContent: () => EditFieldModal(
+            fieldName: fieldName,
+            onSubmitted: onSubmitted,
+            value: value,
+          ),
+        ),
       ),
     );
   }
 }
 
 class EditFieldModalState extends ConsumerState<EditFieldModal> {
-  List<int> selectedReminders = [0];
   final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();
+
   @override
   void initState() {
-    _controller.text = widget.value;
-    _focusNode.requestFocus();
-
     super.initState();
+    _controller.text = widget.value;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_focusNode);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,6 +76,7 @@ class EditFieldModalState extends ConsumerState<EditFieldModal> {
       child: Form(
         key: _formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
               focusNode: _focusNode,
@@ -80,7 +86,7 @@ class EditFieldModalState extends ConsumerState<EditFieldModal> {
               controller: _controller,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a rehearsal name';
+                  return 'Please enter a value';
                 }
                 return null;
               },
@@ -89,7 +95,10 @@ class EditFieldModalState extends ConsumerState<EditFieldModal> {
             ContinueButton(
               text: 'Save',
               onPressed: () {
-                widget.onSubmitted(_controller.text);
+                if (_formKey.currentState!.validate()) {
+                  widget.onSubmitted(_controller.text);
+                  Navigator.of(context).pop();
+                }
               },
               isEnabled: true,
             ),

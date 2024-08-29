@@ -6,16 +6,18 @@ class SongsState extends Equatable {
     this.songs = const [],
     this.filteredSongs = const [],
     this.isLoading = false,
+    this.isLoadingWithShimmer = false,
   });
 
   final List<SongOverview> songs;
   final List<SongOverview> filteredSongs;
-
+  final bool isLoadingWithShimmer;
   final bool isLoading;
 
   @override
   List<Object> get props => [
         songs,
+        isLoadingWithShimmer,
         filteredSongs,
       ];
 
@@ -23,11 +25,13 @@ class SongsState extends Equatable {
     List<SongOverview>? songs,
     List<SongOverview>? filteredSongs,
     bool? isLoading,
+    bool? isLoadingWithShimmer,
   }) {
     return SongsState(
       songs: songs ?? this.songs,
       filteredSongs: filteredSongs ?? this.filteredSongs,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingWithShimmer: isLoadingWithShimmer ?? this.isLoadingWithShimmer,
     );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_filter/song_filter.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
-import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'songs_notifier.g.dart';
@@ -18,35 +17,24 @@ class SongsNotifier extends _$SongsNotifier {
     return const SongsState();
   }
 
-  Future<void> getSongs() async {
-    if (state.songs.isNotEmpty) {
-      state = state.copyWith(filteredSongs: state.songs);
-      return;
-    }
-
-    state = state.copyWith(isLoading: true);
-
-    final songs = await _songRepository.getSongs();
-
-    state =
-        state.copyWith(isLoading: false, songs: songs, filteredSongs: songs);
-  }
-
-  Future<void> searchSongs({
-    required String searchedText,
+  Future<void> getSongs({
+    SongFilter? songFilter,
+    bool isLoadingWithShimmer = false,
   }) async {
-    if (searchedText.isNotNullEmptyOrWhitespace) {
-      final searchedSongs = state.songs
-          .where(
-            (song) => song.title!.toLowerCase().contains(
-                  searchedText,
-                ),
-          )
-          .toList();
-      state = state.copyWith(filteredSongs: searchedSongs);
-      logger.i('searched songs: ${searchedSongs.length}');
-    } else {
-      await getSongs();
-    }
+    state = state.copyWith(
+      isLoading: true,
+      isLoadingWithShimmer: isLoadingWithShimmer,
+    );
+
+    final songs = await _songRepository.getSongs(
+      songFilter: songFilter ?? const SongFilter(),
+    );
+
+    state = state.copyWith(
+      isLoading: false,
+      isLoadingWithShimmer: false,
+      songs: songs,
+      filteredSongs: songs,
+    );
   }
 }

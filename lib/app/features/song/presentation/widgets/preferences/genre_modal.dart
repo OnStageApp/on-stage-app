@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -69,7 +69,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
   Widget _buildTile(GenreFilterEnum genre) {
     return InkWell(
       onTap: () {
-        ref.read(searchControllerProvider.notifier).setGenreFilter(
+        ref.read(searchNotifierProvider.notifier).setGenreFilter(
               _isItemSelected(genre) ? null : genre,
             );
       },
@@ -122,5 +122,5 @@ class GenreModalState extends ConsumerState<GenreModal> {
   }
 
   bool _isItemSelected(GenreFilterEnum genre) =>
-      ref.watch(searchControllerProvider).genreFilter == genre;
+      ref.watch(searchNotifierProvider).genreFilter == genre;
 }

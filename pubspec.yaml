@@ -51,6 +51,7 @@ dependencies:
   flutter_secure_storage: ^4.2.1
   shimmer: ^3.0.0
   pretty_dio_logger: ^1.4.0
+  sliver_tools: ^0.2.12
 
 
 dev_dependencies:
