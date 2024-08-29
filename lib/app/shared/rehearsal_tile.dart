@@ -103,7 +103,7 @@ class _RehearsalTileState extends State<RehearsalTile> {
                             _buildCircle(context),
                             Text(
                               widget.dateTime != null
-                                  ? TimeUtils().formatOnlyDate(widget.dateTime!)
+                                  ? TimeUtils().formatOnlyDate(widget.dateTime)
                                   : '',
                               style: Theme.of(context)
                                   .textTheme

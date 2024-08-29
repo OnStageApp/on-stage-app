@@ -48,7 +48,7 @@ class FavoriteSongsScreenState extends ConsumerState<FavoriteSongsScreen> {
                 _buildFavoriteSongs(),
             ],
           ),
-        )
+        ),
       ],
     );
   }

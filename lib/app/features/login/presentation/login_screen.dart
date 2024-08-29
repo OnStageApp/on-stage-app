@@ -39,7 +39,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             const SizedBox(height: 48),
             Center(
               child: Text(
-                "Get On Stage with us",
+                'Get On Stage with us',
                 style: context.textTheme.titleLarge,
               ),
             ),
@@ -53,7 +53,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ref.read(loginNotifierProvider.notifier).signInWithGoogle();
                   },
                   isEnabled: true,
-                )
+                ),
               ],
             ),
             const Spacer(),
@@ -61,7 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Don’t have an account? ",
+                  'Don’t have an account? ',
                   style: context.textTheme.bodyMedium,
                 ),
                 InkWell(
@@ -69,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   highlightColor: lightColorScheme.surfaceTint,
                   onTap: () {},
                   child: Text(
-                    "Sign up here",
+                    'Sign up here',
                     style: context.textTheme.bodyMedium,
                   ),
                 ),
@@ -77,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             Center(
               child: Text(
-                "It takes less than a minute.",
+                'It takes less than a minute.',
                 style: context.textTheme.bodyMedium,
               ),
             ),

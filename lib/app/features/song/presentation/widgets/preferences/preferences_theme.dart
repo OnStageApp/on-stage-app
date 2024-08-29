@@ -9,7 +9,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferenceTheme extends ConsumerStatefulWidget {
-  const PreferenceTheme({Key? key}) : super(key: key);
+  const PreferenceTheme({super.key});
 
   @override
   PreferenceThemeState createState() => PreferenceThemeState();

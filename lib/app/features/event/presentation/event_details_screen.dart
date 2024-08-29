@@ -21,9 +21,9 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventDetailsScreen extends ConsumerStatefulWidget {
-  final String eventId;
 
   const EventDetailsScreen(this.eventId, {super.key});
+  final String eventId;
 
   @override
   EventDetailsScreenState createState() => EventDetailsScreenState();

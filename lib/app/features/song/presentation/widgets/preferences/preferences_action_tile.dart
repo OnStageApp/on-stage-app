@@ -4,10 +4,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferencesActionTile extends StatelessWidget {
   const PreferencesActionTile({
-    this.leadingWidget,
-    required this.title,
+    required this.title, required this.onTap, this.leadingWidget,
     this.trailingIcon,
-    required this.onTap,
     super.key,
   });
 

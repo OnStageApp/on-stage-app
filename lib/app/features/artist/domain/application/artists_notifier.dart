@@ -1,8 +1,7 @@
+import 'package:on_stage_app/app/features/artist/domain/application/artists_state.dart';
 import 'package:on_stage_app/app/features/artist/domain/data/artist_repository.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'artists_state.dart';
 
 part 'artists_notifier.g.dart';
 

@@ -70,7 +70,6 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
           32,
         ),
         child: ContinueButton(
-          hasShadow: true,
           text: isOrderPage ? 'Save' : 'Add',
           onPressed: () {
             if (!isOrderPage) {

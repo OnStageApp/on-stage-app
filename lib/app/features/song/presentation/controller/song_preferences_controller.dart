@@ -16,7 +16,7 @@ class SongPreferencesController extends _$SongPreferencesController {
   }
 
   void addSongSection(Section section) {
-    List<Section> sections = List<Section>.from(state.songSections);
+    final sections = List<Section>.from(state.songSections);
 
     sections.add(section);
     state = state.copyWith(songSections: sections);
@@ -27,7 +27,7 @@ class SongPreferencesController extends _$SongPreferencesController {
   }
 
   void removeSongSection(Section section) {
-    List<Section> sections = List<Section>.from(state.songSections);
+    final sections = List<Section>.from(state.songSections);
     sections.remove(section);
     state = state.copyWith(songSections: sections);
   }

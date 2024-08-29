@@ -9,7 +9,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferenceGenre extends ConsumerStatefulWidget {
-  const PreferenceGenre({Key? key}) : super(key: key);
+  const PreferenceGenre({super.key});
 
   @override
   PreferenceGenreState createState() => PreferenceGenreState();

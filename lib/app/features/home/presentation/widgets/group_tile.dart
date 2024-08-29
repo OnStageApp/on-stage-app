@@ -54,7 +54,7 @@ class GroupTile extends StatelessWidget {
                   ],
                 )
               else
-                Text('Invite friends'),
+                const Text('Invite friends'),
               const Expanded(child: SizedBox()),
               Container(
                 height: 30,

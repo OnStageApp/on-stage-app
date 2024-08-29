@@ -3,7 +3,7 @@ import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventActionsSection extends StatelessWidget {
-  const EventActionsSection({Key? key}) : super(key: key);
+  const EventActionsSection({super.key});
 
   @override
   Widget build(BuildContext context) {

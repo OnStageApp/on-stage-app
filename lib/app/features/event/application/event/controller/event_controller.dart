@@ -41,7 +41,7 @@ class EventController extends _$EventController {
     );
     if (state.addedUsers.isNotEmpty) {
       state = state.copyWith(
-          invitePeopleButtonText: 'Invite ${state.addedUsers.length} people');
+          invitePeopleButtonText: 'Invite ${state.addedUsers.length} people',);
     }
   }
 

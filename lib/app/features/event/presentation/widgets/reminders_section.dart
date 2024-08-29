@@ -13,7 +13,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class RemindersSection extends ConsumerStatefulWidget {
-  const RemindersSection({Key? key}) : super(key: key);
+  const RemindersSection({super.key});
 
   @override
   ConsumerState<RemindersSection> createState() => _RemindersSectionState();
@@ -120,7 +120,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
 
     if (_reminders.isNotEmpty && newReminders.isEmpty) {
       // Remove all reminders
-      for (int i = _reminders.length - 1; i >= 0; i--) {
+      for (var i = _reminders.length - 1; i >= 0; i--) {
         _removeReminderAtIndex(i);
       }
       return;
@@ -165,6 +165,6 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
   bool _areRemindersEqual(List<Reminder> list1, List<Reminder> list2) {
     return list1.length == list2.length &&
         list1.asMap().entries.every(
-            (entry) => entry.value.daysBefore == list2[entry.key].daysBefore);
+            (entry) => entry.value.daysBefore == list2[entry.key].daysBefore,);
   }
 }

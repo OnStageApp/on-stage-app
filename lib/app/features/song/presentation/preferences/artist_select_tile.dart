@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
 class ArtistSelectTile extends StatelessWidget {
-  final Artist artist;
-  final VoidCallback onTap;
 
   const ArtistSelectTile({
     required this.artist,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final Artist artist;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,14 @@ class ArtistSelectTile extends StatelessWidget {
               radius: 12,
               backgroundImage: AssetImage(artist.imageUrl!),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               artist.name,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
-            Spacer(),
+            const Spacer(),
             IconButton(
-              icon: Icon(Icons.arrow_forward),
+              icon: const Icon(Icons.arrow_forward),
               onPressed: onTap,
             ),
           ],

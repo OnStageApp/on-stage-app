@@ -9,7 +9,7 @@ class TokenInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+      RequestOptions options, RequestInterceptorHandler handler,) async {
     final token = await storage.read(key: 'token');
 
     if (token != null) {
