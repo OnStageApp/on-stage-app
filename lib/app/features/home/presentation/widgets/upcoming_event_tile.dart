@@ -67,7 +67,7 @@ class UpcomingEventTile extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                DateFormat("HH:mm, dd MMM").format(dateTime),
+                DateFormat('HH:mm, dd MMM').format(dateTime),
                 style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       color: context.colorScheme.surface,
                     ),

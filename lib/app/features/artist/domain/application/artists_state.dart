@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 class ArtistsState extends Equatable {
   const ArtistsState({

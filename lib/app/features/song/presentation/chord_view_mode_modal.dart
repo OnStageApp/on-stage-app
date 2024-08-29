@@ -62,7 +62,7 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ...ChordViewModeEnum.values.map(
-          (e) => _buildChordTypeTile(e),
+          _buildChordTypeTile,
         ),
       ],
     );

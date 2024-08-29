@@ -7,9 +7,8 @@ import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
-    super.key,
+    required this.onDateTimeChanged, super.key,
     this.initialDateTime,
-    required this.onDateTimeChanged,
   });
 
   final void Function(String?) onDateTimeChanged;

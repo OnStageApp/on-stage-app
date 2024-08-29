@@ -35,7 +35,6 @@ class VocalLeadModal extends ConsumerStatefulWidget {
               32,
             ),
             child: ContinueButton(
-              hasShadow: true,
               text: 'Add',
               onPressed: () {},
               isEnabled: true,

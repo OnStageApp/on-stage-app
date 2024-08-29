@@ -8,9 +8,9 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventDetailsSection extends ConsumerWidget {
-  final EventModel? event;
 
-  const EventDetailsSection({required this.event, Key? key}) : super(key: key);
+  const EventDetailsSection({required this.event, super.key});
+  final EventModel? event;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

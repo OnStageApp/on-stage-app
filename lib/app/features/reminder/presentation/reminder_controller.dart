@@ -27,7 +27,7 @@ class ReminderController extends _$ReminderController {
     state = state.copyWith(
       selectedReminders: state.selectedReminders
           .where((daysBeforeEventUpdated) =>
-              daysBeforeEventUpdated != daysBeforeEvent)
+              daysBeforeEventUpdated != daysBeforeEvent,)
           .toList(),
     );
   }

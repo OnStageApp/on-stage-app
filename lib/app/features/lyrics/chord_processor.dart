@@ -31,7 +31,7 @@ class ChordProcessor extends _$ChordProcessor {
     int widgetPadding = 0,
     int transposeIncrement = 0,
   }) {
-    var chordTransposer =
+    final chordTransposer =
         ChordTransposer(ChordNotation.american, transpose: transposeIncrement);
     //Here it goes and search for structure text and put it on a new line
     text = _breakOnStructure(text);

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BPMSelector extends StatefulWidget {
-  final Function(double) onChanged;
 
-  const BPMSelector({Key? key, required this.onChanged}) : super(key: key);
+  const BPMSelector({required this.onChanged, super.key});
+  final Function(double) onChanged;
 
   @override
   _BPMSelectorState createState() => _BPMSelectorState();

@@ -3,9 +3,7 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class CustomSettingTile extends StatelessWidget {
   const CustomSettingTile({
-    super.key,
-    required this.title,
-    required this.suffix,
+    required this.title, required this.suffix, super.key,
     this.onTap,
     this.backgroundColor,
     this.headline,

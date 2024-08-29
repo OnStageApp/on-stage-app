@@ -44,7 +44,7 @@ class SongState extends Equatable {
       song: song ?? this.song,
       sections: sections ?? this.sections,
       isLoading: isLoading ?? this.isLoading,
-      transposeIncremenet: transposeIncrement ?? this.transposeIncremenet,
+      transposeIncremenet: transposeIncrement ?? transposeIncremenet,
       selectedSectionIndex: selectedSectionIndex ?? this.selectedSectionIndex,
       document: document ?? this.document,
     );

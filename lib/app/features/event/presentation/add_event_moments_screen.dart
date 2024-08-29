@@ -140,7 +140,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           text: 'Add Songs or Moments',
           icon: Icons.add,
         ),
-        const SizedBox(height: 100)
+        const SizedBox(height: 100),
       ],
     );
   }

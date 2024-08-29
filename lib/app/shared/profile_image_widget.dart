@@ -83,8 +83,8 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
           margin: const EdgeInsets.only(right: 64, left: 64),
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
+              backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                (Set<WidgetState> states) {
                   return context.colorScheme.onPrimary;
                 },
               ),

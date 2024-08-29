@@ -81,7 +81,7 @@ class CommonTextField extends StatelessWidget {
 
   BorderSide _getEnabledBorder() {
     return isBorderVisible
-        ? _getBorderSide(lightColorScheme.background)
-        : _getBorderSide(lightColorScheme.background);
+        ? _getBorderSide(lightColorScheme.surface)
+        : _getBorderSide(lightColorScheme.surface);
   }
 }

@@ -20,7 +20,7 @@ class CloseHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? context.colorScheme.background,
+        color: backgroundColor ?? context.colorScheme.surface,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -36,7 +36,7 @@ class CloseHeader extends StatelessWidget {
               width: 32,
               height: 4,
               decoration: BoxDecoration(
-                color: context.colorScheme.onBackground.withOpacity(0.2),
+                color: context.colorScheme.onSurface.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

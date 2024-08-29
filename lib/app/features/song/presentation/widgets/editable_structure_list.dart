@@ -118,7 +118,7 @@ class EditableStructureListState extends ConsumerState<EditableStructureList> {
                   style: context.textTheme.labelSmall!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-              ]
+              ],
             ],
           ),
         ),

@@ -34,7 +34,7 @@ class ComposerModal extends ConsumerStatefulWidget {
 
 class ArtistModalState extends ConsumerState<ComposerModal> {
   // List<Section> _sections = [];
-  List<Artist> _addedArtists = [];
+  final List<Artist> _addedArtists = [];
   // bool isAddPage = false;
 
   final List<Artist> _artists = [];
@@ -74,7 +74,6 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
           32,
         ),
         child: ContinueButton(
-          hasShadow: true,
           text: 'Add',
           onPressed: () {
             context.popDialog();

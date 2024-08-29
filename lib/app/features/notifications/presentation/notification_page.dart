@@ -7,7 +7,7 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class NotificationPage extends ConsumerStatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+  const NotificationPage({super.key});
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
