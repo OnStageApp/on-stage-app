@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 
 part 'song_model.freezed.dart';
@@ -10,13 +11,13 @@ class SongModel with _$SongModel {
     String? id,
     String? title,
     String? lyrics,
-    int? bpm,
+    int? tempo,
     String? key,
-    SongKey? songKey,
-    SongKey? originalKey,
+    @Default(SongKey(name: 'Default Key')) SongKey? songKey,
+    @Default(SongKey(name: 'Oridinal Key')) SongKey? originalKey,
     String? createdAt,
     String? updatedAt,
-    String? artist,
+    Artist? artist,
     String? album,
     int? capo,
   }) = _SongModel;

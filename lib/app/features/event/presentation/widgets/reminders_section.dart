@@ -54,7 +54,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
         Text('Reminders', style: context.textTheme.titleSmall),
         const SizedBox(height: Insets.smallNormal),
         _buildAnimatedList(),
-        BlueActionButton(
+        EventActionButton(
           onTap: () => _showSetReminderModal(context, event),
           text: 'Edit Reminders',
           icon: Icons.mode_edit_outline_outlined,
@@ -165,6 +165,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
   bool _areRemindersEqual(List<Reminder> list1, List<Reminder> list2) {
     return list1.length == list2.length &&
         list1.asMap().entries.every(
-            (entry) => entry.value.daysBefore == list2[entry.key].daysBefore,);
+              (entry) => entry.value.daysBefore == list2[entry.key].daysBefore,
+            );
   }
 }

@@ -7,7 +7,6 @@ import 'package:on_stage_app/app/features/event_items/application/event_items_no
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
 class AddEventMomentsScreen extends ConsumerStatefulWidget {
@@ -39,11 +38,6 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _isAdmin ? _buildSaveButton() : null,
-      appBar: StageAppBar(
-        isBackButtonVisible: true,
-        title: widget.isCreatingEvent ? 'Create Event' : 'Edit Event',
-        // trailing: _isAdmin ? _buildSettingsButton() : null,
-      ),
       body: Padding(
         padding: defaultScreenPadding,
         child: _isAdmin
@@ -126,7 +120,11 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
               .read(eventItemsNotifierProvider.notifier)
               .removeEventItemCache(eventItem),
       onTap: () {
-        print('Tapped');
+        if (eventItem.song == null) {
+          return;
+        }
+        final queryParams = {'songId': eventItem.song?.id ?? ''};
+        context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
       },
       isAdmin: _isAdmin,
     );
@@ -135,7 +133,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   Widget _buildAddSongsOrMomentsButton() {
     return Column(
       children: [
-        BlueActionButton(
+        EventActionButton(
           onTap: () => AddItemsToEventModal.show(context: context),
           text: 'Add Songs or Moments',
           icon: Icons.add,

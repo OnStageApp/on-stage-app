@@ -23,7 +23,6 @@ class DashedLineDivider extends StatelessWidget {
 }
 
 class _DashedLinePainter extends CustomPainter {
-
   _DashedLinePainter({
     required this.dashWidth,
     required this.dashSpace,
@@ -40,7 +39,7 @@ class _DashedLinePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = size.height;
 
-    var startX = 0;
+    double startX = 0;
     while (startX < size.width) {
       canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
       startX += dashWidth + dashSpace;

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -7,12 +6,15 @@ import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
-    required this.onDateTimeChanged, super.key,
+    required this.onDateTimeChanged,
+    super.key,
     this.initialDateTime,
+    this.focusNode,
   });
 
   final void Function(String?) onDateTimeChanged;
   final DateTime? initialDateTime;
+  final FocusNode? focusNode;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -65,6 +67,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                focusNode: widget.focusNode,
                 controller: dateController,
                 style: context.textTheme.titleSmall,
                 validator: (value) {
@@ -178,28 +181,6 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
           ),
         ),
       ],
-    );
-  }
-
-  void _showDialog(Widget child) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6),
-        // The Bottom margin is provided to align the popup above the system
-        // navigation bar.
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        // Provide a background color for the popup.
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        // Use a SafeArea widget to avoid system overlaps.
-        child: SafeArea(
-          top: false,
-          child: child,
-        ),
-      ),
     );
   }
 }

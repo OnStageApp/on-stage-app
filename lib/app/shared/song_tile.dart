@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class SongTile extends StatefulWidget {
+class SongTile extends ConsumerStatefulWidget {
   const SongTile({
     required this.song,
     super.key,
@@ -15,17 +16,19 @@ class SongTile extends StatefulWidget {
   final SongOverview song;
 
   @override
-  State<SongTile> createState() => _SongTileState();
+  ConsumerState<SongTile> createState() => _SongTileState();
 }
 
-class _SongTileState extends State<SongTile> {
+class _SongTileState extends ConsumerState<SongTile> {
   bool saved = false;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamed(AppRoute.song.name, extra: SongDummy.playlist.first);
+        // ref.read(songNotifierProvider.notifier).init(widget.song.id);
+        final queryParams = {'songId': widget.song.id};
+        context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -72,15 +75,28 @@ class _SongTileState extends State<SongTile> {
               ),
               InkWell(
                 onTap: () {
-                  setState(() {
-                    saved = !saved;
-                  });
+                  // setState(() {
+                  if (widget.song.isFavorite) {
+                    ref.read(songsNotifierProvider.notifier).removeFavorite(
+                          widget.song.id,
+                        );
+                  } else {
+                    ref.read(songsNotifierProvider.notifier).addToFavorite(
+                          widget.song.id,
+                        );
+                  }
+
+                  // saved = !saved;
+                  // });
                 },
                 child: Icon(
-                  saved ? Icons.favorite : Icons.favorite_border,
+                  widget.song.isFavorite
+                      ? Icons.favorite
+                      : Icons.favorite_border,
                   size: 28,
-                  color:
-                      saved ? const Color(0xFFF25454) : const Color(0xFF74777F),
+                  color: widget.song.isFavorite
+                      ? const Color(0xFFF25454)
+                      : const Color(0xFF74777F),
                 ),
               ),
             ],

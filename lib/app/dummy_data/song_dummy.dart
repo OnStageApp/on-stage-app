@@ -1,3 +1,4 @@
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
@@ -206,7 +207,7 @@ class SongDummy {
       key: 'G major',
       createdAt: '2021-08-01T00:00:00.000Z',
       updatedAt: '2021-08-01T00:00:00.000Z',
-      artist: 'BBOS',
+      artist: Artist(id: '', name: 'BBSO', imageUrl: ''),
       album: 'Tabara 477',
       capo: 1,
       songKey: SongKey(
@@ -262,7 +263,7 @@ class SongDummy {
       key: 'A major',
       createdAt: '2021-08-01T00:00:00.000Z',
       updatedAt: '2021-08-01T00:00:00.000Z',
-      artist: 'artist1',
+      artist: Artist(id: '', name: 'TEST ARTIST', imageUrl: ''),
       album: 'Tabara 477',
       capo: 1,
       songKey: SongKey(

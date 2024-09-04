@@ -15,6 +15,7 @@ _$SongOverviewImpl _$$SongOverviewImplFromJson(Map<String, dynamic> json) =>
       artist: json['artist'] == null
           ? null
           : Artist.fromJson(json['artist'] as Map<String, dynamic>),
+      isFavorite: json['isFavorite'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$SongOverviewImplToJson(_$SongOverviewImpl instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$$SongOverviewImplToJson(_$SongOverviewImpl instance) =>
       'tempo': instance.tempo,
       'key': instance.key,
       'artist': instance.artist?.toJson(),
+      'isFavorite': instance.isFavorite,
     };

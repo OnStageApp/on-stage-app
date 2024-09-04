@@ -42,7 +42,7 @@ class EditorsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        BlueActionButton(
+        EventActionButton(
           onTap: () {},
           text: 'Invite People',
           icon: Icons.add,

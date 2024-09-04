@@ -16,11 +16,13 @@ final onStageLightTheme = ThemeData.from(
 
 final onStageDarkTheme = ThemeData.from(
   useMaterial3: true,
-  colorScheme: lightColorScheme,
+  colorScheme: darkColorScheme,
   textTheme: _onStageTextTheme,
 ).copyWith(
   cardTheme: const CardTheme(),
   splashColor: Colors.transparent,
+  highlightColor: Colors.transparent,
+  hoverColor: Colors.transparent,
 );
 
 final TextTheme _onStageTextTheme = TextTheme(
@@ -44,17 +46,17 @@ final TextTheme _onStageTextTheme = TextTheme(
   headlineLarge: GoogleFonts.dmSans(
     fontSize: 24,
     letterSpacing: 0,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
   ),
   headlineMedium: GoogleFonts.dmSans(
     fontSize: 18,
     letterSpacing: 0,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
   ),
   headlineSmall: GoogleFonts.dmSans(
     fontSize: 16,
     letterSpacing: 0,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
   ),
   titleLarge: GoogleFonts.dmSans(
     fontSize: 18,

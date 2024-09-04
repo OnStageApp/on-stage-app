@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -7,12 +8,14 @@ class ParticipantListingItem extends StatefulWidget {
     required this.name,
     required this.assetPath,
     required this.status,
+    required this.onDelete,
     super.key,
   });
 
   final String name;
   final String assetPath;
   final StagerStatusEnum status;
+  final VoidCallback onDelete;
 
   @override
   State<ParticipantListingItem> createState() => _ParticipantListingItemState();
@@ -21,27 +24,45 @@ class ParticipantListingItem extends StatefulWidget {
 class _ParticipantListingItemState extends State<ParticipantListingItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-        vertical: 8,
-      ),
-      child: Row(
+    return Slidable(
+      key: ValueKey(widget.name),
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        extentRatio: 0.3,
+        dismissible: DismissiblePane(onDismissed: widget.onDelete),
         children: [
-          Image.asset(
-            widget.assetPath,
-            width: 32,
-            height: 32,
+          SlidableAction(
+            onPressed: (_) => widget.onDelete,
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            // icon: Icons.delete,
+            label: 'Delete',
           ),
-          const SizedBox(width: 12),
-          Text(
-            widget.name,
-            style: context.textTheme.titleMedium,
-          ),
-          const Spacer(),
-          if (widget.status != StagerStatusEnum.UNINVINTED)
-            _statusIcon(widget.status),
         ],
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 8,
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              widget.assetPath,
+              width: 32,
+              height: 32,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              widget.name,
+              style: context.textTheme.titleMedium,
+            ),
+            const Spacer(),
+            if (widget.status != StagerStatusEnum.UNINVINTED)
+              _statusIcon(widget.status),
+          ],
+        ),
       ),
     );
   }
@@ -63,7 +84,6 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
           Icons.cancel,
           color: context.colorScheme.error,
         );
-
       case StagerStatusEnum.UNINVINTED:
         return const SizedBox();
     }

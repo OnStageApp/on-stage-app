@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_search_type.dart';
@@ -7,6 +8,7 @@ import 'package:on_stage_app/app/features/event/domain/models/events_response.da
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'events_notifier.g.dart';
@@ -29,6 +31,8 @@ class EventsNotifier extends _$EventsNotifier {
     try {
       final event = await _eventsRepository.getUpcomingEvent();
       state = state.copyWith(upcomingEvent: event, isLoading: false);
+    } on DioException catch (e) {
+      logger.e('Error getting upcoming event $e');
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }

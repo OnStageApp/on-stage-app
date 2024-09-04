@@ -206,6 +206,11 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             name: '${addedUsers[index].name}',
             assetPath: 'assets/images/profile1.png',
             status: StagerStatusEnum.UNINVINTED,
+            onDelete: () {
+              // ref
+              //     .read(eventControllerProvider.notifier)
+              //     .removeUser(addedUsers[index].id);
+            },
           );
         },
       ),
@@ -213,7 +218,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   }
 
   Widget _buildCreateRehearsalButton() {
-    return BlueActionButton(
+    return EventActionButton(
       onTap: () {
         CreateRehearsalModal.show(context: context);
       },
@@ -223,7 +228,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   }
 
   Widget _buildInvitePeopleButton() {
-    return BlueActionButton(
+    return EventActionButton(
       onTap: () {
         if (mounted) {
           AddParticipantsScreen.show(

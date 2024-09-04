@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class BlueActionButton extends StatelessWidget {
-  const BlueActionButton({
+class EventActionButton extends StatelessWidget {
+  const EventActionButton({
     required this.onTap,
     required this.text,
     super.key,

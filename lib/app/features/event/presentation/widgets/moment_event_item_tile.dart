@@ -153,6 +153,7 @@ class _EventItemTileState extends State<EventItemTile> {
 
   ActionPane _buildActionPane(BuildContext context) {
     return ActionPane(
+      extentRatio: 0.3,
       dragDismissible: false,
       motion: const ScrollMotion(),
       dismissible: DismissiblePane(onDismissed: () {}),

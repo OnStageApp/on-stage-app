@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:on_stage_app/app/shared/data/interceptors/connectivity_interceptor.dart';
 import 'package:on_stage_app/app/shared/data/interceptors/token_interceptor.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -27,7 +28,7 @@ Dio dio(DioRef ref) {
 
   dio.interceptors.add(TokenInterceptor(storage));
   dio.interceptors.add(prettyDioLogger);
-  // dio.interceptors.add(LoggerInterceptor());
+  dio.interceptors.add(ConnectivityInterceptor());
 
   return dio;
 }

@@ -39,14 +39,15 @@ class _RehearsalTileState extends State<RehearsalTile> {
         key: ValueKey(widget.dateTime),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
+          extentRatio: 0.3,
           dismissible: DismissiblePane(onDismissed: widget.onDelete),
           children: [
             SlidableAction(
               onPressed: (_) => widget.onDelete(),
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
-              icon: Icons.delete,
               label: 'Delete',
+              borderRadius: BorderRadius.circular(8),
             ),
           ],
         ),
