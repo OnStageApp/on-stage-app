@@ -46,8 +46,8 @@ class EventTile extends StatelessWidget {
                       Text(
                         TimeUtils().formatOnlyTime(dateTime),
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: context.colorScheme.surfaceDim,
-                            ),
+                          color: context.colorScheme.surfaceDim,
+                        ),
                       ),
                       _buildCircle(context),
                       Text(
@@ -55,8 +55,8 @@ class EventTile extends StatelessWidget {
                             ? TimeUtils().formatOnlyDate(dateTime)
                             : '',
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                              color: context.colorScheme.surfaceDim,
-                            ),
+                          color: context.colorScheme.surfaceDim,
+                        ),
                       ),
                     ],
                   ),

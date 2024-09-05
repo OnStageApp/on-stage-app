@@ -12,6 +12,6 @@ class NotificationNotifier extends _$NotificationNotifier {
   }
 
   Future<void> getNotifications() async {
-    state = SongDummy.notificationsDummy;
+    state = [...SongDummy.notificationsDummy];
   }
 }
