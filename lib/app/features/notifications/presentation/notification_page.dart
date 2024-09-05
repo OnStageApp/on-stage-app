@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
+import 'package:on_stage_app/app/shared/notification_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -14,6 +15,8 @@ class NotificationPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationNotifierProvider);
+
+    ref.read(notificationNotifierProvider.notifier).getNotifications();
     return Scaffold(
       appBar: StageAppBar(
         isBackButtonVisible: true,
@@ -80,17 +83,15 @@ class NotificationPage extends ConsumerWidget {
       itemBuilder: (context, index) {
         final notification = notifications[index];
         final leftTime = _getLeftTime(notification.dateTime);
-        final isNotificationNew = notification.dateTime
-            .isAfter(DateTime.now().subtract(const Duration(days: 1)));
 
-        return EventTile(
+
+        return NotificationTile(
           title: notification.title,
           dateTime: notification.dateTime,
-          onTap: () {},
-          hasActionButtons: notification.isInvitationConfirmed,
-          isNotification: true,
+          hasActions: notification.isInvitationConfirmed,
           leftTime: leftTime,
-          isNotificationNew: isNotificationNew,
+          seen: notification.seen,
+          onTap: () {},
         );
       },
     );

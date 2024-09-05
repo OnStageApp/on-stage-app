@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
-import 'package:on_stage_app/app/shared/invite_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
@@ -9,19 +8,12 @@ class EventTile extends StatelessWidget {
     required this.title,
     required this.dateTime,
     required this.onTap,
-    this.isNotification = false,
-    this.hasActionButtons = false,
-    this.isNotificationNew = false,
-    this.leftTime,
     super.key,
   });
 
   final String title;
   final DateTime? dateTime;
-  final bool isNotification;
-  final bool hasActionButtons;
-  final bool isNotificationNew;
-  final String? leftTime;
+
   final VoidCallback onTap;
 
   @override
@@ -38,111 +30,70 @@ class EventTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            if (isNotification) ...[
-              Text(
-                leftTime ?? '',
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.colorScheme.surfaceDim,
-                ),
-              ),
-              const SizedBox(height: 3),
-            ],
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 1,
+                  ),
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          if (isNotificationNew)
-                            _buildCircle(context, context.colorScheme.error),
-                          Text(
-                            title,
-                            style: context.textTheme.headlineMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                      Text(
+                        TimeUtils().formatOnlyTime(dateTime),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: context.colorScheme.surfaceDim,
+                        ),
                       ),
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Text(
-                            TimeUtils().formatOnlyTime(dateTime),
-                            style: context.textTheme.bodyMedium!.copyWith(
-                              color: context.colorScheme.surfaceDim,
-                            ),
-                          ),
-                          _buildCircle(context,
-                              context.colorScheme.outline.withOpacity(0.2)),
-                          Text(
-                            dateTime != null
+                      _buildCircle(context),
+                      Text(
+                        dateTime != null
                             ? TimeUtils().formatOnlyDate(dateTime)
                             : '',
-                            style: context.textTheme.bodyMedium!.copyWith(
-                              color: context.colorScheme.surfaceDim,
-                            ),
-                          ),
-                        ],
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: context.colorScheme.surfaceDim,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                const ParticipantsOnTile(
-                  borderColor: Colors.transparent,
-                  participantsProfile: [
-                    'assets/images/profile1.png',
-                    'assets/images/profile2.png',
-                    'assets/images/profile4.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-            if (hasActionButtons)
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InviteButton(
-                        text: 'Decline',
-                        onPressed: () {},
-                        isConfirm: false,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: InviteButton(
-                        text: 'Confirm',
-                        onPressed: () {},
-                        isConfirm: true,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+            _buildParticipantsTile(),
+            const Divider(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCircle(BuildContext context, Color backgroundColor) {
+  Widget _buildParticipantsTile() {
+    return const ParticipantsOnTile(
+      borderColor: Colors.transparent,
+      participantsProfile: [
+        'assets/images/profile1.png',
+        'assets/images/profile2.png',
+        'assets/images/profile4.png',
+        'assets/images/profile5.png',
+        'assets/images/profile5.png',
+        'assets/images/profile5.png',
+        'assets/images/profile5.png',
+        'assets/images/profile5.png',
+      ],
+    );
+  }
+
+  Widget _buildCircle(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Icon(
         Icons.circle,
         size: 8,
-        color: backgroundColor,
+        color: context.colorScheme.outline.withOpacity(0.2),
       ),
     );
   }
