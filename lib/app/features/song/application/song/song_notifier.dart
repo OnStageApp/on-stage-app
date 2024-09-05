@@ -72,7 +72,7 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void transpose(SongKey newTonality) {
-    final currentTonality = state.song.originalKey;
+    final currentTonality = state.song.songKey;
     final currentChord = currentTonality;
     final changedChord = newTonality;
     final currentSemitone = currentTonality!.isSharp ?? false;
@@ -98,8 +98,9 @@ class SongNotifier extends _$SongNotifier {
     }
 
     final newSong = state.song.copyWith(
-      songKey: newTonality,
-    );
+        //TODO: This has to be changeed using a song configuration
+        // songKey: newTonality,
+        );
 
     state = state.copyWith(
       transposeIncrement: difference,

@@ -1,8 +1,4 @@
-import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 
 class SongDummy {
   static const notificationsDummy = <StageNotification>[
@@ -166,118 +162,118 @@ class SongDummy {
   //   ),
   // ];
 
-  static const List<SongModel> playlist = [
-    SongModel(
-      id: '8',
-      title: 'Nu e munte prea mare',
-      lyrics: '<V1> Esti Marele "Eu sunt" [G] \n'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G]'
-          '<C> Esti Marele "Eu sunt" [G]'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G] \n'
-          'Ma odihnesc atunci cand Tu apari [Am]'
-          '<C1> Nu e munte[G] prea mare [G] \n'
-          'Nu-i pustiu prea uscat [D] \n'
-          'Nu e vale prea adanca [Am] \n'
-          'Nu-i nimic mu[G]lt prea greu [C] \n'
-          'Nimic mult prea greu [D]'
-          '<B1> Est[G]e pace in furtuni \n'
-          'La Cuvantul Tau si stele se supun \n'
-          'Mi-ai dat pu[G]terea Ta \n'
-          'Sa fiu mai mu[G]lt decat eu p[G]ot visa'
-          '<B> Si or[G]ice s-ar in[G]tampla [C] \n'
-          'Tu ra[G]mai de p[G]artea mea [G] \n'
-          'Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<B> Si orice s-ar intampla [C] \n'
-          'Tu ramai de partea mea [G/B] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<V> Si orice s-ar intampla [C] \n'
-          'Tu ramai de partea mea [G/B] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<V2> Esti Marele "Eu sunt" [G] \n'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G]',
-      key: 'G major',
-      createdAt: '2021-08-01T00:00:00.000Z',
-      updatedAt: '2021-08-01T00:00:00.000Z',
-      artist: Artist(id: '', name: 'BBSO', imageUrl: ''),
-      album: 'Tabara 477',
-      capo: 1,
-      songKey: SongKey(
-        name: 'G Major',
-        chord: ChordsEnum.G,
-        isMajor: true,
-        isSharp: false,
-      ),
-      originalKey: SongKey(
-        name: 'G Major',
-        chord: ChordsEnum.G,
-        isMajor: true,
-        isSharp: false,
-      ),
-    ),
-    SongModel(
-      id: '1',
-      title: 'Our Father',
-      lyrics: '<V1> Esti Marele "Eu sunt" [G] \n'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G]'
-          '<C> Esti Marele "Eu sunt" [G]'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G] \n'
-          'Ma odihnesc atunci cand Tu apari [Am]'
-          '<C1> Nu e munte[G] prea mare [G] \n'
-          'Nu-i pustiu prea uscat [D] \n'
-          'Nu e vale prea adanca [Am] \n'
-          'Nu-i nimic mu[G]lt prea greu [C] \n'
-          'Nimic mult prea greu [D]'
-          '<B1> Est[G]e pace in furtuni \n'
-          'La Cuvantul Tau si stele se supun \n'
-          'Mi-ai dat pu[G]terea Ta \n'
-          'Sa fiu mai mu[G]lt decat eu p[G]ot visa'
-          '<B> Si or[G]ice s-ar in[G]tampla [C] \n'
-          'Tu ra[G]mai de p[G]artea mea [G] \n'
-          'Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<B> Si orice s-ar intampla [C] \n'
-          'Tu ramai de partea mea [G/B] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<V> Si orice s-ar intampla [C] \n'
-          'Tu ramai de partea mea [G/B] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
-          'Universul de-ar cadea, Tu rescrii istoria [C] \n'
-          'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
-          '<V2> Esti Marele "Eu sunt" [G] \n'
-          'In lumina umbrei Tale ma ascund [Am]\n'
-          '[Em]Acoperit de har [G]',
-      key: 'A major',
-      createdAt: '2021-08-01T00:00:00.000Z',
-      updatedAt: '2021-08-01T00:00:00.000Z',
-      artist: Artist(id: '', name: 'TEST ARTIST', imageUrl: ''),
-      album: 'Tabara 477',
-      capo: 1,
-      songKey: SongKey(
-        name: 'A Major',
-        chord: ChordsEnum.A,
-        isMajor: true,
-        isSharp: false,
-      ),
-      originalKey: SongKey(
-        name: 'A Major',
-        chord: ChordsEnum.A,
-        isMajor: true,
-        isSharp: false,
-      ),
-    ),
-  ];
+  // static const List<SongModel> playlist = [
+  //   SongModel(
+  //     id: '8',
+  //     title: 'Nu e munte prea mare',
+  //     lyrics: '<V1> Esti Marele "Eu sunt" [G] \n'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G]'
+  //         '<C> Esti Marele "Eu sunt" [G]'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G] \n'
+  //         'Ma odihnesc atunci cand Tu apari [Am]'
+  //         '<C1> Nu e munte[G] prea mare [G] \n'
+  //         'Nu-i pustiu prea uscat [D] \n'
+  //         'Nu e vale prea adanca [Am] \n'
+  //         'Nu-i nimic mu[G]lt prea greu [C] \n'
+  //         'Nimic mult prea greu [D]'
+  //         '<B1> Est[G]e pace in furtuni \n'
+  //         'La Cuvantul Tau si stele se supun \n'
+  //         'Mi-ai dat pu[G]terea Ta \n'
+  //         'Sa fiu mai mu[G]lt decat eu p[G]ot visa'
+  //         '<B> Si or[G]ice s-ar in[G]tampla [C] \n'
+  //         'Tu ra[G]mai de p[G]artea mea [G] \n'
+  //         'Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<B> Si orice s-ar intampla [C] \n'
+  //         'Tu ramai de partea mea [G/B] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<V> Si orice s-ar intampla [C] \n'
+  //         'Tu ramai de partea mea [G/B] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<V2> Esti Marele "Eu sunt" [G] \n'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G]',
+  //     key: 'G major',
+  //     createdAt: '2021-08-01T00:00:00.000Z',
+  //     updatedAt: '2021-08-01T00:00:00.000Z',
+  //     artist: Artist(id: '', name: 'BBSO', imageUrl: ''),
+  //     album: 'Tabara 477',
+  //     capo: 1,
+  //     songKey: SongKey(
+  //       name: 'G Major',
+  //       chord: ChordsEnum.G,
+  //       isMajor: true,
+  //       isSharp: false,
+  //     ),
+  //     originalKey: SongKey(
+  //       name: 'G Major',
+  //       chord: ChordsEnum.G,
+  //       isMajor: true,
+  //       isSharp: false,
+  //     ),
+  //   ),
+  //   SongModel(
+  //     id: '1',
+  //     title: 'Our Father',
+  //     lyrics: '<V1> Esti Marele "Eu sunt" [G] \n'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G]'
+  //         '<C> Esti Marele "Eu sunt" [G]'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G] \n'
+  //         'Ma odihnesc atunci cand Tu apari [Am]'
+  //         '<C1> Nu e munte[G] prea mare [G] \n'
+  //         'Nu-i pustiu prea uscat [D] \n'
+  //         'Nu e vale prea adanca [Am] \n'
+  //         'Nu-i nimic mu[G]lt prea greu [C] \n'
+  //         'Nimic mult prea greu [D]'
+  //         '<B1> Est[G]e pace in furtuni \n'
+  //         'La Cuvantul Tau si stele se supun \n'
+  //         'Mi-ai dat pu[G]terea Ta \n'
+  //         'Sa fiu mai mu[G]lt decat eu p[G]ot visa'
+  //         '<B> Si or[G]ice s-ar in[G]tampla [C] \n'
+  //         'Tu ra[G]mai de p[G]artea mea [G] \n'
+  //         'Nu-i [Em/B7+1]nimic prea [Em]greu, pentru [Em]Domnul meu[Am] Nu-i asdasd  dasd ds dsnimic preaaaaaaaaaaaaaa [Em]greu, pentru [Em]Domnul meu[Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<B> Si orice s-ar intampla [C] \n'
+  //         'Tu ramai de partea mea [G/B] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<V> Si orice s-ar intampla [C] \n'
+  //         'Tu ramai de partea mea [G/B] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [Am] \n'
+  //         'Universul de-ar cadea, Tu rescrii istoria [C] \n'
+  //         'Nu-i nimic prea greu, pentru Domnul meu [G] \n'
+  //         '<V2> Esti Marele "Eu sunt" [G] \n'
+  //         'In lumina umbrei Tale ma ascund [Am]\n'
+  //         '[Em]Acoperit de har [G]',
+  //     key: 'A major',
+  //     createdAt: '2021-08-01T00:00:00.000Z',
+  //     updatedAt: '2021-08-01T00:00:00.000Z',
+  //     artist: Artist(id: '', name: 'TEST ARTIST', imageUrl: ''),
+  //     album: 'Tabara 477',
+  //     capo: 1,
+  //     songKey: SongKey(
+  //       name: 'A Major',
+  //       chord: ChordsEnum.A,
+  //       isMajor: true,
+  //       isSharp: false,
+  //     ),
+  //     originalKey: SongKey(
+  //       name: 'A Major',
+  //       chord: ChordsEnum.A,
+  //       isMajor: true,
+  //       isSharp: false,
+  //     ),
+  //   ),
+  // ];
 }

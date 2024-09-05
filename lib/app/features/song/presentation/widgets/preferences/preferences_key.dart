@@ -36,10 +36,8 @@ class PreferencesKey extends ConsumerWidget {
           onTap: () {
             ChangeKeyModal.show(
               context: context,
-              // tonality: ref.watch(songNotifierProvider).song.key!,
-              tonality: const SongKey(
-                name: 'C',
-              ),
+              songKey: ref.watch(songNotifierProvider).song.songKey ??
+                  const SongKey(),
             );
           },
         ),

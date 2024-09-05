@@ -6,15 +6,15 @@ part of 'tonality_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TonalityImpl _$$TonalityImplFromJson(Map<String, dynamic> json) =>
-    _$TonalityImpl(
+_$SongKeyImpl _$$SongKeyImplFromJson(Map<String, dynamic> json) =>
+    _$SongKeyImpl(
       name: json['name'] as String?,
       chord: $enumDecodeNullable(_$ChordsEnumEnumMap, json['chord']),
       isSharp: json['isSharp'] as bool?,
       isMajor: json['isMajor'] as bool?,
     );
 
-Map<String, dynamic> _$$TonalityImplToJson(_$TonalityImpl instance) =>
+Map<String, dynamic> _$$SongKeyImplToJson(_$SongKeyImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'chord': _$ChordsEnumEnumMap[instance.chord],

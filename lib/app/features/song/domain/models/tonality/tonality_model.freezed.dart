@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 SongKey _$SongKeyFromJson(Map<String, dynamic> json) {
-  return _Tonality.fromJson(json);
+  return _SongKey.fromJson(json);
 }
 
 /// @nodoc
@@ -78,21 +78,21 @@ class _$SongKeyCopyWithImpl<$Res, $Val extends SongKey>
 }
 
 /// @nodoc
-abstract class _$$TonalityImplCopyWith<$Res> implements $SongKeyCopyWith<$Res> {
-  factory _$$TonalityImplCopyWith(
-          _$TonalityImpl value, $Res Function(_$TonalityImpl) then) =
-      __$$TonalityImplCopyWithImpl<$Res>;
+abstract class _$$SongKeyImplCopyWith<$Res> implements $SongKeyCopyWith<$Res> {
+  factory _$$SongKeyImplCopyWith(
+          _$SongKeyImpl value, $Res Function(_$SongKeyImpl) then) =
+      __$$SongKeyImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String? name, ChordsEnum? chord, bool? isSharp, bool? isMajor});
 }
 
 /// @nodoc
-class __$$TonalityImplCopyWithImpl<$Res>
-    extends _$SongKeyCopyWithImpl<$Res, _$TonalityImpl>
-    implements _$$TonalityImplCopyWith<$Res> {
-  __$$TonalityImplCopyWithImpl(
-      _$TonalityImpl _value, $Res Function(_$TonalityImpl) _then)
+class __$$SongKeyImplCopyWithImpl<$Res>
+    extends _$SongKeyCopyWithImpl<$Res, _$SongKeyImpl>
+    implements _$$SongKeyImplCopyWith<$Res> {
+  __$$SongKeyImplCopyWithImpl(
+      _$SongKeyImpl _value, $Res Function(_$SongKeyImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -103,7 +103,7 @@ class __$$TonalityImplCopyWithImpl<$Res>
     Object? isSharp = freezed,
     Object? isMajor = freezed,
   }) {
-    return _then(_$TonalityImpl(
+    return _then(_$SongKeyImpl(
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -126,11 +126,11 @@ class __$$TonalityImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TonalityImpl implements _Tonality {
-  const _$TonalityImpl({this.name, this.chord, this.isSharp, this.isMajor});
+class _$SongKeyImpl implements _SongKey {
+  const _$SongKeyImpl({this.name, this.chord, this.isSharp, this.isMajor});
 
-  factory _$TonalityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TonalityImplFromJson(json);
+  factory _$SongKeyImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SongKeyImplFromJson(json);
 
   @override
   final String? name;
@@ -150,7 +150,7 @@ class _$TonalityImpl implements _Tonality {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TonalityImpl &&
+            other is _$SongKeyImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.chord, chord) || other.chord == chord) &&
             (identical(other.isSharp, isSharp) || other.isSharp == isSharp) &&
@@ -164,26 +164,25 @@ class _$TonalityImpl implements _Tonality {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$TonalityImplCopyWith<_$TonalityImpl> get copyWith =>
-      __$$TonalityImplCopyWithImpl<_$TonalityImpl>(this, _$identity);
+  _$$SongKeyImplCopyWith<_$SongKeyImpl> get copyWith =>
+      __$$SongKeyImplCopyWithImpl<_$SongKeyImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TonalityImplToJson(
+    return _$$SongKeyImplToJson(
       this,
     );
   }
 }
 
-abstract class _Tonality implements SongKey {
-  const factory _Tonality(
+abstract class _SongKey implements SongKey {
+  const factory _SongKey(
       {final String? name,
       final ChordsEnum? chord,
       final bool? isSharp,
-      final bool? isMajor}) = _$TonalityImpl;
+      final bool? isMajor}) = _$SongKeyImpl;
 
-  factory _Tonality.fromJson(Map<String, dynamic> json) =
-      _$TonalityImpl.fromJson;
+  factory _SongKey.fromJson(Map<String, dynamic> json) = _$SongKeyImpl.fromJson;
 
   @override
   String? get name;
@@ -195,6 +194,6 @@ abstract class _Tonality implements SongKey {
   bool? get isMajor;
   @override
   @JsonKey(ignore: true)
-  _$$TonalityImplCopyWith<_$TonalityImpl> get copyWith =>
+  _$$SongKeyImplCopyWith<_$SongKeyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

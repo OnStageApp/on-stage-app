@@ -12,18 +12,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ChangeKeyModal extends ConsumerStatefulWidget {
   const ChangeKeyModal(
-    this.tonality, {
+    this.songKey, {
     super.key,
   });
 
-  final SongKey tonality;
+  final SongKey songKey;
 
   @override
   ChangeKeyModalState createState() => ChangeKeyModalState();
 
   static void show({
     required BuildContext context,
-    required SongKey tonality,
+    required SongKey songKey,
   }) {
     showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surface,
@@ -35,7 +35,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
         },
         buildContent: () {
           return SingleChildScrollView(
-            child: ChangeKeyModal(tonality),
+            child: ChangeKeyModal(songKey),
           );
         },
       ),
@@ -44,11 +44,11 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
 }
 
 class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
-  late SongKey _tonality;
+  late SongKey _songKey;
 
   @override
   void initState() {
-    _tonality = widget.tonality;
+    _songKey = widget.songKey;
     super.initState();
   }
 
@@ -62,7 +62,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         children: [
           _buildKey(),
           const SizedBox(height: Insets.small),
-          _buildChordTypes(widget.tonality.isSharp ?? false),
+          _buildChordTypes(widget.songKey.isSharp ?? false),
           const SizedBox(height: Insets.normal),
           ContinueButton(
             text: 'Save',
@@ -86,7 +86,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               style: context.textTheme.titleSmall,
             ),
             Text(
-              widget.tonality.name ?? '',
+              widget.songKey.name ?? '',
               style: context.textTheme.titleSmall!.copyWith(
                 color: context.colorScheme.primary,
               ),
@@ -103,7 +103,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           ),
           child: Row(
             children: ChordsEnum.values.map((chord) {
-              if (chord == _tonality.chord) {
+              if (chord == _songKey.chord) {
                 return _buildChordLabel(chord, isSelected: true);
               }
               return _buildChordLabel(chord);
@@ -119,7 +119,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _tonality = _tonality.copyWith(chord: chord, isSharp: false);
+            _songKey = _songKey.copyWith(chord: chord, isSharp: false);
           });
         },
         child: Container(
@@ -155,20 +155,20 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           ChordTypeWidget(
             isEnabled: _getInactiveForEAndB(),
             chordType: 'b',
-            isSharp: _tonality.isSharp == false,
+            isSharp: _songKey.isSharp == false,
             onTap: () {
               setState(() {
-                _tonality = _tonality.copyWith(isSharp: false);
+                _songKey = _songKey.copyWith(isSharp: false);
               });
             },
           ),
           ChordTypeWidget(
             chordType: '#',
-            isSharp: _tonality.isSharp! == true,
+            isSharp: _songKey.isSharp! == true,
             onTap: _getInactiveForEAndB()
                 ? () {
                     setState(() {
-                      _tonality = _tonality.copyWith(isSharp: true);
+                      _songKey = _songKey.copyWith(isSharp: true);
                     });
                   }
                 : () {},
@@ -179,8 +179,8 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   bool _getInactiveForEAndB() {
-    return _tonality.chord!.name != ChordsEnum.E.name &&
-        _tonality.chord!.name != ChordEnum.B.name;
+    return _songKey.chord!.name != ChordsEnum.E.name &&
+        _songKey.chord!.name != ChordEnum.B.name;
   }
 
   TextStyle _getStyling() {
@@ -188,7 +188,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   Future<void> _submitForm() async {
-    ref.read(songNotifierProvider.notifier).transpose(_tonality);
+    ref.read(songNotifierProvider.notifier).transpose(_songKey);
     context.popDialog();
   }
 }

@@ -25,8 +25,6 @@ mixin _$SongModel {
   String? get lyrics => throw _privateConstructorUsedError;
   int? get tempo => throw _privateConstructorUsedError;
   String? get key => throw _privateConstructorUsedError;
-  SongKey? get songKey => throw _privateConstructorUsedError;
-  SongKey? get originalKey => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
   Artist? get artist => throw _privateConstructorUsedError;
@@ -50,16 +48,12 @@ abstract class $SongModelCopyWith<$Res> {
       String? lyrics,
       int? tempo,
       String? key,
-      SongKey? songKey,
-      SongKey? originalKey,
       String? createdAt,
       String? updatedAt,
       Artist? artist,
       String? album,
       int? capo});
 
-  $SongKeyCopyWith<$Res>? get songKey;
-  $SongKeyCopyWith<$Res>? get originalKey;
   $ArtistCopyWith<$Res>? get artist;
 }
 
@@ -81,8 +75,6 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
     Object? lyrics = freezed,
     Object? tempo = freezed,
     Object? key = freezed,
-    Object? songKey = freezed,
-    Object? originalKey = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? artist = freezed,
@@ -110,14 +102,6 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
               as String?,
-      songKey: freezed == songKey
-          ? _value.songKey
-          : songKey // ignore: cast_nullable_to_non_nullable
-              as SongKey?,
-      originalKey: freezed == originalKey
-          ? _value.originalKey
-          : originalKey // ignore: cast_nullable_to_non_nullable
-              as SongKey?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -139,30 +123,6 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
           : capo // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $SongKeyCopyWith<$Res>? get songKey {
-    if (_value.songKey == null) {
-      return null;
-    }
-
-    return $SongKeyCopyWith<$Res>(_value.songKey!, (value) {
-      return _then(_value.copyWith(songKey: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $SongKeyCopyWith<$Res>? get originalKey {
-    if (_value.originalKey == null) {
-      return null;
-    }
-
-    return $SongKeyCopyWith<$Res>(_value.originalKey!, (value) {
-      return _then(_value.copyWith(originalKey: value) as $Val);
-    });
   }
 
   @override
@@ -192,18 +152,12 @@ abstract class _$$SongModelImplCopyWith<$Res>
       String? lyrics,
       int? tempo,
       String? key,
-      SongKey? songKey,
-      SongKey? originalKey,
       String? createdAt,
       String? updatedAt,
       Artist? artist,
       String? album,
       int? capo});
 
-  @override
-  $SongKeyCopyWith<$Res>? get songKey;
-  @override
-  $SongKeyCopyWith<$Res>? get originalKey;
   @override
   $ArtistCopyWith<$Res>? get artist;
 }
@@ -224,8 +178,6 @@ class __$$SongModelImplCopyWithImpl<$Res>
     Object? lyrics = freezed,
     Object? tempo = freezed,
     Object? key = freezed,
-    Object? songKey = freezed,
-    Object? originalKey = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? artist = freezed,
@@ -253,14 +205,6 @@ class __$$SongModelImplCopyWithImpl<$Res>
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
               as String?,
-      songKey: freezed == songKey
-          ? _value.songKey
-          : songKey // ignore: cast_nullable_to_non_nullable
-              as SongKey?,
-      originalKey: freezed == originalKey
-          ? _value.originalKey
-          : originalKey // ignore: cast_nullable_to_non_nullable
-              as SongKey?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -287,20 +231,19 @@ class __$$SongModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SongModelImpl implements _SongModel {
+class _$SongModelImpl extends _SongModel {
   const _$SongModelImpl(
       {this.id,
       this.title,
       this.lyrics,
       this.tempo,
       this.key,
-      this.songKey = const SongKey(name: 'Default Key'),
-      this.originalKey = const SongKey(name: 'Oridinal Key'),
       this.createdAt,
       this.updatedAt,
       this.artist,
       this.album,
-      this.capo});
+      this.capo})
+      : super._();
 
   factory _$SongModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$SongModelImplFromJson(json);
@@ -316,12 +259,6 @@ class _$SongModelImpl implements _SongModel {
   @override
   final String? key;
   @override
-  @JsonKey()
-  final SongKey? songKey;
-  @override
-  @JsonKey()
-  final SongKey? originalKey;
-  @override
   final String? createdAt;
   @override
   final String? updatedAt;
@@ -334,7 +271,7 @@ class _$SongModelImpl implements _SongModel {
 
   @override
   String toString() {
-    return 'SongModel(id: $id, title: $title, lyrics: $lyrics, tempo: $tempo, key: $key, songKey: $songKey, originalKey: $originalKey, createdAt: $createdAt, updatedAt: $updatedAt, artist: $artist, album: $album, capo: $capo)';
+    return 'SongModel(id: $id, title: $title, lyrics: $lyrics, tempo: $tempo, key: $key, createdAt: $createdAt, updatedAt: $updatedAt, artist: $artist, album: $album, capo: $capo)';
   }
 
   @override
@@ -347,9 +284,6 @@ class _$SongModelImpl implements _SongModel {
             (identical(other.lyrics, lyrics) || other.lyrics == lyrics) &&
             (identical(other.tempo, tempo) || other.tempo == tempo) &&
             (identical(other.key, key) || other.key == key) &&
-            (identical(other.songKey, songKey) || other.songKey == songKey) &&
-            (identical(other.originalKey, originalKey) ||
-                other.originalKey == originalKey) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -362,7 +296,7 @@ class _$SongModelImpl implements _SongModel {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, title, lyrics, tempo, key,
-      songKey, originalKey, createdAt, updatedAt, artist, album, capo);
+      createdAt, updatedAt, artist, album, capo);
 
   @JsonKey(ignore: true)
   @override
@@ -378,20 +312,19 @@ class _$SongModelImpl implements _SongModel {
   }
 }
 
-abstract class _SongModel implements SongModel {
+abstract class _SongModel extends SongModel {
   const factory _SongModel(
       {final String? id,
       final String? title,
       final String? lyrics,
       final int? tempo,
       final String? key,
-      final SongKey? songKey,
-      final SongKey? originalKey,
       final String? createdAt,
       final String? updatedAt,
       final Artist? artist,
       final String? album,
       final int? capo}) = _$SongModelImpl;
+  const _SongModel._() : super._();
 
   factory _SongModel.fromJson(Map<String, dynamic> json) =
       _$SongModelImpl.fromJson;
@@ -406,10 +339,6 @@ abstract class _SongModel implements SongModel {
   int? get tempo;
   @override
   String? get key;
-  @override
-  SongKey? get songKey;
-  @override
-  SongKey? get originalKey;
   @override
   String? get createdAt;
   @override
