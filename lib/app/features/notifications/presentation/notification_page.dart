@@ -87,7 +87,7 @@ class NotificationPage extends ConsumerWidget {
           title: notification.title,
           dateTime: notification.dateTime,
           onTap: () {},
-          isNotificationHasActionButtons: notification.isInvitationConfirmed,
+          hasActionButtons: notification.isInvitationConfirmed,
           isNotification: true,
           leftTime: leftTime,
           isNotificationNew: isNotificationNew,

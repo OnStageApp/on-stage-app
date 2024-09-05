@@ -46,7 +46,7 @@ class InviteButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (isConfirm != true)
+          if (!isConfirm)
             Assets.icons.close.svg()
           else
             Assets.icons.confirm.svg(),

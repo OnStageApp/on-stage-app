@@ -29,9 +29,9 @@ class SongDummy {
     StageNotification(
       id: 1,
       title: 'Ready to go live?',
-      dateTime: DateTime(2024, 8, 13, 18, 30), // 6:30 PM
+      dateTime: DateTime(2024, 8, 22, 18, 30), // 6:30 PM
       createdAt: 'today',
-      isInvitationConfirmed: false,
+      isInvitationConfirmed: true,
     ),
     StageNotification(
       id: 1,

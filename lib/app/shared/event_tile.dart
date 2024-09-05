@@ -10,7 +10,7 @@ class EventTile extends StatelessWidget {
     required this.dateTime,
     required this.onTap,
     this.isNotification = false,
-    this.isNotificationHasActionButtons = false,
+    this.hasActionButtons = false,
     this.isNotificationNew = false,
     this.leftTime,
     super.key,
@@ -19,7 +19,7 @@ class EventTile extends StatelessWidget {
   final String title;
   final DateTime dateTime;
   final bool isNotification;
-  final bool isNotificationHasActionButtons;
+  final bool hasActionButtons;
   final bool isNotificationNew;
   final String? leftTime;
   final VoidCallback onTap;
@@ -73,20 +73,15 @@ class EventTile extends StatelessWidget {
                         children: [
                           Text(
                             TimeUtils().formatOnlyTime(dateTime),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
+                            style: context.textTheme.bodyMedium!.copyWith(
                               color: context.colorScheme.surfaceDim,
                             ),
                           ),
-                          _buildCircle(context, context.colorScheme.outline.withOpacity(0.2)),
+                          _buildCircle(context,
+                              context.colorScheme.outline.withOpacity(0.2)),
                           Text(
                             TimeUtils().formatOnlyDate(dateTime),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
+                            style: context.textTheme.bodyMedium!.copyWith(
                               color: context.colorScheme.surfaceDim,
                             ),
                           ),
@@ -110,7 +105,7 @@ class EventTile extends StatelessWidget {
                 ),
               ],
             ),
-            if (isNotificationHasActionButtons)
+            if (hasActionButtons)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Row(
@@ -149,5 +144,4 @@ class EventTile extends StatelessWidget {
       ),
     );
   }
-
 }
