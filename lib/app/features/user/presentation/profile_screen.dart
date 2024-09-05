@@ -292,7 +292,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ],
                         ),
                         onTap: () {
-                          context.goNamed(AppRoute.songs.name);
+                          context.goNamed(AppRoute.login.name);
                         },
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -49,8 +50,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 ContinueButton(
                   text: 'Login with Google',
-                  onPressed: () {
-                    ref.read(loginNotifierProvider.notifier).signInWithGoogle();
+                  onPressed: () async {
+                    final isSuccess = await ref
+                        .read(loginNotifierProvider.notifier)
+                        .signInWithGoogle();
+                    if (isSuccess && mounted) {
+                      context.goNamed(AppRoute.home.name);
+                    }
                   },
                   isEnabled: true,
                 ),

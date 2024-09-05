@@ -26,11 +26,11 @@ class LoginNotifier extends _$LoginNotifier {
     logger.i('init login provider state');
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     try {
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        return;
+        return false;
       }
 
       final googleAuth = await googleUser.authentication;
@@ -52,10 +52,13 @@ class LoginNotifier extends _$LoginNotifier {
           LoginRequest(firebaseToken: idToken),
         );
         await _saveAuthToken(authToken as String);
+        return true;
       }
+      return false;
     } catch (e, s) {
       logger.e('Failed to sign in with Google: $e, $s');
       state = LoginState(error: e.toString());
+      return false;
     }
   }
 
