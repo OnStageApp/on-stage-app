@@ -124,3 +124,10 @@ app.*.map.json
 !.idea/codeStyles/
 !.idea/dictionaries/
 !.idea/runConfigurations/
+
+lib/resources/generated
+
+**/*.freezed.dart
+**/*.g.dart
+**/*.config.dart
+**/*.gr.dart

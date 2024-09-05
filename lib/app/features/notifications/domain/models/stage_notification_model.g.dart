@@ -11,8 +11,9 @@ _$StageNotificationImpl _$$StageNotificationImplFromJson(
     _$StageNotificationImpl(
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
-      body: json['body'] as String,
+      dateTime: DateTime.parse(json['dateTime'] as String),
       createdAt: json['createdAt'] as String,
+      isInvitationConfirmed: json['isInvitationConfirmed'] as bool,
       friendId: json['friendId'] as String?,
       friendPhotoUrl: json['friendPhotoUrl'] as String?,
       eventId: json['eventId'] as String?,
@@ -23,8 +24,9 @@ Map<String, dynamic> _$$StageNotificationImplToJson(
     <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
-      'body': instance.body,
+      'dateTime': instance.dateTime.toIso8601String(),
       'createdAt': instance.createdAt,
+      'isInvitationConfirmed': instance.isInvitationConfirmed,
       'friendId': instance.friendId,
       'friendPhotoUrl': instance.friendPhotoUrl,
       'eventId': instance.eventId,
