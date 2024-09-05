@@ -6,7 +6,7 @@ part of 'chord_processor.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chordProcessorHash() => r'19b48e958981e30042f0264c1187ca2471bd9033';
+String _$chordProcessorHash() => r'86915406b825a60540ee3d837217d698a18072af';
 
 /// See also [ChordProcessor].
 @ProviderFor(ChordProcessor)

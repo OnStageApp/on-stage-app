@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -69,7 +69,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
   InkWell _buildTile(ThemeFilterEnum theme) {
     return InkWell(
       onTap: () {
-        ref.read(searchControllerProvider.notifier).setThemeFilter(
+        ref.read(searchNotifierProvider.notifier).setThemeFilter(
               _isItemSelected(theme) ? null : theme,
             );
       },
@@ -124,5 +124,5 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
   }
 
   bool _isItemSelected(ThemeFilterEnum theme) =>
-      ref.watch(searchControllerProvider).themeFilter == theme;
+      ref.watch(searchNotifierProvider).themeFilter == theme;
 }

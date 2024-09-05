@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
+import 'package:on_stage_app/app/features/event_items/application/controller/event_item_songs_controller.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -18,7 +19,7 @@ class AddSongsModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
@@ -31,21 +32,17 @@ class AddSongsModal extends ConsumerStatefulWidget {
       builder: (context) => NestedScrollModal(
         buildFooter: () => SizedBox(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
             child: Consumer(
               builder: (context, ref, _) {
                 return ContinueButton(
-                  hasShadow: true,
                   text: 'Add',
                   onPressed: () {
+                    final songs =
+                        ref.watch(eventItemSongsControllerProvider).songs;
                     ref
-                        .read(eventControllerProvider.notifier)
-                        .addSelectedSongsToEventItems();
+                        .read(eventItemsNotifierProvider.notifier)
+                        .addSelectedSongsToEventItemsCache(songs);
                     context.popDialog();
                   },
                   isEnabled: true,
@@ -87,11 +84,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
             focusNode: FocusNode(),
             controller: _searchController,
             onClosed: _clearSearch,
-            onChanged: (value) {
-              ref
-                  .read(songsNotifierProvider.notifier)
-                  .searchSongs(searchedText: value);
-            },
+            onChanged: (value) {},
           ),
           const SizedBox(height: 12),
           ListView.builder(
@@ -146,7 +139,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
                                           .songs
                                           .elementAt(index)
                                           .artist
-                                          ?.fullName ??
+                                          ?.name ??
                                       '',
                                   style: context.textTheme.titleSmall,
                                 ),
@@ -188,13 +181,13 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
   }
 
   void _addSong(int index) {
-    ref.read(eventControllerProvider.notifier).addSong(
+    ref.read(eventItemSongsControllerProvider.notifier).addSong(
           ref.read(songsNotifierProvider).songs.elementAt(index),
         );
   }
 
   void _removeSong(int index) {
-    ref.read(eventControllerProvider.notifier).removeSong(
+    ref.read(eventItemSongsControllerProvider.notifier).removeSong(
           ref.read(songsNotifierProvider).songs.elementAt(index),
         );
   }
@@ -204,7 +197,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
   }
 
   bool _isItemChecked(int index) =>
-      ref.watch(eventControllerProvider).songs.contains(
+      ref.watch(eventItemSongsControllerProvider).songs.contains(
             ref.read(songsNotifierProvider).songs.elementAt(index),
           );
 }

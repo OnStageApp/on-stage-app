@@ -15,7 +15,7 @@ import 'package:on_stage_app/app/utils/widget_utils.dart';
 
 class SongDetailWidget extends ConsumerStatefulWidget {
   const SongDetailWidget({
-    required this.lyrics,
+    // required this.lyrics,
     // required this.textStyle,
     // required this.chordStyle,
     // required this.structureStyle,
@@ -33,10 +33,10 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
-    this.chordNotation = ChordNotation.american,
+    this.chordNotation = ChordNotation.italian,
   });
 
-  final String lyrics;
+  // final String lyrics;
   // final TextStyle textStyle;
   // final TextStyle chordStyle;
   // final TextStyle structureStyle;

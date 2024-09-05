@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
-import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/event_overview_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/features/song/presentation/favorite_songs_screen.dart';
+import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 
@@ -38,6 +38,7 @@ enum AppRoute {
   vocalModal,
   addEventSongs,
   eventSettings,
+  editProfile,
 }
 
 class AppRouter {
@@ -84,8 +85,8 @@ class AppRouter {
                     name: AppRoute.song.name,
                     path: 'song',
                     builder: (context, state) {
-                      final song = state.extra! as SongModel;
-                      return SongDetailScreen(song);
+                      final songId = state.uri.queryParameters['songId']!;
+                      return SongDetailScreen(songId);
                     },
                   ),
                 ],
@@ -108,14 +109,25 @@ class AppRouter {
                   GoRoute(
                     name: AppRoute.addEventSongs.name,
                     path: 'addEventSongs',
-                    builder: (context, state) => const AddEventMomentsScreen(),
+                    builder: (context, state) {
+                      final eventId = state.uri.queryParameters['eventId']!;
+
+                      final isCreatingEvent =
+                          state.uri.queryParameters['isCreatingEvent'] ==
+                              'true';
+
+                      return AddEventMomentsScreen(
+                        eventId: eventId,
+                        isCreatingEvent: isCreatingEvent,
+                      );
+                    },
                   ),
                   GoRoute(
                     name: AppRoute.eventDetails.name,
                     path: 'eventDetails',
                     builder: (context, state) {
                       final eventId = state.uri.queryParameters['eventId'];
-                      return EventDetailsScreen(eventId!);
+                      return EventOverviewScreen(eventId!);
                     },
                     routes: [
                       GoRoute(
@@ -140,6 +152,11 @@ class AppRouter {
                 builder: (context, state) => const ProfileScreen(),
                 routes: [
                   GoRoute(
+                    name: AppRoute.editProfile.name,
+                    path: 'editProfile',
+                    builder: (context, state) => const EditProfileScreen(),
+                  ),
+                  GoRoute(
                     name: AppRoute.notification.name,
                     path: 'notification',
                     builder: (context, state) => const NotificationPage(),
@@ -147,7 +164,7 @@ class AppRouter {
                   GoRoute(
                     name: AppRoute.favorites.name,
                     path: 'favorites',
-                    builder: (context, state) => const FavoriteSongsScreen(),
+                    builder: (context, state) => const SavedSongsScreen(),
                   ),
                 ],
               ),

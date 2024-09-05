@@ -8,9 +8,9 @@ extension ChordViewModeEnumValues on ChordViewModeEnum {
   String get name {
     switch (this) {
       case ChordViewModeEnum.american:
-        return 'Chords';
+        return 'American Chords';
       case ChordViewModeEnum.italian:
-        return 'Chords';
+        return 'Italian Chords';
       case ChordViewModeEnum.number:
         return 'Numbers';
     }
@@ -21,7 +21,7 @@ extension ChordViewModeEnumValues on ChordViewModeEnum {
       case ChordViewModeEnum.american:
         return 'C#';
       case ChordViewModeEnum.italian:
-        return 'Do# Major';
+        return 'Do#';
       case ChordViewModeEnum.number:
         return 'IV';
     }

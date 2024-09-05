@@ -1,0 +1,4 @@
+enum EventStatus {
+  draft,
+  published,
+}

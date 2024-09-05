@@ -24,6 +24,6 @@ Map<String, dynamic> _$$SongConfigurationImplToJson(
     <String, dynamic>{
       'teamId': instance.teamId,
       'songId': instance.songId,
-      'songKey': instance.songKey,
-      'structure': instance.structure,
+      'songKey': instance.songKey?.toJson(),
+      'structure': instance.structure?.map((e) => e.toJson()).toList(),
     };

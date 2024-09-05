@@ -23,9 +23,8 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required SongKey tonality,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       isScrollControlled: true,
-      enableDrag: true,
       backgroundColor: const Color(0xFFF4F4F4),
       context: context,
       builder: (context) => FractionallySizedBox(

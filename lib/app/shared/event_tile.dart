@@ -17,7 +17,7 @@ class EventTile extends StatelessWidget {
   });
 
   final String title;
-  final DateTime dateTime;
+  final DateTime? dateTime;
   final bool isNotification;
   final bool hasActionButtons;
   final bool isNotificationNew;
@@ -80,7 +80,9 @@ class EventTile extends StatelessWidget {
                           _buildCircle(context,
                               context.colorScheme.outline.withOpacity(0.2)),
                           Text(
-                            TimeUtils().formatOnlyDate(dateTime),
+                            dateTime != null
+                            ? TimeUtils().formatOnlyDate(dateTime)
+                            : '',
                             style: context.textTheme.bodyMedium!.copyWith(
                               color: context.colorScheme.surfaceDim,
                             ),

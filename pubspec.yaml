@@ -49,8 +49,16 @@ dependencies:
   firebase_auth: ^5.1.4
   google_sign_in: ^6.2.1
   flutter_secure_storage: ^4.2.1
+  shimmer: ^3.0.0
+  pretty_dio_logger: ^1.4.0
+  sliver_tools: ^0.2.12
 
 
+  intl: any
+  vector_graphics: any
+  connectivity_plus: ^6.0.5
+  fpdart: ^1.1.0
+  toggle_switch: ^2.3.0
 dev_dependencies:
   build_runner: ^2.4.11
   custom_lint: ^0.6.4

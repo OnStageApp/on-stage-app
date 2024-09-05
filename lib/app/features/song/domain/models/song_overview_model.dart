@@ -9,9 +9,10 @@ class SongOverview with _$SongOverview {
   const factory SongOverview({
     required String id,
     String? title,
-    int? bpm,
+    int? tempo,
     String? key,
     Artist? artist,
+    @Default(false) bool isFavorite,
   }) = _SongOverview;
 
   factory SongOverview.fromJson(Map<String, dynamic> json) =>

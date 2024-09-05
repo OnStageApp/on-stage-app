@@ -21,7 +21,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required WidgetRef ref,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),
@@ -70,7 +70,6 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
           32,
         ),
         child: ContinueButton(
-          hasShadow: true,
           text: isOrderPage ? 'Save' : 'Add',
           onPressed: () {
             if (!isOrderPage) {

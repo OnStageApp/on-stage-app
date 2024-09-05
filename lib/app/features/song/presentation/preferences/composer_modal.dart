@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
-import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -22,7 +18,7 @@ class ComposerModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required WidgetRef ref,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),
@@ -37,37 +33,11 @@ class ComposerModal extends ConsumerStatefulWidget {
 }
 
 class ArtistModalState extends ConsumerState<ComposerModal> {
-
   // List<Section> _sections = [];
-   List<Artist> _addedArtists = [];
+  final List<Artist> _addedArtists = [];
   // bool isAddPage = false;
 
-  final List<Artist> _artists = [
-    const Artist(
-      id: 1,
-      fullName: 'BBSO',
-      songIds: [1, 2, 3],
-      imageUrl: 'assets/images/band1.png',
-    ),
-    const Artist(
-      id: 2,
-      fullName: 'Tabara 477',
-      songIds: [4, 5, 6],
-      imageUrl: 'assets/images/band2.png',
-    ),
-    const Artist(
-      id: 3,
-      fullName: 'El-Shaddai',
-      songIds: [7, 8, 9],
-      imageUrl: 'assets/images/band3.png',
-    ),
-    const Artist(
-      id: 4,
-      fullName: 'Hillsong',
-      songIds: [10, 11, 12],
-      imageUrl: 'assets/images/profile5.png',
-    ),
-  ];
+  final List<Artist> _artists = [];
 
   @override
   void initState() {
@@ -82,7 +52,7 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
   @override
   Widget build(BuildContext context) {
     return NestedScrollModal(
-      buildHeader: () =>  const ModalHeader(title: 'Search Composer'),
+      buildHeader: () => const ModalHeader(title: 'Search Composer'),
       buildFooter: () => _buildFooter(context),
       headerHeight: () {
         return 64;
@@ -104,7 +74,6 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
           32,
         ),
         child: ContinueButton(
-          hasShadow: true,
           text: 'Add',
           onPressed: () {
             context.popDialog();
@@ -114,7 +83,6 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
       ),
     );
   }
-
 
   Widget _buildAddStructures() {
     return Padding(
@@ -142,15 +110,15 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
                       width: 30,
                       height: 30,
                       alignment: Alignment.center,
-                     // key: ValueKey(_sections[index].structure.id),
-                     //  decoration: BoxDecoration(
-                     //    color: Colors.white,
-                     //    border: Border.all(
-                     //      color: Color(_artists[index].structure.item.color),
-                     //      width: 3,
-                     //    ),
-                     //    shape: BoxShape.circle,
-                     //  ),
+                      // key: ValueKey(_sections[index].structure.id),
+                      //  decoration: BoxDecoration(
+                      //    color: Colors.white,
+                      //    border: Border.all(
+                      //      color: Color(_artists[index].structure.item.color),
+                      //      width: 3,
+                      //    ),
+                      //    shape: BoxShape.circle,
+                      //  ),
                       child: CircleAvatar(
                         backgroundImage: AssetImage(_artists[index].imageUrl!),
                         radius: 12,
@@ -159,7 +127,7 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
                     Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: Text(
-                        _artists[index].fullName,
+                        _artists[index].name,
                         style: context.textTheme.titleSmall,
                       ),
                     ),
@@ -176,7 +144,7 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
 
                         // ref
                         //     .read(songNotifierProvider.notifier);
-                            //.updateSongSections(_artists);
+                        //.updateSongSections(_artists);
                       },
                       icon: Icon(
                         _isItemChecked(index)

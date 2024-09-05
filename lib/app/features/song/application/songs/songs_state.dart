@@ -1,33 +1,16 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
-class SongsState extends Equatable {
-  const SongsState({
-    this.songs = const [],
-    this.filteredSongs = const [],
-    this.isLoading = false,
-  });
+part 'songs_state.freezed.dart';
 
-  final List<SongOverview> songs;
-  final List<SongOverview> filteredSongs;
-
-  final bool isLoading;
-
-  @override
-  List<Object> get props => [
-        songs,
-        filteredSongs,
-      ];
-
-  SongsState copyWith({
-    List<SongOverview>? songs,
-    List<SongOverview>? filteredSongs,
-    bool? isLoading,
-  }) {
-    return SongsState(
-      songs: songs ?? this.songs,
-      filteredSongs: filteredSongs ?? this.filteredSongs,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
+@freezed
+class SongsState with _$SongsState {
+  const factory SongsState({
+    @Default([]) List<SongOverview> songs,
+    @Default([]) List<SongOverview> savedSongs,
+    @Default([]) List<SongOverview> filteredSongs,
+    @Default(false) bool isLoadingWithShimmer,
+    @Default(false) bool isLoading,
+    @Default(null) String? error,
+  }) = _SongsState;
 }

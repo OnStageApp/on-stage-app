@@ -48,7 +48,7 @@ class PreferencesVocalLead extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: context.colorScheme.onSurfaceVariant, width: 2),
+                        color: context.colorScheme.onSurfaceVariant, width: 2,),
                     color: const Color(0xFFF4F4F4),
                     borderRadius: BorderRadius.circular(7),
                   ),

@@ -18,7 +18,7 @@ class AddItemsToEventModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       useRootNavigator: true,
       backgroundColor: context.colorScheme.surface,
       context: context,

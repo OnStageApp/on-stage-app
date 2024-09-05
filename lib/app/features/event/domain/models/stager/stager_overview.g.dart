@@ -26,8 +26,8 @@ Map<String, dynamic> _$$StagerOverviewImplToJson(
     };
 
 const _$StagerStatusEnumEnumMap = {
-  StagerStatusEnum.uninvited: 'uninvited',
-  StagerStatusEnum.pending: 'pending',
-  StagerStatusEnum.accepted: 'accepted',
-  StagerStatusEnum.rejected: 'rejected',
+  StagerStatusEnum.UNINVINTED: 'UNINVINTED',
+  StagerStatusEnum.PENDING: 'PENDING',
+  StagerStatusEnum.CONFIRMED: 'CONFIRMED',
+  StagerStatusEnum.DECLINED: 'DECLINED',
 };

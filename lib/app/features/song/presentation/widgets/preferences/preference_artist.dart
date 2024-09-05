@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/artists_dummy.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -27,7 +27,7 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
 
   @override
   Widget build(BuildContext context) {
-    selectedArtist = ref.watch(searchControllerProvider).artistFilter;
+    selectedArtist = ref.watch(searchNotifierProvider).artistFilter;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,12 +40,13 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
         PreferencesActionTile(
           leadingWidget: selectedArtist != null
               ? CircleAvatar(
-                  backgroundImage: AssetImage(selectedArtist!.imageUrl!),
+                  backgroundImage: selectedArtist!.imageUrl != null
+                      ? AssetImage(selectedArtist!.imageUrl!)
+                      : null,
                   radius: 12,
                 )
               : const Icon(Icons.account_circle),
-          title: ref.watch(searchControllerProvider).artistFilter?.fullName ??
-              'All Artists',
+          title: ref.watch(searchNotifierProvider).artistFilter?.name ?? 'None',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
             ArtistModal.show(context: context);

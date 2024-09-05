@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
+import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -11,55 +12,70 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddParticipantsScreen extends ConsumerStatefulWidget {
-  const AddParticipantsScreen({super.key});
+  const AddParticipantsScreen({
+    required this.eventId,
+    this.onPressed,
+    super.key,
+  });
+
+  final String? eventId;
+  final void Function()? onPressed;
 
   @override
   AddParticipantsModalState createState() => AddParticipantsModalState();
 
   static void show({
     required BuildContext context,
+    String? eventId,
+    void Function()? onPressed,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-        minHeight: MediaQuery.of(context).size.height * 0.7,
-        maxWidth: MediaQuery.of(context).size.width,
+        minHeight: MediaQuery.of(context).size.height,
       ),
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildFooter: () => SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
-            child: Consumer(
-              builder: (context, ref, _) {
-                return ContinueButton(
-                  hasShadow: true,
-                  text:
-                      ref.watch(eventControllerProvider).invitePeopleButtonText,
-                  onPressed: () {
-                    context.popDialog();
-                  },
-                  isEnabled: true,
-                );
-              },
+      builder: (context) => Container(
+        margin: const EdgeInsets.only(top: 24),
+        child: NestedScrollModal(
+          buildFooter: () => SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                16,
+                16,
+                32,
+              ),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  return ContinueButton(
+                    text: ref
+                        .watch(eventControllerProvider)
+                        .invitePeopleButtonText,
+                    onPressed: () {
+                      if (onPressed != null) {
+                        onPressed();
+                      }
+                      context.popDialog();
+                    },
+                    isEnabled: true,
+                  );
+                },
+              ),
             ),
           ),
+          buildHeader: () => const ModalHeader(title: 'Add Participants'),
+          headerHeight: () {
+            return 64;
+          },
+          footerHeight: () {
+            return 64;
+          },
+          buildContent: () => AddParticipantsScreen(
+            eventId: eventId,
+          ),
         ),
-        buildHeader: () => const ModalHeader(title: 'Add Participants'),
-        headerHeight: () {
-          return 64;
-        },
-        footerHeight: () {
-          return 64;
-        },
-        buildContent: AddParticipantsScreen.new,
       ),
     );
   }
@@ -67,29 +83,38 @@ class AddParticipantsScreen extends ConsumerStatefulWidget {
 
 class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  late List<StagerOverview> _allParticipants = [];
-  List<StagerOverview> _searchedParticipants = [];
+  List<User> _searchedParticipants = [];
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(eventNotifierProvider.notifier).getStagers();
-      setState(() {
-        _allParticipants = ref.watch(eventNotifierProvider).stagers;
-        _searchedParticipants = _allParticipants;
-      });
+      _requestParticipants();
     });
+
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Listen to the provider changes
+  void _requestParticipants() {
+    if (widget.eventId != null) {
+      ref
+          .read(userNotifierProvider.notifier)
+          .getUninvitedUsersByEventId(widget.eventId!);
+    } else {
+      ref.read(userNotifierProvider.notifier).getAllUsers();
+    }
+  }
+
+  void _setParticipants() {
+    if (widget.eventId != null) {
+      _searchedParticipants = ref.watch(userNotifierProvider).uninvitedUsers;
+    } else {
+      _searchedParticipants = ref.watch(userNotifierProvider).users ?? [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    _setParticipants();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ref.watch(eventNotifierProvider).isLoading
@@ -109,21 +134,19 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          setState(() {
-                            if (_isItemChecked(index)) {
-                              ref
-                                  .read(eventControllerProvider.notifier)
-                                  .removeParticipant(
-                                    _searchedParticipants.elementAt(index),
-                                  );
-                            } else {
-                              ref
-                                  .read(eventControllerProvider.notifier)
-                                  .addParticipant(
-                                    _searchedParticipants.elementAt(index),
-                                  );
-                            }
-                          });
+                          if (_isItemChecked(index)) {
+                            ref
+                                .read(eventControllerProvider.notifier)
+                                .removeParticipant(
+                                  _searchedParticipants.elementAt(index),
+                                );
+                          } else {
+                            ref
+                                .read(eventControllerProvider.notifier)
+                                .addParticipant(
+                                  _searchedParticipants.elementAt(index),
+                                );
+                          }
                         },
                         child: Container(
                           height: 48,
@@ -161,9 +184,10 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
                                 ),
                                 child: Text(
                                   _searchedParticipants
-                                      .elementAt(index)
-                                      .firstName
-                                      .substring(0, 1),
+                                          .elementAt(index)
+                                          .name!
+                                          .substring(0, 1) ??
+                                      '',
                                   textAlign: TextAlign.center,
                                   style: context.textTheme.titleSmall,
                                 ),
@@ -171,9 +195,8 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 12),
                                 child: Text(
-                                  _searchedParticipants
-                                      .elementAt(index)
-                                      .firstName,
+                                  _searchedParticipants.elementAt(index).name ??
+                                      '',
                                   style: context.textTheme.titleSmall,
                                 ),
                               ),
@@ -208,39 +231,38 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
       focusNode: FocusNode(),
       controller: _searchController,
       onClosed: () {
-        setState(() {
-          _searchedParticipants =
-              _allParticipants.where((StagerOverview element) {
-            return element.firstName.toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                );
-          }).toList();
-        });
+        // setState(() {
+        //   _searchedParticipants = _allParticipants.where((User element) {
+        //     return element.name!.toLowerCase().contains(
+        //           _searchController.text.toLowerCase(),
+        //         );
+        //   }).toList();
+        // });
 
-        _clearSearch();
+        // _clearSearch();
       },
       onChanged: (value) {
         if (value.isEmpty) {
           _clearSearch();
         }
-        setState(() {
-          _searchedParticipants = _allParticipants.where((element) {
-            return element.firstName.toLowerCase().contains(
-                  _searchController.text.toLowerCase(),
-                );
-          }).toList();
-        });
+        // setState(() {
+        // _searchedParticipants = _allParticipants.where((element) {
+        //   return element.name!.toLowerCase().contains(
+        //         _searchController.text.toLowerCase(),
+        //       );
+        // }).toList();
+        // });
       },
     );
   }
 
   void _clearSearch() {
-    _searchController.clear();
-    _searchedParticipants = _allParticipants;
+    // _searchController.clear();
+    // _searchedParticipants = _allParticipants;
   }
 
   bool _isItemChecked(int index) => ref
       .watch(eventControllerProvider)
-      .addedParticipants
+      .addedUsers
       .contains(_searchedParticipants.elementAt(index));
 }

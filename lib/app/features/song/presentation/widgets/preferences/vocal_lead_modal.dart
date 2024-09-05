@@ -15,7 +15,7 @@ class VocalLeadModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
       backgroundColor: const Color(0xFFF4F4F4),
@@ -35,7 +35,6 @@ class VocalLeadModal extends ConsumerStatefulWidget {
               32,
             ),
             child: ContinueButton(
-              hasShadow: true,
               text: 'Add',
               onPressed: () {},
               isEnabled: true,

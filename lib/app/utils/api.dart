@@ -1,13 +1,9 @@
 class API {
-  static const String _API_URL_DEV = 'onstage-event-service.onrender.com';
-  static const String _API_URL_PROD = 'onstage-event-service.onrender.com';
-  static const String _API_URL_STAGE = 'onstage-event-service.onrender.com';
+  // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
-  static const String _FLAVOR_DEV = 'development';
-  static const String _FLAVOR_PROD = 'production';
-  static const String _FLAVOR_STAGE = 'stage';
+  static const String baseUrl = 'https://97d1-86-125-110-196.ngrok-free.app/';
 
-  static const String baseUrl = 'https://onstage-event-service.onrender.com/';
+  // static const String baseUrl = 'http://localhost:9000/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {
@@ -16,31 +12,32 @@ class API {
     return headers;
   }
 
-  static String get apiUrl {
-    switch (flavor) {
-      case _FLAVOR_DEV:
-        return _API_URL_DEV;
-      case _FLAVOR_PROD:
-        return _API_URL_PROD;
-      case _FLAVOR_STAGE:
-        return _API_URL_STAGE;
-      default:
-        return _API_URL_DEV;
-    }
-  }
-
-  static String get flavor {
-    return _FLAVOR_DEV;
-  }
-
   //Events
-  static const String getEvents = 'events?{startDate}&{endDate}&{search}';
-  static const String getEventById = 'events/{eventId}';
-  static const String createEvent = 'events';
+  static const String eventsByFilter = 'events?{startDate}&{endDate}&{search}';
+  static const String eventById = 'events/{id}';
+  static const String duplicateEvent = 'events/duplicate/{id}';
+  static const String events = 'events';
+  static const String rehearsals = 'rehearsals';
+  static const String rehearsalById = 'rehearsals/{id}';
+  static const String stagers = 'stagers';
+  static const String stagersById = 'stagers/{id}';
+  static const String eventItems = 'event-items';
+  static const String upcomingEvent = 'events/upcoming';
+
+  static const String artists = 'artists';
+
+  static const String reminders = 'reminders';
 
   //Songs
-  static const String getSongs = 'songs?{search}';
+  static const String getSongs = 'songs';
+  static const String getSongsById = 'songs/{id}';
+  static const String savedSongs = 'songs/favorites/{userId}';
+  static const String savedSongsWithUserId =
+      'songs/favorites/{songId}/{userId}';
 
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';
+
+  static const String users = 'users';
+  static const String uninvitedUsers = 'users/uninvited';
 }

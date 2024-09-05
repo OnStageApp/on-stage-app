@@ -62,7 +62,7 @@ class FriendsTile extends StatelessWidget {
                 size: 24,
                 color: context.colorScheme.secondary,
               ),
-            )
+            ),
           ],
         ),
       ],

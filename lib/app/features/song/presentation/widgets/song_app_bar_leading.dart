@@ -22,7 +22,7 @@ class SongAppBarLeading extends ConsumerWidget {
           onPressed: () {
             ChangeKeyModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.songKey!,
+              songKey: ref.watch(songNotifierProvider).song.songKey!,
             );
           },
           child: Container(

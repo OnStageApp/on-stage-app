@@ -8,28 +8,24 @@ part of 'stager.dart';
 
 _$StagerImpl _$$StagerImplFromJson(Map<String, dynamic> json) => _$StagerImpl(
       id: json['id'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      picture: json['picture'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      status: $enumDecode(_$StagerStatusEnumEnumMap, json['status']),
+      name: json['name'] as String?,
+      profilePicture: json['profilePicture'] as String?,
+      participationStatus: $enumDecodeNullable(
+          _$StagerStatusEnumEnumMap, json['participationStatus']),
     );
 
 Map<String, dynamic> _$$StagerImplToJson(_$StagerImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
-      'picture': instance.picture,
-      'email': instance.email,
-      'phone': instance.phone,
-      'status': _$StagerStatusEnumEnumMap[instance.status]!,
+      'name': instance.name,
+      'profilePicture': instance.profilePicture,
+      'participationStatus':
+          _$StagerStatusEnumEnumMap[instance.participationStatus],
     };
 
 const _$StagerStatusEnumEnumMap = {
-  StagerStatusEnum.uninvited: 'uninvited',
-  StagerStatusEnum.pending: 'pending',
-  StagerStatusEnum.accepted: 'accepted',
-  StagerStatusEnum.rejected: 'rejected',
+  StagerStatusEnum.UNINVINTED: 'UNINVINTED',
+  StagerStatusEnum.PENDING: 'PENDING',
+  StagerStatusEnum.CONFIRMED: 'CONFIRMED',
+  StagerStatusEnum.DECLINED: 'DECLINED',
 };

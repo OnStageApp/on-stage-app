@@ -14,34 +14,42 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Rehearsal _$RehearsalFromJson(Map<String, dynamic> json) {
-  return _Rehearsal.fromJson(json);
+RehearsalModel _$RehearsalModelFromJson(Map<String, dynamic> json) {
+  return _RehearsalModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Rehearsal {
+mixin _$RehearsalModel {
   String? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
+  String? get location => throw _privateConstructorUsedError;
   DateTime? get dateTime => throw _privateConstructorUsedError;
+  String? get eventId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $RehearsalCopyWith<Rehearsal> get copyWith =>
+  $RehearsalModelCopyWith<RehearsalModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $RehearsalCopyWith<$Res> {
-  factory $RehearsalCopyWith(Rehearsal value, $Res Function(Rehearsal) then) =
-      _$RehearsalCopyWithImpl<$Res, Rehearsal>;
+abstract class $RehearsalModelCopyWith<$Res> {
+  factory $RehearsalModelCopyWith(
+          RehearsalModel value, $Res Function(RehearsalModel) then) =
+      _$RehearsalModelCopyWithImpl<$Res, RehearsalModel>;
   @useResult
-  $Res call({String? id, String? name, DateTime? dateTime});
+  $Res call(
+      {String? id,
+      String? name,
+      String? location,
+      DateTime? dateTime,
+      String? eventId});
 }
 
 /// @nodoc
-class _$RehearsalCopyWithImpl<$Res, $Val extends Rehearsal>
-    implements $RehearsalCopyWith<$Res> {
-  _$RehearsalCopyWithImpl(this._value, this._then);
+class _$RehearsalModelCopyWithImpl<$Res, $Val extends RehearsalModel>
+    implements $RehearsalModelCopyWith<$Res> {
+  _$RehearsalModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -53,7 +61,9 @@ class _$RehearsalCopyWithImpl<$Res, $Val extends Rehearsal>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? location = freezed,
     Object? dateTime = freezed,
+    Object? eventId = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -64,31 +74,44 @@ class _$RehearsalCopyWithImpl<$Res, $Val extends Rehearsal>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       dateTime: freezed == dateTime
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      eventId: freezed == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$RehearsalImplCopyWith<$Res>
-    implements $RehearsalCopyWith<$Res> {
-  factory _$$RehearsalImplCopyWith(
-          _$RehearsalImpl value, $Res Function(_$RehearsalImpl) then) =
-      __$$RehearsalImplCopyWithImpl<$Res>;
+abstract class _$$RehearsalModelImplCopyWith<$Res>
+    implements $RehearsalModelCopyWith<$Res> {
+  factory _$$RehearsalModelImplCopyWith(_$RehearsalModelImpl value,
+          $Res Function(_$RehearsalModelImpl) then) =
+      __$$RehearsalModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, String? name, DateTime? dateTime});
+  $Res call(
+      {String? id,
+      String? name,
+      String? location,
+      DateTime? dateTime,
+      String? eventId});
 }
 
 /// @nodoc
-class __$$RehearsalImplCopyWithImpl<$Res>
-    extends _$RehearsalCopyWithImpl<$Res, _$RehearsalImpl>
-    implements _$$RehearsalImplCopyWith<$Res> {
-  __$$RehearsalImplCopyWithImpl(
-      _$RehearsalImpl _value, $Res Function(_$RehearsalImpl) _then)
+class __$$RehearsalModelImplCopyWithImpl<$Res>
+    extends _$RehearsalModelCopyWithImpl<$Res, _$RehearsalModelImpl>
+    implements _$$RehearsalModelImplCopyWith<$Res> {
+  __$$RehearsalModelImplCopyWithImpl(
+      _$RehearsalModelImpl _value, $Res Function(_$RehearsalModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -96,9 +119,11 @@ class __$$RehearsalImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? location = freezed,
     Object? dateTime = freezed,
+    Object? eventId = freezed,
   }) {
-    return _then(_$RehearsalImpl(
+    return _then(_$RehearsalModelImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -107,81 +132,104 @@ class __$$RehearsalImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
       dateTime: freezed == dateTime
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      eventId: freezed == eventId
+          ? _value.eventId
+          : eventId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$RehearsalImpl implements _Rehearsal {
-  const _$RehearsalImpl(
-      {required this.id, required this.name, required this.dateTime});
+class _$RehearsalModelImpl implements _RehearsalModel {
+  const _$RehearsalModelImpl(
+      {this.id, this.name, this.location, this.dateTime, this.eventId});
 
-  factory _$RehearsalImpl.fromJson(Map<String, dynamic> json) =>
-      _$$RehearsalImplFromJson(json);
+  factory _$RehearsalModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RehearsalModelImplFromJson(json);
 
   @override
   final String? id;
   @override
   final String? name;
   @override
+  final String? location;
+  @override
   final DateTime? dateTime;
+  @override
+  final String? eventId;
 
   @override
   String toString() {
-    return 'Rehearsal(id: $id, name: $name, dateTime: $dateTime)';
+    return 'RehearsalModel(id: $id, name: $name, location: $location, dateTime: $dateTime, eventId: $eventId)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$RehearsalImpl &&
+            other is _$RehearsalModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
             (identical(other.dateTime, dateTime) ||
-                other.dateTime == dateTime));
+                other.dateTime == dateTime) &&
+            (identical(other.eventId, eventId) || other.eventId == eventId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, dateTime);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, location, dateTime, eventId);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$RehearsalImplCopyWith<_$RehearsalImpl> get copyWith =>
-      __$$RehearsalImplCopyWithImpl<_$RehearsalImpl>(this, _$identity);
+  _$$RehearsalModelImplCopyWith<_$RehearsalModelImpl> get copyWith =>
+      __$$RehearsalModelImplCopyWithImpl<_$RehearsalModelImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$RehearsalImplToJson(
+    return _$$RehearsalModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _Rehearsal implements Rehearsal {
-  const factory _Rehearsal(
-      {required final String? id,
-      required final String? name,
-      required final DateTime? dateTime}) = _$RehearsalImpl;
+abstract class _RehearsalModel implements RehearsalModel {
+  const factory _RehearsalModel(
+      {final String? id,
+      final String? name,
+      final String? location,
+      final DateTime? dateTime,
+      final String? eventId}) = _$RehearsalModelImpl;
 
-  factory _Rehearsal.fromJson(Map<String, dynamic> json) =
-      _$RehearsalImpl.fromJson;
+  factory _RehearsalModel.fromJson(Map<String, dynamic> json) =
+      _$RehearsalModelImpl.fromJson;
 
   @override
   String? get id;
   @override
   String? get name;
   @override
+  String? get location;
+  @override
   DateTime? get dateTime;
   @override
+  String? get eventId;
+  @override
   @JsonKey(ignore: true)
-  _$$RehearsalImplCopyWith<_$RehearsalImpl> get copyWith =>
+  _$$RehearsalModelImplCopyWith<_$RehearsalModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

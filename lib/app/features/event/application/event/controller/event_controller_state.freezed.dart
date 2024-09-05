@@ -16,10 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$EventControllerState {
-  List<StagerOverview> get addedParticipants =>
-      throw _privateConstructorUsedError;
+  List<User> get addedUsers => throw _privateConstructorUsedError;
   String get invitePeopleButtonText => throw _privateConstructorUsedError;
-  List<Rehearsal> get rehearsals => throw _privateConstructorUsedError;
+  List<RehearsalModel> get rehearsals => throw _privateConstructorUsedError;
   List<SongOverview> get songs => throw _privateConstructorUsedError;
   List<String> get moments => throw _privateConstructorUsedError;
   List<EventItem> get eventItems => throw _privateConstructorUsedError;
@@ -39,9 +38,9 @@ abstract class $EventControllerStateCopyWith<$Res> {
       _$EventControllerStateCopyWithImpl<$Res, EventControllerState>;
   @useResult
   $Res call(
-      {List<StagerOverview> addedParticipants,
+      {List<User> addedUsers,
       String invitePeopleButtonText,
-      List<Rehearsal> rehearsals,
+      List<RehearsalModel> rehearsals,
       List<SongOverview> songs,
       List<String> moments,
       List<EventItem> eventItems,
@@ -64,7 +63,7 @@ class _$EventControllerStateCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? addedParticipants = null,
+    Object? addedUsers = null,
     Object? invitePeopleButtonText = null,
     Object? rehearsals = null,
     Object? songs = null,
@@ -75,10 +74,10 @@ class _$EventControllerStateCopyWithImpl<$Res,
     Object? dateTime = freezed,
   }) {
     return _then(_value.copyWith(
-      addedParticipants: null == addedParticipants
-          ? _value.addedParticipants
-          : addedParticipants // ignore: cast_nullable_to_non_nullable
-              as List<StagerOverview>,
+      addedUsers: null == addedUsers
+          ? _value.addedUsers
+          : addedUsers // ignore: cast_nullable_to_non_nullable
+              as List<User>,
       invitePeopleButtonText: null == invitePeopleButtonText
           ? _value.invitePeopleButtonText
           : invitePeopleButtonText // ignore: cast_nullable_to_non_nullable
@@ -86,7 +85,7 @@ class _$EventControllerStateCopyWithImpl<$Res,
       rehearsals: null == rehearsals
           ? _value.rehearsals
           : rehearsals // ignore: cast_nullable_to_non_nullable
-              as List<Rehearsal>,
+              as List<RehearsalModel>,
       songs: null == songs
           ? _value.songs
           : songs // ignore: cast_nullable_to_non_nullable
@@ -124,9 +123,9 @@ abstract class _$$EventControllerStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<StagerOverview> addedParticipants,
+      {List<User> addedUsers,
       String invitePeopleButtonText,
-      List<Rehearsal> rehearsals,
+      List<RehearsalModel> rehearsals,
       List<SongOverview> songs,
       List<String> moments,
       List<EventItem> eventItems,
@@ -146,7 +145,7 @@ class __$$EventControllerStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? addedParticipants = null,
+    Object? addedUsers = null,
     Object? invitePeopleButtonText = null,
     Object? rehearsals = null,
     Object? songs = null,
@@ -157,10 +156,10 @@ class __$$EventControllerStateImplCopyWithImpl<$Res>
     Object? dateTime = freezed,
   }) {
     return _then(_$EventControllerStateImpl(
-      addedParticipants: null == addedParticipants
-          ? _value._addedParticipants
-          : addedParticipants // ignore: cast_nullable_to_non_nullable
-              as List<StagerOverview>,
+      addedUsers: null == addedUsers
+          ? _value._addedUsers
+          : addedUsers // ignore: cast_nullable_to_non_nullable
+              as List<User>,
       invitePeopleButtonText: null == invitePeopleButtonText
           ? _value.invitePeopleButtonText
           : invitePeopleButtonText // ignore: cast_nullable_to_non_nullable
@@ -168,7 +167,7 @@ class __$$EventControllerStateImplCopyWithImpl<$Res>
       rehearsals: null == rehearsals
           ? _value._rehearsals
           : rehearsals // ignore: cast_nullable_to_non_nullable
-              as List<Rehearsal>,
+              as List<RehearsalModel>,
       songs: null == songs
           ? _value._songs
           : songs // ignore: cast_nullable_to_non_nullable
@@ -201,38 +200,37 @@ class __$$EventControllerStateImplCopyWithImpl<$Res>
 
 class _$EventControllerStateImpl implements _EventControllerState {
   const _$EventControllerStateImpl(
-      {final List<StagerOverview> addedParticipants = const [],
+      {final List<User> addedUsers = const [],
       this.invitePeopleButtonText = 'Invite People',
-      final List<Rehearsal> rehearsals = const [],
+      final List<RehearsalModel> rehearsals = const [],
       final List<SongOverview> songs = const [],
       final List<String> moments = const [],
       final List<EventItem> eventItems = const [],
       this.eventName = '',
       this.eventLocation = '',
       this.dateTime})
-      : _addedParticipants = addedParticipants,
+      : _addedUsers = addedUsers,
         _rehearsals = rehearsals,
         _songs = songs,
         _moments = moments,
         _eventItems = eventItems;
 
-  final List<StagerOverview> _addedParticipants;
+  final List<User> _addedUsers;
   @override
   @JsonKey()
-  List<StagerOverview> get addedParticipants {
-    if (_addedParticipants is EqualUnmodifiableListView)
-      return _addedParticipants;
+  List<User> get addedUsers {
+    if (_addedUsers is EqualUnmodifiableListView) return _addedUsers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_addedParticipants);
+    return EqualUnmodifiableListView(_addedUsers);
   }
 
   @override
   @JsonKey()
   final String invitePeopleButtonText;
-  final List<Rehearsal> _rehearsals;
+  final List<RehearsalModel> _rehearsals;
   @override
   @JsonKey()
-  List<Rehearsal> get rehearsals {
+  List<RehearsalModel> get rehearsals {
     if (_rehearsals is EqualUnmodifiableListView) return _rehearsals;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_rehearsals);
@@ -276,7 +274,7 @@ class _$EventControllerStateImpl implements _EventControllerState {
 
   @override
   String toString() {
-    return 'EventControllerState(addedParticipants: $addedParticipants, invitePeopleButtonText: $invitePeopleButtonText, rehearsals: $rehearsals, songs: $songs, moments: $moments, eventItems: $eventItems, eventName: $eventName, eventLocation: $eventLocation, dateTime: $dateTime)';
+    return 'EventControllerState(addedUsers: $addedUsers, invitePeopleButtonText: $invitePeopleButtonText, rehearsals: $rehearsals, songs: $songs, moments: $moments, eventItems: $eventItems, eventName: $eventName, eventLocation: $eventLocation, dateTime: $dateTime)';
   }
 
   @override
@@ -285,7 +283,7 @@ class _$EventControllerStateImpl implements _EventControllerState {
         (other.runtimeType == runtimeType &&
             other is _$EventControllerStateImpl &&
             const DeepCollectionEquality()
-                .equals(other._addedParticipants, _addedParticipants) &&
+                .equals(other._addedUsers, _addedUsers) &&
             (identical(other.invitePeopleButtonText, invitePeopleButtonText) ||
                 other.invitePeopleButtonText == invitePeopleButtonText) &&
             const DeepCollectionEquality()
@@ -305,7 +303,7 @@ class _$EventControllerStateImpl implements _EventControllerState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(_addedParticipants),
+      const DeepCollectionEquality().hash(_addedUsers),
       invitePeopleButtonText,
       const DeepCollectionEquality().hash(_rehearsals),
       const DeepCollectionEquality().hash(_songs),
@@ -326,9 +324,9 @@ class _$EventControllerStateImpl implements _EventControllerState {
 
 abstract class _EventControllerState implements EventControllerState {
   const factory _EventControllerState(
-      {final List<StagerOverview> addedParticipants,
+      {final List<User> addedUsers,
       final String invitePeopleButtonText,
-      final List<Rehearsal> rehearsals,
+      final List<RehearsalModel> rehearsals,
       final List<SongOverview> songs,
       final List<String> moments,
       final List<EventItem> eventItems,
@@ -337,11 +335,11 @@ abstract class _EventControllerState implements EventControllerState {
       final DateTime? dateTime}) = _$EventControllerStateImpl;
 
   @override
-  List<StagerOverview> get addedParticipants;
+  List<User> get addedUsers;
   @override
   String get invitePeopleButtonText;
   @override
-  List<Rehearsal> get rehearsals;
+  List<RehearsalModel> get rehearsals;
   @override
   List<SongOverview> get songs;
   @override

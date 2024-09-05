@@ -13,6 +13,8 @@ class CustomTextField extends StatelessWidget {
     this.enabled,
     this.onChanged,
     this.validator,
+    this.onTapOutside,
+    this.focusNode,
   });
 
   final String label;
@@ -21,7 +23,9 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final bool? enabled;
   final void Function(String)? onChanged;
+  final void Function()? onTapOutside;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +40,13 @@ class CustomTextField extends StatelessWidget {
         ),
         const SizedBox(height: Insets.small),
         TextFormField(
+          focusNode: focusNode ?? FocusNode(),
           enabled: enabled ?? true,
           style: context.textTheme.titleMedium!.copyWith(
             color: context.colorScheme.onSurface,
           ),
           onChanged: onChanged,
+          onEditingComplete: onTapOutside,
           controller: controller,
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint),
           validator: validator ??

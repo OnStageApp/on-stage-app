@@ -19,7 +19,7 @@ _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
     <String, dynamic>{
-      'favoriteSongs': instance.favoriteSongs,
+      'favoriteSongs': instance.favoriteSongs.map((e) => e.toJson()).toList(),
       'friendsId': instance.friendsId,
       'profileImage': instance.profileImage,
       'name': instance.name,

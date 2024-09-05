@@ -7,7 +7,7 @@ part of 'song_preferences_controller.dart';
 // **************************************************************************
 
 String _$songPreferencesControllerHash() =>
-    r'8c341dd2feba171e79e48dcfc72b50bd25770707';
+    r'1f6d7a4e1de655f06df388988d55e37fcc0416d9';
 
 /// See also [SongPreferencesController].
 @ProviderFor(SongPreferencesController)

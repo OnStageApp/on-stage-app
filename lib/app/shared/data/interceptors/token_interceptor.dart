@@ -9,14 +9,13 @@ class TokenInterceptor extends Interceptor {
 
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+      RequestOptions options, RequestInterceptorHandler handler,) async {
     final token = await storage.read(key: 'token');
 
     if (token != null) {
       logger.i('Token: $token');
       options.headers['Authorization'] = 'Bearer $token';
     }
-    // options.headers['Content-Type'] = 'application/json';
     return handler.next(options);
   }
 }

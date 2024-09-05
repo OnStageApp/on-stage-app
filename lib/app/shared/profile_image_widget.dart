@@ -7,9 +7,16 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ProfileImageWidget extends StatefulWidget {
-  const ProfileImageWidget({super.key, this.canChangeProfilePicture = false});
+  const ProfileImageWidget({
+    super.key,
+    this.canChangeProfilePicture = false,
+    this.profilePicture = '',
+    this.size = 100,
+  });
 
   final bool canChangeProfilePicture;
+  final String profilePicture;
+  final double size;
 
   @override
   State<ProfileImageWidget> createState() => _ProfileImageWidgetState();
@@ -32,40 +39,39 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        GestureDetector(
-          onTap: widget.canChangeProfilePicture
-              ? () => _showCustomBottomSheet(context)
-              : null,
-          child: Container(
-            decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: _imageBytes != null
-                ? Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: MemoryImage(_imageBytes!),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 64,
-                    ),
+    return GestureDetector(
+      onTap: widget.canChangeProfilePicture
+          ? () => _showCustomBottomSheet(context)
+          : null,
+      child: Container(
+        decoration: const BoxDecoration(shape: BoxShape.circle),
+        child: _imageBytes == null
+            ? Container(
+                width: widget.size,
+                height: widget.size,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: context.colorScheme.primaryContainer,
                   ),
-          ),
-        ),
-      ],
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: Image.asset('assets/images/profile_pic.avif').image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
+            : Container(
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: widget.size,
+                ),
+              ),
+      ),
     );
   }
 
@@ -83,8 +89,8 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
           margin: const EdgeInsets.only(right: 64, left: 64),
           child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (Set<MaterialState> states) {
+              backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                (Set<WidgetState> states) {
                   return context.colorScheme.onPrimary;
                 },
               ),
@@ -93,8 +99,8 @@ class _ProfileImageWidgetState extends State<ProfileImageWidget> {
             child: Text(
               'Change Profile Picture',
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                color: context.colorScheme.surface,
-              ),
+                    color: context.colorScheme.surface,
+                  ),
             ),
           ),
         ),

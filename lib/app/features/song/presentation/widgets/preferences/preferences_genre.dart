@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
-import 'package:on_stage_app/app/features/search/application/search_controller.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
@@ -9,7 +9,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferenceGenre extends ConsumerStatefulWidget {
-  const PreferenceGenre({Key? key}) : super(key: key);
+  const PreferenceGenre({super.key});
 
   @override
   PreferenceGenreState createState() => PreferenceGenreState();
@@ -38,7 +38,7 @@ class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
-            title: ref.watch(searchControllerProvider).genreFilter?.value ??
+            title: ref.watch(searchNotifierProvider).genreFilter?.value ??
                 'All Genres',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {

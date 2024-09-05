@@ -82,7 +82,7 @@ class AddStructureItemsWidgetState
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                            _sectionsSet.elementAt(index).structure.id),
+                            _sectionsSet.elementAt(index).structure.id,),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(

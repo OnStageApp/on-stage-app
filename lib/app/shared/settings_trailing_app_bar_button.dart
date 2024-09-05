@@ -12,23 +12,26 @@ class SettingsTrailingAppBarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
+    return IconButton(
+      style: IconButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        enableFeedback: true,
+        highlightColor: context.colorScheme.surfaceBright,
+        backgroundColor: context.colorScheme.onSurfaceVariant,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        padding: const EdgeInsets.all(8),
-        child: SvgPicture.asset(
-          'assets/icons/mixer_horizontal.svg',
-          colorFilter: ColorFilter.mode(
-            context.colorScheme.outline,
-            BlendMode.srcIn,
-          ),
-          height: 16,
-          width: 16,
+        padding: EdgeInsets.zero,
+      ),
+      onPressed: onTap,
+      icon: SvgPicture.asset(
+        'assets/icons/mixer_horizontal.svg',
+        colorFilter: ColorFilter.mode(
+          context.colorScheme.outline,
+          BlendMode.srcIn,
         ),
+        height: 16,
+        width: 16,
       ),
     );
   }

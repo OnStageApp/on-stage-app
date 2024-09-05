@@ -52,7 +52,7 @@ class AddItemButtonWidget extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

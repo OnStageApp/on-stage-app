@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -5,14 +6,13 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.d
 import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
-import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +22,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
-  List<SongOverview> _songs = List.empty(growable: true);
   final hasUpcomingEvent = true;
 
   @override
@@ -34,57 +33,68 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void initializeNotifiers() {
-    ref.read(songsNotifierProvider.notifier).init();
-    ref.read(notificationNotifierProvider.notifier).getNotifications();
-    ref.read(eventsNotifierProvider.notifier).init();
+    ref.read(songsNotifierProvider.notifier).getSongs();
+    ref.read(eventsNotifierProvider.notifier).getUpcomingEvent();
   }
 
   @override
   Widget build(BuildContext context) {
+    final songs = ref.watch(songsNotifierProvider).filteredSongs;
+
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          children: [
-            _buildTopBar(),
-            const SizedBox(height: Insets.large),
-            _buildEnhanced(hasUpcomingEvent),
-            const SizedBox(height: Insets.extraLarge),
-            Padding(
-              padding: defaultScreenHorizontalPadding,
-              child: Text(
-                'Recently Added',
-                style: context.textTheme.headlineMedium,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async {
+                await Future.wait([
+                  ref.read(songsNotifierProvider.notifier).getSongs(),
+                  ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+                ]);
+              },
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  _buildTopBar(),
+                  const SizedBox(height: Insets.large),
+                  _buildEnhanced(hasUpcomingEvent),
+                  const SizedBox(height: Insets.extraLarge),
+                ],
               ),
             ),
-            const SizedBox(height: Insets.large),
-            _buildRecentlyAdded(),
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  'Recently Added',
+                  style: context.textTheme.titleMedium,
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(top: Insets.smallNormal),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final song = songs[index];
+                    return Padding(
+                      padding: defaultScreenHorizontalPadding,
+                      child: Column(
+                        children: [
+                          SongTile(song: song),
+                          const SizedBox(height: Insets.smallNormal),
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: songs.length,
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildRecentlyAdded() {
-    _songs = ref.watch(songsNotifierProvider).filteredSongs;
-    return Padding(
-      padding: defaultScreenHorizontalPadding,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _songs.length,
-        itemBuilder: (context, index) {
-          final song = _songs[index];
-          return Column(
-            children: [
-              SongTile(
-                song: song,
-              ),
-              const SizedBox(
-                height: Insets.smallNormal,
-              ),
-            ],
-          );
-        },
       ),
     );
   }
@@ -103,9 +113,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(
-            width: Insets.smallNormal,
-          ),
+          const SizedBox(width: Insets.smallNormal),
           const NotificationWidget(),
         ],
       ),
@@ -113,6 +121,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
+    final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
     return Row(
       children: [
         SizedBox(
@@ -121,9 +130,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 8),
             child: UpcomingEventEnhanced(
-              title: 'Duminică seara la elsh',
-              hour: '18:00',
-              hasUpcomingEvent: hasUpcomingEvent,
+              onTap: () => context.pushNamed(
+                AppRoute.eventDetails.name,
+                queryParameters: {'eventId': upcomingEvent!.id},
+              ),
+              title: upcomingEvent?.name ?? 'Loading...',
+              hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
+              date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
+              hasUpcomingEvent: upcomingEvent != null,
             ),
           ),
         ),

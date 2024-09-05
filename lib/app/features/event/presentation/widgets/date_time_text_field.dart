@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -7,17 +6,15 @@ import 'package:on_stage_app/app/utils/date_time_formatters.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
+    required this.onDateTimeChanged,
     super.key,
-    required this.dateController,
-    required this.timeController,
-    this.onDateChanged,
-    this.onTimeChanged,
+    this.initialDateTime,
+    this.focusNode,
   });
 
-  final TextEditingController dateController;
-  final TextEditingController timeController;
-  final void Function(String)? onDateChanged;
-  final void Function(String)? onTimeChanged;
+  final void Function(String?) onDateTimeChanged;
+  final DateTime? initialDateTime;
+  final FocusNode? focusNode;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -25,9 +22,34 @@ class DateTimeTextFieldWidget extends StatefulWidget {
 }
 
 class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
+  final dateController = TextEditingController();
+  final timeController = TextEditingController();
+
   @override
   void initState() {
+    dateController.addListener(_updateCombinedDateTime);
+    timeController.addListener(_updateCombinedDateTime);
+    _initControllers();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    dateController.removeListener(_updateCombinedDateTime);
+    timeController.removeListener(_updateCombinedDateTime);
+    super.dispose();
+  }
+
+  void _initControllers() {
+    dateController.text =
+        widget.initialDateTime?.toIso8601String().substring(0, 10) ?? '';
+    timeController.text =
+        widget.initialDateTime?.toIso8601String().substring(11, 16) ?? '';
+  }
+
+  void _updateCombinedDateTime() {
+    final combinedString = '${dateController.text} ${timeController.text}';
+    widget.onDateTimeChanged(combinedString);
   }
 
   @override
@@ -45,9 +67,9 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               ),
               const SizedBox(height: 12),
               TextFormField(
-                controller: widget.dateController,
+                focusNode: widget.focusNode,
+                controller: dateController,
                 style: context.textTheme.titleSmall,
-                onChanged: widget.onDateChanged,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a date';
@@ -107,9 +129,8 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      controller: widget.timeController,
+                      controller: timeController,
                       style: context.textTheme.titleSmall,
-                      onChanged: widget.onTimeChanged,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a time';
@@ -160,28 +181,6 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
           ),
         ),
       ],
-    );
-  }
-
-  void _showDialog(Widget child) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6),
-        // The Bottom margin is provided to align the popup above the system
-        // navigation bar.
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        // Provide a background color for the popup.
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        // Use a SafeArea widget to avoid system overlaps.
-        child: SafeArea(
-          top: false,
-          child: child,
-        ),
-      ),
     );
   }
 }
