@@ -13,8 +13,6 @@ class SongModel with _$SongModel {
     String? lyrics,
     int? tempo,
     String? key,
-    @Default(SongKey(name: 'Default Key')) SongKey? songKey,
-    @Default(SongKey(name: 'Oridinal Key')) SongKey? originalKey,
     String? createdAt,
     String? updatedAt,
     Artist? artist,
@@ -24,4 +22,8 @@ class SongModel with _$SongModel {
 
   factory SongModel.fromJson(Map<String, dynamic> json) =>
       _$SongModelFromJson(json);
+
+  const SongModel._();
+
+  SongKey get songKey => SongKey.fromString(key);
 }

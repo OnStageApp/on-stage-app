@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/domain/models/event_items/event_
 import 'package:on_stage_app/app/features/event_items/application/event_items_state.dart';
 import 'package:on_stage_app/app/features/event_items/data/event_items_repository.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item_create.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item_type.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,6 +21,13 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     final dio = ref.read(dioProvider);
     _eventItemsRepository = EventItemsRepository(dio);
     return const EventItemsState();
+  }
+
+  List<String> getSongIds() {
+    return state.eventItems
+        .where((item) => item.eventType == EventItemType.song)
+        .map((item) => item.song!.id)
+        .toList();
   }
 
   Future<void> getEventItems(String evenId) async {

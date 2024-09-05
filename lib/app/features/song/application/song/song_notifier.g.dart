@@ -6,7 +6,7 @@ part of 'song_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$songNotifierHash() => r'2a8baf92e558e8b842e96389fca3575d41053477';
+String _$songNotifierHash() => r'87f72de188f3e0225343add221cc303ee2c11b65';
 
 /// See also [SongNotifier].
 @ProviderFor(SongNotifier)

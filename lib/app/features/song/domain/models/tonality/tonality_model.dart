@@ -11,7 +11,27 @@ class SongKey with _$SongKey {
     ChordsEnum? chord,
     bool? isSharp,
     bool? isMajor,
-  }) = _Tonality;
+  }) = _SongKey;
+
+  factory SongKey.fromString(String? keyString) {
+    if (keyString == null || keyString.isEmpty) {
+      return const SongKey(name: 'Default Key');
+    }
+
+    final isSharp = keyString.endsWith('#');
+    final chordEnum = ChordsEnum.values.firstWhere(
+      (chord) => chord.name == keyString.replaceAll('#', ''),
+      orElse: () => ChordsEnum.C,
+    );
+    final isMajor = !keyString.contains('m');
+
+    return SongKey(
+      name: keyString,
+      chord: chordEnum,
+      isSharp: isSharp,
+      isMajor: isMajor,
+    );
+  }
 
   factory SongKey.fromJson(Map<String, dynamic> json) =>
       _$SongKeyFromJson(json);
