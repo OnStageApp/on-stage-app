@@ -11,6 +11,7 @@ class StageNotification with _$StageNotification {
     required DateTime dateTime,
     required String createdAt,
     required bool isInvitationConfirmed,
+    required bool seen,
     String? friendId,
     String? friendPhotoUrl,
     String? eventId,
