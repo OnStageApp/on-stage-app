@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -30,12 +31,15 @@ class PreferencesKey extends ConsumerWidget {
               BlendMode.srcIn,
             ),
           ),
-          title: ref.watch(songNotifierProvider).song.originalKey!.name!,
+          title: ref.watch(songNotifierProvider).song.key!,
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
             ChangeKeyModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.songKey!,
+              // tonality: ref.watch(songNotifierProvider).song.key!,
+              tonality: const SongKey(
+                name: 'C',
+              ),
             );
           },
         ),

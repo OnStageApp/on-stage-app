@@ -194,21 +194,26 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
             ? context.colorScheme.primary
             : context.colorScheme.onSurfaceVariant,
       ),
-      child: InkWell(
-        onTap: () => SongFilterModal.show(context: context),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Icon(
-              Icons.filter_list,
-              color: _getFilterIconColor(),
-              size: 15,
-            ),
-            Text(
-              'Filter',
-              style: _getFilterTextStyle(),
-            ),
-          ],
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          overlayColor:
+              WidgetStateProperty.all(context.colorScheme.surfaceBright),
+          onTap: () => SongFilterModal.show(context: context),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(
+                Icons.filter_list,
+                color: _getFilterIconColor(),
+                size: 15,
+              ),
+              Text(
+                'Filter',
+                style: _getFilterTextStyle(),
+              ),
+            ],
+          ),
         ),
       ),
     );

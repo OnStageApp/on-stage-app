@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ContinueButton extends StatelessWidget {
@@ -7,14 +8,19 @@ class ContinueButton extends StatelessWidget {
     required this.onPressed,
     required this.isEnabled,
     this.hasShadow = true,
+    this.isLoading = false,
+    this.backgroundColor,
+    this.textColor,
     super.key,
   });
 
   final String text;
   final void Function() onPressed;
   final bool isEnabled;
-
+  final bool isLoading;
   final bool hasShadow;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,7 @@ class ContinueButton extends StatelessWidget {
           ),
           backgroundColor: WidgetStateProperty.all(
             isEnabled
-                ? context.colorScheme.primary
+                ? backgroundColor ?? context.colorScheme.primary
                 : context.colorScheme.outlineVariant,
           ),
           overlayColor: WidgetStateProperty.resolveWith<Color?>(
@@ -58,12 +64,20 @@ class ContinueButton extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: context.textTheme.titleMedium!.copyWith(
-            color: context.colorScheme.onPrimary,
-          ),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                child: LoadingIndicator(
+                  colors: [Colors.white],
+                  indicatorType: Indicator.lineSpinFadeLoader,
+                ),
+              )
+            : Text(
+                text,
+                style: context.textTheme.titleMedium!.copyWith(
+                  color: textColor ?? context.colorScheme.onPrimary,
+                ),
+              ),
       ),
     );
   }

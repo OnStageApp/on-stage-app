@@ -2,10 +2,11 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
+import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -15,18 +16,24 @@ part 'song_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class SongNotifier extends _$SongNotifier {
+  late final SongRepository _songRepository;
+
   bool isChorus = false;
 
   @override
   SongState build() {
+    final dio = ref.read(dioProvider);
+    _songRepository = SongRepository(dio);
     return const SongState();
   }
 
-  Future<void> init(SongModel song) async {
-    if (song.id.isNullEmptyOrWhitespace) {
+  Future<void> init(String songId) async {
+    if (songId.isNullEmptyOrWhitespace) {
       return;
     }
-    state = state.copyWith(song: song);
+    state = state.copyWith(isLoading: true);
+    final song = await _songRepository.getSong(songId: songId);
+    state = state.copyWith(song: song, isLoading: false);
     logger.i('init song with title: ${state.song.title}');
   }
 
@@ -104,10 +111,17 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(selectedSectionIndex: item);
   }
 
-  String getKeyName() => '${state.song.songKey?.chord?.name ?? ''}'
-      '${_getSharp()} ${_getMajorMinor()}';
+  String getKeyName() {
+    return state.song.songKey?.name ?? 'Default Key';
+    // ${state.song.songKey?.chord?.name ?? ''}'
+    // '${_getSharp()} ${_getMajorMinor()}';
+  }
 
-  String _getMajorMinor() => state.song.songKey!.isMajor! ? 'Major' : 'Minor';
+  String _getMajorMinor() {
+    return state.song.songKey?.isMajor ?? false ? 'Major' : 'Minor';
+  }
 
-  String _getSharp() => state.song.songKey!.isSharp! ? '#' : '';
+  String _getSharp() {
+    return state.song.songKey?.isSharp ?? false ? '#' : '';
+  }
 }

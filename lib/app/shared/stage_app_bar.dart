@@ -10,6 +10,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.trailing,
     this.isBackButtonVisible = false,
     this.background,
+    this.bottom,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? titleWidget;
   final bool isBackButtonVisible;
   final Widget? trailing;
+  final PreferredSize? bottom;
 
   final Color? background;
 
@@ -25,9 +27,10 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: isBackButtonVisible ? 16 : 0),
       child: AppBar(
+        bottom: bottom,
         backgroundColor: background ?? context.colorScheme.surface,
         leading: _buildLeading(context),
-        leadingWidth: 16,
+        leadingWidth: 20,
         centerTitle: false,
         title: titleWidget ??
             Text(
@@ -47,16 +50,13 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget? _buildLeading(BuildContext context) {
     if (isBackButtonVisible) {
-      return IconButton(
-        icon: Icon(
+      return InkWell(
+        onTap: () => context.pop(),
+        child: Icon(
           Icons.arrow_back_ios,
-          size: 20,
+          size: 22,
           color: context.colorScheme.outline,
         ),
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all(EdgeInsets.zero),
-        ),
-        onPressed: () => context.pop(),
       );
     }
     return null;

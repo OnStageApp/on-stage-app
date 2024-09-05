@@ -107,9 +107,12 @@ class $AssetsImagesGen {
   /// File path: assets/images/profile5.png
   AssetGenImage get profile5 => const AssetGenImage('assets/images/profile5.png');
 
+  /// File path: assets/images/profile_pic.avif
+  String get profilePic => 'assets/images/profile_pic.avif';
+
   /// List of all assets
   List<dynamic> get values =>
-      [band1, band2, band3, eventTileBackground, icLauncher, noEventsImage, onstageappLogo, pattern1, profile1, profile2, profile4, profile5];
+      [band1, band2, band3, eventTileBackground, icLauncher, noEventsImage, onstageappLogo, pattern1, profile1, profile2, profile4, profile5, profilePic];
 }
 
 class Assets {

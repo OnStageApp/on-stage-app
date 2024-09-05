@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/application/event/event_state.da
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
@@ -109,6 +110,23 @@ class EventNotifier extends _$EventNotifier {
     );
   }
 
+  Future<void> removeStagerFromEvent(String stagerId) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final deletedStagerId =
+          await _eventsRepository.removeStagerFromEvent(stagerId);
+
+      final stagers = await _eventsRepository.getStagersByEventId(
+        state.event!.id!,
+      );
+      state = state.copyWith(stagers: stagers);
+    } catch (e) {
+      // Handle error
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
   void updateEventLocation(String location) {
     final partialEvent = EventModel(
       location: location,
@@ -121,6 +139,26 @@ class EventNotifier extends _$EventNotifier {
       name: name,
     );
     unawaited(updateEvent(partialEvent));
+  }
+
+  Future<void> duplicateEvent(DateTime newDateTime, String eventName) async {
+    state = state.copyWith(isLoading: true);
+    final duplicateEventRequest = DuplicateEventRequest(
+      name: eventName,
+      dateTime: newDateTime.toIso8601String(),
+    );
+
+    final newEvent = await _eventsRepository.duplicateEvent(
+      state.event!.id!,
+      duplicateEventRequest,
+    );
+    state = state.copyWith(event: newEvent, isLoading: false);
+  }
+
+  Future<void> deleteEvent() async {
+    state = state.copyWith(isLoading: true);
+    await _eventsRepository.deleteEvent(state.event!.id!);
+    state = state.copyWith(isLoading: false);
   }
 
   CreateEventModel _createDraftEvent() {

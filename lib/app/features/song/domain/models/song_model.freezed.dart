@@ -23,13 +23,13 @@ mixin _$SongModel {
   String? get id => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   String? get lyrics => throw _privateConstructorUsedError;
-  int? get bpm => throw _privateConstructorUsedError;
+  int? get tempo => throw _privateConstructorUsedError;
   String? get key => throw _privateConstructorUsedError;
   SongKey? get songKey => throw _privateConstructorUsedError;
   SongKey? get originalKey => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
-  String? get artist => throw _privateConstructorUsedError;
+  Artist? get artist => throw _privateConstructorUsedError;
   String? get album => throw _privateConstructorUsedError;
   int? get capo => throw _privateConstructorUsedError;
 
@@ -48,18 +48,19 @@ abstract class $SongModelCopyWith<$Res> {
       {String? id,
       String? title,
       String? lyrics,
-      int? bpm,
+      int? tempo,
       String? key,
       SongKey? songKey,
       SongKey? originalKey,
       String? createdAt,
       String? updatedAt,
-      String? artist,
+      Artist? artist,
       String? album,
       int? capo});
 
   $SongKeyCopyWith<$Res>? get songKey;
   $SongKeyCopyWith<$Res>? get originalKey;
+  $ArtistCopyWith<$Res>? get artist;
 }
 
 /// @nodoc
@@ -78,7 +79,7 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
     Object? id = freezed,
     Object? title = freezed,
     Object? lyrics = freezed,
-    Object? bpm = freezed,
+    Object? tempo = freezed,
     Object? key = freezed,
     Object? songKey = freezed,
     Object? originalKey = freezed,
@@ -101,9 +102,9 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
               as String?,
-      bpm: freezed == bpm
-          ? _value.bpm
-          : bpm // ignore: cast_nullable_to_non_nullable
+      tempo: freezed == tempo
+          ? _value.tempo
+          : tempo // ignore: cast_nullable_to_non_nullable
               as int?,
       key: freezed == key
           ? _value.key
@@ -128,7 +129,7 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
       artist: freezed == artist
           ? _value.artist
           : artist // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Artist?,
       album: freezed == album
           ? _value.album
           : album // ignore: cast_nullable_to_non_nullable
@@ -163,6 +164,18 @@ class _$SongModelCopyWithImpl<$Res, $Val extends SongModel>
       return _then(_value.copyWith(originalKey: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ArtistCopyWith<$Res>? get artist {
+    if (_value.artist == null) {
+      return null;
+    }
+
+    return $ArtistCopyWith<$Res>(_value.artist!, (value) {
+      return _then(_value.copyWith(artist: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -177,13 +190,13 @@ abstract class _$$SongModelImplCopyWith<$Res>
       {String? id,
       String? title,
       String? lyrics,
-      int? bpm,
+      int? tempo,
       String? key,
       SongKey? songKey,
       SongKey? originalKey,
       String? createdAt,
       String? updatedAt,
-      String? artist,
+      Artist? artist,
       String? album,
       int? capo});
 
@@ -191,6 +204,8 @@ abstract class _$$SongModelImplCopyWith<$Res>
   $SongKeyCopyWith<$Res>? get songKey;
   @override
   $SongKeyCopyWith<$Res>? get originalKey;
+  @override
+  $ArtistCopyWith<$Res>? get artist;
 }
 
 /// @nodoc
@@ -207,7 +222,7 @@ class __$$SongModelImplCopyWithImpl<$Res>
     Object? id = freezed,
     Object? title = freezed,
     Object? lyrics = freezed,
-    Object? bpm = freezed,
+    Object? tempo = freezed,
     Object? key = freezed,
     Object? songKey = freezed,
     Object? originalKey = freezed,
@@ -230,9 +245,9 @@ class __$$SongModelImplCopyWithImpl<$Res>
           ? _value.lyrics
           : lyrics // ignore: cast_nullable_to_non_nullable
               as String?,
-      bpm: freezed == bpm
-          ? _value.bpm
-          : bpm // ignore: cast_nullable_to_non_nullable
+      tempo: freezed == tempo
+          ? _value.tempo
+          : tempo // ignore: cast_nullable_to_non_nullable
               as int?,
       key: freezed == key
           ? _value.key
@@ -257,7 +272,7 @@ class __$$SongModelImplCopyWithImpl<$Res>
       artist: freezed == artist
           ? _value.artist
           : artist // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Artist?,
       album: freezed == album
           ? _value.album
           : album // ignore: cast_nullable_to_non_nullable
@@ -277,10 +292,10 @@ class _$SongModelImpl implements _SongModel {
       {this.id,
       this.title,
       this.lyrics,
-      this.bpm,
+      this.tempo,
       this.key,
-      this.songKey,
-      this.originalKey,
+      this.songKey = const SongKey(name: 'Default Key'),
+      this.originalKey = const SongKey(name: 'Oridinal Key'),
       this.createdAt,
       this.updatedAt,
       this.artist,
@@ -297,19 +312,21 @@ class _$SongModelImpl implements _SongModel {
   @override
   final String? lyrics;
   @override
-  final int? bpm;
+  final int? tempo;
   @override
   final String? key;
   @override
+  @JsonKey()
   final SongKey? songKey;
   @override
+  @JsonKey()
   final SongKey? originalKey;
   @override
   final String? createdAt;
   @override
   final String? updatedAt;
   @override
-  final String? artist;
+  final Artist? artist;
   @override
   final String? album;
   @override
@@ -317,7 +334,7 @@ class _$SongModelImpl implements _SongModel {
 
   @override
   String toString() {
-    return 'SongModel(id: $id, title: $title, lyrics: $lyrics, bpm: $bpm, key: $key, songKey: $songKey, originalKey: $originalKey, createdAt: $createdAt, updatedAt: $updatedAt, artist: $artist, album: $album, capo: $capo)';
+    return 'SongModel(id: $id, title: $title, lyrics: $lyrics, tempo: $tempo, key: $key, songKey: $songKey, originalKey: $originalKey, createdAt: $createdAt, updatedAt: $updatedAt, artist: $artist, album: $album, capo: $capo)';
   }
 
   @override
@@ -328,7 +345,7 @@ class _$SongModelImpl implements _SongModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.lyrics, lyrics) || other.lyrics == lyrics) &&
-            (identical(other.bpm, bpm) || other.bpm == bpm) &&
+            (identical(other.tempo, tempo) || other.tempo == tempo) &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.songKey, songKey) || other.songKey == songKey) &&
             (identical(other.originalKey, originalKey) ||
@@ -344,7 +361,7 @@ class _$SongModelImpl implements _SongModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, lyrics, bpm, key,
+  int get hashCode => Object.hash(runtimeType, id, title, lyrics, tempo, key,
       songKey, originalKey, createdAt, updatedAt, artist, album, capo);
 
   @JsonKey(ignore: true)
@@ -366,13 +383,13 @@ abstract class _SongModel implements SongModel {
       {final String? id,
       final String? title,
       final String? lyrics,
-      final int? bpm,
+      final int? tempo,
       final String? key,
       final SongKey? songKey,
       final SongKey? originalKey,
       final String? createdAt,
       final String? updatedAt,
-      final String? artist,
+      final Artist? artist,
       final String? album,
       final int? capo}) = _$SongModelImpl;
 
@@ -386,7 +403,7 @@ abstract class _SongModel implements SongModel {
   @override
   String? get lyrics;
   @override
-  int? get bpm;
+  int? get tempo;
   @override
   String? get key;
   @override
@@ -398,7 +415,7 @@ abstract class _SongModel implements SongModel {
   @override
   String? get updatedAt;
   @override
-  String? get artist;
+  Artist? get artist;
   @override
   String? get album;
   @override

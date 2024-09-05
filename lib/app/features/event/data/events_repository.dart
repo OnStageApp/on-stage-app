@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_items_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
@@ -67,9 +68,25 @@ abstract class EventsRepository {
     @Body() CreateStagerRequest createStagerRequest,
   );
 
+  @DELETE(API.stagersById)
+  Future<String> removeStagerFromEvent(
+    @Path('id') String id,
+  );
+
   @PUT(API.eventById)
   Future<EventModel> updateEvent(
     @Path('id') String eventId,
     @Body() EventModel event,
+  );
+
+  @POST(API.duplicateEvent)
+  Future<EventModel> duplicateEvent(
+    @Path('id') String id,
+    @Body() DuplicateEventRequest duplicateEventRequest,
+  );
+
+  @DELETE(API.eventById)
+  Future<void> deleteEvent(
+    @Path('id') String eventId,
   );
 }
