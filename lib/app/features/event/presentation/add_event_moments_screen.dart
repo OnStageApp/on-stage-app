@@ -7,17 +7,20 @@ import 'package:on_stage_app/app/features/event_items/application/event_items_no
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
 class AddEventMomentsScreen extends ConsumerStatefulWidget {
   const AddEventMomentsScreen({
     required this.eventId,
     required this.isCreatingEvent,
+    this.onSave,
     super.key,
   });
 
   final bool isCreatingEvent;
   final String eventId;
+  final void Function()? onSave;
 
   @override
   AddEventMomentsScreenState createState() => AddEventMomentsScreenState();
@@ -28,6 +31,11 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(eventItemsNotifierProvider.notifier)
+          .getEventItems(widget.eventId);
+    });
     super.initState();
   }
 
@@ -36,6 +44,12 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
 
     return Scaffold(
+      appBar: widget.isCreatingEvent
+          ? const StageAppBar(
+              title: 'Create Event',
+              isBackButtonVisible: true,
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _isAdmin ? _buildSaveButton() : null,
       body: Padding(
@@ -69,9 +83,8 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         AppRoute.eventDetails.name,
         queryParameters: {'eventId': widget.eventId},
       );
-    } else {
-      context.pop();
-    }
+    } else {}
+    widget.onSave?.call();
   }
 
   Widget _buildStaticList(List<EventItem> eventItems) {
@@ -123,8 +136,17 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         if (eventItem.song == null) {
           return;
         }
-        final queryParams = {'songId': eventItem.song?.id ?? ''};
-        context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
+        final eventItems = ref.watch(eventItemsNotifierProvider).songEventItems;
+
+        final queryParams = {
+          'currentIndex': eventItems.indexOf(eventItem).toString(),
+        };
+
+        context.pushNamed(
+          AppRoute.song.name,
+          queryParameters: queryParams,
+          extra: eventItems,
+        );
       },
       isAdmin: _isAdmin,
     );

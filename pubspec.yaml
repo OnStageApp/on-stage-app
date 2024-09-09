@@ -59,6 +59,7 @@ dependencies:
   connectivity_plus: ^6.0.5
   fpdart: ^1.1.0
   toggle_switch: ^2.3.0
+  flutter_image_compress: ^2.3.0
 dev_dependencies:
   build_runner: ^2.4.11
   custom_lint: ^0.6.4

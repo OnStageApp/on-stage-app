@@ -14,6 +14,7 @@ class SongState extends Equatable {
     this.document,
     this.selectedSectionIndex,
     this.songConfiguration,
+    this.processingSong = false,
   });
 
   final ChordLyricsDocument? document;
@@ -23,7 +24,7 @@ class SongState extends Equatable {
   final List<Section> sections;
   final int transposeIncremenet;
   final StructureItem? selectedSectionIndex;
-
+  final bool processingSong;
   final SongConfiguration? songConfiguration;
 
   @override
@@ -34,6 +35,7 @@ class SongState extends Equatable {
 
   SongState copyWith({
     bool? isLoading,
+    bool? processingSong,
     List<Section>? sections,
     SongModel? song,
     int? transposeIncrement,
@@ -47,6 +49,7 @@ class SongState extends Equatable {
       transposeIncremenet: transposeIncrement ?? transposeIncremenet,
       selectedSectionIndex: selectedSectionIndex ?? this.selectedSectionIndex,
       document: document ?? this.document,
+      processingSong: processingSong ?? this.processingSong,
     );
   }
 }

@@ -40,4 +40,6 @@ class API {
 
   static const String users = 'users';
   static const String uninvitedUsers = 'users/uninvited';
+  static const String user = 'users/{id}';
+  static const String userPhoto = 'users/{userId}/photo';
 }

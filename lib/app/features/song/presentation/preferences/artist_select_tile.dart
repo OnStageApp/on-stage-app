@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
 class ArtistSelectTile extends StatelessWidget {
-
   const ArtistSelectTile({
     required this.artist,
     required this.onTap,
@@ -22,7 +21,7 @@ class ArtistSelectTile extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 12,
-              backgroundImage: AssetImage(artist.imageUrl!),
+              // backgroundImage: AssetImage(artist.imageUrl!),
             ),
             const SizedBox(width: 12),
             Text(
