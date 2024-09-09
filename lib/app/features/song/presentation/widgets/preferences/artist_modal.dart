@@ -111,14 +111,15 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: _artists.elementAt(index).imageUrl != null
-                            ? Image.asset(
-                                _artists.elementAt(index).imageUrl ?? '',
-                              )
-                            : Icon(
-                                Icons.person,
-                                color: context.colorScheme.surfaceDim,
-                              ),
+                        // child: _artists.elementAt(index).imageUrl != null
+                        //     ? Image.asset(
+                        //         _artists.elementAt(index).imageUrl ?? '',
+                        //       )
+                        //     :
+                        child: Icon(
+                          Icons.person,
+                          color: context.colorScheme.surfaceDim,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),

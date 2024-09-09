@@ -95,6 +95,9 @@ class EventOverviewScreenState extends ConsumerState<EventOverviewScreen>
                 AddEventMomentsScreen(
                   eventId: event.id!,
                   isCreatingEvent: false,
+                  onSave: () {
+                    _tabController.animateTo(0);
+                  },
                 ),
               ],
             ),

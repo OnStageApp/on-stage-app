@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
+import 'package:on_stage_app/app/features/team/presentation/team_preview_modal.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/theme/theme_state.dart';
@@ -24,6 +23,15 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _value = false;
+
+  @override
+  void initState() {
+    //TODO: It's not changing the state if it's not loading or smth
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userNotifierProvider.notifier).getCurrentUser();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +51,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   height: 105,
                   child: Row(
                     children: [
-                      const ProfileImageWidget(),
+                      ProfileImageWidget(
+                        profilePicture:
+                            ref.watch(userNotifierProvider).currentUser?.image,
+                      ),
                       const SizedBox(width: 22),
                       Expanded(
                         child: Column(
@@ -114,32 +125,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'App Settings',
-                      style: context.textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 12),
-                    CustomSwitchListTile(
-                      title: 'Dark Mode',
-                      icon: Icons.dark_mode,
-                      value:
-                          ref.watch(themeProvider).theme != onStageLightTheme,
-                      onSwitch: (value) {
-                        ref.read(themeProvider.notifier).toggleTheme();
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    CustomSwitchListTile(
-                      title: 'Notifications',
-                      icon: Icons.notifications,
-                      value: !_value,
-                      onSwitch: (value) {
-                        setState(() {
-                          _value = !value;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
                       'Song View',
                       style: context.textTheme.titleSmall,
                     ),
@@ -171,47 +156,124 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'Friends',
+                      'Teams',
+                      style: context.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 12),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.onSurfaceVariant,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            ),
+                            title: Text(
+                              'Team Name',
+                              style: context.textTheme.headlineMedium,
+                            ),
+                            subtitle: Text(
+                              '4 Members',
+                              style: context.textTheme.bodyMedium!.copyWith(
+                                color: context.colorScheme.outline,
+                              ),
+                            ),
+                            trailing: const ParticipantsOnTile(
+                              participantsProfile: [
+                                'assets/images/profile1.png',
+                                'assets/images/profile2.png',
+                                'assets/images/profile4.png',
+                                'assets/images/profile5.png',
+                                'assets/images/profile5.png',
+                                'assets/images/profile5.png',
+                                'assets/images/profile5.png',
+                                'assets/images/profile5.png',
+                              ],
+                            ),
+                            onTap: () {
+                              TeamPreviewModal.show(context: context);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Membership',
                       style: context.textTheme.titleSmall,
                     ),
                     const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6,
-                        horizontal: 12,
-                      ),
                       decoration: BoxDecoration(
                         color: context.colorScheme.onSurfaceVariant,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: 4,
-                        itemBuilder: (context, index) {
-                          return ParticipantListingItem(
-                            name: 'Eugen Ionescu',
-                            assetPath: 'assets/images/profile1.png',
-                            status: StagerStatusEnum.UNINVINTED,
-                            onDelete: () {},
-                          );
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.person,
+                          color: context.colorScheme.outline,
+                        ),
+                        dense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                        title: Text(
+                          'Free Plan',
+                          style: context.textTheme.titleMedium,
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'Upgrade',
+                            style: context.textTheme.titleMedium!
+                                .copyWith(color: context.colorScheme.outline),
+                          ),
+                        ),
+                        onTap: () {
+                          context.goNamed(AppRoute.favorites.name);
                         },
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    EventActionButton(
-                      onTap: () {
-                        if (mounted) {
-                          AddParticipantsScreen.show(
-                            context: context,
-                            onPressed: () {},
-                          );
-                        }
-                      },
-                      text: 'Invite People',
-                      icon: Icons.add,
+                    const SizedBox(height: 24),
+                    Text(
+                      'App Settings',
+                      style: context.textTheme.titleSmall,
                     ),
                     const SizedBox(height: 12),
+                    CustomSwitchListTile(
+                      title: 'Dark Mode',
+                      icon: Icons.dark_mode,
+                      value:
+                          ref.watch(themeProvider).theme != onStageLightTheme,
+                      onSwitch: (value) {
+                        ref.read(themeProvider.notifier).toggleTheme();
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomSwitchListTile(
+                      title: 'Notifications',
+                      icon: Icons.notifications,
+                      value: !_value,
+                      onSwitch: (value) {
+                        setState(() {
+                          _value = !value;
+                        });
+                      },
+                    ),
                     const SizedBox(height: 24),
                     Text(
                       'Library',

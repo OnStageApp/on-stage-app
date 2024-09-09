@@ -38,14 +38,15 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
         ),
         const SizedBox(height: Insets.small),
         PreferencesActionTile(
-          leadingWidget: selectedArtist != null
-              ? CircleAvatar(
-                  backgroundImage: selectedArtist!.imageUrl != null
-                      ? AssetImage(selectedArtist!.imageUrl!)
-                      : null,
-                  radius: 12,
-                )
-              : const Icon(Icons.account_circle),
+          // leadingWidget: selectedArtist != null
+          //     ? CircleAvatar(
+          //         backgroundImage: selectedArtist!.imageUrl != null
+          //             ? AssetImage(selectedArtist!.imageUrl!)
+          //             : null,
+          //         radius: 12,
+          //       )
+          //     :
+          leadingWidget: const Icon(Icons.account_circle),
           title: ref.watch(searchNotifierProvider).artistFilter?.name ?? 'None',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {

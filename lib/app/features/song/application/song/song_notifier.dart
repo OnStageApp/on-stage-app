@@ -37,6 +37,10 @@ class SongNotifier extends _$SongNotifier {
     logger.i('init song with title: ${state.song.title}');
   }
 
+  void setProcessingSongLoading(bool isLoading) {
+    state = state.copyWith(processingSong: isLoading);
+  }
+
   void getSections(List<ChordLyricsLine> lines) {
     final sections = <Section>[];
     var items = <ChordLyricsLine>[];
@@ -78,7 +82,7 @@ class SongNotifier extends _$SongNotifier {
     final currentSemitone = currentTonality!.isSharp ?? false;
     final changedSemitone = newTonality.isSharp ?? false;
 
-    var currentChordValue = currentChord!.chord!.value;
+    var currentChordValue = currentChord.chord!.value;
     var changedChordValue = changedChord.chord!.value;
 
     if (currentSemitone) {
@@ -110,19 +114,5 @@ class SongNotifier extends _$SongNotifier {
 
   void selectSection(StructureItem item) {
     state = state.copyWith(selectedSectionIndex: item);
-  }
-
-  String getKeyName() {
-    return state.song.songKey?.name ?? 'Default Key';
-    // ${state.song.songKey?.chord?.name ?? ''}'
-    // '${_getSharp()} ${_getMajorMinor()}';
-  }
-
-  String _getMajorMinor() {
-    return state.song.songKey?.isMajor ?? false ? 'Major' : 'Minor';
-  }
-
-  String _getSharp() {
-    return state.song.songKey?.isSharp ?? false ? '#' : '';
   }
 }

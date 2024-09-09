@@ -113,8 +113,7 @@ class EventNotifier extends _$EventNotifier {
   Future<void> removeStagerFromEvent(String stagerId) async {
     state = state.copyWith(isLoading: true);
     try {
-      final deletedStagerId =
-          await _eventsRepository.removeStagerFromEvent(stagerId);
+      await _eventsRepository.removeStagerFromEvent(stagerId);
 
       final stagers = await _eventsRepository.getStagersByEventId(
         state.event!.id!,

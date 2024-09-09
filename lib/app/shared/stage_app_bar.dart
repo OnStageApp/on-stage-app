@@ -63,5 +63,11 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(defaultAppBarHeight);
+  Size get preferredSize {
+    var appBarHeight = defaultAppBarHeight;
+    if (bottom != null) {
+      appBarHeight += bottom!.preferredSize.height;
+    }
+    return Size.fromHeight(appBarHeight);
+  }
 }

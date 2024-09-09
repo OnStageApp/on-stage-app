@@ -65,7 +65,6 @@ class EditableStructureListState extends ConsumerState<EditableStructureList> {
   }
 
   void _listenChangesForStructure() {
-    // TODO(antonio): In future, listen just section changes
     ref.listen<SongState>(songNotifierProvider, (previous, next) {
       setState(() {
         _widgets = calculate();

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
@@ -17,6 +18,15 @@ class UserNotifier extends _$UserNotifier {
     final dio = ref.read(dioProvider);
     _usersRepository = UserRepository(dio);
     return const UserState();
+  }
+
+  Future<void> getCurrentUser() async {
+    state = state.copyWith(isLoading: true);
+    await _usersRepository
+        .getUserById('9zNhTEXqVXdbXZoUczUtWK3OJq63')
+        .then((user) {
+      state = state.copyWith(currentUser: user, isLoading: false);
+    });
   }
 
   Future<void> init() async {
@@ -38,6 +48,21 @@ class UserNotifier extends _$UserNotifier {
       // Handle error
     } finally {
       state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> uploadPhoto(File image) async {
+    try {
+      await _usersRepository.updateUserImage(
+        state.currentUser!.id,
+        image,
+      );
+      final currentUser =
+          await _usersRepository.getUserById(state.currentUser!.id);
+      state = state.copyWith(currentUser: currentUser);
+    } catch (e) {
+      print('error $e');
+      // Handle error
     }
   }
 }

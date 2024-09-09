@@ -33,7 +33,12 @@ class EventItemsNotifier extends _$EventItemsNotifier {
   Future<void> getEventItems(String evenId) async {
     state = state.copyWith(isLoading: true);
     final eventItems = await _eventItemsRepository.getEventItems(evenId);
-    state = state.copyWith(eventItems: eventItems, isLoading: false);
+    final songEventItems = _getSongEventItems(eventItems);
+    state = state.copyWith(
+      songEventItems: songEventItems,
+      eventItems: eventItems,
+      isLoading: false,
+    );
   }
 
   Future<void> addEventItems(List<EventItem> eventItems, String eventId) async {
@@ -68,6 +73,12 @@ class EventItemsNotifier extends _$EventItemsNotifier {
           .where((item) => item.index != eventItem.index)
           .toList(),
     );
+  }
+
+  List<EventItem> _getSongEventItems(List<EventItem> eventItems) {
+    return eventItems
+        .where((item) => item.eventType == EventItemType.song)
+        .toList();
   }
 
   // void addMomentCache(String moment) {

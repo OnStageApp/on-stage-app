@@ -1,15 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
-import 'package:on_stage_app/app/shared/close_header.dart';
-import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -19,8 +18,6 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
-  Uint8List? _imageBytes;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +50,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       backgroundColor: context.colorScheme.onSurfaceVariant,
                     ),
                     onPressed: () {
-                      _showCustomBottomSheet(context);
+                      AddPhotoModal.show(
+                        context: context,
+                      );
                     },
                     child: Text(
                       'Edit Photo',
@@ -76,18 +75,47 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   onChanged: (value) {},
                 ),
                 const SizedBox(height: 12),
-                CustomTextField(
-                  label: 'Role',
-                  hint: 'Chit. Bass',
-                  icon: Icons.church,
-                  controller: TextEditingController(),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an event name';
-                    }
-                    return null;
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Positions',
+                    style: context.textTheme.titleSmall,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  tileColor: context.colorScheme.onSurfaceVariant,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ),
+                  dense: true,
+                  title: Text(
+                    'Chit. Bass',
+                    style: context.textTheme.titleMedium!
+                        .copyWith(color: context.colorScheme.outline),
+                  ),
+                  trailing: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    child: Center(
+                      child: Assets.icons.arrowForward.svg(),
+                    ),
+                  ),
+                  onTap: () {
+                    ChoosePositionModal.show(
+                      context: context,
+                      ref: ref,
+                      onSaved: (i) {},
+                      cacheReminders: [123],
+                    );
                   },
-                  onChanged: (value) {},
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
@@ -123,50 +151,5 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _showCustomBottomSheet(BuildContext context) async {
-    await showModalBottomSheet(
-      backgroundColor: Colors.white,
-      context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => const CloseHeader(
-          title: SizedBox(),
-        ),
-        headerHeight: () => CloseHeader.height,
-        footerHeight: () => 64,
-        buildContent: () => Container(
-          margin: const EdgeInsets.only(right: 64, left: 64),
-          child: ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                (Set<WidgetState> states) {
-                  return context.colorScheme.onPrimary;
-                },
-              ),
-            ),
-            onPressed: _selectImage,
-            child: Text(
-              'Change Profile Picture',
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: context.colorScheme.surface,
-                  ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _selectImage() async {
-    context.popDialog();
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      final bytes = await pickedImage.readAsBytes();
-      setState(() {
-        _imageBytes = bytes;
-      });
-    }
   }
 }

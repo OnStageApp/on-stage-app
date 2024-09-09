@@ -12,33 +12,35 @@ class SongAppBarLeading extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final key = ref.watch(songNotifierProvider).song.key;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton(
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-          ),
-          onPressed: () {
-            ChangeKeyModal.show(
-              context: context,
-              songKey: ref.watch(songNotifierProvider).song.songKey!,
-            );
-          },
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+        if (key != null && key.isNotEmpty)
+          TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 8),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              ref.watch(songNotifierProvider.notifier).getKeyName(),
-              style: context.textTheme.titleSmall,
-              textAlign: TextAlign.center,
+            onPressed: () {
+              ChangeKeyModal.show(
+                context: context,
+                songKey: ref.watch(songNotifierProvider).song.songKey,
+              );
+            },
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                ref.watch(songNotifierProvider).song.key ?? '',
+                style: context.textTheme.titleSmall,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-        ),
         const SizedBox(
           width: Insets.small,
         ),
@@ -46,7 +48,7 @@ class SongAppBarLeading extends ConsumerWidget {
           onTap: () {
             SongPreferencesModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.songKey!,
+              tonality: ref.watch(songNotifierProvider).song.songKey,
             );
           },
         ),

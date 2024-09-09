@@ -8,7 +8,6 @@ import 'package:on_stage_app/app/features/song/application/preferences/preferenc
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
@@ -124,6 +123,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   Future<void> _processSong() async {
     _processText();
+
     setState(() {
       _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
       final lines = _chordLyricsDocument!.chordLyricsLines;
@@ -166,10 +166,6 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
       child: Column(
         crossAxisAlignment: widget.horizontalAlignment,
         children: [
-          const SizedBox(
-            height: 12,
-          ),
-          const EditableStructureList(),
           const SizedBox(
             height: 24,
           ),

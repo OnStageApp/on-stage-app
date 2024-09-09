@@ -120,7 +120,7 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
                       //    shape: BoxShape.circle,
                       //  ),
                       child: CircleAvatar(
-                        backgroundImage: AssetImage(_artists[index].imageUrl!),
+                        // backgroundImage: AssetImage(_artists[index].imageUrl!),
                         radius: 12,
                       ),
                     ),

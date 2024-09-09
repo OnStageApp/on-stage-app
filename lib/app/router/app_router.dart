@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_overview_screen.dart';
@@ -39,6 +40,7 @@ enum AppRoute {
   addEventSongs,
   eventSettings,
   editProfile,
+  teamPreview,
 }
 
 class AppRouter {
@@ -85,8 +87,17 @@ class AppRouter {
                     name: AppRoute.song.name,
                     path: 'song',
                     builder: (context, state) {
-                      final songId = state.uri.queryParameters['songId']!;
-                      return SongDetailScreen(songId);
+                      final eventItems = state.extra as List<EventItem>?;
+                      final currentIndex =
+                          state.uri.queryParameters['currentIndex'];
+                      final songId = state.uri.queryParameters['songId'];
+                      return SongDetailScreen(
+                        eventItems: eventItems,
+                        currentIndex: currentIndex != null
+                            ? int.parse(currentIndex)
+                            : null,
+                        songId: songId,
+                      );
                     },
                   ),
                 ],

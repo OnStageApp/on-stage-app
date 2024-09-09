@@ -18,7 +18,7 @@ class CustomSwitchListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       dense: true,
       tileColor: context.colorScheme.onSurfaceVariant,
       trackOutlineColor: WidgetStateProperty.resolveWith<Color?>(

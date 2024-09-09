@@ -8,5 +8,6 @@ class EventItemsState with _$EventItemsState {
   const factory EventItemsState({
     @Default(false) bool? isLoading,
     @Default([]) List<EventItem> eventItems,
+    @Default([]) List<EventItem> songEventItems,
   }) = _EventItemsState;
 }
