@@ -40,15 +40,9 @@ class EventOverviewScreenState extends ConsumerState<EventOverviewScreen>
   }
 
   Future<void> _init() async {
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getEventById(widget.eventId),
-    );
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getRehearsals(widget.eventId),
-    );
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getStagers(widget.eventId),
-    );
+    await ref
+        .read(eventNotifierProvider.notifier)
+        .initEventById(widget.eventId);
   }
 
   @override
@@ -91,9 +85,9 @@ class EventOverviewScreenState extends ConsumerState<EventOverviewScreen>
           : TabBarView(
               controller: _tabController,
               children: [
-                EventDetailsScreen(event.id!),
+                EventDetailsScreen(widget.eventId),
                 AddEventMomentsScreen(
-                  eventId: event.id!,
+                  eventId: widget.eventId,
                   isCreatingEvent: false,
                   onSave: () {
                     _tabController.animateTo(0);

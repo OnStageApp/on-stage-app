@@ -29,6 +29,15 @@ Dio dio(DioRef ref) {
   dio.interceptors.add(TokenInterceptor(storage));
   dio.interceptors.add(prettyDioLogger);
   dio.interceptors.add(ConnectivityInterceptor());
+  dio.interceptors.add(InterceptorsWrapper(
+    onError: (DioError e, ErrorInterceptorHandler handler) {
+      print('Dio Error:');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Response: ${e.response}');
+      return handler.next(e);
+    },
+  ));
 
   return dio;
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
+import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -52,8 +53,9 @@ class UserNotifier extends _$UserNotifier {
   }
 
   Future<void> uploadPhoto(File image) async {
+    final profilePictureRepo = ProfilePictureRepository(ref.read(dioProvider));
     try {
-      await _usersRepository.updateUserImage(
+      await profilePictureRepo.updateUserImage(
         state.currentUser!.id,
         image,
       );

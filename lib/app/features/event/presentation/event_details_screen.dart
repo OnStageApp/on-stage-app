@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
@@ -37,52 +35,22 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _init();
-    });
-
     super.initState();
-  }
-
-  Future<void> _init() async {
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getEventById(widget.eventId),
-    );
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getRehearsals(widget.eventId),
-    );
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).getStagers(widget.eventId),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final event = ref.watch(eventNotifierProvider).event;
-    final rehearsals = ref.watch(eventNotifierProvider).rehearsals;
-    final stagers = ref.watch(eventNotifierProvider).stagers;
+    final eventState = ref.watch(eventNotifierProvider);
+    final event = eventState.event;
+    final rehearsals = eventState.rehearsals;
+    final stagers = eventState.stagers;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(16),
         child: ContinueButton(
           text: 'Publish Event',
-          onPressed: () {
-            // ref
-            //     .read(eventControllerProvider.notifier)
-            //     .setEventName(eventNameController.text);
-            // ref
-            //     .read(eventControllerProvider.notifier)
-            //     .setEventLocation(eventLocationController.text);
-            //
-            // context.pushNamed(
-            //   AppRoute.addEventSongs.name,
-            //   queryParameters: {
-            //     'eventId': widget.eventId,
-            //     'isCreatingEvent': 'false',
-            //   },
-            // );
-          },
+          onPressed: () {},
           isEnabled: true,
         ),
       ),

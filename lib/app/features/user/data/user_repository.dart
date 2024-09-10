@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/user/domain/models/user/user_model.dart';
@@ -23,12 +21,5 @@ abstract class UserRepository {
   @GET(API.user)
   Future<UserModel> getUserById(
     @Path('id') String id,
-  );
-
-  @POST(API.userPhoto)
-  @MultiPart()
-  Future<void> updateUserImage(
-    @Path('userId') String userId,
-    @Part(name: 'image') File image,
   );
 }

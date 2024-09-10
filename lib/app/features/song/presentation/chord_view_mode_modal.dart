@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
+import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/chord_view_mode_enum.dart';
 
 class ChordViewModeModal extends ConsumerStatefulWidget {
   const ChordViewModeModal({
@@ -21,7 +22,7 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Change Key'),
+        buildHeader: () => const ModalHeader(title: 'Chords View Mode'),
         headerHeight: () {
           return 64;
         },
@@ -36,7 +37,8 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
 }
 
 class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
-  var _selectedValue = ChordViewModeEnum.american;
+  var _selectedValue = ChordNotation.american;
+
   @override
   void initState() {
     super.initState();
@@ -61,19 +63,22 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...ChordViewModeEnum.values.map(
+        ...ChordNotation.values.map(
           _buildChordTypeTile,
         ),
       ],
     );
   }
 
-  Widget _buildChordTypeTile(ChordViewModeEnum chordTypeDisplay) {
+  Widget _buildChordTypeTile(ChordNotation chordTypeDisplay) {
     return InkWell(
       onTap: () {
         setState(() {
           _selectedValue = chordTypeDisplay;
         });
+        ref.read(preferencesNotifierProvider.notifier).setChordViewMode(
+              chordTypeDisplay,
+            );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),

@@ -32,7 +32,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
-    this.chordNotation = ChordNotation.italian,
+    this.chordNotation = ChordNotation.american,
   });
 
   // final String lyrics;
@@ -146,6 +146,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           transposeIncrement:
               ref.watch(songNotifierProvider).transposeIncremenet,
           media: MediaQuery.of(context).size.width - 48,
+          chordNotation: widget.chordNotation,
+          key: ref.watch(songNotifierProvider).song.key ?? 'C',
         );
   }
 

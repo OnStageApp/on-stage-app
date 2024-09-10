@@ -1,17 +1,11 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/close_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart' as path_provider;
 
 class ProfileImageWidget extends ConsumerStatefulWidget {
   const ProfileImageWidget({
@@ -30,38 +24,6 @@ class ProfileImageWidget extends ConsumerStatefulWidget {
 }
 
 class _ProfileImageWidgetState extends ConsumerState<ProfileImageWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> _selectImage() async {
-    context.popDialog();
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedImage != null) {
-      final appDirectory =
-          await path_provider.getApplicationDocumentsDirectory();
-      final targetPath = p.join(
-          appDirectory.path, '${DateTime.now().millisecondsSinceEpoch}.jpg');
-
-      final imageFile = File(pickedImage.path);
-      final compressedImage = await FlutterImageCompress.compressAndGetFile(
-        imageFile.absolute.path,
-        minHeight: 200,
-        minWidth: 200,
-        targetPath,
-        quality: 1,
-      );
-
-      if (compressedImage != null) {
-        final image = File(compressedImage.path);
-        unawaited(ref.read(userNotifierProvider.notifier).uploadPhoto(image));
-      } else {}
-    } else {}
-  }
-
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userNotifierProvider);
@@ -121,7 +83,7 @@ class _ProfileImageWidgetState extends ConsumerState<ProfileImageWidget> {
                 },
               ),
             ),
-            onPressed: _selectImage,
+            onPressed: null,
             child: Text(
               'Change Profile Picture',
               style: Theme.of(context).textTheme.titleSmall!.copyWith(

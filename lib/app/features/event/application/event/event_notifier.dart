@@ -35,17 +35,23 @@ class EventNotifier extends _$EventNotifier {
     logger.i('init event provider state');
   }
 
-  Future<void> getEventById(String eventId) async {
+  Future<void> initEventById(String eventId) async {
     state = state.copyWith(isLoading: true);
+    await getEventById(eventId);
+    await getRehearsals(eventId);
+    await getStagers(eventId);
+    state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> getEventById(String eventId) async {
     final event = await _eventsRepository.getEventById(eventId);
 
-    state = state.copyWith(event: event, isLoading: false);
+    state = state.copyWith(event: event);
   }
 
   Future<void> getRehearsals(String eventId) async {
-    state = state.copyWith(isLoading: true);
     final rehearsals = await _eventsRepository.getRehearsalsByEventId(eventId);
-    state = state.copyWith(rehearsals: rehearsals, isLoading: false);
+    state = state.copyWith(rehearsals: rehearsals);
   }
 
   Future<void> addRehearsal(RehearsalModel rehearsal) async {
@@ -82,9 +88,8 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> getStagers(String eventId) async {
-    state = state.copyWith(isLoading: true);
     final stagers = await _eventsRepository.getStagersByEventId(eventId);
-    state = state.copyWith(stagers: stagers, isLoading: false);
+    state = state.copyWith(stagers: stagers);
   }
 
   Future<void> createEvent() async {

@@ -12,6 +12,7 @@ class SongAppBarLeading extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    //TODO: This has to come from the song configuration, if song configuration is null, then should take this value
     final key = ref.watch(songNotifierProvider).song.key;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -19,7 +20,13 @@ class SongAppBarLeading extends ConsumerWidget {
         if (key != null && key.isNotEmpty)
           TextButton(
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              overlayColor: context.colorScheme.outline,
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () {
               ChangeKeyModal.show(
@@ -27,12 +34,7 @@ class SongAppBarLeading extends ConsumerWidget {
                 songKey: ref.watch(songNotifierProvider).song.songKey,
               );
             },
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 ref.watch(songNotifierProvider).song.key ?? '',

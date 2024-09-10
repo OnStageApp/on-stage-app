@@ -154,7 +154,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         children: [
           ChordTypeWidget(
             isEnabled: _getInactiveForEAndB(),
-            chordType: 'b',
+            chordType: 'natural',
             isSharp: _songKey.isSharp == false,
             onTap: () {
               setState(() {
@@ -163,7 +163,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
             },
           ),
           ChordTypeWidget(
-            chordType: '#',
+            chordType: '♯',
             isSharp: _songKey.isSharp! == true,
             onTap: _getInactiveForEAndB()
                 ? () {
