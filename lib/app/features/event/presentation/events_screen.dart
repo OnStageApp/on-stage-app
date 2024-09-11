@@ -35,13 +35,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   Future<void> _initializeEvents() async {
-    final notifier = ref.read(eventsNotifierProvider.notifier);
     _searchFocusNode.addListener(_onSearchFocusChange);
-    await Future.wait([
-      notifier.getUpcomingEvents(),
-      notifier.getPastEvents(),
-      notifier.getUpcomingEvent(),
-    ]);
+    await ref.read(eventsNotifierProvider.notifier).initEvents();
   }
 
   void _onSearchFocusChange() {
@@ -94,7 +89,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           ),
           if (eventsState.isLoading)
             EventShimmerList(isSearchContent: _isSearchFocused)
-          else if (!_eventsListIsEmpty(eventsState))
+          else if (_eventsListIsEmpty(eventsState) == false)
             SliverAnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: (_isSearchFocused

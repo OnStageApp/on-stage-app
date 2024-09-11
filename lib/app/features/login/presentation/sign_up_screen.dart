@@ -9,15 +9,16 @@ import 'package:on_stage_app/app/shared/login_text_field.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class LoginScreenState extends ConsumerState<LoginScreen> {
+class SignUpScreenState extends ConsumerState<SignUpScreen> {
   bool isObscurePassword = true;
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -56,10 +57,18 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: Insets.medium),
                       Text(
-                        'Log In',
+                        'Sign Up',
                         style: context.textTheme.headlineLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
+                      ),
+                      const SizedBox(height: Insets.medium),
+                      LoginTextField(
+                        controller: _nameController,
+                        label: 'Name',
+                        hintText: 'Enter your full name',
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.name,
                       ),
                       const SizedBox(height: Insets.medium),
                       LoginTextField(
@@ -88,26 +97,17 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            'Forgot password?',
-                            style: context.textTheme.bodySmall,
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: Insets.medium),
                       Column(
                         children: [
                           ContinueButton(
                             isLoading: false,
-                            text: 'Log In',
+                            text: 'Sign Up',
                             onPressed: () async {
                               final status = await ref
                                   .read(loginNotifierProvider.notifier)
-                                  .loginWithCredentials(
+                                  .signUpWithCredentials(
+                                    _nameController.text,
                                     _emailController.text,
                                     _passwordController.text,
                                   );
@@ -119,20 +119,6 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                             isEnabled: true,
                           ),
-                          const SizedBox(height: Insets.normal),
-                          ContinueButton(
-                            text: 'Sign in with Google',
-                            onPressed: () async {
-                              final isSuccess = await ref
-                                  .read(loginNotifierProvider.notifier)
-                                  .signInWithGoogle();
-                              if (isSuccess && mounted) {
-                                context.goNamed(AppRoute.home.name);
-                              }
-                            },
-                            isEnabled: true,
-                            textColor: Colors.white,
-                          ),
                         ],
                       ),
                     ],
@@ -143,17 +129,17 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Don\'t have an account? ',
+                            'Already have an account? ',
                             style: context.textTheme.bodyMedium,
                           ),
                           InkWell(
                             splashColor: lightColorScheme.surfaceTint,
                             highlightColor: lightColorScheme.surfaceTint,
                             onTap: () {
-                              // context.pushNamed(AppRoute.signUpDetails.name);
+                              context.pushNamed(AppRoute.login.name);
                             },
                             child: Text(
-                              'Sign up now!',
+                              'Log in',
                               style: context.textTheme.bodyMedium!.copyWith(
                                 color: Colors.blue,
                               ),

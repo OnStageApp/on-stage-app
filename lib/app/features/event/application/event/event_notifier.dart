@@ -43,6 +43,13 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false);
   }
 
+  Future<void> publishEvent() async {
+    const partialEvent = EventModel(
+      eventStatus: EventStatus.published,
+    );
+    await _updateEvent(partialEvent);
+  }
+
   Future<void> getEventById(String eventId) async {
     final event = await _eventsRepository.getEventById(eventId);
 
@@ -61,7 +68,6 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
   }
 
-  //updateRehearsal
   Future<void> updateRehearsal(RehearsalModel rehearsalRequest) async {
     state = state.copyWith(isLoading: true);
     final updatedRehearsal = await _eventsRepository.updateRehearsal(
@@ -99,7 +105,7 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false, event: event);
   }
 
-  Future<void> updateEvent(EventModel updatedEvent) async {
+  Future<void> _updateEvent(EventModel updatedEvent) async {
     state = state.copyWith(isLoading: true);
     await _eventsRepository.updateEvent(state.event!.id!, updatedEvent);
     state = state.copyWith(isLoading: false);
@@ -135,14 +141,14 @@ class EventNotifier extends _$EventNotifier {
     final partialEvent = EventModel(
       location: location,
     );
-    unawaited(updateEvent(partialEvent));
+    unawaited(_updateEvent(partialEvent));
   }
 
   Future<void> updateEventName(String name) async {
     final partialEvent = EventModel(
       name: name,
     );
-    unawaited(updateEvent(partialEvent));
+    unawaited(_updateEvent(partialEvent));
   }
 
   Future<void> duplicateEvent(DateTime newDateTime, String eventName) async {

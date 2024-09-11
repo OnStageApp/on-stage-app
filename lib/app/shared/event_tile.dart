@@ -7,13 +7,14 @@ class EventTile extends StatelessWidget {
   const EventTile({
     required this.title,
     required this.dateTime,
+    this.isDraft = true,
     required this.onTap,
     super.key,
   });
 
   final String title;
   final DateTime? dateTime;
-
+  final bool isDraft;
   final VoidCallback onTap;
 
   @override
@@ -46,8 +47,8 @@ class EventTile extends StatelessWidget {
                       Text(
                         TimeUtils().formatOnlyTime(dateTime),
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: context.colorScheme.surfaceDim,
-                        ),
+                              color: context.colorScheme.surfaceDim,
+                            ),
                       ),
                       _buildCircle(context),
                       Text(
@@ -55,15 +56,31 @@ class EventTile extends StatelessWidget {
                             ? TimeUtils().formatOnlyDate(dateTime)
                             : '',
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: context.colorScheme.surfaceDim,
-                        ),
+                              color: context.colorScheme.surfaceDim,
+                            ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            _buildParticipantsTile(),
+            if (isDraft)
+              Ink(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: context.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'Draft',
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+              )
+            else
+              _buildParticipantsTile(),
             const Divider(),
           ],
         ),

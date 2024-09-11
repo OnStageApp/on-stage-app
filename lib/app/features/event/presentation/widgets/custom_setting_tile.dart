@@ -3,7 +3,9 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class CustomSettingTile extends StatelessWidget {
   const CustomSettingTile({
-    required this.title, required this.suffix, super.key,
+    required this.title,
+    required this.suffix,
+    super.key,
     this.onTap,
     this.backgroundColor,
     this.headline,
@@ -38,7 +40,9 @@ class CustomSettingTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: context.textTheme.titleMedium,
+                  style: context.textTheme.titleMedium!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
                 ),
                 suffix,
               ],

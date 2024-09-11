@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
-import 'package:on_stage_app/app/features/team/presentation/team_preview_modal.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -198,7 +197,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ],
                             ),
                             onTap: () {
-                              TeamPreviewModal.show(context: context);
+                              context.pushNamed(AppRoute.teamDetails.name);
                             },
                           ),
                         );

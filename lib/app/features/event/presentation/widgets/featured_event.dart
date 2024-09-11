@@ -11,8 +11,6 @@ class FeaturedEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (event == null) return const SizedBox.shrink();
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
       child: Column(
@@ -21,14 +19,19 @@ class FeaturedEvent extends StatelessWidget {
           SizedBox(
             height: 174,
             child: EventTileEnhanced(
-              isSingleEvent: true,
-              title: event!.name ?? '',
-              locationName: event!.location ?? '',
-              dateTime: event!.dateTime,
+              isEventEmpty: event == null,
+              title: event?.name ?? 'No upcoming events',
+              locationName:
+                  event?.location ?? 'You don\'t have any published events',
+              dateTime: event?.dateTime,
               onTap: () {
+                if (event == null) {
+                  context.pushNamed(AppRoute.addEvent.name);
+                  return;
+                }
                 context.pushNamed(
                   AppRoute.eventDetails.name,
-                  queryParameters: {'eventId': event!.id},
+                  queryParameters: {'eventId': event?.id},
                 );
               },
             ),

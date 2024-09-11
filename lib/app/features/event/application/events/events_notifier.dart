@@ -13,7 +13,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'events_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@Riverpod()
 class EventsNotifier extends _$EventsNotifier {
   final TimeUtils timeUtils = TimeUtils();
   late final EventsRepository _eventsRepository;
@@ -26,15 +26,25 @@ class EventsNotifier extends _$EventsNotifier {
     return const EventsState();
   }
 
-  Future<void> getUpcomingEvent() async {
+  Future<void> initEvents() async {
     state = state.copyWith(isLoading: true);
+    await Future.wait([
+      getUpcomingEvents(),
+      getPastEvents(),
+      getUpcomingEvent(),
+    ]);
+    state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> getUpcomingEvent() async {
     try {
       final event = await _eventsRepository.getUpcomingEvent();
-      state = state.copyWith(upcomingEvent: event, isLoading: false);
+
+      state = state.copyWith(upcomingEvent: event);
     } on DioException catch (e) {
-      logger.e('Error getting upcoming event $e');
+      logger.e('Error getting upcoming event1 $e');
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      logger.e('Error getting upcoming event2 $e');
     }
   }
 
@@ -62,29 +72,21 @@ class EventsNotifier extends _$EventsNotifier {
   }
 
   Future<void> getUpcomingEvents() async {
-    state = state.copyWith(isLoading: true);
     try {
       final eventsResponse = await _getEvents(EventSearchType.upcoming);
       state = state.copyWith(
         upcomingEventsResponse: eventsResponse,
-        isLoading: false,
       );
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
+    } catch (e) {}
   }
 
   Future<void> getPastEvents() async {
-    state = state.copyWith(isLoading: true);
     try {
       final eventsResponse = await _getEvents(EventSearchType.past);
       state = state.copyWith(
         pastEventsResponse: eventsResponse,
-        isLoading: false,
       );
-    } catch (e) {
-      state = state.copyWith(isLoading: false);
-    }
+    } catch (e) {}
   }
 
   Future<void> loadMorePastEvents() async {
