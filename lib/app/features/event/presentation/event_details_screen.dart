@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
@@ -10,7 +15,6 @@ import 'package:on_stage_app/app/features/event/presentation/add_participants_sc
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
@@ -32,6 +36,8 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   final _isAdmin = true;
+  bool _isPublishButtonLoading = false;
+  bool _isPublishSuccess = false;
 
   @override
   void initState() {
@@ -40,21 +46,114 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventNotifierProvider);
-    final event = eventState.event;
-    final rehearsals = eventState.rehearsals;
-    final stagers = eventState.stagers;
+    final event = ref.watch(
+      eventNotifierProvider.select((state) => state.event),
+    );
+    final rehearsals =
+        ref.watch(eventNotifierProvider.select((state) => state.rehearsals));
+    final stagers =
+        ref.watch(eventNotifierProvider.select((state) => state.stagers));
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ContinueButton(
-          text: 'Publish Event',
-          onPressed: () {},
-          isEnabled: true,
-        ),
-      ),
+      floatingActionButton: event?.eventStatus == EventStatus.draft
+          ? Padding(
+              padding: const EdgeInsets.all(16),
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.colorScheme.surface,
+                          blurRadius: 30,
+                          spreadRadius: 35,
+                          offset: const Offset(0, 24),
+                        ),
+                      ],
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _isPublishSuccess
+                          ? _buildSuccessButton(context)
+                          : _buildPublishButton(context, setState),
+                    ),
+                  );
+                },
+              ),
+            )
+          : null,
       body: _buildBody(event, context, rehearsals, stagers),
+    );
+  }
+
+  Widget _buildPublishButton(BuildContext context, StateSetter setState) {
+    return TextButton(
+      key: const ValueKey('publish'),
+      style: ButtonStyle(
+        minimumSize: WidgetStateProperty.all(const Size(double.infinity, 54)),
+        shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        backgroundColor: WidgetStateProperty.all(context.colorScheme.primary),
+      ),
+      onPressed: _isPublishButtonLoading
+          ? null
+          : () async {
+              setState(() {
+                _isPublishButtonLoading = true;
+              });
+              await ref.read(eventNotifierProvider.notifier).publishEvent();
+              setState(() {
+                _isPublishButtonLoading = false;
+                _isPublishSuccess = true;
+              });
+              _updateEventsAfterPublishing();
+            },
+      child: _isPublishButtonLoading
+          ? const SizedBox(
+              height: 24,
+              child: LoadingIndicator(
+                colors: [Colors.white],
+                indicatorType: Indicator.lineSpinFadeLoader,
+              ),
+            )
+          : Text(
+              'Publish Event',
+              style: context.textTheme.titleMedium!.copyWith(
+                color: context.colorScheme.onPrimary,
+              ),
+            ),
+    );
+  }
+
+  void _updateEventsAfterPublishing() {
+    unawaited(
+      ref
+          .read(eventNotifierProvider.notifier)
+          .getEventById(widget.eventId)
+          .then((_) {
+        final updatedEvent = ref.read(eventNotifierProvider).event;
+        if (updatedEvent?.eventStatus == EventStatus.published) {
+          setState(() {
+            _isPublishSuccess = false;
+          });
+        }
+      }),
+    );
+    unawaited(ref.read(eventsNotifierProvider.notifier).getUpcomingEvents());
+    unawaited(ref.read(eventsNotifierProvider.notifier).getUpcomingEvent());
+  }
+
+  Widget _buildSuccessButton(BuildContext context) {
+    return Container(
+      key: const ValueKey('success'),
+      height: 54,
+      decoration: BoxDecoration(
+        color: Colors.green,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Center(
+        child: Icon(Icons.check, color: Colors.white, size: 30),
+      ),
     );
   }
 
@@ -64,6 +163,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
     List<RehearsalModel> rehearsals,
     List<Stager> stagers,
   ) {
+    print('EventDetailsScreenState: _buildBody');
     return ref.watch(eventNotifierProvider).isLoading
         ? const OnStageLoadingIndicator()
         : Padding(
@@ -76,7 +176,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                     title: event?.name ?? '',
                     locationName: event?.location ?? '',
                     dateTime: event?.dateTime ?? DateTime.now(),
-                    isSingleEvent: true,
                     onTap: () {},
                   ),
                 ),
@@ -226,14 +325,12 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   }
 
   void _addStagersToEvent() {
+    final addedUsers = ref.read(eventControllerProvider).addedUsers;
+
     ref.read(eventNotifierProvider.notifier).addStagerToEvent(
           CreateStagerRequest(
             eventId: widget.eventId,
-            userIds: ref
-                .watch(eventControllerProvider)
-                .addedUsers
-                .map((e) => e.id)
-                .toList(),
+            userIds: addedUsers.map((e) => e.id).toList(),
           ),
         );
   }

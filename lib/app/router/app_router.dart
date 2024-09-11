@@ -12,6 +12,7 @@ import 'package:on_stage_app/app/features/notifications/presentation/notificatio
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
@@ -40,7 +41,7 @@ enum AppRoute {
   addEventSongs,
   eventSettings,
   editProfile,
-  teamPreview,
+  teamDetails,
 }
 
 class AppRouter {
@@ -166,6 +167,11 @@ class AppRouter {
                     name: AppRoute.editProfile.name,
                     path: 'editProfile',
                     builder: (context, state) => const EditProfileScreen(),
+                  ),
+                  GoRoute(
+                    name: AppRoute.teamDetails.name,
+                    path: 'teamDetails',
+                    builder: (context, state) => const TeamDetailsScreen(),
                   ),
                   GoRoute(
                     name: AppRoute.notification.name,

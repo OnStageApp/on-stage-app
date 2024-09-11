@@ -26,6 +26,72 @@ class LoginNotifier extends _$LoginNotifier {
     logger.i('init login provider state');
   }
 
+  Future<bool> signUpWithCredentials(
+      String name, String email, String password) async {
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = userCredential.user;
+
+      if (user != null) {
+        await user.updateDisplayName(name);
+        final idToken = await user.getIdToken();
+        if (idToken == null) {
+          throw Exception('Failed to get ID Token');
+        }
+        final authToken = await _loginRepository.login(
+          LoginRequest(firebaseToken: idToken),
+        );
+        await _saveAuthToken(authToken as String);
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (e) {
+      logger.e('Failed to sign up with credentials: ${e.code}, ${e.message}');
+      // state = SignUpState(error: e.message ?? 'Sign up failed');
+      return false;
+    } catch (e, s) {
+      logger.e('Failed to sign up with credentials: $e, $s');
+      // state = SignUpState(error: e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> loginWithCredentials(String email, String password) async {
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = userCredential.user;
+
+      if (user != null) {
+        final idToken = await user.getIdToken();
+        if (idToken == null) {
+          throw Exception('Failed to get ID Token');
+        }
+        final authToken = await _loginRepository.login(
+          LoginRequest(firebaseToken: idToken),
+        );
+        await _saveAuthToken(authToken as String);
+        return true;
+      }
+      return false;
+    } on FirebaseAuthException catch (e) {
+      logger.e('Failed to login with credentials: ${e.code}, ${e.message}');
+      state = LoginState(error: e.message ?? 'Authentication failed');
+      return false;
+    } catch (e, s) {
+      logger.e('Failed to login with credentials: $e, $s');
+      state = LoginState(error: e.toString());
+      return false;
+    }
+  }
+
   Future<bool> signInWithGoogle() async {
     try {
       final googleUser = await GoogleSignIn().signIn();

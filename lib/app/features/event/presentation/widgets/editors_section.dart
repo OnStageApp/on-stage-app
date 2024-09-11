@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
+import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -52,25 +53,11 @@ class EditorsSection extends StatelessWidget {
   }
 
   Widget _buildEditorsTile(BuildContext context, String title, String role) {
-    return Row(
-      children: [
-        Image.asset(
-          'assets/images/profile1.png',
-          width: 30,
-          height: 30,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: context.textTheme.titleMedium,
-        ),
-        const Spacer(),
-        Text(
-          role,
-          style: context.textTheme.titleMedium!
-              .copyWith(color: context.colorScheme.outline),
-        ),
-      ],
+    return MemberTileWidget(
+      photo: 'assets/images/profile1.png',
+      name: title,
+      trailing: role,
+      onTap: () {},
     );
   }
 }

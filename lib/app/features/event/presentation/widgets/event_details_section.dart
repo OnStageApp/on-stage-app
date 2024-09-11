@@ -8,8 +8,8 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class EventDetailsSection extends ConsumerWidget {
-
   const EventDetailsSection({required this.event, super.key});
+
   final EventModel? event;
 
   @override
@@ -17,26 +17,18 @@ class EventDetailsSection extends ConsumerWidget {
     return Column(
       children: [
         CustomSettingTile(
-          backgroundColor: context.colorScheme.surfaceBright,
+          backgroundColor: context.colorScheme.onSurfaceVariant,
           title: event?.name ?? '',
           headline: 'Event Name',
-          suffix: Icon(
-            Icons.edit,
-            size: 20,
-            color: context.colorScheme.outline,
-          ),
+          suffix: const SizedBox(),
           onTap: () => _showEditNameModal(context, ref),
         ),
         const SizedBox(height: Insets.smallNormal),
         CustomSettingTile(
-          backgroundColor: context.colorScheme.surfaceBright,
+          backgroundColor: context.colorScheme.onSurfaceVariant,
           title: event?.location ?? '',
           headline: 'Event Location',
-          suffix: Icon(
-            Icons.edit,
-            size: 20,
-            color: context.colorScheme.outline,
-          ),
+          suffix: const SizedBox(),
           onTap: () => _showEditLocationModal(context, ref),
         ),
       ],

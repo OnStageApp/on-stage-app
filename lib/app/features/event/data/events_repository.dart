@@ -24,7 +24,7 @@ abstract class EventsRepository {
   });
 
   @GET(API.upcomingEvent)
-  Future<EventModel> getUpcomingEvent();
+  Future<EventModel?> getUpcomingEvent();
 
   @GET(API.eventById)
   Future<EventModel> getEventById(@Path('id') String id);

@@ -7,14 +7,16 @@ class ParticipantListingItem extends StatefulWidget {
   const ParticipantListingItem({
     required this.name,
     required this.assetPath,
-    required this.status,
+    this.status,
+    this.trailing,
     required this.onDelete,
     super.key,
   });
 
   final String name;
   final String assetPath;
-  final StagerStatusEnum status;
+  final StagerStatusEnum? status;
+  final Widget? trailing;
   final VoidCallback onDelete;
 
   @override
@@ -59,8 +61,10 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
               style: context.textTheme.titleMedium,
             ),
             const Spacer(),
-            if (widget.status != StagerStatusEnum.UNINVINTED)
-              _statusIcon(widget.status),
+            if (widget.trailing != null) widget.trailing!,
+            if (widget.trailing == null &&
+                widget.status != StagerStatusEnum.UNINVINTED)
+              _statusIcon(widget.status!),
           ],
         ),
       ),
@@ -68,7 +72,7 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
   }
 
   Widget _statusIcon(StagerStatusEnum status) {
-    switch (widget.status) {
+    switch (widget.status!) {
       case StagerStatusEnum.CONFIRMED:
         return const Icon(
           Icons.check_circle,

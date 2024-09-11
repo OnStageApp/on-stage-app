@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/load_more_button.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -31,6 +32,7 @@ class EventsList extends StatelessWidget {
               ),
               title: event.name ?? '',
               dateTime: event.dateTime?.let(DateTime.parse),
+              isDraft: event.eventStatus == EventStatus.draft,
             ),
           ),
           if (hasMore) LoadMoreButton(onPressed: loadMore),
