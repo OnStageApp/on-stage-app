@@ -81,7 +81,7 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
       case StagerStatusEnum.PENDING:
         return Icon(
           Icons.check_circle,
-          color: context.colorScheme.surfaceBright,
+          color: context.colorScheme.surfaceContainer,
         );
       case StagerStatusEnum.DECLINED:
         return Icon(

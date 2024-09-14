@@ -35,7 +35,7 @@ class SavedSongsTile extends StatelessWidget {
             Row(
               children: [
                 Assets.icons.heartFilled.svg(
-                  color: context.colorScheme.outline,
+                  color: context.colorScheme.onSecondaryFixed,
                 ),
                 const SizedBox(width: Insets.small),
                 Text(

@@ -25,7 +25,7 @@ class PreferencesActionTile extends StatelessWidget {
           horizontal: 12,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -43,7 +43,7 @@ class PreferencesActionTile extends StatelessWidget {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: const Color(0xFFF4F4F4),
+                color: context.colorScheme.surface,
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Icon(

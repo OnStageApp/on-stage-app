@@ -19,7 +19,7 @@ class ThemeModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.7,
@@ -97,7 +97,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
                 theme.hashCode.toString(),
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colorScheme.onSurfaceVariant,
                 border: Border.all(
                   color: Colors.green,
                   width: 3,
@@ -107,7 +107,9 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
               child: Text(
                 theme.name.substring(0, 1),
                 textAlign: TextAlign.center,
-                style: context.textTheme.titleSmall,
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.onSurface,
+                ),
               ),
             ),
             Padding(
