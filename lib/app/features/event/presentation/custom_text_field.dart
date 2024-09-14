@@ -15,9 +15,10 @@ class CustomTextField extends StatelessWidget {
     this.validator,
     this.onTapOutside,
     this.focusNode,
+    this.borderColor,
   });
 
-  final String label;
+  final String? label;
   final String hint;
   final IconData? icon;
   final TextEditingController? controller;
@@ -26,18 +27,20 @@ class CustomTextField extends StatelessWidget {
   final void Function()? onTapOutside;
   final String? Function(String?)? validator;
   final FocusNode? focusNode;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: context.textTheme.titleSmall!.copyWith(
-            color: context.colorScheme.onSurface,
+        if (label != null)
+          Text(
+            label!,
+            style: context.textTheme.titleSmall!.copyWith(
+              color: context.colorScheme.onSurface,
+            ),
           ),
-        ),
         const SizedBox(height: Insets.small),
         TextFormField(
           focusNode: focusNode ?? FocusNode(),
@@ -48,7 +51,21 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           onEditingComplete: onTapOutside,
           controller: controller,
-          decoration: WidgetUtils.getDecorations(context, icon, hintText: hint),
+          decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
+              .copyWith(
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: borderColor ?? Colors.transparent,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: borderColor ?? Colors.transparent,
+              ),
+            ),
+          ),
           validator: validator ??
               (value) {
                 if (value == null || value.isEmpty) {

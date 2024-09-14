@@ -26,7 +26,7 @@ class MemberTileWidget extends StatelessWidget {
           context.colorScheme.outline.withOpacity(0.1),
         ),
         child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Row(
             children: [
               if (photo != null) ...[
