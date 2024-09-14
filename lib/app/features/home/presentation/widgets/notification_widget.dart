@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class NotificationWidget extends ConsumerWidget {
@@ -19,7 +20,7 @@ class NotificationWidget extends ConsumerWidget {
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(Insets.smallNormal),
         backgroundColor: SongDummy.notificationsDummy.isNotEmpty
-            ? Colors.white
+            ? context.colorScheme.onSurfaceVariant
             : const Color(0xFFE2E2E5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Insets.small),
@@ -41,7 +42,7 @@ class NotificationWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: Colors.red,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
+                  border: Border.all(color: context.colorScheme.onSurfaceVariant, width: 2),
                 ),
               ),
             ),

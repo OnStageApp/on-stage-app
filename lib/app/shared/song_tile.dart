@@ -93,7 +93,7 @@ class _SongTileState extends ConsumerState<SongTile> {
                   widget.song.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border,
-                  size: 28,
+                  size: 24,
                   color: widget.song.isFavorite
                       ? const Color(0xFFF25454)
                       : const Color(0xFF74777F),

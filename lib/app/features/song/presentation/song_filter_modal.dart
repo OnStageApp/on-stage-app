@@ -20,8 +20,8 @@ class SongFilterModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
       context: context,
+      backgroundColor: context.colorScheme.surface,
       builder: (context) => FractionallySizedBox(
         child: NestedScrollModal(
           buildHeader: () => ModalHeader(

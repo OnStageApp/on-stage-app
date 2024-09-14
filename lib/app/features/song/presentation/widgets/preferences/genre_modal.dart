@@ -19,7 +19,7 @@ class GenreModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.7,
@@ -95,7 +95,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
               alignment: Alignment.center,
               key: ValueKey(genre.hashCode.toString()),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colorScheme.onSurfaceVariant,
                 border: Border.all(
                   color: context.colorScheme.primary,
                   width: 3,
@@ -105,7 +105,9 @@ class GenreModalState extends ConsumerState<GenreModal> {
               child: Text(
                 genre.name.substring(0, 1),
                 textAlign: TextAlign.center,
-                style: context.textTheme.titleSmall,
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.onSurface
+                )
               ),
             ),
             Padding(
