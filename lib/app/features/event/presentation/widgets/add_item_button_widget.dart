@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class AddItemButtonWidget extends StatelessWidget {
   const AddItemButtonWidget({
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.icon,
     required this.iconColor,
     required this.backgroundColor,
@@ -13,7 +13,7 @@ class AddItemButtonWidget extends StatelessWidget {
   });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final IconData icon;
   final Color iconColor;
   final Color backgroundColor;
@@ -45,12 +45,13 @@ class AddItemButtonWidget extends StatelessWidget {
                   title,
                   style: context.textTheme.titleLarge,
                 ),
-                Text(
-                  subtitle,
-                  style: context.textTheme.titleSmall!.copyWith(
-                    color: const Color(0xFF7F818B),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: context.textTheme.titleSmall!.copyWith(
+                      color: const Color(0xFF7F818B),
+                    ),
                   ),
-                ),
               ],
             ),
           ],

@@ -171,7 +171,14 @@ class AppRouter {
                   GoRoute(
                     name: AppRoute.teamDetails.name,
                     path: 'teamDetails',
-                    builder: (context, state) => const TeamDetailsScreen(),
+                    builder: (context, state) {
+                      final isCreating = bool.tryParse(
+                            state.uri.queryParameters['isCreating'].toString(),
+                          ) ??
+                          false;
+
+                      return TeamDetailsScreen(isCreating: isCreating);
+                    },
                   ),
                   GoRoute(
                     name: AppRoute.notification.name,

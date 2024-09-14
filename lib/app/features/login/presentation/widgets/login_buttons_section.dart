@@ -25,6 +25,24 @@ class LoginButtonsSection extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         LoginButton(
+          text: 'Continue with Apple',
+          onPressed: () async {
+            final isSuccess = await ref
+                .read(loginNotifierProvider.notifier)
+                .signInWithApple();
+            if (isSuccess) {
+              context.goNamed(AppRoute.home.name);
+            }
+          },
+          isEnabled: true,
+          textColor: context.colorScheme.onSurface,
+          backgroundColor: context.colorScheme.onSurfaceVariant,
+          borderColor: context.colorScheme.primaryContainer,
+          asset: 'assets/icons/apple_sign_in.svg',
+          splashColor: context.colorScheme.surfaceDim,
+        ),
+        const SizedBox(height: 8),
+        LoginButton(
           text: 'Continue with Google',
           onPressed: () async {
             final isSuccess = await ref
@@ -39,24 +57,6 @@ class LoginButtonsSection extends ConsumerWidget {
           backgroundColor: context.colorScheme.onSurfaceVariant,
           borderColor: context.colorScheme.primaryContainer,
           asset: 'assets/icons/google_sign_in.svg',
-          splashColor: context.colorScheme.surfaceDim,
-        ),
-        const SizedBox(height: 8),
-        LoginButton(
-          text: 'Continue with Apple',
-          onPressed: () async {
-            final isSuccess = await ref
-                .read(loginNotifierProvider.notifier)
-                .signInWithGoogle();
-            if (isSuccess) {
-              context.goNamed(AppRoute.home.name);
-            }
-          },
-          isEnabled: true,
-          textColor: context.colorScheme.onSurface,
-          backgroundColor: context.colorScheme.onSurfaceVariant,
-          borderColor: context.colorScheme.primaryContainer,
-          asset: 'assets/icons/apple_sign_in.svg',
           splashColor: context.colorScheme.surfaceDim,
         ),
       ],

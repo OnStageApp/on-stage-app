@@ -19,6 +19,15 @@
 		<string>en</string>
 		<string>es</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+        <key>CFBundleURLSchemes</key>
+            <array>
+            <string>com.onstage.app</string>
+            </array>
+        </dict>
+    </array>
 	<key>CFBundleName</key>
 	<string>$(FLAVOR_APP_NAME)</string>
 	<key>CFBundlePackageType</key>

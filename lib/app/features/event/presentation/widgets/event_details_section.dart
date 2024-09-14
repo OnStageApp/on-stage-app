@@ -18,7 +18,7 @@ class EventDetailsSection extends ConsumerWidget {
       children: [
         CustomSettingTile(
           backgroundColor: context.colorScheme.onSurfaceVariant,
-          title: event?.name ?? '',
+          placeholder: event?.name ?? '',
           headline: 'Event Name',
           suffix: const SizedBox(),
           onTap: () => _showEditNameModal(context, ref),
@@ -26,7 +26,7 @@ class EventDetailsSection extends ConsumerWidget {
         const SizedBox(height: Insets.smallNormal),
         CustomSettingTile(
           backgroundColor: context.colorScheme.onSurfaceVariant,
-          title: event?.location ?? '',
+          placeholder: event?.location ?? '',
           headline: 'Event Location',
           suffix: const SizedBox(),
           onTap: () => _showEditLocationModal(context, ref),

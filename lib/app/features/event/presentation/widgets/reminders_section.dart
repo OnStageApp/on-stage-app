@@ -84,7 +84,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: CustomSettingTile(
-            title: 'Alert ${_reminders.indexOf(reminder) + 1}',
+            placeholder: 'Alert ${_reminders.indexOf(reminder) + 1}',
             suffix: Text(
               '${reminder.daysBefore} days before',
               style: context.textTheme.titleMedium!

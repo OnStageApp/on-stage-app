@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/add_item_button_widget.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
-import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -25,9 +25,9 @@ class AddPhotoModal extends ConsumerStatefulWidget {
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Add Photo'),
-        headerHeight: () => 64,
-        buildContent: () => const AddPhotoModal(),
+        buildContent: () {
+          return const AddPhotoModal();
+        },
       ),
     );
   }
@@ -36,6 +36,21 @@ class AddPhotoModal extends ConsumerStatefulWidget {
 class AddPhotoModalState extends ConsumerState<AddPhotoModal> {
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: defaultScreenPadding,
+      child: Column(
+        children: [
+          AddItemButtonWidget(
+            title: 'Add Photo From Library',
+            icon: Icons.library_add,
+            iconColor: context.colorScheme.primary,
+            backgroundColor: context.colorScheme.surface,
+            onPressed: () {},
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Insets.normal,
