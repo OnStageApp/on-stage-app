@@ -79,7 +79,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
 
   Widget _buildParticipantsList() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
@@ -89,13 +89,16 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
         shrinkWrap: true,
         itemCount: 2,
         itemBuilder: (context, index) {
-          return MemberTileWidget(
-            name: 'Timotei George',
-            photo: 'assets/images/profile1.png',
-            trailing: 'Editor',
-            onTap: () {
-              TeamMemberModal.show(onSave: (model) {}, context: context);
-            },
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: MemberTileWidget(
+              name: 'Timotei George',
+              photo: 'assets/images/profile1.png',
+              trailing: 'Editor',
+              onTap: () {
+                TeamMemberModal.show(onSave: (model) {}, context: context);
+              },
+            ),
           );
         },
       ),

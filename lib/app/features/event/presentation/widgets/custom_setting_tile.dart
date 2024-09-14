@@ -31,37 +31,40 @@ class CustomSettingTile extends StatelessWidget {
           ),
         InkWell(
           onTap: onTap,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: controller ?? TextEditingController(),
-                  style: context.textTheme.titleMedium!.copyWith(
-                    color: context.colorScheme.onSurface,
-                  ),
-                  enabled: controller != null,
-                  decoration: InputDecoration(
-                    focusColor: context.colorScheme.error,
-                    hoverColor: context.colorScheme.error,
-                    filled: true,
-                    fillColor:
-                        backgroundColor ?? context.colorScheme.onSurfaceVariant,
-                    isDense: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+          child: Ink(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: backgroundColor ?? context.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: controller ?? TextEditingController(),
+                    style: context.textTheme.titleMedium!.copyWith(
+                      color: context.colorScheme.onSurface,
                     ),
-                    contentPadding: const EdgeInsets.all(12),
-                    hintText: placeholder,
-                    hintStyle: context.textTheme.titleMedium!.copyWith(
-                      color: context.colorScheme.outline,
+                    enabled: controller != null,
+                    decoration: InputDecoration(
+                      focusColor: context.colorScheme.error,
+                      hoverColor: context.colorScheme.error,
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                      hintText: placeholder,
+                      hintStyle: context.textTheme.titleMedium!.copyWith(
+                        color: context.colorScheme.outline,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              suffix,
-            ],
+                suffix,
+              ],
+            ),
           ),
         ),
       ],

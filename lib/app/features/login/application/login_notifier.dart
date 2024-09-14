@@ -32,7 +32,10 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   Future<bool> signUpWithCredentials(
-      String name, String email, String password) async {
+    String name,
+    String email,
+    String password,
+  ) async {
     try {
       final userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -65,7 +68,7 @@ class LoginNotifier extends _$LoginNotifier {
     }
   }
 
-  Future<bool> loginWithCredentials(String email, String password) async {
+  Future<bool> signInWithEmail(String email, String password) async {
     try {
       final userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(

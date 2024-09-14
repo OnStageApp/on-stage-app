@@ -15,7 +15,7 @@ class EditorsSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Editor',
+              'Editors',
               style: context.textTheme.titleSmall,
             ),
             Text(
@@ -28,7 +28,6 @@ class EditorsSection extends StatelessWidget {
         ),
         const SizedBox(height: Insets.smallNormal),
         Container(
-          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(10),
@@ -36,9 +35,11 @@ class EditorsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 12),
               _buildEditorsTile(context, 'You', 'Admin'),
               const SizedBox(height: 12),
               _buildEditorsTile(context, 'Timotei George', 'Editor'),
+              const SizedBox(height: 12),
             ],
           ),
         ),

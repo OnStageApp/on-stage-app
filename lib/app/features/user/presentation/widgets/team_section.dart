@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/create_new_team_button.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/switch_teams_button.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TeamsSection extends StatelessWidget {
+  const TeamsSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Teams',
-          style: context.textTheme.titleSmall,
-        ),
+        const SwitchTeamsButton(),
         const SizedBox(height: 12),
         ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: 2,
+          itemCount: 1,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -60,7 +60,17 @@ class TeamsSection extends StatelessWidget {
             );
           },
         ),
-        const CreateNewTeamButton(),
+        CreateNewTeamButton(
+          icon: Icons.group,
+          title: 'Create New Team',
+          actionTitle: 'Create',
+          onTap: () {
+            context.goNamed(
+              AppRoute.teamDetails.name,
+              queryParameters: {'isCreating': 'true'},
+            );
+          },
+        ),
       ],
     );
   }

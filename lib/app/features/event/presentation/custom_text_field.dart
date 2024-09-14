@@ -16,6 +16,8 @@ class CustomTextField extends StatelessWidget {
     this.onTapOutside,
     this.focusNode,
     this.borderColor,
+    this.obscureText = false,
+    this.suffixIcon,
   });
 
   final String? label;
@@ -28,6 +30,8 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final FocusNode? focusNode;
   final Color? borderColor;
+  final bool obscureText;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +47,7 @@ class CustomTextField extends StatelessWidget {
           ),
         const SizedBox(height: Insets.small),
         TextFormField(
+          obscureText: obscureText,
           focusNode: focusNode ?? FocusNode(),
           enabled: enabled ?? true,
           style: context.textTheme.titleMedium!.copyWith(
@@ -53,6 +58,7 @@ class CustomTextField extends StatelessWidget {
           controller: controller,
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
               .copyWith(
+            suffixIcon: suffixIcon,
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(

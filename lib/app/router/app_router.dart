@@ -13,6 +13,7 @@ import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.d
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
@@ -42,6 +43,7 @@ enum AppRoute {
   eventSettings,
   editProfile,
   teamDetails,
+  changePassword,
 }
 
 class AppRouter {
@@ -167,6 +169,11 @@ class AppRouter {
                     name: AppRoute.editProfile.name,
                     path: 'editProfile',
                     builder: (context, state) => const EditProfileScreen(),
+                  ),
+                  GoRoute(
+                    name: AppRoute.changePassword.name,
+                    path: 'changePassword',
+                    builder: (context, state) => const ChangePasswordScreen(),
                   ),
                   GoRoute(
                     name: AppRoute.teamDetails.name,
