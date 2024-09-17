@@ -24,7 +24,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.7,

@@ -23,25 +23,23 @@ class ChordTypeWidget extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           decoration: BoxDecoration(
-            color: _getBoxColor(),
+            color: _getBoxColor(context),
             borderRadius: BorderRadius.circular(4),
           ),
           alignment: Alignment.center,
           child: Text(
             chordType,
-            style: isSharp
-                ? _getStyling(context).copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                  )
-                : _getStyling(context),
+            style: _getStyling(context),
           ),
         ),
       ),
     );
   }
 
-  Color _getBoxColor() {
-    return isSharp ? const Color(0xFF1996FF) : Colors.white;
+  Color _getBoxColor(BuildContext context) {
+    return isSharp
+        ? context.colorScheme.primary
+        : context.colorScheme.onSurfaceVariant;
   }
 
   TextStyle _getStyling(BuildContext context) {

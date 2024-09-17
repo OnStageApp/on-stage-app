@@ -131,7 +131,7 @@ class _AnimatedTileState extends State<AnimatedTile>
                     alignment: Alignment.center,
                     key: ValueKey(widget.item.id),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
                         color: _borderColorAnimation.value!,
                         width: 3,
@@ -141,7 +141,7 @@ class _AnimatedTileState extends State<AnimatedTile>
                     child: Text(
                       widget.item.item.shortName,
                       textAlign: TextAlign.center,
-                      style: context.textTheme.titleSmall,
+                      style: context.textTheme.titleSmall
                     ),
                   ),
                   if (widget.xTimes > 1) ...[
@@ -149,7 +149,9 @@ class _AnimatedTileState extends State<AnimatedTile>
                     Text(
                       'x ${widget.xTimes}',
                       style: context.textTheme.labelSmall!
-                          .copyWith(fontWeight: FontWeight.bold),
+                          .copyWith(fontWeight: FontWeight.bold,
+                          color: context.colorScheme.shadow
+                      ),
                     ),
                   ],
                 ],

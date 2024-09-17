@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: context.colorScheme.onSurfaceVariant,
+        backgroundColor: context.colorScheme.onPrimaryFixed,
         selectedLabelStyle: context.textTheme.bodyMedium,
         unselectedLabelStyle: context.textTheme.bodyMedium,
         selectedItemColor: context.colorScheme.primary,

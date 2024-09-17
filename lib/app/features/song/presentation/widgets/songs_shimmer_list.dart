@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SongsShimmerList extends StatelessWidget {
@@ -10,14 +11,14 @@ class SongsShimmerList extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+            highlightColor: context.colorScheme.onSurfaceVariant,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Container(
                 height: 70,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.colorScheme.onSurfaceVariant,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),

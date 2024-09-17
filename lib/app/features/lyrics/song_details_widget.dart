@@ -113,10 +113,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   }
 
   void _getTextStyles() {
-    _textStyle = WidgetUtils.LYRICS_DEFAULT_STYLE.copyWith(
+    _textStyle = WidgetUtils.getLyricsStyle(context).copyWith(
       fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
     );
-    _chordStyle = WidgetUtils.CHORDS_DEFAULT_STYLE.copyWith(
+    _chordStyle = WidgetUtils.getChordsStyle(context).copyWith(
       fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
     );
   }
@@ -182,7 +182,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
                 child: _buildLines(index, context),
               );
@@ -275,9 +275,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
             children: [
               Container(
                 padding: const EdgeInsets.all(6),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(
                   _sections[index].structure.item.shortName,
@@ -288,8 +288,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
               const SizedBox(width: 12),
               Text(
                 _sections[index].structure.item.name,
-                style: context.textTheme.labelLarge!
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: context.textTheme.labelLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: context.colorScheme.shadow,
+                ),
               ),
               const SizedBox(width: 12),
             ],
