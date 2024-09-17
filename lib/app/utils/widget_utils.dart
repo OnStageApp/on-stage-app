@@ -22,15 +22,20 @@ class WidgetUtils {
     );
   }
 
-  static TextStyle LYRICS_DEFAULT_STYLE = const TextStyle(
-    fontFamily: 'DMSans',
-    fontSize: 16,
-    color: Colors.black,
-  );
-  static TextStyle CHORDS_DEFAULT_STYLE = const TextStyle(
-    fontFamily: 'DMSans',
-    fontSize: 16,
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-  );
+  static TextStyle getLyricsStyle(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'DMSans',
+      fontSize: 16,
+      color: context.colorScheme.surfaceDim,
+    );
+  }
+
+  static TextStyle getChordsStyle(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'DMSans',
+      fontSize: 16,
+      color: context.colorScheme.onSurface,
+      fontWeight: FontWeight.bold,
+    );
+  }
 }

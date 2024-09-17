@@ -49,7 +49,7 @@ class PreferencesVocalLead extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(
                         color: context.colorScheme.onSurfaceVariant, width: 2,),
-                    color: const Color(0xFFF4F4F4),
+                    color: context.colorScheme.onSurfaceVariant,
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: const Icon(
@@ -70,7 +70,7 @@ class PreferencesVocalLead extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
       padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F4F4),
+        color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       alignment: Alignment.center,

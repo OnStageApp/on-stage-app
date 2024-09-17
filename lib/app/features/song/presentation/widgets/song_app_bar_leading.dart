@@ -23,7 +23,7 @@ class SongAppBarLeading extends ConsumerWidget {
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               overlayColor: context.colorScheme.outline,
-              backgroundColor: Colors.white,
+              backgroundColor: context.colorScheme.onSurfaceVariant,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

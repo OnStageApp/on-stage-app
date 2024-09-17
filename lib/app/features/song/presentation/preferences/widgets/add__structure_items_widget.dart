@@ -67,10 +67,12 @@ class AddStructureItemsWidgetState
                   height: 52,
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colorScheme.onSurfaceVariant,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: _isItemChecked(index) ? Colors.blue : Colors.white,
+                      color: _isItemChecked(index)
+                          ? context.colorScheme.primary
+                          : context.colorScheme.onSurfaceVariant,
                       width: 1.6,
                     ),
                   ),
@@ -82,9 +84,10 @@ class AddStructureItemsWidgetState
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                            _sectionsSet.elementAt(index).structure.id,),
+                          _sectionsSet.elementAt(index).structure.id,
+                        ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.colorScheme.onSurfaceVariant,
                           border: Border.all(
                             color: Color(
                               _sectionsSet
@@ -123,8 +126,8 @@ class AddStructureItemsWidgetState
                               : Icons.circle_outlined,
                           size: 20,
                           color: _isItemChecked(index)
-                              ? Colors.blue
-                              : const Color(0xFFE3E3E3),
+                              ? context.colorScheme.primary
+                              : context.colorScheme.surfaceBright,
                         ),
                       ),
                     ],

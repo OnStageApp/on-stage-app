@@ -98,7 +98,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           padding: const EdgeInsets.symmetric(horizontal: 2),
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
@@ -127,16 +127,13 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           decoration: BoxDecoration(
             color: isSelected
                 ? context.colorScheme.primary
-                : context.colorScheme.surface,
+                : context.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(5),
           ),
           alignment: Alignment.center,
           child: Text(
             chord.name,
-            style: isSelected
-                ? _getStyling()
-                    .copyWith(color: context.colorScheme.onSurfaceVariant)
-                : _getStyling(),
+            style: _getStyling()
           ),
         ),
       ),

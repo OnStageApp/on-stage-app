@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongPreferencesModal extends ConsumerStatefulWidget {
   const SongPreferencesModal(this.tonality, {super.key});
@@ -25,7 +26,7 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => FractionallySizedBox(
         child: NestedScrollModal(

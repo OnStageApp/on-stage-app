@@ -51,7 +51,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
                   child: Text(
                     'Clone',
                     style: context.textTheme.bodyLarge!
-                        .copyWith(color: Colors.white),
+                        .copyWith(color: context.colorScheme.onSurface),
                   ),
                 ),
               ),
@@ -94,7 +94,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
               curve: Curves.easeInOut,
               height: 52,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.colorScheme.onSurfaceVariant,
                 borderRadius: isSliding
                     ? const BorderRadius.only(
                         topLeft: Radius.circular(8),
@@ -118,7 +118,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
                     alignment: Alignment.center,
                     key: ValueKey(widget.itemId),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color:  context.colorScheme.onSurfaceVariant,
                       border: Border.all(
                         color: Color(widget.color),
                         width: 3,

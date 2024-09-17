@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/song/presentation/preferences/song_str
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class PreferencesSongStructure extends ConsumerWidget {
   const PreferencesSongStructure({super.key});
@@ -20,12 +21,11 @@ class PreferencesSongStructure extends ConsumerWidget {
         ),
         const SizedBox(height: Insets.smallNormal),
         PreferencesActionTile(
-          leadingWidget: SvgPicture.asset(
-            'assets/icons/song_structure.svg',
-            width: 20,
+          leadingWidget: Assets.icons.songStructure.svg(
             height: 20,
-            colorFilter: const ColorFilter.mode(
-              Color(0xFF74777F),
+            width: 20,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.outline,
               BlendMode.srcIn,
             ),
           ),

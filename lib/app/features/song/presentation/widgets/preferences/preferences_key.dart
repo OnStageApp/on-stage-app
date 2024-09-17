@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dar
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class PreferencesKey extends ConsumerWidget {
   const PreferencesKey({super.key});
@@ -22,12 +23,11 @@ class PreferencesKey extends ConsumerWidget {
         ),
         const SizedBox(height: Insets.small),
         PreferencesActionTile(
-          leadingWidget: SvgPicture.asset(
-            'assets/icons/music_note.svg',
-            width: 20,
+          leadingWidget: Assets.icons.musicNote.svg(
             height: 20,
-            colorFilter: const ColorFilter.mode(
-              Color(0xFF74777F),
+            width: 20,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.outline,
               BlendMode.srcIn,
             ),
           ),
