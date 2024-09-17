@@ -6,7 +6,7 @@ part 'team_state.freezed.dart';
 @freezed
 class TeamState with _$TeamState {
   const factory TeamState({
-    @Default([]) List<Team> teams,
+    Team? currentTeam,
     @Default(false) bool isLoading,
   }) = _TeamState;
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/shared/router_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TeamsSelectionModal extends ConsumerStatefulWidget {
@@ -40,33 +41,6 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
               onSave: onSave,
             ),
           ),
-          footerHeight: () {
-            return 64;
-          },
-          buildFooter: () => SizedBox(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                16,
-                16,
-                0,
-              ),
-              child: Consumer(
-                builder: (context, ref, _) {
-                  return ContinueButton(
-                    text: 'Save',
-                    onPressed: () {
-                      // if (onPressed != null) {
-                      //   onPressed();
-                      // }
-                      context.popDialog();
-                    },
-                    isEnabled: true,
-                  );
-                },
-              ),
-            ),
-          ),
         ),
       ),
     );
@@ -79,7 +53,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(teamNotifierProvider.notifier).getTeams();
+      ref.read(teamsNotifierProvider.notifier).getTeams();
     });
 
     super.initState();
@@ -92,14 +66,14 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
 
   @override
   Widget build(BuildContext context) {
-    _teams = ref.watch(teamNotifierProvider).teams;
+    _teams = ref.watch(teamsNotifierProvider).teams;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          if (ref.watch(teamNotifierProvider).isLoading)
+          if (ref.watch(teamsNotifierProvider).isLoading)
             const Center(
               child: SizedBox(
                 height: 24,
@@ -113,10 +87,23 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: ref.watch(teamNotifierProvider).teams.length,
+                itemCount: ref.watch(teamsNotifierProvider).teams.length,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      await ref
+                          .read(teamsNotifierProvider.notifier)
+                          .setCurrentTeam(
+                            _teams.elementAt(index).id,
+                          );
+                      await ref
+                          .read(teamNotifierProvider.notifier)
+                          .getCurrentTeam();
+
+                      ref
+                          .read(navigationNotifierProvider.notifier)
+                          .resetRouter();
+                    },
                     child: Container(
                       height: 48,
                       margin: const EdgeInsets.only(bottom: 8),
@@ -187,5 +174,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
     );
   }
 
-  bool _isItemChecked(int index) => false;
+  bool _isItemChecked(int index) =>
+      ref.watch(teamsNotifierProvider).currentTeamId ==
+      _teams.elementAt(index).id;
 }

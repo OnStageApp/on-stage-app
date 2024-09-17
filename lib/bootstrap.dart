@@ -3,17 +3,32 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+final sharedPreferencesProvider = Provider<SharedPreferences>(
+  (_) => throw UnimplementedError(),
+);
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
-  final getIt = GetIt.instance;
-
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  getIt.registerSingleton(AppRouter.router);
+  final sharedPreferences = await SharedPreferences.getInstance();
 
-  runApp(ProviderScope(child: await builder()));
+  final container = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+    ],
+  );
+
+  container.read(currentTeamMemberNotifierProvider.notifier);
+
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: await builder(),
+    ),
+  );
 }

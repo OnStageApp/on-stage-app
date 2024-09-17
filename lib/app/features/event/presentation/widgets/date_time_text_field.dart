@@ -10,11 +10,13 @@ class DateTimeTextFieldWidget extends StatefulWidget {
     super.key,
     this.initialDateTime,
     this.focusNode,
+    this.enabled = true,
   });
 
   final void Function(String?) onDateTimeChanged;
   final DateTime? initialDateTime;
   final FocusNode? focusNode;
+  final bool enabled;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -67,6 +69,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                enabled: widget.enabled,
                 focusNode: widget.focusNode,
                 controller: dateController,
                 style: context.textTheme.titleSmall,
@@ -129,6 +132,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      enabled: widget.enabled,
                       controller: timeController,
                       style: context.textTheme.titleSmall,
                       validator: (value) {

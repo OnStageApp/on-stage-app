@@ -1,3 +1,5 @@
+const String keyCurrentTeamMemberRole = 'key_current_team_member_role';
+
 class UtilConstants {
   static const SONG_ID = 'id';
   static const SONG_NAME = 'songName';

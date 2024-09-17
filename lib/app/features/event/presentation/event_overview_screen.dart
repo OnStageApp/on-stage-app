@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
@@ -21,7 +22,6 @@ class EventOverviewScreen extends ConsumerStatefulWidget {
 
 class EventOverviewScreenState extends ConsumerState<EventOverviewScreen>
     with SingleTickerProviderStateMixin {
-  final _isAdmin = true;
   late TabController _tabController;
 
   @override
@@ -68,7 +68,7 @@ class EventOverviewScreenState extends ConsumerState<EventOverviewScreen>
                   }
                 },
               ),
-              if (_isAdmin)
+              if (ref.watch(appDataControllerProvider).hasEditorsRight)
                 SettingsTrailingAppBarButton(
                   onTap: () {
                     context.pushNamed(AppRoute.eventSettings.name);

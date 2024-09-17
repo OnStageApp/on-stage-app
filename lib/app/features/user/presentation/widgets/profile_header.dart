@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/user/domain/models/user/user_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/edit_profile_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/user_info.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({required this.user, super.key});
-
-  final UserModel? user;
+class ProfileHeader extends ConsumerWidget {
+  const ProfileHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userNotifierProvider).currentUser;
     return SizedBox(
       height: 105,
       child: Row(
@@ -25,7 +25,7 @@ class ProfileHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Eugen Ionescu',
+                  '${user?.name}',
                   style: context.textTheme.headlineMedium,
                 ),
                 const Spacer(),

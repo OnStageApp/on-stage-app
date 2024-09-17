@@ -63,7 +63,7 @@ class TeamMembersModal extends ConsumerStatefulWidget {
               ),
             ),
           ),
-          buildHeader: () => const ModalHeader(title: 'Add Participants'),
+          buildHeader: () => const ModalHeader(title: 'Add Members'),
           headerHeight: () {
             return 64;
           },
@@ -185,6 +185,6 @@ class TeamMembersModalState extends ConsumerState<TeamMembersModal> {
 
   bool _isItemChecked(int index) => ref
       .watch(eventControllerProvider)
-      .addedUsers
+      .addedTeamMembers
       .contains(_members.elementAt(index));
 }

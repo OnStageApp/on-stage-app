@@ -40,18 +40,6 @@ class UserNotifier extends _$UserNotifier {
     state = state.copyWith(users: users, isLoading: false);
   }
 
-  Future<void> getUninvitedUsersByEventId(String eventId) async {
-    state = state.copyWith(isLoading: true);
-    try {
-      final users = await _usersRepository.getUninvitedUsersByEventId(eventId);
-      state = state.copyWith(uninvitedUsers: users);
-    } catch (e) {
-      // Handle error
-    } finally {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
   Future<void> uploadPhoto(File image) async {
     final profilePictureRepo = ProfilePictureRepository(ref.read(dioProvider));
     try {

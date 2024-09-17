@@ -13,11 +13,6 @@ abstract class UserRepository {
   @GET(API.users)
   Future<List<User>> getUsers();
 
-  @GET(API.uninvitedUsers)
-  Future<List<User>> getUninvitedUsersByEventId(
-    @Query('eventId') String eventId,
-  );
-
   @GET(API.user)
   Future<UserModel> getUserById(
     @Path('id') String id,

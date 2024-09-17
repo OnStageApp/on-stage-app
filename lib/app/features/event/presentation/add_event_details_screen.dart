@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
@@ -113,7 +114,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 'Participants',
                 style: context.textTheme.titleSmall,
               ),
-              if (ref.watch(eventControllerProvider).addedUsers.isNotEmpty) ...[
+              if (ref
+                  .watch(eventControllerProvider)
+                  .addedTeamMembers
+                  .isNotEmpty) ...[
                 const SizedBox(height: Insets.smallNormal),
                 _buildParticipantsList(),
               ],
@@ -189,7 +193,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final addedUsers = ref.watch(eventControllerProvider).addedUsers;
+    final addedTeamMembers =
+        ref.watch(eventControllerProvider).addedTeamMembers;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -200,10 +205,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: addedUsers.length,
+        itemCount: addedTeamMembers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            name: '${addedUsers[index].name}',
+            name: '${addedTeamMembers[index].name}',
             assetPath: 'assets/images/profile1.png',
             status: StagerStatusEnum.UNINVINTED,
             onDelete: () {
@@ -220,7 +225,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   Widget _buildCreateRehearsalButton() {
     return EventActionButton(
       onTap: () {
-        CreateRehearsalModal.show(context: context);
+        CreateRehearsalModal.show(
+          context: context,
+          enabled: ref.watch(appDataControllerProvider).hasEditorsRight,
+        );
       },
       text: 'Create new Rehearsal',
       icon: Icons.add,

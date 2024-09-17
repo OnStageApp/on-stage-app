@@ -31,7 +31,7 @@ class CustomSettingTile extends StatelessWidget {
           ),
         InkWell(
           onTap: onTap,
-          child: Ink(
+          child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: backgroundColor ?? context.colorScheme.onSurfaceVariant,

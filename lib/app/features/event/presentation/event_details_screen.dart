@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -35,7 +36,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   TextEditingController eventLocationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
-  final _isAdmin = true;
   bool _isPublishButtonLoading = false;
   bool _isPublishSuccess = false;
 
@@ -55,33 +55,35 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         ref.watch(eventNotifierProvider.select((state) => state.stagers));
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: event?.eventStatus == EventStatus.draft
-          ? Padding(
-              padding: const EdgeInsets.all(16),
-              child: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.colorScheme.surface,
-                          blurRadius: 30,
-                          spreadRadius: 35,
-                          offset: const Offset(0, 24),
+      floatingActionButton:
+          ref.watch(appDataControllerProvider).hasEditorsRight &&
+                  event?.eventStatus == EventStatus.draft
+              ? Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.colorScheme.surface,
+                              blurRadius: 30,
+                              spreadRadius: 35,
+                              offset: const Offset(0, 24),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: _isPublishSuccess
-                          ? _buildSuccessButton(context)
-                          : _buildPublishButton(context, setState),
-                    ),
-                  );
-                },
-              ),
-            )
-          : null,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _isPublishSuccess
+                              ? _buildSuccessButton(context)
+                              : _buildPublishButton(context, setState),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : null,
       body: _buildBody(event, context, rehearsals, stagers),
     );
   }
@@ -163,6 +165,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
     List<RehearsalModel> rehearsals,
     List<Stager> stagers,
   ) {
+    final hasEditorRoles = ref.read(appDataControllerProvider).hasEditorsRight;
     print('EventDetailsScreenState: _buildBody');
     return ref.watch(eventNotifierProvider).isLoading
         ? const OnStageLoadingIndicator()
@@ -197,6 +200,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                         dateTime: rehearsal.dateTime ?? DateTime.now(),
                         onTap: () {
                           CreateRehearsalModal.show(
+                            enabled: false,
                             context: context,
                             rehearsal: rehearsal,
                             onRehearsalCreated: (RehearsalModel rehearsal) {
@@ -209,7 +213,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                       );
                     },
                   )
-                else if (!_isAdmin)
+                else if (!hasEditorRoles)
                   Container(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
@@ -219,7 +223,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                       ),
                     ),
                   ),
-                if (_isAdmin) ...[
+                if (hasEditorRoles) ...[
                   const SizedBox(height: Insets.extraSmall),
                   _buildCreateRehearsalButton(),
                 ],
@@ -244,7 +248,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                 if (stagers.isNotEmpty) ...[
                   const SizedBox(height: Insets.smallNormal),
                   _buildParticipantsList(),
-                ] else if (!_isAdmin)
+                ] else if (!hasEditorRoles)
                   Container(
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
@@ -254,7 +258,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                       ),
                     ),
                   ),
-                if (_isAdmin) ...[
+                if (hasEditorRoles) ...[
                   const SizedBox(height: Insets.smallNormal),
                   _buildInvitePeopleButton(),
                 ],
@@ -281,7 +285,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
           return ParticipantListingItem(
             name: stagers[index].name ?? '',
             assetPath: 'assets/images/profile1.png',
-            status: stagers[index].participationStatus!,
+            status: stagers[index].participationStatus,
             onDelete: () {
               ref
                   .read(eventNotifierProvider.notifier)
@@ -325,12 +329,12 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
   }
 
   void _addStagersToEvent() {
-    final addedUsers = ref.read(eventControllerProvider).addedUsers;
+    final addedTeamMembers = ref.read(eventControllerProvider).addedTeamMembers;
 
     ref.read(eventNotifierProvider.notifier).addStagerToEvent(
           CreateStagerRequest(
             eventId: widget.eventId,
-            userIds: addedUsers.map((e) => e.id).toList(),
+            teamMemberIds: addedTeamMembers.map((e) => e.id).toList(),
           ),
         );
   }

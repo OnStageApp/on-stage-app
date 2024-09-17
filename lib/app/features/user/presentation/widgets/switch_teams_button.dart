@@ -17,7 +17,7 @@ class SwitchTeamsButton extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Teams',
+            'Team',
             style: context.textTheme.titleSmall,
           ),
           const Spacer(),
