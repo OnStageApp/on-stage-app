@@ -1,34 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/shared/connectivity/connectivity_overlay.dart';
+import 'package:on_stage_app/app/shared/router_notifier.dart';
 import 'package:on_stage_app/app/theme/theme_state.dart';
 
-final GetIt getIt = GetIt.instance;
-
-class App extends ConsumerStatefulWidget {
+class App extends ConsumerWidget {
   const App({super.key});
 
   @override
-  AppState createState() => AppState();
-}
-
-class AppState extends ConsumerState<App> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
-
+    final router = ref.watch(navigationNotifierProvider);
+    print('ISLOGGED IN:${ref.watch(loginNotifierProvider).isLoggedIn}');
     return MaterialApp.router(
-      routerConfig: AppRouter.router,
+      routerConfig: router,
       theme: themeState.theme,
-      // localizationsDelegates: AppLocalizations.localizationsDelegates,
-      // supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) {
         return Stack(
           fit: StackFit.expand,

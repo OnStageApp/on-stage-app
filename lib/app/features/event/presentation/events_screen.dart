@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
@@ -60,22 +61,24 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     return Scaffold(
       appBar: StageAppBar(
         title: 'Events',
-        trailing: Padding(
-          padding: const EdgeInsets.only(right: Insets.normal),
-          child: IconButton(
-            style: IconButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-              highlightColor: context.colorScheme.surfaceBright,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+        trailing: ref.watch(appDataControllerProvider).hasEditorsRight
+            ? Padding(
+                padding: const EdgeInsets.only(right: Insets.normal),
+                child: IconButton(
+                  style: IconButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    highlightColor: context.colorScheme.surfaceBright,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => context.pushNamed(AppRoute.addEvent.name),
+                  icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
                 ),
-              ),
-            ),
-            onPressed: () => context.pushNamed(AppRoute.addEvent.name),
-            icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
-          ),
-        ),
+              )
+            : const SizedBox(),
       ),
       body: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

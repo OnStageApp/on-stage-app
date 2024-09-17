@@ -61,7 +61,7 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 18),
             decoration: BoxDecoration(
               color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(8),
@@ -75,7 +75,7 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
           ),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 18),
             decoration: BoxDecoration(
               color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(8),

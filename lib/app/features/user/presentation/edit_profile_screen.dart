@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -142,7 +143,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 const SizedBox(height: 12),
                 EventActionButton(
                   text: 'Change Password',
-                  onTap: () {},
+                  onTap: () {
+                    context.pushNamed(AppRoute.changePassword.name);
+                  },
                 ),
                 const SizedBox(height: 24),
               ],

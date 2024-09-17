@@ -12,7 +12,7 @@ class CreateEventModel with _$CreateEventModel {
     required DateTime? dateTime,
     required String location,
     required EventStatus eventStatus,
-    required List<String> userIds,
+    required List<String> teamMemberIds,
     required List<RehearsalModel> rehearsals,
   }) = _CreateEventModel;
 

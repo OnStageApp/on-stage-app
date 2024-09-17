@@ -6,7 +6,7 @@ part 'create_stager_request.g.dart';
 @Freezed()
 class CreateStagerRequest with _$CreateStagerRequest {
   const factory CreateStagerRequest({
-    required List<String> userIds,
+    required List<String> teamMemberIds,
     required String eventId,
   }) = _CreateStagerRequest;
 

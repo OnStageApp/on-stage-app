@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/team/application/team_state.dart';
 import 'package:on_stage_app/app/features/team/data/team_repository.dart';
+import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,12 +17,15 @@ class TeamNotifier extends _$TeamNotifier {
     return const TeamState();
   }
 
-  Future<void> getTeams() async {
+  Future<void> getCurrentTeam() async {
     state = state.copyWith(isLoading: true);
-    final teams = await _teamRepository.getTeams();
-    state = state.copyWith(
-      isLoading: false,
-      teams: teams,
-    );
+    final currentTeam = await _teamRepository.getCurrentTeam();
+    state = state.copyWith(isLoading: false, currentTeam: currentTeam);
+  }
+
+  Future<void> createTeam(TeamRequest team) async {
+    state = state.copyWith(isLoading: true);
+    final createdTeam = await _teamRepository.createTeam(team);
+    state = state.copyWith(isLoading: false, currentTeam: createdTeam);
   }
 }

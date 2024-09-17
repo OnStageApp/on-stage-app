@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/app_settings.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/library_section.dart';
@@ -24,6 +25,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(userNotifierProvider.notifier).getCurrentUser();
+      ref.read(teamNotifierProvider.notifier).getCurrentTeam();
     });
     super.initState();
   }
@@ -42,12 +44,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 16),
                 Text('Profile', style: context.textTheme.headlineLarge),
                 const SizedBox(height: 32),
-                ProfileHeader(
-                    user: ref.watch(userNotifierProvider).currentUser),
+                const ProfileHeader(),
                 const SizedBox(height: 24),
                 const SongViewSettings(),
                 const SizedBox(height: 24),
-                TeamsSection(),
+                const TeamsSection(),
                 const SizedBox(height: 24),
                 AppSettings(value: _value),
                 const SizedBox(height: 24),

@@ -131,7 +131,7 @@ class EventNotifier extends _$EventNotifier {
       );
       state = state.copyWith(stagers: stagers);
     } catch (e) {
-      // Handle error
+      logger.e('Error removing stager from event: $e');
     } finally {
       state = state.copyWith(isLoading: false);
     }
@@ -178,7 +178,8 @@ class EventNotifier extends _$EventNotifier {
       dateTime: eventControllerState.dateTime,
       location: eventControllerState.eventLocation,
       eventStatus: EventStatus.draft,
-      userIds: eventControllerState.addedUsers.map((p) => p.id).toList(),
+      teamMemberIds:
+          eventControllerState.addedTeamMembers.map((p) => p.id).toList(),
       rehearsals: eventControllerState.rehearsals,
     );
   }

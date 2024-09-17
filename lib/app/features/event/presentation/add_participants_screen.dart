@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
-import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -83,7 +82,8 @@ class AddParticipantsScreen extends ConsumerStatefulWidget {
 
 class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<User> _searchedParticipants = [];
+  List<TeamMember> _searchedParticipants = [];
+  bool _areParticipantsLoading = false;
 
   @override
   void initState() {
@@ -94,21 +94,31 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
     super.initState();
   }
 
-  void _requestParticipants() {
+  Future<void> _requestParticipants() async {
+    setState(() {
+      _areParticipantsLoading = true;
+    });
     if (widget.eventId != null) {
-      ref
-          .read(userNotifierProvider.notifier)
-          .getUninvitedUsersByEventId(widget.eventId!);
+      await ref
+          .read(teamMembersNotifierProvider.notifier)
+          .getUninvitedTeamMembers(widget.eventId!);
     } else {
-      ref.read(userNotifierProvider.notifier).getAllUsers();
+      await ref
+          .read(teamMembersNotifierProvider.notifier)
+          .getTeamMembers(includeCurrentUser: false);
     }
+    setState(() {
+      _areParticipantsLoading = false;
+    });
   }
 
   void _setParticipants() {
     if (widget.eventId != null) {
-      _searchedParticipants = ref.watch(userNotifierProvider).uninvitedUsers;
+      _searchedParticipants =
+          ref.watch(teamMembersNotifierProvider).uninvitedTeamMembers;
     } else {
-      _searchedParticipants = ref.watch(userNotifierProvider).users ?? [];
+      _searchedParticipants =
+          ref.watch(teamMembersNotifierProvider).teamMembers;
     }
   }
 
@@ -117,7 +127,7 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
     _setParticipants();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ref.watch(eventNotifierProvider).isLoading
+      child: _areParticipantsLoading
           ? const OnStageLoadingIndicator()
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,10 +193,8 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
-                                  _searchedParticipants
-                                          .elementAt(index)
-                                          .name!
-                                          .substring(0, 1) ??
+                                  _searchedParticipants.elementAt(index).name ??
+                                      'unknown'.substring(0, 1) ??
                                       '',
                                   textAlign: TextAlign.center,
                                   style: context.textTheme.titleSmall,
@@ -230,39 +238,19 @@ class AddParticipantsModalState extends ConsumerState<AddParticipantsScreen> {
     return StageSearchBar(
       focusNode: FocusNode(),
       controller: _searchController,
-      onClosed: () {
-        // setState(() {
-        //   _searchedParticipants = _allParticipants.where((User element) {
-        //     return element.name!.toLowerCase().contains(
-        //           _searchController.text.toLowerCase(),
-        //         );
-        //   }).toList();
-        // });
-
-        // _clearSearch();
-      },
+      onClosed: () {},
       onChanged: (value) {
         if (value.isEmpty) {
           _clearSearch();
         }
-        // setState(() {
-        // _searchedParticipants = _allParticipants.where((element) {
-        //   return element.name!.toLowerCase().contains(
-        //         _searchController.text.toLowerCase(),
-        //       );
-        // }).toList();
-        // });
       },
     );
   }
 
-  void _clearSearch() {
-    // _searchController.clear();
-    // _searchedParticipants = _allParticipants;
-  }
+  void _clearSearch() {}
 
   bool _isItemChecked(int index) => ref
       .watch(eventControllerProvider)
-      .addedUsers
+      .addedTeamMembers
       .contains(_searchedParticipants.elementAt(index));
 }

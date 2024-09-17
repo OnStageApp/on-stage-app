@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:on_stage_app/app/features/team/domain/all_teams_response/all_teams_response.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -11,7 +12,13 @@ abstract class TeamRepository {
   factory TeamRepository(Dio dio) = _TeamRepository;
 
   @GET(API.teams)
-  Future<List<Team>> getTeams();
+  Future<AllTeamsResponse> getTeams();
+
+  @GET(API.currentTeam)
+  Future<Team> getCurrentTeam();
+
+  @POST(API.setCurrentTeam)
+  Future<void> setCurrentTeam(@Path('teamId') String teamId);
 
   @POST(API.teams)
   Future<Team> createTeam(@Body() TeamRequest teamRequest);

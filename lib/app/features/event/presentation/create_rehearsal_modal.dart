@@ -16,11 +16,13 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
   const CreateRehearsalModal({
     this.rehearsal,
     this.onRehearsalCreated,
+    this.enabled = true,
     super.key,
   });
 
   final void Function(RehearsalModel)? onRehearsalCreated;
   final RehearsalModel? rehearsal;
+  final bool enabled;
 
   @override
   CreateRehearsalModalState createState() => CreateRehearsalModalState();
@@ -29,6 +31,7 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
     required BuildContext context,
     RehearsalModel? rehearsal,
     void Function(RehearsalModel)? onRehearsalCreated,
+    bool enabled = true,
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
@@ -37,12 +40,13 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
       context: context,
       builder: (context) => SafeArea(
         child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Add a Rehearsal'),
+          buildHeader: () => const ModalHeader(title: 'Rehearsal'),
           headerHeight: () => 64,
           buildContent: () => SingleChildScrollView(
             child: CreateRehearsalModal(
               onRehearsalCreated: onRehearsalCreated,
               rehearsal: rehearsal,
+              enabled: enabled,
             ),
           ),
         ),
@@ -90,6 +94,7 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
         child: Column(
           children: [
             CustomTextField(
+              enabled: widget.enabled,
               label: 'Rehearsal Name',
               hint: 'Sunday Morning',
               icon: null,
@@ -104,18 +109,21 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
             ),
             const SizedBox(height: 24),
             DateTimeTextFieldWidget(
+              enabled: widget.enabled,
               initialDateTime: widget.rehearsal?.dateTime,
               onDateTimeChanged: (dateTime) {
                 _dateTimeString = dateTime;
               },
             ),
             const SizedBox(height: 32),
-            ContinueButton(
-              text: widget.rehearsal != null ? 'Update' : 'Create',
-              onPressed: _createRehearsal,
-              isEnabled: true,
-            ),
-            const SizedBox(height: 24),
+            if (widget.enabled) ...[
+              ContinueButton(
+                isEnabled: true,
+                text: widget.rehearsal != null ? 'Update' : 'Create',
+                onPressed: _createRehearsal,
+              ),
+              const SizedBox(height: 24),
+            ]
           ],
         ),
       ),

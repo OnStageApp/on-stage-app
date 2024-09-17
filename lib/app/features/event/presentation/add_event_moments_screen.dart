@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/moment_event_item_tile.dart';
@@ -27,8 +28,6 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 }
 
 class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
-  static const bool _isAdmin = true;
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,6 +41,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   @override
   Widget build(BuildContext context) {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
+    final hasEditorRights = ref.read(appDataControllerProvider).hasEditorsRight;
 
     return Scaffold(
       appBar: widget.isCreatingEvent
@@ -51,10 +51,10 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _isAdmin ? _buildSaveButton() : null,
+      floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
       body: Padding(
         padding: defaultScreenPadding,
-        child: _isAdmin
+        child: hasEditorRights
             ? _buildReordableList(eventItemsState.eventItems)
             : _buildStaticList(eventItemsState.eventItems),
       ),
@@ -101,7 +101,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       itemCount: eventItems.length,
       onReorder: _onReorder,
       itemBuilder: (context, index) => _buildEventItemTile(eventItems[index]),
-      footer: _isAdmin
+      footer: ref.watch(appDataControllerProvider).hasEditorsRight
           ? _buildAddSongsOrMomentsButton()
           : const SizedBox(height: 100),
     );
@@ -148,7 +148,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           extra: eventItems,
         );
       },
-      isAdmin: _isAdmin,
+      isAdmin: ref.watch(appDataControllerProvider).hasEditorsRight,
     );
   }
 
