@@ -61,7 +61,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: Insets.medium),
+                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Text(

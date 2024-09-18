@@ -41,7 +41,8 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   @override
   Widget build(BuildContext context) {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
-    final hasEditorRights = ref.read(appDataControllerProvider).hasEditorsRight;
+    final hasEditorRights =
+        ref.watch(appDataControllerProvider).hasEditorsRight;
 
     return Scaffold(
       appBar: widget.isCreatingEvent

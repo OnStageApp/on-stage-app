@@ -125,7 +125,7 @@ class NotificationTile extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
           ],
         ),
       ),

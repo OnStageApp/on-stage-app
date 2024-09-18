@@ -81,11 +81,6 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   Future<bool> signInWithEmail(String email, String password) async {
-    var authTokne =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b255aXZpbnRlckBnbWFpbC5jb20iLCJleHAiOjE3MjY5NDQ3NjYsImlhdCI6MTcyNTczNTE2Nn0.LwhbKBmuy92xaHQLV10Tj7SLfTwwFLLtajAjvCilCvU';
-    await _saveAuthToken(authTokne);
-    state = state.copyWith(isLoggedIn: true);
-    return true;
     try {
       final userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(

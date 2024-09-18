@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
@@ -227,7 +226,6 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       onTap: () {
         CreateRehearsalModal.show(
           context: context,
-          enabled: ref.watch(appDataControllerProvider).hasEditorsRight,
         );
       },
       text: 'Create new Rehearsal',
