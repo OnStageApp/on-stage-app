@@ -12,12 +12,13 @@ class ProfileHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userNotifierProvider).currentUser;
+    final photoUrl = ref.watch(userNotifierProvider).userPhoto;
     return SizedBox(
       height: 105,
       child: Row(
         children: [
           ProfileImageWidget(
-            profilePicture: user?.image,
+            profilePicture: photoUrl,
           ),
           const SizedBox(width: 22),
           Expanded(

@@ -32,11 +32,13 @@ class TeamsSection extends ConsumerWidget {
                 horizontal: 12,
               ),
               title: Text(
-                currentTeam?.name ?? '',
+                currentTeam.name ?? '',
                 style: context.textTheme.headlineMedium,
               ),
               subtitle: Text(
-                '4 Members',
+                currentTeam.membersCount > 1
+                    ? '${currentTeam.membersCount} Members'
+                    : '${currentTeam.membersCount} Member',
                 style: context.textTheme.bodyMedium!.copyWith(
                   color: context.colorScheme.outline,
                 ),
