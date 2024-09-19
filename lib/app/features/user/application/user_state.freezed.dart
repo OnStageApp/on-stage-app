@@ -19,6 +19,7 @@ mixin _$UserState {
   List<User>? get users => throw _privateConstructorUsedError;
   List<User> get uninvitedUsers => throw _privateConstructorUsedError;
   UserModel? get currentUser => throw _privateConstructorUsedError;
+  Uint8List? get userPhoto => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -35,6 +36,7 @@ abstract class $UserStateCopyWith<$Res> {
       {List<User>? users,
       List<User> uninvitedUsers,
       UserModel? currentUser,
+      Uint8List? userPhoto,
       bool isLoading});
 
   $UserModelCopyWith<$Res>? get currentUser;
@@ -56,6 +58,7 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
     Object? users = freezed,
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
+    Object? userPhoto = freezed,
     Object? isLoading = null,
   }) {
     return _then(_value.copyWith(
@@ -71,6 +74,10 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
           ? _value.currentUser
           : currentUser // ignore: cast_nullable_to_non_nullable
               as UserModel?,
+      userPhoto: freezed == userPhoto
+          ? _value.userPhoto
+          : userPhoto // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -103,6 +110,7 @@ abstract class _$$UserStateImplCopyWith<$Res>
       {List<User>? users,
       List<User> uninvitedUsers,
       UserModel? currentUser,
+      Uint8List? userPhoto,
       bool isLoading});
 
   @override
@@ -123,6 +131,7 @@ class __$$UserStateImplCopyWithImpl<$Res>
     Object? users = freezed,
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
+    Object? userPhoto = freezed,
     Object? isLoading = null,
   }) {
     return _then(_$UserStateImpl(
@@ -138,6 +147,10 @@ class __$$UserStateImplCopyWithImpl<$Res>
           ? _value.currentUser
           : currentUser // ignore: cast_nullable_to_non_nullable
               as UserModel?,
+      userPhoto: freezed == userPhoto
+          ? _value.userPhoto
+          : userPhoto // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -153,6 +166,7 @@ class _$UserStateImpl implements _UserState {
       {final List<User>? users,
       final List<User> uninvitedUsers = const [],
       this.currentUser,
+      this.userPhoto,
       this.isLoading = false})
       : _users = users,
         _uninvitedUsers = uninvitedUsers;
@@ -179,12 +193,14 @@ class _$UserStateImpl implements _UserState {
   @override
   final UserModel? currentUser;
   @override
+  final Uint8List? userPhoto;
+  @override
   @JsonKey()
   final bool isLoading;
 
   @override
   String toString() {
-    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, isLoading: $isLoading)';
+    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, userPhoto: $userPhoto, isLoading: $isLoading)';
   }
 
   @override
@@ -197,6 +213,7 @@ class _$UserStateImpl implements _UserState {
                 .equals(other._uninvitedUsers, _uninvitedUsers) &&
             (identical(other.currentUser, currentUser) ||
                 other.currentUser == currentUser) &&
+            const DeepCollectionEquality().equals(other.userPhoto, userPhoto) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading));
   }
@@ -207,6 +224,7 @@ class _$UserStateImpl implements _UserState {
       const DeepCollectionEquality().hash(_users),
       const DeepCollectionEquality().hash(_uninvitedUsers),
       currentUser,
+      const DeepCollectionEquality().hash(userPhoto),
       isLoading);
 
   @JsonKey(ignore: true)
@@ -221,6 +239,7 @@ abstract class _UserState implements UserState {
       {final List<User>? users,
       final List<User> uninvitedUsers,
       final UserModel? currentUser,
+      final Uint8List? userPhoto,
       final bool isLoading}) = _$UserStateImpl;
 
   @override
@@ -229,6 +248,8 @@ abstract class _UserState implements UserState {
   List<User> get uninvitedUsers;
   @override
   UserModel? get currentUser;
+  @override
+  Uint8List? get userPhoto;
   @override
   bool get isLoading;
   @override

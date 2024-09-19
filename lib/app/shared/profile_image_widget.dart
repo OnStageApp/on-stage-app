@@ -39,14 +39,14 @@ class _ProfileImageWidgetState extends ConsumerState<ProfileImageWidget> {
             color: context.colorScheme.primaryContainer,
           ),
           shape: BoxShape.circle,
-          image: userState.currentUser?.image != null
+          image: widget.profilePicture != null
               ? DecorationImage(
-                  image: MemoryImage(userState.currentUser!.image!),
+                  image: MemoryImage(widget.profilePicture!),
                   fit: BoxFit.cover,
                 )
               : null,
         ),
-        child: userState.currentUser?.image == null
+        child: widget.profilePicture == null
             ? Container(
                 decoration: BoxDecoration(
                   color: context.colorScheme.onSurfaceVariant,

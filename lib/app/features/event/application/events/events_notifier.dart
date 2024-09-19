@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:http/http.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_search_type.dart';
@@ -142,5 +145,44 @@ class EventsNotifier extends _$EventsNotifier {
     return eventType == EventSearchType.upcoming
         ? state.upcomingEventsResponse.hasMore
         : state.pastEventsResponse.hasMore;
+  }
+
+  Future<List<TestObjectResponse>> getTestObjects() async {
+    final objects = await _eventsRepository.test();
+    var newObj = <TestObjectResponse>[];
+    for (var obj in objects) {
+      final allPhotos = <String>[];
+      for (var photoUrl in obj.photoUrls) {
+        final photo = await _getPhotoFromAWS(photoUrl);
+        if (photo != null) {
+          allPhotos.add(photo);
+        }
+      }
+
+      // Create a TestObjectResponse with the fetched photos
+      final response = TestObjectResponse(photos: allPhotos);
+      newObj.add(response);
+
+      // Do something with the response, e.g., save it or process it further
+    }
+    return newObj;
+  }
+
+  Future<String?> _getPhotoFromAWS(String presignedUrl) async {
+    try {
+      final response = await get(Uri.parse(presignedUrl));
+
+      if (response.statusCode == 200) {
+        // Convert the image to base64
+        final base64Image = base64Encode(response.bodyBytes);
+        return base64Image;
+      } else {
+        print('Failed to fetch image. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return null;
+    }
   }
 }

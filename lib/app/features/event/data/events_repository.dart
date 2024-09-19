@@ -89,4 +89,42 @@ abstract class EventsRepository {
   Future<void> deleteEvent(
     @Path('id') String eventId,
   );
+
+  @GET('events/test')
+  Future<List<TestObject>> test();
+}
+
+class TestObject {
+  TestObject({required this.photoUrls});
+
+  final List<String> photoUrls;
+
+  factory TestObject.fromJson(Map<String, dynamic> json) {
+    var urlsData = json['photoUrls'];
+    List<String> urls;
+
+    if (urlsData is List) {
+      urls = urlsData.map((url) => url.toString()).toList();
+    } else if (urlsData is String) {
+      // In case it's a single string, wrap it in a list
+      urls = [urlsData];
+    } else {
+      // If it's neither a list nor a string, default to an empty list
+      urls = [];
+    }
+
+    return TestObject(photoUrls: urls);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'photoUrls': photoUrls,
+    };
+  }
+}
+
+class TestObjectResponse {
+  TestObjectResponse({required this.photos});
+
+  final List<String> photos;
 }

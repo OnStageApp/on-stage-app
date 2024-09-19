@@ -89,81 +89,66 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                 shrinkWrap: true,
                 itemCount: ref.watch(teamsNotifierProvider).teams.length,
                 itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () async {
-                      await ref
-                          .read(teamsNotifierProvider.notifier)
-                          .setCurrentTeam(
-                            _teams.elementAt(index).id,
-                          );
-                      await ref
-                          .read(teamNotifierProvider.notifier)
-                          .getCurrentTeam();
-
-                      ref
-                          .read(navigationNotifierProvider.notifier)
-                          .resetRouter();
-                    },
-                    child: Container(
-                      height: 48,
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.onSurfaceVariant,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
+                  final team = _teams.elementAt(index);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      splashColor: context.colorScheme.surfaceBright,
+                      tileColor: context.colorScheme.onSurfaceVariant,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
                           color: _isItemChecked(index)
                               ? context.colorScheme.primary
                               : context.colorScheme.onSurfaceVariant,
-                          width: 1.6,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
+                      title: Text(
+                        team.name ?? '',
+                        style: context.textTheme.headlineMedium,
+                      ),
+                      subtitle: Text(
+                        team.membersCount > 1
+                            ? '${team.membersCount} Members'
+                            : '${team.membersCount} Member',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: context.colorScheme.outline,
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 12),
-                          Container(
-                            width: 30,
-                            height: 30,
-                            alignment: Alignment.center,
-                            key: ValueKey(
-                              _teams.elementAt(index).hashCode.toString(),
-                            ),
-                            decoration: BoxDecoration(
-                              color: context.colorScheme.onSurfaceVariant,
-                              border: Border.all(
-                                color: Colors.green,
-                                width: 3,
-                              ),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                              _teams.elementAt(index).name.substring(0, 1) ??
-                                  '',
-                              textAlign: TextAlign.center,
-                              style: context.textTheme.titleSmall,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12),
-                            child: Text(
-                              _teams.elementAt(index).name ?? '',
-                              style: context.textTheme.titleSmall,
-                            ),
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Icon(
-                              _isItemChecked(index)
-                                  ? Icons.check_circle_rounded
-                                  : Icons.circle_outlined,
-                              size: 20,
-                              color: _isItemChecked(index)
-                                  ? context.colorScheme.primary
-                                  : context.colorScheme.surfaceBright,
-                            ),
-                          ),
-                        ],
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        //TODO: We have to replace this with current participationStatus
+                        child: Text(
+                          'Leader',
+                          style: context.textTheme.titleMedium!
+                              .copyWith(color: context.colorScheme.outline),
+                        ),
                       ),
+                      onTap: () async {
+                        await ref
+                            .read(teamsNotifierProvider.notifier)
+                            .setCurrentTeam(
+                              _teams.elementAt(index).id,
+                            );
+
+                        await ref
+                            .read(teamNotifierProvider.notifier)
+                            .getCurrentTeam();
+                        ref
+                            .read(navigationNotifierProvider.notifier)
+                            .resetRouter();
+                      },
                     ),
                   );
                 },

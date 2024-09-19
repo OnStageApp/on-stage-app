@@ -2,7 +2,7 @@ class API {
   // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
   // static const String baseUrl = 'http://192.168.150.65:9876/';
-  static const String baseUrl = 'https://7192-86-125-110-196.ngrok-free.app/';
+  static const String baseUrl = 'https://623c-86-125-110-196.ngrok-free.app/';
 
   // static const String baseUrl = 'http://localhost:9000/';
 
@@ -40,7 +40,7 @@ class API {
 
   static const String users = 'users';
   static const String user = 'users/{id}';
-  static const String userPhoto = 'users/{userId}/photo';
+  static const String userPhoto = 'users/photoUrl';
 
   static const String teams = 'teams';
   static const String teamById = 'teams/{id}';

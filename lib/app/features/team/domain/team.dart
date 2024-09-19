@@ -8,6 +8,7 @@ class Team with _$Team {
   const factory Team({
     required String id,
     required String name,
+    required int membersCount,
   }) = _Team;
 
   factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
-class SavedSongsTile extends StatelessWidget {
+class SavedSongsTile extends ConsumerWidget {
   const SavedSongsTile({
     required this.title,
     required this.hour,
@@ -17,7 +19,7 @@ class SavedSongsTile extends StatelessWidget {
   final String location;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       overlayColor: WidgetStateProperty.all(const Color(0x33FFFFFF)),
       onTap: () {
@@ -49,7 +51,7 @@ class SavedSongsTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '6',
+                  ref.watch(songsNotifierProvider).savedSongs.length.toString(),
                   style: context.textTheme.headlineLarge,
                 ),
                 Container(
