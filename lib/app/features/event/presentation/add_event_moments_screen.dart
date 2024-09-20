@@ -66,15 +66,16 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: ContinueButton(
-        text: 'Save',
+        text: 'Save Changes',
         onPressed: _createEventItemList,
-        isEnabled: true,
+        isEnabled: ref.watch(eventItemsNotifierProvider).hasChanges,
       ),
     );
   }
 
   void _createEventItemList() {
-    final eventItems = ref.read(eventItemsNotifierProvider).eventItems;
+    final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
+    ref.read(eventItemsNotifierProvider.notifier).resetChanges();
     ref
         .read(eventItemsNotifierProvider.notifier)
         .addEventItems(eventItems, widget.eventId);

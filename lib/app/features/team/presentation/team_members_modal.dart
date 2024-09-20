@@ -48,9 +48,7 @@ class TeamMembersModal extends ConsumerStatefulWidget {
               child: Consumer(
                 builder: (context, ref, _) {
                   return ContinueButton(
-                    text: ref
-                        .watch(eventControllerProvider)
-                        .invitePeopleButtonText,
+                    text: 'Invite People to Event',
                     onPressed: () {
                       if (onPressed != null) {
                         onPressed();
@@ -185,6 +183,6 @@ class TeamMembersModalState extends ConsumerState<TeamMembersModal> {
 
   bool _isItemChecked(int index) => ref
       .watch(eventControllerProvider)
-      .addedTeamMembers
+      .selectedTeamMembers
       .contains(_members.elementAt(index));
 }

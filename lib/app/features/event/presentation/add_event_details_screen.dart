@@ -1,11 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
+import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
@@ -115,7 +117,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               if (ref
                   .watch(eventControllerProvider)
-                  .addedTeamMembers
+                  .addedMembers
                   .isNotEmpty) ...[
                 const SizedBox(height: Insets.smallNormal),
                 _buildParticipantsList(),
@@ -192,8 +194,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final addedTeamMembers =
-        ref.watch(eventControllerProvider).addedTeamMembers;
+    final addedTeamMembers = ref.watch(eventControllerProvider).addedMembers;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
@@ -208,12 +209,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         itemBuilder: (context, index) {
           return ParticipantListingItem(
             name: '${addedTeamMembers[index].name}',
-            assetPath: 'assets/images/profile1.png',
+            photo: addedTeamMembers[index].profilePicture ?? Uint8List(0),
             status: StagerStatusEnum.UNINVINTED,
             onDelete: () {
               // ref
               //     .read(eventControllerProvider.notifier)
-              //     .removeUser(addedUsers[index].id);
+              //     .removeRehearsal(addedTeamMembers[index]);
             },
           );
         },
@@ -237,7 +238,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     return EventActionButton(
       onTap: () {
         if (mounted) {
-          AddParticipantsScreen.show(
+          InvitePeopleToEventModal.show(
             context: context,
             onPressed: () {},
           );

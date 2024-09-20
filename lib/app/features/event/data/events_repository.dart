@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/event/domain/models/events_response.da
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event/domain/models/upcoming_event/upcoming_event_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -24,7 +25,7 @@ abstract class EventsRepository {
   });
 
   @GET(API.upcomingEvent)
-  Future<EventModel?> getUpcomingEvent();
+  Future<UpcomingEventModel?> getUpcomingEvent();
 
   @GET(API.eventById)
   Future<EventModel> getEventById(@Path('id') String id);
@@ -89,42 +90,4 @@ abstract class EventsRepository {
   Future<void> deleteEvent(
     @Path('id') String eventId,
   );
-
-  @GET('events/test')
-  Future<List<TestObject>> test();
-}
-
-class TestObject {
-  TestObject({required this.photoUrls});
-
-  final List<String> photoUrls;
-
-  factory TestObject.fromJson(Map<String, dynamic> json) {
-    var urlsData = json['photoUrls'];
-    List<String> urls;
-
-    if (urlsData is List) {
-      urls = urlsData.map((url) => url.toString()).toList();
-    } else if (urlsData is String) {
-      // In case it's a single string, wrap it in a list
-      urls = [urlsData];
-    } else {
-      // If it's neither a list nor a string, default to an empty list
-      urls = [];
-    }
-
-    return TestObject(photoUrls: urls);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'photoUrls': photoUrls,
-    };
-  }
-}
-
-class TestObjectResponse {
-  TestObjectResponse({required this.photos});
-
-  final List<String> photos;
 }

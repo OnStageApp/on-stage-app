@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/shared/connectivity/connectivity_overlay.dart';
-import 'package:on_stage_app/app/shared/router_notifier.dart';
 import 'package:on_stage_app/app/theme/theme_state.dart';
+import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 
 class App extends ConsumerStatefulWidget {
   const App({super.key});
@@ -17,7 +17,6 @@ class _AppState extends ConsumerState<App> {
   @override
   void initState() {
     super.initState();
-    // Initialize Firebase
     ref.read(firebaseNotifierProvider);
   }
 

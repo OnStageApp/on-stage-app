@@ -55,7 +55,7 @@ class EditorsSection extends StatelessWidget {
 
   Widget _buildEditorsTile(BuildContext context, String title, String role) {
     return MemberTileWidget(
-      photo: 'assets/images/profile1.png',
+      // photo: 'assets/images/profile1.png',
       name: title,
       trailing: role,
       onTap: () {},

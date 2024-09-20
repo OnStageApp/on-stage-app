@@ -25,7 +25,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.wait([
-        ref.read(userNotifierProvider.notifier).getCurrentUser(),
         ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
         ref.read(userNotifierProvider.notifier).getUserPhoto(),
       ]);

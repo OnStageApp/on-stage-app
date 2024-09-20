@@ -1,44 +1,40 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ParticipantListingItem extends StatefulWidget {
+class ParticipantListingItem extends StatelessWidget {
   const ParticipantListingItem({
     required this.name,
-    required this.assetPath,
+    required this.photo,
+    required this.onDelete,
     this.status,
     this.trailing,
-    required this.onDelete,
     super.key,
   });
 
   final String name;
-  final String assetPath;
+  final Uint8List? photo;
   final StagerStatusEnum? status;
   final Widget? trailing;
   final VoidCallback onDelete;
 
   @override
-  State<ParticipantListingItem> createState() => _ParticipantListingItemState();
-}
-
-class _ParticipantListingItemState extends State<ParticipantListingItem> {
-  @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(widget.name),
+      key: ValueKey(name),
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         extentRatio: 0.3,
-        dismissible: DismissiblePane(onDismissed: widget.onDelete),
+        dismissible: DismissiblePane(onDismissed: onDelete),
         children: [
           SlidableAction(
-            onPressed: (_) => widget.onDelete,
+            onPressed: (_) => onDelete(),
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            // icon: Icons.delete,
             label: 'Delete',
           ),
         ],
@@ -50,29 +46,39 @@ class _ParticipantListingItemState extends State<ParticipantListingItem> {
         ),
         child: Row(
           children: [
-            Image.asset(
-              widget.assetPath,
-              width: 32,
-              height: 32,
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: context.colorScheme.primaryContainer,
+                ),
+                shape: BoxShape.circle,
+                image: photo != null && photo!.isNotEmpty
+                    ? DecorationImage(
+                        image: MemoryImage(photo!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
-              widget.name,
+              name,
               style: context.textTheme.titleMedium,
             ),
             const Spacer(),
-            if (widget.trailing != null) widget.trailing!,
-            if (widget.trailing == null &&
-                widget.status != StagerStatusEnum.UNINVINTED)
-              _statusIcon(widget.status!),
+            if (trailing != null) trailing!,
+            if (trailing == null && status != StagerStatusEnum.UNINVINTED)
+              _statusIcon(context, status!),
           ],
         ),
       ),
     );
   }
 
-  Widget _statusIcon(StagerStatusEnum status) {
-    switch (widget.status!) {
+  Widget _statusIcon(BuildContext context, StagerStatusEnum status) {
+    switch (status) {
       case StagerStatusEnum.CONFIRMED:
         return const Icon(
           Icons.check_circle,

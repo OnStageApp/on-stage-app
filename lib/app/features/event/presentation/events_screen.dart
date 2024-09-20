@@ -62,22 +62,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
       appBar: StageAppBar(
         title: 'Events',
         trailing: ref.watch(appDataControllerProvider).hasEditorsRight
-            ? Padding(
-                padding: const EdgeInsets.only(right: Insets.normal),
-                child: IconButton(
-                  style: IconButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    highlightColor: context.colorScheme.surfaceBright,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                  ),
-                  onPressed: () => context.pushNamed(AppRoute.addEvent.name),
-                  icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
-                ),
-              )
+            ? _buildTrailingButton(context)
             : const SizedBox(),
       ),
       body: CustomScrollView(
@@ -100,32 +85,54 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                       key: const ValueKey('search'),
                       events: eventsState.filteredEventsResponse.events,
                     )
-                  : EventsContent(
-                      key: const ValueKey('content'),
-                      eventsState: eventsState,
+                  : const EventsContent(
+                      key: ValueKey('content'),
                     )),
             )
           else
-            SliverFillRemaining(
-              child: Column(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/no_events_image.svg',
-                    height: 100,
-                    width: 100,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurfaceVariant,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  Text(
-                    'You have no upcoming events',
-                    style: context.textTheme.titleMedium,
-                  ),
-                ],
-              ),
-            ),
+            _buildFillRemainingSpace(context),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFillRemainingSpace(BuildContext context) {
+    return SliverFillRemaining(
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            'assets/images/no_events_image.svg',
+            height: 100,
+            width: 100,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
+            ),
+          ),
+          Text(
+            'You have no upcoming events',
+            style: context.textTheme.titleMedium,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrailingButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: Insets.normal),
+      child: IconButton(
+        style: IconButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          highlightColor: context.colorScheme.surfaceBright,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+        ),
+        onPressed: () => context.pushNamed(AppRoute.addEvent.name),
+        icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
       ),
     );
   }

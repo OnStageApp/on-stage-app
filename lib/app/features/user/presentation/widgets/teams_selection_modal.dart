@@ -6,8 +6,8 @@ import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
-import 'package:on_stage_app/app/shared/router_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 
 class TeamsSelectionModal extends ConsumerStatefulWidget {
   const TeamsSelectionModal({

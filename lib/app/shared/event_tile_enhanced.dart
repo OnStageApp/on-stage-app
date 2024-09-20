@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -11,6 +13,7 @@ class EventTileEnhanced extends StatelessWidget {
     required this.dateTime,
     required this.onTap,
     required this.locationName,
+    required this.participantsProfileBytes,
     this.isEventEmpty = false,
     super.key,
   });
@@ -19,6 +22,7 @@ class EventTileEnhanced extends StatelessWidget {
   final DateTime? dateTime;
   final String? locationName;
   final bool isEventEmpty;
+  final List<Uint8List?> participantsProfileBytes;
   final void Function() onTap;
 
   @override
@@ -87,19 +91,11 @@ class EventTileEnhanced extends StatelessWidget {
                   ),
                 )
               else
-                const ParticipantsOnTile(
+                ParticipantsOnTile(
                   backgroundColor: Colors.white,
                   borderColor: Colors.transparent,
-                  participantsProfile: [
-                    'assets/images/profile1.png',
-                    'assets/images/profile2.png',
-                    'assets/images/profile4.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                    'assets/images/profile5.png',
-                  ],
+                  participantsProfileBytes: participantsProfileBytes,
+                  participantsLength: 3,
                 )
             ],
           ),

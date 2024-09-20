@@ -12,10 +12,9 @@ Dio dioS3(DioS3Ref ref) {
     ),
   );
   final prettyDioLogger = PrettyDioLogger(
-    requestHeader: true,
     responseBody: false,
-    requestBody: true,
-    responseHeader: true,
+    request: false,
+    maxWidth: 60,
   );
 
   dio.interceptors.add(prettyDioLogger);

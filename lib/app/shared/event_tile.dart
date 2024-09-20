@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -9,6 +11,7 @@ class EventTile extends StatelessWidget {
     required this.dateTime,
     this.isDraft = true,
     required this.onTap,
+    this.participantsProfile = const [],
     super.key,
   });
 
@@ -16,6 +19,7 @@ class EventTile extends StatelessWidget {
   final DateTime? dateTime;
   final bool isDraft;
   final VoidCallback onTap;
+  final List<Uint8List?> participantsProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -89,18 +93,9 @@ class EventTile extends StatelessWidget {
   }
 
   Widget _buildParticipantsTile() {
-    return const ParticipantsOnTile(
-      borderColor: Colors.transparent,
-      participantsProfile: [
-        'assets/images/profile1.png',
-        'assets/images/profile2.png',
-        'assets/images/profile4.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-      ],
+    return ParticipantsOnTile(
+      participantsProfileBytes: participantsProfile,
+      participantsLength: 3,
     );
   }
 

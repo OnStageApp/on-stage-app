@@ -137,6 +137,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               title: upcomingEvent?.name ?? 'Loading...',
               hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
               date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
+              stagerPhotos: upcomingEvent?.stagerPhotos ?? [],
               hasUpcomingEvent: upcomingEvent != null,
             ),
           ),

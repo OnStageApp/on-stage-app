@@ -7,12 +7,12 @@ part of 'event_items_notifier.dart';
 // **************************************************************************
 
 String _$eventItemsNotifierHash() =>
-    r'6797c4554bb9e6d5901a0737683396b31fddd217';
+    r'b50664574d20158dedcce71784397adb39a96455';
 
 /// See also [EventItemsNotifier].
 @ProviderFor(EventItemsNotifier)
 final eventItemsNotifierProvider =
-    NotifierProvider<EventItemsNotifier, EventItemsState>.internal(
+    AutoDisposeNotifierProvider<EventItemsNotifier, EventItemsState>.internal(
   EventItemsNotifier.new,
   name: r'eventItemsNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final eventItemsNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$EventItemsNotifier = Notifier<EventItemsState>;
+typedef _$EventItemsNotifier = AutoDisposeNotifier<EventItemsState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

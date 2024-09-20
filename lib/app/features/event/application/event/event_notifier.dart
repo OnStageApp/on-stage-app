@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
@@ -9,6 +10,7 @@ import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_re
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -19,12 +21,15 @@ part 'event_notifier.g.dart';
 //This has to be kept alive because we need to keep the state of the event
 @Riverpod(keepAlive: true)
 class EventNotifier extends _$EventNotifier {
-  late final EventsRepository _eventsRepository;
+  EventsRepository? _eventsRepository;
+
+  EventsRepository get eventsRepository {
+    _eventsRepository ??= EventsRepository(ref.read(dioProvider));
+    return _eventsRepository!;
+  }
 
   @override
   EventState build() {
-    final dio = ref.read(dioProvider);
-    _eventsRepository = EventsRepository(dio);
     return const EventState();
   }
 
@@ -51,26 +56,25 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> getEventById(String eventId) async {
-    final event = await _eventsRepository.getEventById(eventId);
-
+    final event = await eventsRepository.getEventById(eventId);
     state = state.copyWith(event: event);
   }
 
   Future<void> getRehearsals(String eventId) async {
-    final rehearsals = await _eventsRepository.getRehearsalsByEventId(eventId);
+    final rehearsals = await eventsRepository.getRehearsalsByEventId(eventId);
     state = state.copyWith(rehearsals: rehearsals);
   }
 
   Future<void> addRehearsal(RehearsalModel rehearsal) async {
     state = state.copyWith(isLoading: true);
-    final rehearsals = await _eventsRepository.addRehearsal(rehearsal);
+    final rehearsals = await eventsRepository.addRehearsal(rehearsal);
     final updatedRehearsals = [...state.rehearsals, rehearsals];
     state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
   }
 
   Future<void> updateRehearsal(RehearsalModel rehearsalRequest) async {
     state = state.copyWith(isLoading: true);
-    final updatedRehearsal = await _eventsRepository.updateRehearsal(
+    final updatedRehearsal = await eventsRepository.updateRehearsal(
       rehearsalRequest.id!,
       rehearsalRequest,
     );
@@ -86,7 +90,7 @@ class EventNotifier extends _$EventNotifier {
 
   Future<void> deleteRehearsal(String rehearsalId) async {
     state = state.copyWith(isLoading: true);
-    await _eventsRepository.deleteRehearsal(rehearsalId);
+    await eventsRepository.deleteRehearsal(rehearsalId);
     final updatedRehearsals = state.rehearsals
         .where((rehearsal) => rehearsal.id != rehearsalId)
         .toList();
@@ -94,46 +98,37 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> getStagers(String eventId) async {
-    final stagers = await _eventsRepository.getStagersByEventId(eventId);
-    state = state.copyWith(stagers: stagers);
+    final stagers = await eventsRepository.getStagersByEventId(eventId);
+    final stagersWithPhotos = await Future.wait(
+      stagers.map(_getStagerWithPhoto),
+    );
+    state = state.copyWith(stagers: stagersWithPhotos);
   }
 
   Future<void> createEvent() async {
     state = state.copyWith(isLoading: true);
     final eventToCreate = _createDraftEvent();
-    final event = await _eventsRepository.createEvent(eventToCreate);
+    final event = await eventsRepository.createEvent(eventToCreate);
     state = state.copyWith(isLoading: false, event: event);
   }
 
   Future<void> _updateEvent(EventModel updatedEvent) async {
     state = state.copyWith(isLoading: true);
-    await _eventsRepository.updateEvent(state.event!.id!, updatedEvent);
+    await eventsRepository.updateEvent(updatedEvent.id!, updatedEvent);
     state = state.copyWith(isLoading: false);
   }
 
   Future<void> addStagerToEvent(CreateStagerRequest createStagerRequest) async {
-    state = state.copyWith(isLoading: true);
-    final stagers =
-        await _eventsRepository.addStagerToEvent(createStagerRequest);
-    state = state.copyWith(
-      stagers: [...state.stagers, ...stagers],
-      isLoading: false,
-    );
+    await eventsRepository.addStagerToEvent(createStagerRequest);
+    if (state.event != null) {
+      unawaited(getStagers(state.event!.id!));
+    }
   }
 
   Future<void> removeStagerFromEvent(String stagerId) async {
-    state = state.copyWith(isLoading: true);
-    try {
-      await _eventsRepository.removeStagerFromEvent(stagerId);
-
-      final stagers = await _eventsRepository.getStagersByEventId(
-        state.event!.id!,
-      );
-      state = state.copyWith(stagers: stagers);
-    } catch (e) {
-      logger.e('Error removing stager from event: $e');
-    } finally {
-      state = state.copyWith(isLoading: false);
+    await eventsRepository.removeStagerFromEvent(stagerId);
+    if (state.event != null) {
+      unawaited(getStagers(state.event!.id!));
     }
   }
 
@@ -158,7 +153,7 @@ class EventNotifier extends _$EventNotifier {
       dateTime: newDateTime.toIso8601String(),
     );
 
-    final newEvent = await _eventsRepository.duplicateEvent(
+    final newEvent = await eventsRepository.duplicateEvent(
       state.event!.id!,
       duplicateEventRequest,
     );
@@ -167,7 +162,7 @@ class EventNotifier extends _$EventNotifier {
 
   Future<void> deleteEvent() async {
     state = state.copyWith(isLoading: true);
-    await _eventsRepository.deleteEvent(state.event!.id!);
+    await eventsRepository.deleteEvent(state.event!.id!);
     state = state.copyWith(isLoading: false);
   }
 
@@ -179,9 +174,20 @@ class EventNotifier extends _$EventNotifier {
       location: eventControllerState.eventLocation,
       eventStatus: EventStatus.draft,
       teamMemberIds:
-          eventControllerState.addedTeamMembers.map((p) => p.id).toList(),
+          eventControllerState.addedMembers.map((p) => p.id).toList(),
       rehearsals: eventControllerState.rehearsals,
     );
+  }
+
+  Future<Stager> _getStagerWithPhoto(
+    Stager stager,
+  ) async {
+    final photo = await ref
+        .read(amazonS3NotifierProvider.notifier)
+        .getPhotoFromAWS(stager.photoUrl ?? '');
+
+    final newStager = stager.copyWith(profilePicture: photo);
+    return newStager;
   }
 
   int getAcceptedInvitees() {

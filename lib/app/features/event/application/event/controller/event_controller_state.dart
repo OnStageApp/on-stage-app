@@ -9,8 +9,8 @@ part 'event_controller_state.freezed.dart';
 @freezed
 class EventControllerState with _$EventControllerState {
   const factory EventControllerState({
-    @Default([]) List<TeamMember> addedTeamMembers,
-    @Default('Invite People') String invitePeopleButtonText,
+    @Default([]) List<TeamMember> selectedTeamMembers,
+    @Default([]) List<TeamMember> addedMembers,
     @Default([]) List<RehearsalModel> rehearsals,
     @Default([]) List<SongOverview> songs,
     @Default([]) List<String> moments,

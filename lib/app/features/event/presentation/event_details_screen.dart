@@ -12,8 +12,8 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_participants_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
+import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
@@ -46,45 +46,152 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hasEditorRoles = ref.read(appDataControllerProvider).hasEditorsRight;
+    final stagers = ref.watch(eventNotifierProvider).stagers;
+    print('EventDetailsScreenState: _buildBody');
     final event = ref.watch(
       eventNotifierProvider.select((state) => state.event),
     );
     final rehearsals =
         ref.watch(eventNotifierProvider.select((state) => state.rehearsals));
-    final stagers =
-        ref.watch(eventNotifierProvider.select((state) => state.stagers));
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton:
-          ref.watch(appDataControllerProvider).hasEditorsRight &&
-                  event?.eventStatus == EventStatus.draft
-              ? Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: context.colorScheme.surface,
-                              blurRadius: 30,
-                              spreadRadius: 35,
-                              offset: const Offset(0, 24),
-                            ),
-                          ],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton:
+            ref.watch(appDataControllerProvider).hasEditorsRight &&
+                    event?.eventStatus == EventStatus.draft
+                ? _buildFloatingButton()
+                : null,
+        body: ref.watch(eventNotifierProvider).isLoading
+            ? const OnStageLoadingIndicator()
+            : Padding(
+                padding: defaultScreenPadding,
+                child: ListView(
+                  children: [
+                    _buildEnhancedEventTile(event, stagers),
+                    const SizedBox(height: Insets.medium),
+                    Text(
+                      'Rehearsals',
+                      style: context.textTheme.titleSmall,
+                    ),
+                    if (rehearsals.isNotEmpty)
+                      ...rehearsals.map(
+                        (rehearsal) {
+                          return RehearsalTile(
+                            onDelete: () {
+                              ref
+                                  .read(eventNotifierProvider.notifier)
+                                  .deleteRehearsal(rehearsal.id!);
+                            },
+                            title: rehearsal.name ?? '',
+                            dateTime: rehearsal.dateTime ?? DateTime.now(),
+                            onTap: () {
+                              CreateRehearsalModal.show(
+                                enabled: false,
+                                context: context,
+                                rehearsal: rehearsal,
+                                onRehearsalCreated: (RehearsalModel rehearsal) {
+                                  ref
+                                      .read(eventNotifierProvider.notifier)
+                                      .updateRehearsal(rehearsal);
+                                },
+                              );
+                            },
+                          );
+                        },
+                      )
+                    else if (!hasEditorRoles)
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Text(
+                          'No rehearsals added',
+                          style: context.textTheme.titleSmall!.copyWith(
+                            color: context.colorScheme.outline,
+                          ),
                         ),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: _isPublishSuccess
-                              ? _buildSuccessButton(context)
-                              : _buildPublishButton(context, setState),
+                      ),
+                    if (hasEditorRoles) ...[
+                      const SizedBox(height: Insets.extraSmall),
+                      _buildCreateRehearsalButton(),
+                    ],
+                    const SizedBox(height: Insets.medium),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Participants',
+                          style: context.textTheme.titleSmall,
                         ),
-                      );
-                    },
-                  ),
-                )
-              : null,
-      body: _buildBody(event, context, rehearsals, stagers),
+                        Text(
+                          ref
+                              .watch(eventControllerProvider.notifier)
+                              .getAcceptedInviteesLabel(),
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: context.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (stagers.isNotEmpty) ...[
+                      const SizedBox(height: Insets.smallNormal),
+                      _buildParticipantsList(),
+                    ] else if (!hasEditorRoles)
+                      Container(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Text(
+                          'No rehearsals added',
+                          style: context.textTheme.titleSmall!.copyWith(
+                            color: context.colorScheme.outline,
+                          ),
+                        ),
+                      ),
+                    if (hasEditorRoles) ...[
+                      const SizedBox(height: Insets.smallNormal),
+                      _buildInvitePeopleButton(),
+                    ],
+                    const SizedBox(height: 120),
+                  ],
+                ),
+              ));
+  }
+
+  Widget _buildEnhancedEventTile(EventModel? event, List<Stager> stagers) {
+    return SizedBox(
+      height: 174,
+      child: EventTileEnhanced(
+        title: event?.name ?? '',
+        locationName: event?.location ?? '',
+        dateTime: event?.dateTime ?? DateTime.now(),
+        onTap: () {},
+        participantsProfileBytes: stagers.map((e) => e.profilePicture).toList(),
+      ),
+    );
+  }
+
+  Widget _buildFloatingButton() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: context.colorScheme.surface,
+                  blurRadius: 30,
+                  spreadRadius: 35,
+                  offset: const Offset(0, 24),
+                ),
+              ],
+            ),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: _isPublishSuccess
+                  ? _buildSuccessButton(context)
+                  : _buildPublishButton(context, setState),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -159,115 +266,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
     );
   }
 
-  Widget _buildBody(
-    EventModel? event,
-    BuildContext context,
-    List<RehearsalModel> rehearsals,
-    List<Stager> stagers,
-  ) {
-    final hasEditorRoles = ref.read(appDataControllerProvider).hasEditorsRight;
-    print('EventDetailsScreenState: _buildBody');
-    return ref.watch(eventNotifierProvider).isLoading
-        ? const OnStageLoadingIndicator()
-        : Padding(
-            padding: defaultScreenPadding,
-            child: ListView(
-              children: [
-                SizedBox(
-                  height: 174,
-                  child: EventTileEnhanced(
-                    title: event?.name ?? '',
-                    locationName: event?.location ?? '',
-                    dateTime: event?.dateTime ?? DateTime.now(),
-                    onTap: () {},
-                  ),
-                ),
-                const SizedBox(height: Insets.medium),
-                Text(
-                  'Rehearsals',
-                  style: context.textTheme.titleSmall,
-                ),
-                if (rehearsals.isNotEmpty)
-                  ...rehearsals.map(
-                    (rehearsal) {
-                      return RehearsalTile(
-                        onDelete: () {
-                          ref
-                              .read(eventNotifierProvider.notifier)
-                              .deleteRehearsal(rehearsal.id!);
-                        },
-                        title: rehearsal.name ?? '',
-                        dateTime: rehearsal.dateTime ?? DateTime.now(),
-                        onTap: () {
-                          CreateRehearsalModal.show(
-                            enabled: false,
-                            context: context,
-                            rehearsal: rehearsal,
-                            onRehearsalCreated: (RehearsalModel rehearsal) {
-                              ref
-                                  .read(eventNotifierProvider.notifier)
-                                  .updateRehearsal(rehearsal);
-                            },
-                          );
-                        },
-                      );
-                    },
-                  )
-                else if (!hasEditorRoles)
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(
-                      'No rehearsals added',
-                      style: context.textTheme.titleSmall!.copyWith(
-                        color: context.colorScheme.outline,
-                      ),
-                    ),
-                  ),
-                if (hasEditorRoles) ...[
-                  const SizedBox(height: Insets.extraSmall),
-                  _buildCreateRehearsalButton(),
-                ],
-                const SizedBox(height: Insets.medium),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Participants',
-                      style: context.textTheme.titleSmall,
-                    ),
-                    Text(
-                      ref
-                          .watch(eventControllerProvider.notifier)
-                          .getAcceptedInviteesLabel(),
-                      style: context.textTheme.bodyMedium!.copyWith(
-                        color: context.colorScheme.outline,
-                      ),
-                    ),
-                  ],
-                ),
-                if (stagers.isNotEmpty) ...[
-                  const SizedBox(height: Insets.smallNormal),
-                  _buildParticipantsList(),
-                ] else if (!hasEditorRoles)
-                  Container(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      'No rehearsals added',
-                      style: context.textTheme.titleSmall!.copyWith(
-                        color: context.colorScheme.outline,
-                      ),
-                    ),
-                  ),
-                if (hasEditorRoles) ...[
-                  const SizedBox(height: Insets.smallNormal),
-                  _buildInvitePeopleButton(),
-                ],
-                const SizedBox(height: 120),
-              ],
-            ),
-          );
-  }
-
   Widget _buildParticipantsList() {
     final stagers = ref.read(eventNotifierProvider).stagers;
 
@@ -284,7 +282,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         itemBuilder: (context, index) {
           return ParticipantListingItem(
             name: stagers[index].name ?? '',
-            assetPath: 'assets/images/profile1.png',
+            photo: stagers[index].profilePicture,
             status: stagers[index].participationStatus,
             onDelete: () {
               ref
@@ -316,20 +314,20 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
     return EventActionButton(
       onTap: () {
         if (mounted) {
-          AddParticipantsScreen.show(
+          InvitePeopleToEventModal.show(
             context: context,
             onPressed: _addStagersToEvent,
             eventId: widget.eventId,
           );
         }
       },
-      text: 'Invite People',
+      text: 'Invite People to Event',
       icon: Icons.add,
     );
   }
 
   void _addStagersToEvent() {
-    final addedTeamMembers = ref.read(eventControllerProvider).addedTeamMembers;
+    final addedTeamMembers = ref.read(eventControllerProvider).addedMembers;
 
     ref.read(eventNotifierProvider.notifier).addStagerToEvent(
           CreateStagerRequest(

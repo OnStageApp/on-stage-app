@@ -1,5 +1,7 @@
+import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_state.dart';
 import 'package:on_stage_app/app/features/team_member/data/team_member_repository.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,7 +23,10 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     final teamMembers = await _teamMemberRepository.getTeamMembers(
       includeCurrentUser: includeCurrentUser,
     );
-    state = state.copyWith(isLoading: false, teamMembers: teamMembers);
+    final teamMembersWithPhoto = await Future.wait(
+      teamMembers.map(_getStagerWithPhoto),
+    );
+    state = state.copyWith(isLoading: false, teamMembers: teamMembersWithPhoto);
   }
 
   Future<void> getUninvitedTeamMembers(String eventId) async {
@@ -29,11 +34,25 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     try {
       final members =
           await _teamMemberRepository.getUninvitedTeamMembers(eventId);
-      state = state.copyWith(uninvitedTeamMembers: members);
+      final uninvitedMembersWithPhoto = await Future.wait(
+        members.map(_getStagerWithPhoto),
+      );
+      state = state.copyWith(uninvitedTeamMembers: uninvitedMembersWithPhoto);
     } catch (e) {
       // Handle error
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  Future<TeamMember> _getStagerWithPhoto(
+    TeamMember teamMember,
+  ) async {
+    final photo = await ref
+        .read(amazonS3NotifierProvider.notifier)
+        .getPhotoFromAWS(teamMember.photoUrl ?? '');
+
+    final teamMemberWithPhoto = teamMember.copyWith(profilePicture: photo);
+    return teamMemberWithPhoto;
   }
 }

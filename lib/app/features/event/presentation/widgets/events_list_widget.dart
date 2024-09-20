@@ -33,6 +33,7 @@ class EventsList extends StatelessWidget {
               title: event.name ?? '',
               dateTime: event.dateTime?.let(DateTime.parse),
               isDraft: event.eventStatus == EventStatus.draft,
+              participantsProfile: event.participantPhotos,
             ),
           ),
           if (hasMore) LoadMoreButton(onPressed: loadMore),

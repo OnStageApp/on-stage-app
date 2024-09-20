@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -12,6 +14,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
     required this.date,
     required this.hasUpcomingEvent,
     required this.onTap,
+    required this.stagerPhotos,
     this.location,
     super.key,
   });
@@ -21,6 +24,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
   final String date;
   final String? location;
   final bool hasUpcomingEvent;
+  final List<Uint8List?> stagerPhotos;
   final void Function()? onTap;
 
   @override
@@ -80,22 +84,13 @@ class UpcomingEventEnhanced extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ParticipantsOnTile(
                         backgroundColor: Colors.white,
                         borderColor: Colors.transparent,
-                        participantsProfile: [
-                          'assets/images/profile1.png',
-                          'assets/images/profile2.png',
-                          'assets/images/profile4.png',
-                          'assets/images/profile5.png',
-                          'assets/images/profile5.png',
-                          'assets/images/profile5.png',
-                          'assets/images/profile5.png',
-                          'assets/images/profile5.png',
-                        ],
+                        participantsProfileBytes: stagerPhotos,
                       ),
                     ],
                   ),

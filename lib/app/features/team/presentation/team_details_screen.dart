@@ -114,10 +114,14 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: MemberTileWidget(
               name: teamMembers.elementAt(index).name ?? 'Name',
-              photo: 'assets/images/profile1.png',
+              photo: teamMembers[index].profilePicture,
               trailing: teamMembers.elementAt(index).role?.name ?? 'Role',
               onTap: () {
-                TeamMemberModal.show(onSave: (model) {}, context: context);
+                TeamMemberModal.show(
+                  onSave: (model) {},
+                  context: context,
+                  teamMember: teamMembers[index],
+                );
               },
             ),
           );

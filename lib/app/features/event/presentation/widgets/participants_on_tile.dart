@@ -1,26 +1,33 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class ParticipantsOnTile extends StatelessWidget {
   const ParticipantsOnTile({
-    required this.participantsProfile,
+    this.participantsProfile = const [],
+    this.participantsProfileBytes = const [],
     this.width = 30,
     this.showOverlay = true,
     this.borderColor = Colors.white,
     this.backgroundColor,
+    this.participantsLength,
     super.key,
   });
 
-  static const _participantsMax = 4;
+  static const _participantsMax = 2;
 
+  final List<Uint8List?> participantsProfileBytes;
   final List<String> participantsProfile;
   final double width;
   final bool showOverlay;
   final Color borderColor;
   final Color? backgroundColor;
+  final int? participantsLength;
 
-  bool get _isMoreThanMax => participantsProfile.length > _participantsMax;
+  int get _participantsLength =>
+      participantsLength ?? participantsProfileBytes.length;
 
-  int get _participantsLength => participantsProfile.length;
+  bool get _isMoreThanMax => _participantsLength > _participantsMax;
 
   double get _tileWidth {
     final count = _isMoreThanMax ? _participantsMax + 1 : _participantsLength;
@@ -33,49 +40,57 @@ class ParticipantsOnTile extends StatelessWidget {
       height: width,
       width: _tileWidth,
       child: Stack(
-        children: participantsProfile.asMap().entries.map(
-          (entry) {
-            final index = entry.key;
-            final e = entry.value;
-            if (index < _participantsMax ||
-                (index == _participantsMax && showOverlay)) {
-              return Positioned(
-                left: index * (width - 10),
-                child: Container(
-                  width: width,
-                  height: width,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: borderColor, width: 2),
-                    image: index < _participantsMax
-                        ? DecorationImage(
-                            image: AssetImage(e),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                    color: index == _participantsMax && showOverlay
-                        ? backgroundColor ?? const Color(0xFFD8E1FE)
-                        : null,
+        children: [
+          ...participantsProfileBytes.asMap().entries.map(
+            (entry) {
+              final index = entry.key;
+              if (showOverlay && participantsProfileBytes[index] != null) {
+                return Positioned(
+                  left: index * (width - 10),
+                  child: Container(
+                    width: width,
+                    height: width,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: borderColor, width: 2),
+                        image: DecorationImage(
+                          image: MemoryImage(participantsProfileBytes[index]!),
+                          fit: BoxFit.cover,
+                        )),
+                    child: const Center(
+                      child: SizedBox(),
+                    ),
                   ),
-                  child: Center(
-                    child: index == _participantsMax && showOverlay
-                        ? Text(
-                            '+${_participantsLength - _participantsMax}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                            ),
-                          )
-                        : const SizedBox(),
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+          if (_participantsLength >= _participantsMax)
+            Positioned(
+              left: (_participantsLength - 1) * (width - 10),
+              child: Container(
+                width: width,
+                height: width,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: borderColor, width: 2),
+                  color: backgroundColor ?? const Color(0xFFD8E1FE),
+                ),
+                child: Center(
+                  child: Text(
+                    '+${_participantsLength - _participantsMax}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
-        ).toList(),
+              ),
+            ),
+        ],
       ),
     );
   }

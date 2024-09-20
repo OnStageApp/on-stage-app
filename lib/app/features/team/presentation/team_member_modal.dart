@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -10,11 +11,13 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TeamMemberModal extends ConsumerStatefulWidget {
   const TeamMemberModal({
+    required this.teamMember,
     this.onSave,
     super.key,
   });
 
   final void Function(RehearsalModel)? onSave;
+  final TeamMember teamMember;
 
   @override
   TeamMemberModalState createState() => TeamMemberModalState();
@@ -22,6 +25,7 @@ class TeamMemberModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     void Function(RehearsalModel)? onSave,
+    required TeamMember teamMember,
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
@@ -35,6 +39,7 @@ class TeamMemberModal extends ConsumerStatefulWidget {
           buildContent: () => SingleChildScrollView(
             child: TeamMemberModal(
               onSave: onSave,
+              teamMember: teamMember,
             ),
           ),
         ),
@@ -67,9 +72,9 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: MemberTileWidget(
-              name: 'Ionut Petrescu',
+              name: widget.teamMember.name ?? 'Name',
               trailing: 'Pian',
-              photo: 'assets/images/profile1.png',
+              photo: widget.teamMember.profilePicture,
               onTap: () {},
             ),
           ),
@@ -82,7 +87,7 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
             ),
             child: MemberTileWidget(
               name: 'Change permissions',
-              trailing: 'Member',
+              trailing: widget.teamMember.role?.name ?? 'Role',
               onTap: () {},
             ),
           ),

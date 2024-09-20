@@ -43,17 +43,9 @@ class TeamsSection extends ConsumerWidget {
                   color: context.colorScheme.outline,
                 ),
               ),
-              trailing: const ParticipantsOnTile(
-                participantsProfile: [
-                  'assets/images/profile1.png',
-                  'assets/images/profile2.png',
-                  'assets/images/profile4.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                  'assets/images/profile5.png',
-                ],
+              trailing: ParticipantsOnTile(
+                participantsProfileBytes: currentTeam.memberPhotos,
+                participantsLength: currentTeam.membersCount,
               ),
               onTap: () {
                 context.pushNamed(

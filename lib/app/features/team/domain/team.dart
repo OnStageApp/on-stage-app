@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'team.freezed.dart';
@@ -9,6 +10,8 @@ class Team with _$Team {
     required String id,
     required String name,
     required int membersCount,
+    @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> memberPhotos,
+    List<String>? memberPhotoUrls,
   }) = _Team;
 
   factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);

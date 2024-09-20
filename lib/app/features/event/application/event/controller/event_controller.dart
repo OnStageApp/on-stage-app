@@ -33,27 +33,28 @@ class EventController extends _$EventController {
     state = state.copyWith(dateTime: dateTime);
   }
 
-  //TODO: a user has to be added as a stager, i have to update this method, maybe create a new user_controller class
-  void addParticipant(TeamMember member) {
+  void selectTeamMember(TeamMember member) {
     state = state.copyWith(
-      addedTeamMembers: [...state.addedTeamMembers, member],
+      selectedTeamMembers: [...state.selectedTeamMembers, member],
     );
-    if (state.addedTeamMembers.isNotEmpty) {
-      state = state.copyWith(
-        invitePeopleButtonText:
-            'Invite ${state.addedTeamMembers.length} people',
-      );
-    }
   }
 
-  void removeParticipant(TeamMember member) {
+  void unSelectTeamMember(TeamMember member) {
     state = state.copyWith(
-      addedTeamMembers:
-          state.addedTeamMembers.where((p) => p.id != member.id).toList(),
+      selectedTeamMembers:
+          state.selectedTeamMembers.where((p) => p.id != member.id).toList(),
     );
-    if (state.addedTeamMembers.isEmpty) {
-      state = state.copyWith(invitePeopleButtonText: 'Invite People');
-    }
+  }
+
+  void addMembers() {
+    final members = state.selectedTeamMembers;
+    state = state.copyWith(
+      addedMembers: [...state.addedMembers, ...members],
+    );
+  }
+
+  void resetSelectedMembers() {
+    state = state.copyWith(selectedTeamMembers: []);
   }
 
   void addRehearsal(RehearsalModel rehearsal) {

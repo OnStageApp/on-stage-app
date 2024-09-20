@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 
