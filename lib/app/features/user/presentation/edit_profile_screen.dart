@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_mo
 import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
+import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -28,8 +29,57 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   bool _isUploading = false;
 
+  // TextEditingController to capture the user's name
+  final TextEditingController _nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = ref.read(userNotifierProvider).currentUser;
+    // Set the initial value of the name field to the current user's name
+    if (user != null) {
+      _nameController.text = user.name ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+ // Function to handle editing the profile
+  Future<void> _editProfile() async {
+    final user = ref.read(userNotifierProvider).currentUser;
+
+    if (user != null) {
+      // Capture the updated name from the TextField
+      final updatedName = _nameController.text.trim();
+
+      // Check if the name is not empty before proceeding
+      if (updatedName.isNotEmpty) {
+        final updatedUser = user.copyWith(name: updatedName);
+
+        // Call the notifier method to edit the user
+        await ref.read(userNotifierProvider.notifier).editUserById(
+          user.id, // Pass the current user's ID
+          updatedUser, // Pass the updated user object with the new name
+        );
+
+        // Optionally, show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile updated successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Name cannot be empty')),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userNotifierProvider).currentUser;
     return Scaffold(
       appBar: StageAppBar(
         title: 'Edit Profile',
@@ -80,7 +130,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 const SizedBox(height: 12),
                 CustomTextField(
                   label: 'Full Name',
-                  hint: 'Eugen Ionescu',
+                  hint: '${user?.name}',
                   icon: Icons.church,
                   controller: TextEditingController(),
                   validator: (value) {
@@ -136,8 +186,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
+                  enabled: false,
                   label: 'Email',
-                  hint: 'eionescu@gmail.com',
+                  hint: '${user?.email}',
                   icon: Icons.church,
                   controller: TextEditingController(),
                   validator: (value) {
@@ -164,6 +215,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
+                ContinueButton(text: 'Edit Profile', onPressed: _editProfile, isEnabled: true),
+                const SizedBox(height: 24),
+
               ],
             ),
           ),

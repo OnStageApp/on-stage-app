@@ -45,7 +45,7 @@ dependencies:
   ansi: ^0.4.2
   dio: ^5.5.0+1
   retrofit: ^4.1.0
-  retrofit_generator: ^8.1.2
+  retrofit_generator: ^9.1.2
   firebase_auth: ^5.1.4
   google_sign_in: ^6.2.1
   flutter_secure_storage: ^4.2.1

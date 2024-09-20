@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
+import 'package:on_stage_app/app/features/user/domain/models/user/user_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -35,6 +36,20 @@ class UserNotifier extends _$UserNotifier {
     state = state.copyWith(isLoading: true);
     final currentUser = await usersRepository.getCurrentUser();
     state = state.copyWith(currentUser: currentUser, isLoading: false);
+  }
+
+
+  Future<void> editUserById(String id, UserModel updatedUser) async {
+    try {
+      state = state.copyWith(isLoading: true);
+
+      final user = await _usersRepository?.editUserById(id, updatedUser);
+
+      state = state.copyWith(currentUser: user, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false);
+      logger.e("Error editing user: $e");
+    }
   }
 
   Future<void> init() async {
