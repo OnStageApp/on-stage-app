@@ -7,7 +7,7 @@ class GradientOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 160,
+      bottom: 0,
       left: 0,
       right: 0,
       child: Container(

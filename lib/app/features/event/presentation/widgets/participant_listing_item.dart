@@ -61,6 +61,12 @@ class ParticipantListingItem extends StatelessWidget {
                       )
                     : null,
               ),
+              child: photo == null || photo!.isEmpty
+                  ? Icon(
+                      Icons.person,
+                      color: context.colorScheme.primaryContainer,
+                    )
+                  : null,
             ),
             const SizedBox(width: 12),
             Text(

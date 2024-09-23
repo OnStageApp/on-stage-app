@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_repository.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_search_type.dart';
@@ -9,7 +8,6 @@ import 'package:on_stage_app/app/features/event/domain/models/event_overview_mod
 import 'package:on_stage_app/app/features/event/domain/models/events_filter.dart';
 import 'package:on_stage_app/app/features/event/domain/models/events_response.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/shared/data/dio_s3_client/dio_s3_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -21,15 +19,12 @@ part 'events_notifier.g.dart';
 class EventsNotifier extends _$EventsNotifier {
   final TimeUtils timeUtils = TimeUtils();
   late final EventsRepository _eventsRepository;
-  late final AmazonS3Repository _s3Repository;
   static const int _pageSize = 15;
 
   @override
   EventsState build() {
     final dio = ref.read(dioProvider);
-    final dioS3 = ref.read(dioS3Provider);
     _eventsRepository = EventsRepository(dio);
-    _s3Repository = AmazonS3Repository(dioS3);
     return const EventsState();
   }
 

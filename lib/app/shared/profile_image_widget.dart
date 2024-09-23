@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/close_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -26,7 +25,6 @@ class ProfileImageWidget extends ConsumerStatefulWidget {
 class _ProfileImageWidgetState extends ConsumerState<ProfileImageWidget> {
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userNotifierProvider);
     return GestureDetector(
       onTap: widget.canChangeProfilePicture
           ? () => _showCustomBottomSheet(context)

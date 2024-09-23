@@ -92,7 +92,7 @@ class EventTileEnhanced extends StatelessWidget {
                 )
               else
                 ParticipantsOnTile(
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.colorScheme.onSurfaceVariant,
                   borderColor: Colors.transparent,
                   participantsProfileBytes: participantsProfileBytes,
                   participantsLength: 3,

@@ -9,10 +9,12 @@ import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
+import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
+import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.dart';
@@ -94,6 +96,16 @@ class NavigationNotifier extends _$NavigationNotifier {
                   name: AppRoute.home.name,
                   path: '/home',
                   builder: (context, state) => const HomeScreen(),
+                ),
+                GoRoute(
+                  name: AppRoute.onboarding.name,
+                  path: '/onboarding',
+                  builder: (context, state) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showOnboardingOverlay(context);
+                    });
+                    return const SizedBox.shrink();
+                  },
                 ),
               ],
             ),
@@ -211,6 +223,15 @@ class NavigationNotifier extends _$NavigationNotifier {
                           team: team,
                         );
                       },
+                      routes: [
+                        GoRoute(
+                          name: AppRoute.addTeamMember.name,
+                          path: 'addTeamMember',
+                          builder: (context, state) {
+                            return const AddTeamMemberScreen();
+                          },
+                        ),
+                      ],
                     ),
                     GoRoute(
                       name: AppRoute.notification.name,

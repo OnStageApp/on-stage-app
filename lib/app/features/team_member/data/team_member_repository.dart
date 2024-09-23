@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:on_stage_app/app/features/team_member/domain/create_team_member_request/create_team_member_request.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -22,4 +23,9 @@ abstract class TeamMemberRepository {
     @Query('eventId') String eventId, {
     @Query('includeCurrentUser') bool includeCurrentUser = false,
   });
+
+  @POST(API.addTeamMember)
+  Future<TeamMember> inviteTeamMember(
+    @Body() CreateTeamMemberRequest addTeamMemberRequest,
+  );
 }

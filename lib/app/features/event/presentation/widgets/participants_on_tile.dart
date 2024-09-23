@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ParticipantsOnTile extends StatelessWidget {
   const ParticipantsOnTile({
@@ -8,7 +9,7 @@ class ParticipantsOnTile extends StatelessWidget {
     this.participantsProfileBytes = const [],
     this.width = 30,
     this.showOverlay = true,
-    this.borderColor = Colors.white,
+    this.borderColor,
     this.backgroundColor,
     this.participantsLength,
     super.key,
@@ -20,7 +21,7 @@ class ParticipantsOnTile extends StatelessWidget {
   final List<String> participantsProfile;
   final double width;
   final bool showOverlay;
-  final Color borderColor;
+  final Color? borderColor;
   final Color? backgroundColor;
   final int? participantsLength;
 
@@ -44,22 +45,33 @@ class ParticipantsOnTile extends StatelessWidget {
           ...participantsProfileBytes.asMap().entries.map(
             (entry) {
               final index = entry.key;
-              if (showOverlay && participantsProfileBytes[index] != null) {
+              if (showOverlay) {
                 return Positioned(
                   left: index * (width - 10),
                   child: Container(
                     width: width,
                     height: width,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: borderColor, width: 2),
-                        image: DecorationImage(
-                          image: MemoryImage(participantsProfileBytes[index]!),
-                          fit: BoxFit.cover,
-                        )),
-                    child: const Center(
-                      child: SizedBox(),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: borderColor ?? context.colorScheme.surface,
+                        width: 2,
+                      ),
+                      image: participantsProfileBytes[index] != null
+                          ? DecorationImage(
+                              image:
+                                  MemoryImage(participantsProfileBytes[index]!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
+                    child: participantsProfileBytes[index] == null
+                        ? Icon(
+                            Icons.person,
+                            color:
+                                backgroundColor ?? context.colorScheme.surface,
+                          )
+                        : const SizedBox(),
                   ),
                 );
               } else {
@@ -75,14 +87,18 @@ class ParticipantsOnTile extends StatelessWidget {
                 height: width,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: borderColor, width: 2),
-                  color: backgroundColor ?? const Color(0xFFD8E1FE),
+                  border: Border.all(
+                    color: borderColor ?? context.colorScheme.surface,
+                    width: 2,
+                  ),
+                  color:
+                      backgroundColor ?? context.colorScheme.tertiaryContainer,
                 ),
                 child: Center(
                   child: Text(
                     '+${_participantsLength - _participantsMax}',
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: context.colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_member_modal.dart';
-import 'package:on_stage_app/app/features/team/presentation/team_members_modal.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
@@ -68,7 +69,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             const SizedBox(height: 12),
             EventActionButton(
               onTap: () {
-                TeamMembersModal.show(teamId: '1', context: context);
+                // TeamMembersModal.show(context: context);
+                context.pushNamed(AppRoute.addTeamMember.name);
               },
               text: 'Invite People',
               icon: Icons.add,
@@ -113,9 +115,9 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: MemberTileWidget(
-              name: teamMembers.elementAt(index).name ?? 'Name',
+              name: teamMembers[index].name ?? 'Name',
               photo: teamMembers[index].profilePicture,
-              trailing: teamMembers.elementAt(index).role?.name ?? 'Role',
+              trailing: _getTrailingText(teamMembers[index], index),
               onTap: () {
                 TeamMemberModal.show(
                   onSave: (model) {},
@@ -128,5 +130,12 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
         },
       ),
     );
+  }
+
+  String _getTrailingText(TeamMember member, int index) {
+    if (member.inviteStatus == InviteStatus.pending) {
+      return member.inviteStatus!.name;
+    }
+    return member.role?.name ?? 'Role';
   }
 }

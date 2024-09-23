@@ -30,25 +30,29 @@ class MemberTileWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
-              if (photo != null) ...[
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: context.colorScheme.primaryContainer,
-                    ),
-                    shape: BoxShape.circle,
-                    image: photo != null
-                        ? DecorationImage(
-                            image: MemoryImage(photo!),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: context.colorScheme.primaryContainer,
                   ),
+                  shape: BoxShape.circle,
+                  image: photo != null
+                      ? DecorationImage(
+                          image: MemoryImage(photo!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
-                const SizedBox(width: 10),
-              ],
+                child: photo == null
+                    ? Icon(
+                        Icons.person,
+                        color: context.colorScheme.outline,
+                      )
+                    : null,
+              ),
+              const SizedBox(width: 10),
               Text(
                 name,
                 style: context.textTheme.titleMedium,

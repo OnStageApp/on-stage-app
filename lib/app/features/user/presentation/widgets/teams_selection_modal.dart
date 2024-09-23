@@ -112,7 +112,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         style: context.textTheme.headlineMedium,
                       ),
                       subtitle: Text(
-                        team.membersCount > 1
+                        (team.membersCount ?? 0) > 1
                             ? '${team.membersCount} Members'
                             : '${team.membersCount} Member',
                         style: context.textTheme.bodyMedium!.copyWith(
@@ -136,6 +136,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         ),
                       ),
                       onTap: () async {
+                        if (_isItemChecked(index)) return;
                         await ref
                             .read(teamsNotifierProvider.notifier)
                             .setCurrentTeam(

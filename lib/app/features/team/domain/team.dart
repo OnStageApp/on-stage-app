@@ -9,7 +9,7 @@ class Team with _$Team {
   const factory Team({
     required String id,
     required String name,
-    required int membersCount,
+    required int? membersCount,
     @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> memberPhotos,
     List<String>? memberPhotoUrls,
   }) = _Team;

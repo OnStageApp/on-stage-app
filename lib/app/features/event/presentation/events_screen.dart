@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
@@ -77,7 +76,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           ),
           if (eventsState.isLoading)
             EventShimmerList(isSearchContent: _isSearchFocused)
-          else if (_eventsListIsEmpty(eventsState) == false)
+          else
             SliverAnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: (_isSearchFocused
@@ -88,31 +87,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                   : const EventsContent(
                       key: ValueKey('content'),
                     )),
-            )
-          else
-            _buildFillRemainingSpace(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFillRemainingSpace(BuildContext context) {
-    return SliverFillRemaining(
-      child: Column(
-        children: [
-          SvgPicture.asset(
-            'assets/images/no_events_image.svg',
-            height: 100,
-            width: 100,
-            colorFilter: ColorFilter.mode(
-              context.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
             ),
-          ),
-          Text(
-            'You have no upcoming events',
-            style: context.textTheme.titleMedium,
-          ),
         ],
       ),
     );

@@ -36,7 +36,7 @@ class TeamsSection extends ConsumerWidget {
                 style: context.textTheme.headlineMedium,
               ),
               subtitle: Text(
-                currentTeam.membersCount > 1
+                (currentTeam.membersCount ?? 0) > 1
                     ? '${currentTeam.membersCount} Members'
                     : '${currentTeam.membersCount} Member',
                 style: context.textTheme.bodyMedium!.copyWith(

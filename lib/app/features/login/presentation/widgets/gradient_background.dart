@@ -15,9 +15,9 @@ class GradientBackground extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.center,
-              stops: const [0, 0.8],
+              stops: const [0, 0.9],
               colors: [
-                context.colorScheme.primary.withOpacity(0.1),
+                context.colorScheme.primary.withOpacity(0.3),
                 context.colorScheme.surface,
               ],
             ),

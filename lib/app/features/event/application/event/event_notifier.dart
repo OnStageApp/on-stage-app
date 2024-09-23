@@ -114,7 +114,10 @@ class EventNotifier extends _$EventNotifier {
 
   Future<void> _updateEvent(EventModel updatedEvent) async {
     state = state.copyWith(isLoading: true);
-    await eventsRepository.updateEvent(updatedEvent.id!, updatedEvent);
+    if (state.event!.id == null) {
+      return;
+    }
+    await eventsRepository.updateEvent(state.event!.id!, updatedEvent);
     state = state.copyWith(isLoading: false);
   }
 
@@ -182,6 +185,9 @@ class EventNotifier extends _$EventNotifier {
   Future<Stager> _getStagerWithPhoto(
     Stager stager,
   ) async {
+    if (stager.photoUrl == null) {
+      return stager;
+    }
     final photo = await ref
         .read(amazonS3NotifierProvider.notifier)
         .getPhotoFromAWS(stager.photoUrl ?? '');

@@ -15,14 +15,17 @@ part 'user_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class UserNotifier extends _$UserNotifier {
-  late final UserRepository _usersRepository;
+  UserRepository? _usersRepository;
   late final AmazonS3Repository _amazonS3Repository;
+
+  UserRepository get usersRepository {
+    _usersRepository ??= UserRepository(ref.read(dioProvider));
+    return _usersRepository!;
+  }
 
   @override
   UserState build() {
-    final dio = ref.read(dioProvider);
     final dioS3 = ref.read(dioS3Provider);
-    _usersRepository = UserRepository(dio);
     _amazonS3Repository = AmazonS3Repository(dioS3);
     return const UserState();
   }
@@ -42,7 +45,7 @@ class UserNotifier extends _$UserNotifier {
 
   Future<void> getAllUsers() async {
     state = state.copyWith(isLoading: true);
-    final users = await _usersRepository.getUsers();
+    final users = await usersRepository.getUsers();
     state = state.copyWith(users: users, isLoading: false);
   }
 
@@ -54,7 +57,7 @@ class UserNotifier extends _$UserNotifier {
         image,
       );
       final currentUser =
-          await _usersRepository.getUserById(state.currentUser!.id);
+          await usersRepository.getUserById(state.currentUser!.id);
       state = state.copyWith(currentUser: currentUser);
     } catch (e) {
       logger.e('error $e');
@@ -68,7 +71,7 @@ class UserNotifier extends _$UserNotifier {
       if (state.userPhoto != null) {
         return;
       }
-      final photoUrl = await _usersRepository.getUserPhotoUrl();
+      final photoUrl = await usersRepository.getUserPhotoUrl();
 
       if (photoUrl.isNotEmpty) {
         final photoBytes =
@@ -81,7 +84,7 @@ class UserNotifier extends _$UserNotifier {
         }
         logger.i('Done fetching user photo ${DateTime.now()}');
       } else {
-        logger.e('Photo URL is empty');
+        logger.i('Photo URL is empty');
       }
     } catch (e) {
       logger.e('Error fetching user photo: $e');

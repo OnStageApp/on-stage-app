@@ -2,7 +2,7 @@ class API {
   // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
 
   // static const String baseUrl = 'http://192.168.150.65:9876/';
-  static const String baseUrl = 'https://623c-86-125-110-196.ngrok-free.app/';
+  static const String baseUrl = 'https://6d1a-86-125-110-196.ngrok-free.app/';
 
   // static const String baseUrl = 'http://localhost:9000/';
 
@@ -50,4 +50,5 @@ class API {
   static const String teamMembers = 'team-members';
   static const String currentTeamMember = 'team-members/current';
   static const String uninvitedTeamMembers = 'team-members/uninvited';
+  static const String addTeamMember = 'team-members/invite';
 }
