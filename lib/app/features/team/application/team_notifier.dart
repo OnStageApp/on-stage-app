@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:typed_data';
 
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/team/application/team_state.dart';
 import 'package:on_stage_app/app/features/team/data/team_repository.dart';
-import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
@@ -26,12 +26,19 @@ class TeamNotifier extends _$TeamNotifier {
 
   Future<void> getCurrentTeam() async {
     state = state.copyWith(isLoading: true);
-    final currentTeam = await _teamRepository.getCurrentTeam();
-    final teamWithPhotos = await _setPhotosFromS3(currentTeam);
-    unawaited(
-      ref.read(currentTeamMemberNotifierProvider.notifier).getTeamMember(),
+    var currentTeam = await _teamRepository.getCurrentTeam();
+    final first3PhotosForTeam =
+        await _setPhotosFromLocalStorage(currentTeam.membersUserIds);
+
+    currentTeam = currentTeam.copyWith(
+      memberPhotos: first3PhotosForTeam,
     );
-    state = state.copyWith(isLoading: false, currentTeam: teamWithPhotos);
+    unawaited(
+      ref
+          .read(currentTeamMemberNotifierProvider.notifier)
+          .setTeamMemberRoleToSharedPrefs(),
+    );
+    state = state.copyWith(isLoading: false, currentTeam: currentTeam);
   }
 
   Future<void> createTeam(TeamRequest team) async {
@@ -40,19 +47,16 @@ class TeamNotifier extends _$TeamNotifier {
     state = state.copyWith(isLoading: false, currentTeam: createdTeam);
   }
 
-  Future<Team> _setPhotosFromS3(Team team) async {
-    final photoUrls = team.memberPhotoUrls;
-    if (photoUrls == null) {
-      return team;
-    }
-    final photoRequests = photoUrls.map(
-      ref.read(amazonS3NotifierProvider.notifier).getPhotoFromAWS,
+  Future<List<Uint8List?>> _setPhotosFromLocalStorage(
+    List<String> userIds,
+  ) async {
+    final photos = await Future.wait(
+      userIds.map((userId) async {
+        final photo =
+            await ref.read(databaseProvider).getTeamMemberPhoto(userId);
+        return photo?.profilePicture;
+      }),
     );
-    final photos = await Future.wait(photoRequests);
-    final allPhotos = photos.where((photo) => photo != null).toList();
-
-    return team.copyWith(
-      memberPhotos: allPhotos,
-    );
+    return photos;
   }
 }

@@ -30,14 +30,17 @@ class EventItemsNotifier extends _$EventItemsNotifier {
         .toList();
   }
 
-  Future<void> getEventItems(String evenId) async {
-    state = state.copyWith(isLoading: true);
-    final eventItems = await _eventItemsRepository.getEventItems(evenId);
-    final songEventItems = _getSongEventItems(eventItems);
+  Future<void> getEventItems(String eventId) async {
+    final eventItemsFuture = _eventItemsRepository.getEventItems(eventId);
+
+    final results = await Future.wait([
+      eventItemsFuture,
+      eventItemsFuture.then(_getSongEventItems),
+    ]);
+
     state = state.copyWith(
-      songEventItems: songEventItems,
-      eventItems: eventItems,
-      isLoading: false,
+      eventItems: results[0],
+      songEventItems: results[1],
     );
   }
 

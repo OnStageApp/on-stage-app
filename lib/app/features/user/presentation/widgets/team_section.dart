@@ -45,7 +45,7 @@ class TeamsSection extends ConsumerWidget {
               ),
               trailing: ParticipantsOnTile(
                 participantsProfileBytes: currentTeam.memberPhotos,
-                participantsLength: currentTeam.membersCount,
+                participantsLength: 4,
               ),
               onTap: () {
                 context.pushNamed(

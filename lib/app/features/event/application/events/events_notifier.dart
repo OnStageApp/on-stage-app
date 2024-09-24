@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
+import 'package:flutter/foundation.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_search_type.dart';
@@ -41,24 +42,18 @@ class EventsNotifier extends _$EventsNotifier {
   Future<void> getUpcomingEvent() async {
     try {
       final event = await _eventsRepository.getUpcomingEvent();
-      if (event?.stagerPhotoUrls == null) {
+      if (event == null || event.userIdsWithPhoto == null) {
         state = state.copyWith(upcomingEvent: event);
       } else {
-        final photoFutures = event!.stagerPhotoUrls!.map(
-          ref.read(amazonS3NotifierProvider.notifier).getPhotoFromAWS,
-        );
-        final photos = await Future.wait(photoFutures);
-
-        final allPhotos = photos.where((photo) => photo != null).toList();
-
-        final newEvent = event.copyWith(stagerPhotos: allPhotos);
-
+        final photos =
+            await _setPhotosFromLocalStorage(event.userIdsWithPhoto!);
+        final newEvent = event.copyWith(stagerPhotos: photos);
         state = state.copyWith(upcomingEvent: newEvent);
       }
     } on DioException catch (e) {
-      logger.e('Error getting upcoming event1 $e');
+      logger.e('Error getting upcoming event (DioException): $e');
     } catch (e) {
-      logger.e('Error getting upcoming event2 $e');
+      logger.e('Error getting upcoming event: $e');
     }
   }
 
@@ -71,18 +66,22 @@ class EventsNotifier extends _$EventsNotifier {
       );
       return;
     }
-    final eventsResponse = await _eventsRepository.getEvents(
-      eventsFilter: EventsFilter(
-        searchValue: search,
-        limit: _pageSize,
-        offset: 0,
-      ),
-    );
-
-    state = state.copyWith(
-      filteredEventsResponse: eventsResponse,
-      isLoading: false,
-    );
+    try {
+      final eventsResponse = await _eventsRepository.getEvents(
+        eventsFilter: EventsFilter(
+          searchValue: search,
+          limit: _pageSize,
+          offset: 0,
+        ),
+      );
+      state = state.copyWith(
+        filteredEventsResponse: eventsResponse,
+        isLoading: false,
+      );
+    } catch (e) {
+      logger.e('Error searching events: $e');
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> getUpcomingEvents() async {
@@ -91,7 +90,9 @@ class EventsNotifier extends _$EventsNotifier {
       state = state.copyWith(
         upcomingEventsResponse: eventsResponse,
       );
-    } catch (e) {}
+    } catch (e) {
+      logger.e('Error getting upcoming events: $e');
+    }
   }
 
   Future<void> getPastEvents() async {
@@ -124,12 +125,17 @@ class EventsNotifier extends _$EventsNotifier {
       );
 
       final updatedEvents = [...currentEvents, ...newEvents.events];
+      final updatedResponse = EventsResponse(
+        events: updatedEvents,
+        hasMore: newEvents.hasMore,
+      );
+
       state = state.copyWith(
         upcomingEventsResponse: eventType == EventSearchType.upcoming
-            ? EventsResponse(events: updatedEvents, hasMore: newEvents.hasMore)
+            ? updatedResponse
             : state.upcomingEventsResponse,
         pastEventsResponse: eventType == EventSearchType.past
-            ? EventsResponse(events: updatedEvents, hasMore: newEvents.hasMore)
+            ? updatedResponse
             : state.pastEventsResponse,
       );
     } catch (e) {
@@ -148,8 +154,25 @@ class EventsNotifier extends _$EventsNotifier {
         eventSearchType: eventType,
       ),
     );
-    final eventResponseWithPhotos = _setPhotosFromS3(eventResponse);
-    return eventResponseWithPhotos;
+
+    final eventsWithPhotos = await Future.wait(
+      eventResponse.events.map((event) async {
+        if (event.userIdsWithPhoto == null ||
+            event.eventStatus == EventStatus.draft) {
+          return event;
+        }
+        return event.copyWith(
+          participantPhotos: await _setPhotosFromLocalStorage(
+            event.userIdsWithPhoto!.toList(),
+          ),
+        );
+      }),
+    );
+
+    return EventsResponse(
+      events: eventsWithPhotos,
+      hasMore: eventResponse.hasMore,
+    );
   }
 
   List<EventOverview> _getCurrentEvents(EventSearchType eventType) {
@@ -164,24 +187,15 @@ class EventsNotifier extends _$EventsNotifier {
         : state.pastEventsResponse.hasMore;
   }
 
-  Future<EventsResponse> _setPhotosFromS3(EventsResponse eventsResponse) async {
-    final eventFutures = eventsResponse.events.map((event) async {
-      if (event.stagerPhotoUrls == null ||
-          event.eventStatus == EventStatus.draft) {
-        return event;
-      }
-      final photoFutures = event.stagerPhotoUrls!.map(
-        ref.read(amazonS3NotifierProvider.notifier).getPhotoFromAWS,
-      );
-      final photos = await Future.wait(photoFutures);
-
-      final allPhotos = photos.where((photo) => photo != null).toList();
-
-      return event.copyWith(participantPhotos: allPhotos);
-    });
-
-    final newEvents = await Future.wait(eventFutures);
-
-    return eventsResponse.copyWith(events: newEvents);
+  Future<List<Uint8List?>> _setPhotosFromLocalStorage(
+    List<String> userIds,
+  ) async {
+    return Future.wait(
+      userIds.map(
+        (userId) async =>
+            (await ref.read(databaseProvider).getTeamMemberPhoto(userId))
+                ?.profilePicture,
+      ),
+    );
   }
 }

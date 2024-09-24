@@ -13,6 +13,9 @@ abstract class UserRepository {
   @GET(API.users)
   Future<List<User>> getUsers();
 
+  @GET(API.currentUser)
+  Future<UserModel> getCurrentUser();
+
   @GET(API.user)
   Future<UserModel> getUserById(
     @Path('id') String id,

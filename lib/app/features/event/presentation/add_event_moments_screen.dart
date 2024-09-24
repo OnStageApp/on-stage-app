@@ -45,12 +45,10 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         ref.watch(appDataControllerProvider).hasEditorsRight;
 
     return Scaffold(
-      appBar: widget.isCreatingEvent
-          ? const StageAppBar(
-              title: 'Create Event',
-              isBackButtonVisible: true,
-            )
-          : null,
+      appBar: StageAppBar(
+        title: widget.isCreatingEvent ? 'Create Event' : 'Event Structure',
+        isBackButtonVisible: true,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
       body: Padding(

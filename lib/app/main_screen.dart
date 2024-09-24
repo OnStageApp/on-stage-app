@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({
     required this.navigationShell,
     super.key,
@@ -15,10 +19,10 @@ class MainScreen extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   List<Widget> screens = [
     const HomeScreen(),
     const SongsScreen(),
@@ -31,6 +35,18 @@ class _MainScreenState extends State<MainScreen> {
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
     );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(currentTeamMemberNotifierProvider.notifier);
+      ref.read(userNotifierProvider.notifier).getCurrentUser();
+      ref
+          .read(teamMembersNotifierProvider.notifier)
+          .fetchAndSaveTeamMemberPhotos();
+    });
+    super.initState();
   }
 
   @override

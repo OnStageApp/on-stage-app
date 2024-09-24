@@ -32,11 +32,8 @@ class UserNotifier extends _$UserNotifier {
 
   Future<void> getCurrentUser() async {
     state = state.copyWith(isLoading: true);
-    // await _usersRepository
-    //     .getUserById('9zNhTEXqVXdbXZoUczUtWK3OJq63')
-    //     .then((user) {
-    //   state = state.copyWith(currentUser: user, isLoading: false);
-    // });
+    final currentUser = await usersRepository.getCurrentUser();
+    state = state.copyWith(currentUser: currentUser, isLoading: false);
   }
 
   Future<void> init() async {

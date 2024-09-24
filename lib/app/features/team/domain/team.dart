@@ -11,7 +11,7 @@ class Team with _$Team {
     required String name,
     required int? membersCount,
     @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> memberPhotos,
-    List<String>? memberPhotoUrls,
+    @Default([]) List<String> membersUserIds,
   }) = _Team;
 
   factory Team.fromJson(Map<String, dynamic> json) => _$TeamFromJson(json);

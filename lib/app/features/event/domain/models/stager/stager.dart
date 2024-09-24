@@ -12,7 +12,7 @@ class Stager with _$Stager {
     required String id,
     required String? name,
     required StagerStatusEnum? participationStatus,
-    required String? photoUrl,
+    required String? userId,
     @JsonKey(includeFromJson: false) Uint8List? profilePicture,
   }) = _Stager;
 

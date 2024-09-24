@@ -47,19 +47,9 @@ class EventsContent extends ConsumerWidget {
               ),
             ),
           ],
-          const SectionTitle(title: 'Past Events'),
           if (pastIsEmpty)
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                "You don't have any past events yet.",
-                style: context.textTheme.bodyMedium!.copyWith(
-                  color: context.colorScheme.outline,
-                ),
-              ),
-            )
-          else
+            const SizedBox()
+          else ...[
             EventsList(
               events: pastEventsResponse.events,
               hasMore: pastEventsResponse.hasMore,
@@ -67,6 +57,8 @@ class EventsContent extends ConsumerWidget {
                   .read(eventsNotifierProvider.notifier)
                   .loadMorePastEvents(),
             ),
+            const SectionTitle(title: 'Past Events'),
+          ],
         ],
       ),
     );
@@ -86,6 +78,7 @@ class EventsContent extends ConsumerWidget {
         locationName: event?.location ?? "You don't have any published events",
         dateTime: event?.dateTime,
         participantsProfileBytes: event?.stagerPhotos ?? [],
+        participantsCount: event?.stagerPhotos.length ?? 0,
         onTap: () {
           if (event == null) {
             context.pushNamed(AppRoute.addEvent.name);

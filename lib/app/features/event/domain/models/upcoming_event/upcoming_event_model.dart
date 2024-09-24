@@ -14,7 +14,7 @@ class UpcomingEventModel with _$UpcomingEventModel {
     DateTime? dateTime,
     String? location,
     EventStatus? eventStatus,
-    List<String>? stagerPhotoUrls,
+    List<String>? userIdsWithPhoto,
     @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> stagerPhotos,
   }) = _UpcomingEventModel;
 

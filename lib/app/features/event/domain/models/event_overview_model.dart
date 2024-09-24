@@ -16,7 +16,7 @@ class EventOverview with _$EventOverview {
     @JsonKey(includeFromJson: false)
     @Default([])
     List<Uint8List?> participantPhotos,
-    List<String>? stagerPhotoUrls,
+    List<String>? userIdsWithPhoto,
   }) = _EventOverview;
 
   factory EventOverview.fromJson(Map<String, dynamic> json) =>

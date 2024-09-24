@@ -39,6 +39,7 @@ class API {
   static const String login = 'auth/login';
 
   static const String users = 'users';
+  static const String currentUser = 'users/current';
   static const String user = 'users/{id}';
   static const String userPhoto = 'users/photoUrl';
 
@@ -51,4 +52,5 @@ class API {
   static const String currentTeamMember = 'team-members/current';
   static const String uninvitedTeamMembers = 'team-members/uninvited';
   static const String addTeamMember = 'team-members/invite';
+  static const String teamMemberPhotos = 'team-members/photos';
 }
