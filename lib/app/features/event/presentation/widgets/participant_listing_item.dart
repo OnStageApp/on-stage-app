@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ParticipantListingItem extends StatelessWidget {
@@ -62,10 +63,7 @@ class ParticipantListingItem extends StatelessWidget {
                     : null,
               ),
               child: photo == null || photo!.isEmpty
-                  ? Icon(
-                      Icons.person,
-                      color: context.colorScheme.primaryContainer,
-                    )
+                  ? PlaceholderImageWidget(title: name)
                   : null,
             ),
             const SizedBox(width: 12),

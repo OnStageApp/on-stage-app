@@ -36,7 +36,13 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   Future<void> _initializeEvents() async {
     _searchFocusNode.addListener(_onSearchFocusChange);
-    await ref.read(eventsNotifierProvider.notifier).initEvents();
+    unawaited(
+      Future.wait([
+        ref.read(eventsNotifierProvider.notifier).getUpcomingEvents(),
+        ref.read(eventsNotifierProvider.notifier).getPastEvents(),
+        ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+      ]),
+    );
   }
 
   void _onSearchFocusChange() {

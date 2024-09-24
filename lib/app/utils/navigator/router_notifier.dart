@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
-import 'package:on_stage_app/app/features/event/presentation/event_overview_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
@@ -173,7 +173,7 @@ class NavigationNotifier extends _$NavigationNotifier {
                       path: 'eventDetails',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId'];
-                        return EventOverviewScreen(eventId!);
+                        return EventDetailsScreen(eventId!);
                       },
                       routes: [
                         GoRoute(

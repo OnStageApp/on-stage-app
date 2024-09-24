@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/team_member/domain/create_team_member_request/create_team_member_request.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member_photo/team_member_photo_response.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -28,4 +29,7 @@ abstract class TeamMemberRepository {
   Future<TeamMember> inviteTeamMember(
     @Body() CreateTeamMemberRequest addTeamMemberRequest,
   );
+
+  @GET(API.teamMemberPhotos)
+  Future<List<TeamMemberPhotoResponse>> getTeamMemberPhotos();
 }

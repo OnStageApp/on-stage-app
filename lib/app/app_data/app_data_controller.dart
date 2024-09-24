@@ -2,6 +2,7 @@ import 'package:on_stage_app/app/app_data/app_data_state.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/utils/constants.dart';
 import 'package:on_stage_app/bootstrap.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +40,7 @@ class AppDataController extends _$AppDataController {
       keyCurrentTeamMemberRole,
       role.name,
     );
-    print('role = $role');
+    logger.i('role = $role');
     state = state.copyWith(
       role: role,
       hasEditorsRight: role == TeamMemberRole.Leader,

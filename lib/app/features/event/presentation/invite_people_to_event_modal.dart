@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class InvitePeopleToEventModal extends ConsumerStatefulWidget {
@@ -252,11 +253,7 @@ class AddParticipantsModalState
       ),
       child: participant.profilePicture != null
           ? null
-          : Text(
-              participant.name ?? 'unknown'.substring(0, 1) ?? '',
-              textAlign: TextAlign.center,
-              style: context.textTheme.titleSmall,
-            ),
+          : PlaceholderImageWidget(title: participant.name ?? 'Unknown'),
     );
   }
 

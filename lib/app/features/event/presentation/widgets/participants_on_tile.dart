@@ -25,8 +25,7 @@ class ParticipantsOnTile extends StatelessWidget {
   final Color? backgroundColor;
   final int? participantsLength;
 
-  int get _participantsLength =>
-      participantsLength ?? participantsProfileBytes.length;
+  int get _participantsLength => participantsLength ?? 0;
 
   bool get _isMoreThanMax => _participantsLength > _participantsMax;
 
@@ -42,7 +41,12 @@ class ParticipantsOnTile extends StatelessWidget {
       width: _tileWidth,
       child: Stack(
         children: [
-          ...participantsProfileBytes.asMap().entries.map(
+          ...(participantsProfileBytes.length > 2
+                  ? participantsProfileBytes.sublist(0, _participantsMax)
+                  : participantsProfileBytes)
+              .asMap()
+              .entries
+              .map(
             (entry) {
               final index = entry.key;
               if (showOverlay) {
@@ -53,8 +57,10 @@ class ParticipantsOnTile extends StatelessWidget {
                     height: width,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      color: backgroundColor ?? context.colorScheme.surface,
                       border: Border.all(
-                        color: borderColor ?? context.colorScheme.surface,
+                        color:
+                            borderColor ?? context.colorScheme.onSurfaceVariant,
                         width: 2,
                       ),
                       image: participantsProfileBytes[index] != null
@@ -68,8 +74,7 @@ class ParticipantsOnTile extends StatelessWidget {
                     child: participantsProfileBytes[index] == null
                         ? Icon(
                             Icons.person,
-                            color:
-                                backgroundColor ?? context.colorScheme.surface,
+                            color: context.colorScheme.primaryContainer,
                           )
                         : const SizedBox(),
                   ),
@@ -79,16 +84,16 @@ class ParticipantsOnTile extends StatelessWidget {
               }
             },
           ),
-          if (_participantsLength >= _participantsMax)
+          if (_participantsLength > _participantsMax)
             Positioned(
-              left: (_participantsLength - 1) * (width - 10),
+              left: _participantsMax * (width - 10),
               child: Container(
                 width: width,
                 height: width,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: borderColor ?? context.colorScheme.surface,
+                    color: borderColor ?? context.colorScheme.onSurfaceVariant,
                     width: 2,
                   ),
                   color:

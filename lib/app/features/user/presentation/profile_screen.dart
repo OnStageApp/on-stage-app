@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/app_settings.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/library_section.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/profile_header.dart';
@@ -24,10 +23,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.wait([
-        ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
-        ref.read(userNotifierProvider.notifier).getUserPhoto(),
-      ]);
+      await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
     });
     super.initState();
   }

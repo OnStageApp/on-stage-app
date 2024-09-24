@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
+import 'package:flutter/foundation.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
@@ -40,12 +41,14 @@ class EventNotifier extends _$EventNotifier {
     logger.i('init event provider state');
   }
 
+  void resetState() {
+    state = const EventState();
+  }
+
   Future<void> initEventById(String eventId) async {
-    state = state.copyWith(isLoading: true);
-    await getEventById(eventId);
-    await getRehearsals(eventId);
-    await getStagers(eventId);
-    state = state.copyWith(isLoading: false);
+    unawaited(getEventById(eventId));
+    unawaited(getRehearsals(eventId));
+    unawaited(getStagers(eventId));
   }
 
   Future<void> publishEvent() async {
@@ -185,15 +188,8 @@ class EventNotifier extends _$EventNotifier {
   Future<Stager> _getStagerWithPhoto(
     Stager stager,
   ) async {
-    if (stager.photoUrl == null) {
-      return stager;
-    }
-    final photo = await ref
-        .read(amazonS3NotifierProvider.notifier)
-        .getPhotoFromAWS(stager.photoUrl ?? '');
-
-    final newStager = stager.copyWith(profilePicture: photo);
-    return newStager;
+    final photo = await _setPhotosFromLocalStorage(stager.userId);
+    return stager.copyWith(profilePicture: photo);
   }
 
   int getAcceptedInvitees() {
@@ -202,5 +198,13 @@ class EventNotifier extends _$EventNotifier {
           (stager) => stager.participationStatus == StagerStatusEnum.CONFIRMED,
         )
         .length;
+  }
+
+  Future<Uint8List?> _setPhotosFromLocalStorage(
+    String? userId,
+  ) async {
+    if (userId == null) return null;
+    final photo = await ref.read(databaseProvider).getTeamMemberPhoto(userId);
+    return photo?.profilePicture;
   }
 }
