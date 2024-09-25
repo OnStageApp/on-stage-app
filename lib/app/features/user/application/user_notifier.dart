@@ -42,15 +42,14 @@ class UserNotifier extends _$UserNotifier {
   Future<void> editUserById(String id, UserModel updatedUser) async {
     try {
       state = state.copyWith(isLoading: true);
-
-      final user = await _usersRepository?.editUserById(id, updatedUser);
-
-      state = state.copyWith(currentUser: user, isLoading: false);
+      final editedUser = await usersRepository.editUserById(id, updatedUser);
+      state = state.copyWith(currentUser: editedUser, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);
-      logger.e("Error editing user: $e");
+      logger.e('Error updating user: $e');
     }
   }
+
 
   Future<void> init() async {
     logger.i('init user provider state');

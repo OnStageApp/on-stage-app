@@ -29,14 +29,12 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   bool _isUploading = false;
 
-  // TextEditingController to capture the user's name
   final TextEditingController _nameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     final user = ref.read(userNotifierProvider).currentUser;
-    // Set the initial value of the name field to the current user's name
     if (user != null) {
       _nameController.text = user.name ?? '';
     }
@@ -48,35 +46,31 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
- // Function to handle editing the profile
   Future<void> _editProfile() async {
     final user = ref.read(userNotifierProvider).currentUser;
 
     if (user != null) {
-      // Capture the updated name from the TextField
       final updatedName = _nameController.text.trim();
 
-      // Check if the name is not empty before proceeding
       if (updatedName.isNotEmpty) {
         final updatedUser = user.copyWith(name: updatedName);
 
-        // Call the notifier method to edit the user
         await ref.read(userNotifierProvider.notifier).editUserById(
-          user.id, // Pass the current user's ID
-          updatedUser, // Pass the updated user object with the new name
+          user.id,
+          updatedUser,
         );
 
-        // Optionally, show a success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully!')),
+          const SnackBar(content: Text('Profile updated successfully!')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Name cannot be empty')),
+          const SnackBar(content: Text('Name cannot be empty')),
         );
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userNotifierProvider).currentUser;
@@ -132,14 +126,16 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   label: 'Full Name',
                   hint: '${user?.name}',
                   icon: Icons.church,
-                  controller: TextEditingController(),
+                  controller: _nameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an event name';
                     }
                     return null;
                   },
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    _nameController.text = value;
+                  },
                 ),
                 const SizedBox(height: 12),
                 Align(

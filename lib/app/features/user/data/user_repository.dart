@@ -31,6 +31,7 @@ abstract class UserRepository {
   @PUT(API.user)
   Future<UserModel> editUserById(
     @Path('id') String id,
-    @Body() UserModel user,
+    @Body() UserModel updatedUser,
   );
+
 }
