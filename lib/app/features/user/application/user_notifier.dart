@@ -64,41 +64,50 @@ class UserNotifier extends _$UserNotifier {
   Future<void> saveAndGetUserPhoto({bool forceUpdate = false}) async {
     logger
         .i('Fetching user photo ${DateTime.now()}, forceUpdate: $forceUpdate');
+
+    if (!forceUpdate && state.userPhoto != null) {
+      logger.i('Using cached user photo');
+      return;
+    }
+
     try {
-      if (!forceUpdate && state.userPhoto != null) {
-        logger.i('Using cached user photo');
-        return;
-      }
+      final photoBytes = await _getPhotoBytes(forceUpdate);
 
-      if (!forceUpdate) {
-        final localPhoto = await _getPhotoFromLocalStorage();
-        if (localPhoto != null) {
-          state = state.copyWith(userPhoto: localPhoto);
-          logger.i('Loaded user photo from local storage ${DateTime.now()}');
-          return;
-        }
-      }
-
-      final photoUrl = await usersRepository.getUserPhotoUrl();
-
-      if (photoUrl.isNotEmpty) {
-        final photoBytes = await ref
-            .read(amazonS3NotifierProvider.notifier)
-            .getPhotoFromAWS(photoUrl);
-
-        if (photoBytes != null) {
-          state = state.copyWith(userPhoto: photoBytes);
-          await _savePhotoToLocalStorage(photoBytes);
-          logger.i('Done fetching and saving user photo ${DateTime.now()}');
-        } else {
-          logger.e('Failed to fetch photo. Response is empty.');
-        }
+      if (photoBytes != null) {
+        state = state.copyWith(userPhoto: photoBytes);
+        await _savePhotoToLocalStorage(photoBytes);
+        logger.i('Done fetching and saving user photo ${DateTime.now()}');
       } else {
-        logger.i('Photo URL is empty');
+        state = state.copyWith(userPhoto: null);
+        logger.i('Photo not found');
       }
     } catch (e) {
+      state = state.copyWith(userPhoto: null);
       logger.e('Error fetching user photo: $e');
     }
+  }
+
+  Future<Uint8List?> _getPhotoBytes(bool forceUpdate) async {
+    if (!forceUpdate) {
+      final localPhoto = await _getPhotoFromLocalStorage();
+      if (localPhoto != null) {
+        logger.i('Loaded user photo from local storage ${DateTime.now()}');
+        return localPhoto;
+      }
+    }
+
+    final photoUrl = await usersRepository.getUserPhotoUrl();
+
+    if (photoUrl.isEmpty) {
+      logger.i('Photo URL is empty');
+      return null;
+    }
+
+    final photoBytes = await ref
+        .read(amazonS3NotifierProvider.notifier)
+        .getPhotoFromAWS(photoUrl);
+
+    return photoBytes;
   }
 
   Future<Uint8List?> _getPhotoFromLocalStorage() async {

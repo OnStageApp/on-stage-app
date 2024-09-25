@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_background.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_first_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_forth_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_second_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_third_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/widgets/onboarding_button.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -19,14 +21,14 @@ void showOnboardingOverlay(BuildContext context) {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 }
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const int _totalPages = 4;
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -49,6 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _finishOnboarding() {
+    ref.read(userSettingsNotifierProvider.notifier).setOnboardingDone();
     context.popDialog();
   }
 

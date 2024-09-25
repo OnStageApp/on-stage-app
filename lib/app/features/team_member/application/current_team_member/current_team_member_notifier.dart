@@ -13,7 +13,12 @@ part 'current_team_member_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
-  late final TeamMemberRepository _teamMemberRepository;
+  TeamMemberRepository? _teamMemberRepository;
+
+  TeamMemberRepository get teamMemberRepository {
+    _teamMemberRepository ??= TeamMemberRepository(ref.read(dioProvider));
+    return _teamMemberRepository!;
+  }
 
   @override
   CurrentTeamMemberState build() {
@@ -25,14 +30,14 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
   }
 
   Future<void> _initializeState() async {
-    final teamMember = await _teamMemberRepository.getCurrentTeamMember();
-    unawaited(setTeamMemberRoleToSharedPrefs(teamMember: teamMember));
+    final teamMember = await teamMemberRepository.getCurrentTeamMember();
+    await setTeamMemberRoleToSharedPrefs(teamMember: teamMember);
     state = state.copyWith(teamMember: teamMember);
   }
 
   Future<void> setTeamMemberRoleToSharedPrefs({TeamMember? teamMember}) async {
     final newMember =
-        teamMember ?? await _teamMemberRepository.getCurrentTeamMember();
+        teamMember ?? await teamMemberRepository.getCurrentTeamMember();
 
     await ref
         .read(appDataControllerProvider.notifier)

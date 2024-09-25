@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/event/presentation/event_details_scree
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
+import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
@@ -66,14 +67,23 @@ class NavigationNotifier extends _$NavigationNotifier {
       initialLocation: '/welcome',
       debugLogDiagnostics: true,
       redirect: (context, state) {
-        final isLoggedIn = ref.watch(loginNotifierProvider).isLoggedIn;
+        final loginState = ref.watch(loginNotifierProvider);
+        final isLoggedIn = loginState.isLoggedIn;
+        final isLoading = loginState.isLoading;
         final currentLocation = state.uri.toString();
 
-        if (!isLoggedIn && currentLocation != '/login') {
-          return '/login';
-        } else if (isLoggedIn &&
-            (currentLocation == '/login' || currentLocation == '/welcome')) {
-          return '/home';
+        if (isLoading) {
+          return '/loading';
+        }
+
+        if (isLoggedIn) {
+          if (currentLocation == '/login' || currentLocation == '/welcome') {
+            return '/home';
+          }
+        } else {
+          if (currentLocation != '/login' && currentLocation != '/loading') {
+            return '/login';
+          }
         }
 
         return null; // No redirection needed
@@ -248,6 +258,11 @@ class NavigationNotifier extends _$NavigationNotifier {
               ],
             ),
           ],
+        ),
+        GoRoute(
+          name: AppRoute.loading.name,
+          path: '/loading',
+          builder: (context, state) => const LoadingScreen(),
         ),
         GoRoute(
           name: AppRoute.login.name,

@@ -148,10 +148,10 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         await ref
                             .read(teamNotifierProvider.notifier)
                             .getCurrentTeam();
+                        ref.read(eventsNotifierProvider.notifier).resetState();
                         ref
                             .read(navigationNotifierProvider.notifier)
                             .resetRouter();
-                        ref.read(eventsNotifierProvider.notifier).resetState();
                       },
                     ),
                   );

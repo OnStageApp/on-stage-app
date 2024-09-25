@@ -14,7 +14,12 @@ part 'team_notifier.g.dart';
 
 @riverpod
 class TeamNotifier extends _$TeamNotifier {
-  late final TeamRepository _teamRepository;
+  TeamRepository? _teamRepository;
+
+  TeamRepository get teamRepository {
+    _teamRepository ??= TeamRepository(ref.read(dioProvider));
+    return _teamRepository!;
+  }
 
   @override
   TeamState build() {
@@ -27,7 +32,8 @@ class TeamNotifier extends _$TeamNotifier {
 
   Future<void> getCurrentTeam() async {
     state = state.copyWith(isLoading: true);
-    var currentTeam = await _teamRepository.getCurrentTeam();
+    var currentTeam = await teamRepository.getCurrentTeam();
+
     final first3PhotosForTeam =
         await _setPhotosFromLocalStorage(currentTeam.membersUserIds);
 
@@ -43,7 +49,7 @@ class TeamNotifier extends _$TeamNotifier {
   }
 
   Future<void> createTeam(TeamRequest team) async {
-    await _teamRepository.createTeam(team);
+    await teamRepository.createTeam(team);
     unawaited(ref.read(teamsNotifierProvider.notifier).getTeams());
   }
 

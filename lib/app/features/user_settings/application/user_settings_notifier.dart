@@ -17,6 +17,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   static const String _darkModeKey = 'isDarkMode';
   static const String _songViewKey = 'songView';
   static const String _notificationEnabledKey = 'isNotificationEnabled';
+  static const String _isOnboardingDone = 'isOnboardingDone';
 
   UserSettingsRepository get userSettingsRepository {
     _userSettingsRepository ??= UserSettingsRepository(ref.read(dioProvider));
@@ -109,21 +110,42 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
+  Future<void> setOnboardingDone() async {
+    try {
+      const userSettings = UserSettings(isOnboardingDone: true);
+      state = state.copyWith(
+        isOnboardingDone: true,
+      );
+
+      await userSettingsRepository.updateUserSettings(
+        userSettings: userSettings,
+      );
+
+      _saveSettingsToPrefs(userSettings);
+    } catch (e) {
+      logger.e('Error setting onboarding done: $e');
+    }
+  }
+
   Future<void> _loadLocalSettings() async {
     final isDarkMode = prefs.getBool(_darkModeKey);
     final songViewIndex = prefs.getInt(_songViewKey);
     final isNotificationEnabled = prefs.getBool(_notificationEnabledKey);
+    final isOnboardingDone =
+        ref.read(sharedPreferencesProvider).getBool(_isOnboardingDone);
 
     state = state.copyWith(
       isDarkMode: isDarkMode,
       songView:
           songViewIndex != null ? SongViewEnum.values[songViewIndex] : null,
       isNotificationsEnabled: isNotificationEnabled,
+      isOnboardingDone: isOnboardingDone,
     );
 
-    if (isDarkMode == null &&
-        songViewIndex == null &&
-        isNotificationEnabled == null) {
+    if (isDarkMode == null ||
+        songViewIndex == null ||
+        isNotificationEnabled == null ||
+        isOnboardingDone == null) {
       await getUserSettings();
     }
   }
@@ -137,6 +159,11 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
     if (settings.isNotificationsEnabled != null) {
       prefs.setBool(_notificationEnabledKey, settings.isNotificationsEnabled!);
+    }
+    if (settings.isOnboardingDone != null) {
+      ref
+          .read(sharedPreferencesProvider)
+          .setBool(_isOnboardingDone, settings.isOnboardingDone!);
     }
   }
 }

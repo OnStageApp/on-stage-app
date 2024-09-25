@@ -9,8 +9,10 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/input_validator.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class AddTeamMemberScreen extends ConsumerStatefulWidget {
   const AddTeamMemberScreen({
@@ -97,15 +99,24 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                     const Spacer(),
                     ContinueButton(
                       text: 'Invite',
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          ref
+                          final errorMessage = await ref
                               .read(teamMembersNotifierProvider.notifier)
                               .inviteTeamMember(
                                 _emailController.text,
                                 _selectedRole,
                               );
-                          context.pop();
+                          if (errorMessage.isNullEmptyOrWhitespace && mounted) {
+                            context.pop();
+                            return;
+                          }
+                          if (mounted) {
+                            TopFlushBar.show(
+                              context,
+                              errorMessage ?? 'Error inviting team member',
+                            );
+                          }
                         }
                       },
                       isEnabled: true,

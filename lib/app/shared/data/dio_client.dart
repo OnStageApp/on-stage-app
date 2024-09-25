@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:on_stage_app/app/shared/data/interceptors/connectivity_interceptor.dart';
 import 'package:on_stage_app/app/shared/data/interceptors/token_interceptor.dart';
 import 'package:on_stage_app/app/utils/api.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,20 +22,19 @@ Dio dio(DioRef ref) {
   const storage = FlutterSecureStorage();
 
   final prettyDioLogger = PrettyDioLogger(
-    requestHeader: true,
     requestBody: true,
-    responseHeader: true,
   );
 
   dio.interceptors.add(TokenInterceptor(storage));
   dio.interceptors.add(prettyDioLogger);
   dio.interceptors.add(ConnectivityInterceptor());
   dio.interceptors.add(InterceptorsWrapper(
-    onError: (DioError e, ErrorInterceptorHandler handler) {
-      print('Dio Error:');
-      print('Type: ${e.type}');
-      print('Message: ${e.message}');
-      print('Response: ${e.response}');
+    onError: (DioException e, ErrorInterceptorHandler handler) {
+      logger
+        ..i('Dio Error:')
+        ..i('Type: ${e.type}')
+        ..i('Message: ${e.message}')
+        ..i('Response: ${e.response}');
       return handler.next(e);
     },
   ));

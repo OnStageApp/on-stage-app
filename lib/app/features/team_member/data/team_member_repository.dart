@@ -26,7 +26,7 @@ abstract class TeamMemberRepository {
   });
 
   @POST(API.addTeamMember)
-  Future<TeamMember> inviteTeamMember(
+  Future<TeamMember?> inviteTeamMember(
     @Body() CreateTeamMemberRequest addTeamMemberRequest,
   );
 
