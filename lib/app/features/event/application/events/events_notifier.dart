@@ -29,6 +29,10 @@ class EventsNotifier extends _$EventsNotifier {
     return const EventsState();
   }
 
+  void resetState() {
+    state = const EventsState();
+  }
+
   Future<void> initEvents() async {
     state = state.copyWith(isLoading: true);
     await Future.wait([
@@ -37,6 +41,10 @@ class EventsNotifier extends _$EventsNotifier {
       getUpcomingEvent(),
     ]);
     state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> resetEvents() async {
+    state = const EventsState();
   }
 
   Future<void> getUpcomingEvent() async {

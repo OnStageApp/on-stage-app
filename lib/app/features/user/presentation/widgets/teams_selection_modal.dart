@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
@@ -28,8 +29,9 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
       useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
-      constraints: const BoxConstraints(
+      constraints: BoxConstraints(
         minHeight: 400,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
       ),
       context: context,
       builder: (context) => SafeArea(
@@ -91,7 +93,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                 itemBuilder: (context, index) {
                   final team = _teams.elementAt(index);
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
                       splashColor: context.colorScheme.surfaceBright,
                       tileColor: context.colorScheme.onSurfaceVariant,
@@ -149,6 +151,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         ref
                             .read(navigationNotifierProvider.notifier)
                             .resetRouter();
+                        ref.read(eventsNotifierProvider.notifier).resetState();
                       },
                     ),
                   );

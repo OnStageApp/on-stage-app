@@ -80,7 +80,10 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 text: 'Create',
                 onPressed: () {
                   ref.read(teamNotifierProvider.notifier).createTeam(
-                        TeamRequest(name: teamNameController.text),
+                        TeamRequest(
+                          name: teamNameController.text,
+                          membersCount: 1,
+                        ),
                       );
                   context.pop();
                 },
