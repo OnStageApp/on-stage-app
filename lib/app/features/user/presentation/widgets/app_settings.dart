@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/theme/theme_state.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
   const AppSettings({
-    required this.value,
     super.key,
   });
-
-  final bool value;
 
   @override
   AppSettingsState createState() => AppSettingsState();
 }
 
 class AppSettingsState extends ConsumerState<AppSettings> {
-  bool _value = false;
-
   @override
   void initState() {
     super.initState();
-    _value = widget.value;
   }
 
   @override
@@ -40,20 +33,24 @@ class AppSettingsState extends ConsumerState<AppSettings> {
         CustomSwitchListTile(
           title: 'Dark Mode',
           icon: Icons.dark_mode,
-          value: ref.watch(themeProvider).theme != onStageLightTheme,
+          value: ref.watch(userSettingsNotifierProvider).isDarkMode ?? false,
           onSwitch: (value) {
-            ref.read(themeProvider.notifier).toggleTheme();
+            ref
+                .read(userSettingsNotifierProvider.notifier)
+                .toggleDarkMode(isDarkMode: value);
           },
         ),
         const SizedBox(height: 12),
         CustomSwitchListTile(
           title: 'Notifications',
           icon: Icons.notifications,
-          value: !_value,
+          value:
+              ref.watch(userSettingsNotifierProvider).isNotificationsEnabled ??
+                  true,
           onSwitch: (value) {
-            setState(() {
-              _value = !value;
-            });
+            ref
+                .read(userSettingsNotifierProvider.notifier)
+                .setNotification(isActive: value);
           },
         ),
         const SizedBox(height: 12),

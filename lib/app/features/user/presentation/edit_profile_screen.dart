@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
@@ -10,7 +13,10 @@ import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -20,6 +26,8 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+  bool _isUploading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,24 +50,30 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   userId: ref.watch(userNotifierProvider).currentUser?.id ?? '',
                 ),
                 const SizedBox(height: 18),
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  width: 210,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Ink(
+                    width: 210,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        overlayColor:
+                            context.colorScheme.outline.withOpacity(0.1),
+                        backgroundColor: context.colorScheme.onSurfaceVariant,
                       ),
-                      backgroundColor: context.colorScheme.onSurfaceVariant,
-                    ),
-                    onPressed: () {
-                      AddPhotoModal.show(
-                        context: context,
-                      );
-                    },
-                    child: Text(
-                      'Edit Photo',
-                      style: context.textTheme.titleMedium,
+                      onPressed: _isUploading ? null : _handleAddPhoto,
+                      child: _isUploading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
+                              'Edit Photo',
+                              style: context.textTheme.titleMedium,
+                            ),
                     ),
                   ),
                 ),
@@ -156,5 +170,63 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleAddPhoto() async {
+    final selectedImage = await AddPhotoModal.show(context: context);
+
+    if (selectedImage != null) {
+      setState(() {
+        _isUploading = true;
+      });
+
+      try {
+        final compressedFile = await _compressImage(selectedImage);
+
+        if (compressedFile != null) {
+          await ref
+              .read(userNotifierProvider.notifier)
+              .uploadPhoto(compressedFile);
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Photo uploaded successfully')),
+            );
+          }
+        } else {
+          throw Exception('Failed to compress image');
+        }
+      } catch (e) {
+        logger.i('Error compressing or uploading image: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload image: $e')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isUploading = false;
+          });
+        }
+      }
+    }
+  }
+
+  Future<File?> _compressImage(File file) async {
+    final dir = await path_provider.getTemporaryDirectory();
+    final targetPath = path.join(
+      dir.absolute.path,
+      '${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 50,
+    );
+
+    final newFile = File(result!.path);
+    return newFile;
   }
 }

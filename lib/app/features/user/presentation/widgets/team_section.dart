@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team/presentation/widgets/create_new_team_modal.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/create_new_team_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/switch_teams_button.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -32,7 +33,7 @@ class TeamsSection extends ConsumerWidget {
                 horizontal: 12,
               ),
               title: Text(
-                currentTeam.name ?? '',
+                currentTeam.name,
                 style: context.textTheme.headlineMedium,
               ),
               subtitle: Text(
@@ -58,8 +59,8 @@ class TeamsSection extends ConsumerWidget {
         else
           //shimmer
           Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+            highlightColor: context.colorScheme.onSurfaceVariant,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Container(
@@ -77,10 +78,7 @@ class TeamsSection extends ConsumerWidget {
           title: 'Create New Team',
           actionTitle: 'Create',
           onTap: () {
-            context.goNamed(
-              AppRoute.teamDetails.name,
-              queryParameters: {'isCreating': 'true'},
-            );
+            CreateNewTeamModal.show(context: context);
           },
         ),
       ],

@@ -10,7 +10,7 @@ class ProfilePictureRepository {
 
   ProfilePictureRepository(this._dio);
 
-  Future<void> updateUserImage(String userId, File imageFile) async {
+  Future<void> updateUserImage(File imageFile) async {
     try {
       final fileName = imageFile.path.split('/').last;
       final fileExtension = fileName.split('.').last.toLowerCase();
@@ -49,7 +49,7 @@ class ProfilePictureRepository {
       });
 
       final response = await _dio.post(
-        '${API.users}/$userId/photo',
+        API.userPhoto,
         data: formData,
         options: Options(
           headers: {

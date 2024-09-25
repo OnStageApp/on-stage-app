@@ -69,7 +69,6 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             const SizedBox(height: 12),
             EventActionButton(
               onTap: () {
-                // TeamMembersModal.show(context: context);
                 context.pushNamed(AppRoute.addTeamMember.name);
               },
               text: 'Invite People',

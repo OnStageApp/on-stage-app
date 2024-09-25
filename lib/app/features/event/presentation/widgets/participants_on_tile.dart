@@ -57,7 +57,8 @@ class ParticipantsOnTile extends StatelessWidget {
                     height: width,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: backgroundColor ?? context.colorScheme.surface,
+                      color: backgroundColor ??
+                          context.colorScheme.primaryContainer,
                       border: Border.all(
                         color:
                             borderColor ?? context.colorScheme.onSurfaceVariant,
@@ -74,7 +75,7 @@ class ParticipantsOnTile extends StatelessWidget {
                     child: participantsProfileBytes[index] == null
                         ? Icon(
                             Icons.person,
-                            color: context.colorScheme.primaryContainer,
+                            color: context.colorScheme.surface,
                           )
                         : const SizedBox(),
                   ),
@@ -102,8 +103,8 @@ class ParticipantsOnTile extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '+${_participantsLength - _participantsMax}',
-                    style: TextStyle(
-                      color: context.colorScheme.onSurface,
+                    style: const TextStyle(
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),

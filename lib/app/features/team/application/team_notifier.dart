@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/team/application/team_state.dart';
+import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/data/team_repository.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
@@ -42,9 +43,8 @@ class TeamNotifier extends _$TeamNotifier {
   }
 
   Future<void> createTeam(TeamRequest team) async {
-    state = state.copyWith(isLoading: true);
-    final createdTeam = await _teamRepository.createTeam(team);
-    state = state.copyWith(isLoading: false, currentTeam: createdTeam);
+    await _teamRepository.createTeam(team);
+    unawaited(ref.read(teamsNotifierProvider.notifier).getTeams());
   }
 
   Future<List<Uint8List?>> _setPhotosFromLocalStorage(

@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/database/tables/profile_picture_table.dart';
+import 'package:on_stage_app/app/database/tables/profile_picture_xl_table.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_photo/team_member_photo.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:path/path.dart' as p;
@@ -25,7 +26,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [ProfilePictureTable])
+@DriftDatabase(tables: [ProfilePictureTable, ProfilePictureXlTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._() : super(_openConnection());
 
@@ -46,6 +47,22 @@ class AppDatabase extends _$AppDatabase {
       logger.e('Database connection test failed', e);
       return false;
     }
+  }
+
+  Future<Uint8List?> getUserProfilePicture(String id) async {
+    final result = await (select(profilePictureXlTable)
+          ..where((tbl) => tbl.id.equals(id)))
+        .getSingleOrNull();
+    return result?.picture;
+  }
+
+  Future<int> updateUserProfilePicture(String id, Uint8List picture) async {
+    return (update(profilePictureTable)..where((tbl) => tbl.id.equals(id)))
+        .write(
+      ProfilePictureTableCompanion(
+        picture: Value(picture),
+      ),
+    );
   }
 
   Future<TeamMemberPhoto?> getTeamMemberPhoto(String id) async {

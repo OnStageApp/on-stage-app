@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_repository.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
+import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/shared/data/dio_s3_client/dio_s3_client.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,7 +17,6 @@ part 'user_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class UserNotifier extends _$UserNotifier {
   UserRepository? _usersRepository;
-  late final AmazonS3Repository _amazonS3Repository;
 
   UserRepository get usersRepository {
     _usersRepository ??= UserRepository(ref.read(dioProvider));
@@ -25,12 +25,14 @@ class UserNotifier extends _$UserNotifier {
 
   @override
   UserState build() {
-    final dioS3 = ref.read(dioS3Provider);
-    _amazonS3Repository = AmazonS3Repository(dioS3);
+    ref.onDispose(() {
+      logger.i('UserNotifier disposed');
+    });
     return const UserState();
   }
 
   Future<void> getCurrentUser() async {
+    if (state.currentUser != null) return;
     state = state.copyWith(isLoading: true);
     final currentUser = await usersRepository.getCurrentUser();
     state = state.copyWith(currentUser: currentUser, isLoading: false);
@@ -38,9 +40,12 @@ class UserNotifier extends _$UserNotifier {
 
   Future<void> init() async {
     logger.i('init user provider state');
+    await getCurrentUser();
+    await saveAndGetUserPhoto(forceUpdate: true);
   }
 
   Future<void> getAllUsers() async {
+    if (state.users.isNotNullOrEmpty) return;
     state = state.copyWith(isLoading: true);
     final users = await usersRepository.getUsers();
     state = state.copyWith(users: users, isLoading: false);
@@ -49,42 +54,64 @@ class UserNotifier extends _$UserNotifier {
   Future<void> uploadPhoto(File image) async {
     final profilePictureRepo = ProfilePictureRepository(ref.read(dioProvider));
     try {
-      await profilePictureRepo.updateUserImage(
-        state.currentUser!.id,
-        image,
-      );
-      final currentUser =
-          await usersRepository.getUserById(state.currentUser!.id);
-      state = state.copyWith(currentUser: currentUser);
+      await profilePictureRepo.updateUserImage(image);
+      await saveAndGetUserPhoto(forceUpdate: true);
     } catch (e) {
-      logger.e('error $e');
-      // Handle error
+      logger.e('Error uploading photo: $e');
+      // Handle error (e.g., show an error message to the user)
     }
   }
 
-  Future<void> getUserPhoto() async {
-    logger.i('Fetching user photo ${DateTime.now()}');
+  Future<void> saveAndGetUserPhoto({bool forceUpdate = false}) async {
+    logger
+        .i('Fetching user photo ${DateTime.now()}, forceUpdate: $forceUpdate');
     try {
-      if (state.userPhoto != null) {
+      if (!forceUpdate && state.userPhoto != null) {
+        logger.i('Using cached user photo');
         return;
       }
+
+      if (!forceUpdate) {
+        final localPhoto = await _getPhotoFromLocalStorage();
+        if (localPhoto != null) {
+          state = state.copyWith(userPhoto: localPhoto);
+          logger.i('Loaded user photo from local storage ${DateTime.now()}');
+          return;
+        }
+      }
+
       final photoUrl = await usersRepository.getUserPhotoUrl();
 
       if (photoUrl.isNotEmpty) {
-        final photoBytes =
-            await _amazonS3Repository.getUserPhotoFromS3(photoUrl);
+        final photoBytes = await ref
+            .read(amazonS3NotifierProvider.notifier)
+            .getPhotoFromAWS(photoUrl);
 
-        if (photoBytes.isNotEmpty) {
-          state = state.copyWith(userPhoto: Uint8List.fromList(photoBytes));
+        if (photoBytes != null) {
+          state = state.copyWith(userPhoto: photoBytes);
+          await _savePhotoToLocalStorage(photoBytes);
+          logger.i('Done fetching and saving user photo ${DateTime.now()}');
         } else {
           logger.e('Failed to fetch photo. Response is empty.');
         }
-        logger.i('Done fetching user photo ${DateTime.now()}');
       } else {
         logger.i('Photo URL is empty');
       }
     } catch (e) {
       logger.e('Error fetching user photo: $e');
     }
+  }
+
+  Future<Uint8List?> _getPhotoFromLocalStorage() async {
+    final photo = await ref
+        .read(databaseProvider)
+        .getUserProfilePicture(state.currentUser?.id ?? '');
+    return photo;
+  }
+
+  Future<void> _savePhotoToLocalStorage(Uint8List photo) async {
+    await ref
+        .read(databaseProvider)
+        .updateUserProfilePicture(state.currentUser?.id ?? '', photo);
   }
 }

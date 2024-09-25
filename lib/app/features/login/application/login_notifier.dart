@@ -17,13 +17,16 @@ part 'login_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class LoginNotifier extends _$LoginNotifier {
-  late final LoginRepository _loginRepository;
+  LoginRepository? _loginRepository;
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
+  LoginRepository get loginRepository {
+    _loginRepository ??= LoginRepository(ref.read(dioProvider));
+    return _loginRepository!;
+  }
 
   @override
   LoginState build() {
-    final dio = ref.read(dioProvider);
-    _loginRepository = LoginRepository(dio);
     _checkLoggedInStatus();
     return const LoginState();
   }
@@ -64,7 +67,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await _loginRepository.login(
+        final authToken = await loginRepository.login(
           LoginRequest(firebaseToken: idToken),
         );
         await _saveAuthToken(authToken as String);
@@ -94,7 +97,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await _loginRepository.login(
+        final authToken = await loginRepository.login(
           LoginRequest(firebaseToken: idToken),
         );
         await _saveAuthToken(authToken as String);
@@ -137,7 +140,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await _loginRepository.login(
+        final authToken = await loginRepository.login(
           LoginRequest(firebaseToken: idToken),
         );
         await _saveAuthToken(authToken as String);
@@ -185,7 +188,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await _loginRepository.login(
+        final authToken = await loginRepository.login(
           LoginRequest(firebaseToken: idToken),
         );
         await _saveAuthToken(authToken as String);
