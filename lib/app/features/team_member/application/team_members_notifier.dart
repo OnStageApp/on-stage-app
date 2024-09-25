@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
@@ -10,6 +11,7 @@ import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_photo/team_member_photo.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -58,24 +60,50 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     }
   }
 
-  Future<void> inviteTeamMember(String email, TeamMemberRole role) async {
+  Future<String?> inviteTeamMember(String email, TeamMemberRole role) async {
     if (email.isEmpty) {
-      return;
+      return 'Email is empty';
     }
-    final createTeamMemberRequest = CreateTeamMemberRequest(
-      email: email,
-      newMemberRole: role,
-    );
-    final teamMember =
-        await teamMemberRepository.inviteTeamMember(createTeamMemberRequest);
-    final teamMemberWithPhoto =
-        await _getMemberWithPhotoFromLocalStorage(teamMember);
-    state = state.copyWith(
-      teamMembers: [
-        ...state.teamMembers,
-        teamMemberWithPhoto,
-      ],
-    );
+
+    try {
+      final createTeamMemberRequest = CreateTeamMemberRequest(
+        email: email,
+        newMemberRole: role,
+      );
+
+      final teamMember =
+          await teamMemberRepository.inviteTeamMember(createTeamMemberRequest);
+
+      if (teamMember != null) {
+        final teamMemberWithPhoto =
+            await _getMemberWithPhotoFromLocalStorage(teamMember);
+
+        state = state.copyWith(
+          teamMembers: [
+            ...state.teamMembers,
+            teamMemberWithPhoto,
+          ],
+        );
+
+        return null;
+      } else {
+        logger.e('Failed to invite team member. API returned null.');
+        return 'Failed to invite team member';
+      }
+    } on DioException catch (e) {
+      logger.e('Error inviting team member: $e');
+
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        final errorModel = ErrorModel.fromJson(errorData);
+        return errorModel.errorDescription;
+      }
+
+      return 'An error occurred while inviting the team member';
+    } catch (e) {
+      logger.e('Error inviting team member: $e');
+      return 'An error occurred while inviting the team member';
+    }
   }
 
   Future<void> fetchAndSaveTeamMemberPhotos() async {

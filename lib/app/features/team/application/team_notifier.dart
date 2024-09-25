@@ -33,6 +33,7 @@ class TeamNotifier extends _$TeamNotifier {
   Future<void> getCurrentTeam() async {
     state = state.copyWith(isLoading: true);
     var currentTeam = await teamRepository.getCurrentTeam();
+
     final first3PhotosForTeam =
         await _setPhotosFromLocalStorage(currentTeam.membersUserIds);
 
