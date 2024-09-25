@@ -12,6 +12,7 @@ class UserSettings with _$UserSettings {
     SongViewEnum? songView,
     bool? isDarkMode,
     bool? isNotificationsEnabled,
+    bool? isOnboardingDone,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>

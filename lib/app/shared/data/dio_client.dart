@@ -21,9 +21,10 @@ Dio dio(DioRef ref) {
   const storage = FlutterSecureStorage();
 
   final prettyDioLogger = PrettyDioLogger(
-    requestHeader: true,
-    requestBody: true,
-    responseHeader: true,
+    requestHeader: false,
+    requestBody: false,
+    responseHeader: false,
+    responseBody: false,
   );
 
   dio.interceptors.add(TokenInterceptor(storage));

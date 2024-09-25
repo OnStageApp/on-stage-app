@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -5,9 +6,14 @@ import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/login/application/login_state.dart';
 import 'package:on_stage_app/app/features/login/data/login_repository.dart';
 import 'package:on_stage_app/app/features/login/domain/login_request_model.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,11 +34,11 @@ class LoginNotifier extends _$LoginNotifier {
   @override
   LoginState build() {
     _checkLoggedInStatus();
-    return const LoginState();
+    return const LoginState(isLoading: true);
   }
 
-  Future<void> init() async {
-    await _checkLoggedInStatus();
+  void init() {
+    unawaited(_checkLoggedInStatus());
     logger.i('init login provider state');
   }
 
@@ -40,10 +46,16 @@ class LoginNotifier extends _$LoginNotifier {
   Future<void> _checkLoggedInStatus() async {
     final token = await _secureStorage.read(key: 'token');
     if (token != null) {
-      state = state.copyWith(isLoggedIn: true); // User is logged in
+      state = state.copyWith(
+        isLoggedIn: true,
+        isLoading: false,
+      ); // User is logged in
       logger.i('User is logged in with a valid token');
     } else {
-      state = state.copyWith(isLoggedIn: false); // No token, user is logged out
+      state = state.copyWith(
+        isLoggedIn: false,
+        isLoading: false,
+      ); // No token, user is logged out
       logger.i('No valid token found. User is not logged in');
     }
   }
@@ -67,12 +79,10 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await loginRepository.login(
-          LoginRequest(firebaseToken: idToken),
-        );
-        await _saveAuthToken(authToken as String);
+        await _login(idToken);
         return true;
       }
+
       return false;
     } on FirebaseAuthException catch (e) {
       logger.e('Failed to sign up with credentials: ${e.code}, ${e.message}');
@@ -97,10 +107,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await loginRepository.login(
-          LoginRequest(firebaseToken: idToken),
-        );
-        await _saveAuthToken(authToken as String);
+        await _login(idToken);
         state = state.copyWith(isLoggedIn: true);
         return true;
       }
@@ -140,10 +147,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await loginRepository.login(
-          LoginRequest(firebaseToken: idToken),
-        );
-        await _saveAuthToken(authToken as String);
+        await _login(idToken);
         state = state.copyWith(isLoggedIn: true);
         return true;
       }
@@ -188,11 +192,9 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
-        final authToken = await loginRepository.login(
-          LoginRequest(firebaseToken: idToken),
-        );
-        await _saveAuthToken(authToken as String);
+        await _login(idToken);
         state = state.copyWith(isLoggedIn: true);
+
         return true;
       }
       return false;
@@ -216,6 +218,29 @@ class LoginNotifier extends _$LoginNotifier {
       logger.e('Failed to sign out: $e, $s');
       state = LoginState(error: e.toString());
     }
+  }
+
+  Future<void> _login(String idToken) async {
+    state = state.copyWith(isLoading: true);
+
+    final authToken = await loginRepository.login(
+      LoginRequest(firebaseToken: idToken),
+    );
+    await _saveAuthToken(authToken as String);
+    await _initProviders(authToken);
+    state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> _initProviders(authToken) async {
+    ref.read(databaseProvider);
+    await Future.wait([
+      ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
+      ref
+          .read(teamMembersNotifierProvider.notifier)
+          .fetchAndSaveTeamMemberPhotos(),
+      ref.read(userNotifierProvider.notifier).init(),
+      ref.read(userSettingsNotifierProvider.notifier).init(),
+    ]);
   }
 
   Future<void> _saveAuthToken(String authToken) async {

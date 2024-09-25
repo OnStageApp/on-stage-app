@@ -6,8 +6,10 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.d
 import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
+import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -28,6 +30,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userSettings = ref.watch(userSettingsNotifierProvider);
+
+      if (userSettings.isOnboardingDone == false) {
+        showOnboardingOverlay(context);
+      }
       initializeNotifiers();
     });
   }

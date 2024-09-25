@@ -22,6 +22,7 @@ enum AppRoute {
   changePassword,
   addTeamMember,
   onboarding,
+  loading,
 }
 
 extension GoRouterExtension on GoRouter {
