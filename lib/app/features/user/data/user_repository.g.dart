@@ -137,7 +137,7 @@ class _UserRepository implements UserRepository {
     )
         .compose(
           _dio.options,
-          'users/photoUrl',
+          'users/photo',
           queryParameters: queryParameters,
           data: _data,
         )

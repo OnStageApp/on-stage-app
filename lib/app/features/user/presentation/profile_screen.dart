@@ -48,7 +48,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                 const SizedBox(height: 24),
                 const TeamsSection(),
                 const SizedBox(height: 24),
-                AppSettings(value: _value),
+                const AppSettings(),
                 const SizedBox(height: 24),
                 const LibrarySection(),
                 const SizedBox(height: 24),
