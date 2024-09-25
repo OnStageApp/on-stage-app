@@ -111,7 +111,10 @@ class CreateNewTeamModalState extends ConsumerState<CreateNewTeamModal> {
 
     FocusScope.of(context).unfocus();
     await ref.read(teamNotifierProvider.notifier).createTeam(
-          TeamRequest(name: _teamNameController.text),
+          TeamRequest(
+            name: _teamNameController.text,
+            membersCount: 1,
+          ),
         );
 
     if (mounted) {

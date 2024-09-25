@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/features/team_member/application/current_team_m
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -41,10 +42,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(currentTeamMemberNotifierProvider.notifier);
-      ref.read(userNotifierProvider.notifier).getCurrentUser();
+      ref.read(userNotifierProvider.notifier).init();
       ref
           .read(teamMembersNotifierProvider.notifier)
           .fetchAndSaveTeamMemberPhotos();
+      ref.read(userSettingsNotifierProvider.notifier).init();
     });
     super.initState();
   }

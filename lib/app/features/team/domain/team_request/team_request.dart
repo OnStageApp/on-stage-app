@@ -7,6 +7,7 @@ part 'team_request.g.dart';
 class TeamRequest with _$TeamRequest {
   const factory TeamRequest({
     required String name,
+    required int membersCount,
   }) = _TeamRequest;
 
   factory TeamRequest.fromJson(Map<String, dynamic> json) =>
