@@ -10,14 +10,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddMomentsModal extends ConsumerStatefulWidget {
   const AddMomentsModal({
+    required this.onMomentsAdded,
     super.key,
   });
+
+  final VoidCallback onMomentsAdded;
 
   @override
   AddMomentsModalState createState() => AddMomentsModalState();
 
   static void show({
     required BuildContext context,
+    required VoidCallback onMomentsAdded,
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
@@ -25,14 +29,10 @@ class AddMomentsModal extends ConsumerStatefulWidget {
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Add moments'),
-        headerHeight: () {
-          return 64;
-        },
-        buildContent: () {
-          return const SingleChildScrollView(
-            child: AddMomentsModal(),
-          );
-        },
+        headerHeight: () => 64,
+        buildContent: () => SingleChildScrollView(
+          child: AddMomentsModal(onMomentsAdded: onMomentsAdded),
+        ),
       ),
     );
   }
@@ -50,6 +50,8 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedMoments = ref.watch(momentsControllerProvider).moments;
+
     return Padding(
       padding: defaultScreenPadding,
       child: Column(
@@ -116,19 +118,28 @@ class AddMomentsModalState extends ConsumerState<AddMomentsModal> {
           const SizedBox(height: 24),
           ContinueButton(
             text: 'Add Moment',
-            onPressed: () {
-              final moments = ref.watch(momentsControllerProvider).moments;
-              ref
-                  .read(eventItemsNotifierProvider.notifier)
-                  .addSelectedMomentsToEventItemsCache(moments);
-              context.popDialog();
-            },
-            isEnabled: true,
+            onPressed: _onPressed(selectedMoments, context),
+            isEnabled: selectedMoments.isNotEmpty,
           ),
           const SizedBox(height: 24),
         ],
       ),
     );
+  }
+
+  void Function() _onPressed(
+    List<String> selectedMoments,
+    BuildContext context,
+  ) {
+    return selectedMoments.isNotEmpty
+        ? () {
+            ref
+                .read(eventItemsNotifierProvider.notifier)
+                .addSelectedMomentsToEventItemsCache(selectedMoments);
+            widget.onMomentsAdded();
+            context.popDialog();
+          }
+        : () {};
   }
 
   bool _isItemChecked(int index) =>

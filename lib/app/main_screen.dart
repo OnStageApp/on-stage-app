@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
@@ -47,43 +48,84 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: context.colorScheme.onPrimaryFixed,
+        backgroundColor: context.colorScheme.onSurfaceVariant,
         selectedLabelStyle: context.textTheme.bodyMedium,
         unselectedLabelStyle: context.textTheme.bodyMedium,
         selectedItemColor: context.colorScheme.primary,
         unselectedItemColor: context.colorScheme.outline,
-        showUnselectedLabels: true,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
+        selectedFontSize: 1,
+        unselectedFontSize: 1,
         elevation: 1,
         onTap: _onChangedScreen,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(bottom: 4),
-              child: Icon(
-                Icons.home,
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_home_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_home_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.outline,
+                BlendMode.srcIn,
               ),
             ),
             label: 'Home',
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(bottom: 4),
-              child: Icon(Icons.music_note),
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_list_music_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_list_music_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.outline,
+                BlendMode.srcIn,
+              ),
             ),
             label: 'Songs',
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(bottom: 4),
-              child: Icon(Icons.calendar_today),
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_calendar_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_calendar_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.outline,
+                BlendMode.srcIn,
+              ),
             ),
             label: 'Events',
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(bottom: 4),
-              child: Icon(Icons.account_circle),
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_profile_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.primary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_profile_icon.svg',
+              colorFilter: ColorFilter.mode(
+                context.colorScheme.outline,
+                BlendMode.srcIn,
+              ),
             ),
             label: 'Profile',
           ),

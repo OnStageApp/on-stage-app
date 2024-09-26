@@ -60,6 +60,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         isBackButtonVisible: true,
         title: 'Create Event',
         trailing: SettingsTrailingAppBarButton(
+          iconPath: 'assets/icons/bell.svg',
           onTap: () {
             SetReminderModal.show(
               cacheReminders: _reminders,
@@ -169,10 +170,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
       if (mounted) {
         context.pushReplacementNamed(
-          AppRoute.addEventSongs.name,
+          AppRoute.eventDetails.name,
           queryParameters: {
             'eventId': ref.watch(eventNotifierProvider).event!.id,
-            'isCreatingEvent': 'true',
           },
         );
       }

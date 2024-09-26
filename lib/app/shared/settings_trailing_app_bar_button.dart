@@ -5,10 +5,12 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class SettingsTrailingAppBarButton extends StatelessWidget {
   const SettingsTrailingAppBarButton({
     required this.onTap,
+    this.iconPath,
     super.key,
   });
 
   final void Function() onTap;
+  final String? iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class SettingsTrailingAppBarButton extends StatelessWidget {
       ),
       onPressed: onTap,
       icon: SvgPicture.asset(
-        'assets/icons/mixer_horizontal.svg',
+        iconPath ?? 'assets/icons/mixer_horizontal.svg',
         colorFilter: ColorFilter.mode(
           context.colorScheme.outline,
           BlendMode.srcIn,

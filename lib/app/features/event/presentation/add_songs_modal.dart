@@ -11,13 +11,16 @@ import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddSongsModal extends ConsumerStatefulWidget {
-  const AddSongsModal({super.key});
+  const AddSongsModal({super.key, required this.onSongsAdded});
+
+  final VoidCallback onSongsAdded;
 
   @override
   AddSongsModalState createState() => AddSongsModalState();
 
   static void show({
     required BuildContext context,
+    required VoidCallback onSongsAdded,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -35,30 +38,29 @@ class AddSongsModal extends ConsumerStatefulWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
             child: Consumer(
               builder: (context, ref, _) {
+                final selectedSongs =
+                    ref.watch(eventItemSongsControllerProvider).songs;
                 return ContinueButton(
                   text: 'Add',
-                  onPressed: () {
-                    final songs =
-                        ref.watch(eventItemSongsControllerProvider).songs;
-                    ref
-                        .read(eventItemsNotifierProvider.notifier)
-                        .addSelectedSongsToEventItemsCache(songs);
-                    context.popDialog();
-                  },
-                  isEnabled: true,
+                  onPressed: selectedSongs.isNotEmpty
+                      ? () {
+                          ref
+                              .read(eventItemsNotifierProvider.notifier)
+                              .addSelectedSongsToEventItemsCache(selectedSongs);
+                          onSongsAdded();
+                          context.popDialog();
+                        }
+                      : () {},
+                  isEnabled: selectedSongs.isNotEmpty,
                 );
               },
             ),
           ),
         ),
         buildHeader: () => const ModalHeader(title: 'Add Songs'),
-        headerHeight: () {
-          return 64;
-        },
-        footerHeight: () {
-          return 64;
-        },
-        buildContent: AddSongsModal.new,
+        headerHeight: () => 64,
+        footerHeight: () => 64,
+        buildContent: () => AddSongsModal(onSongsAdded: onSongsAdded),
       ),
     );
   }

@@ -11,15 +11,15 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 
+final hasChangesProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 class AddEventMomentsScreen extends ConsumerStatefulWidget {
   const AddEventMomentsScreen({
     required this.eventId,
-    required this.isCreatingEvent,
     this.onSave,
     super.key,
   });
 
-  final bool isCreatingEvent;
   final String eventId;
   final void Function()? onSave;
 
@@ -30,12 +30,12 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(eventItemsNotifierProvider.notifier)
           .getEventItems(widget.eventId);
     });
-    super.initState();
   }
 
   @override
@@ -45,8 +45,8 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         ref.watch(appDataControllerProvider).hasEditorsRight;
 
     return Scaffold(
-      appBar: StageAppBar(
-        title: widget.isCreatingEvent ? 'Create Event' : 'Event Structure',
+      appBar: const StageAppBar(
+        title: 'Event Structure',
         isBackButtonVisible: true,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -61,29 +61,25 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   }
 
   Widget _buildSaveButton() {
+    final hasChanges = ref.watch(hasChangesProvider);
     return Padding(
       padding: const EdgeInsets.all(12),
       child: ContinueButton(
         text: 'Save Changes',
-        onPressed: _createEventItemList,
-        isEnabled: true,
+        onPressed: hasChanges ? _createEventItemList : () {},
+        isEnabled: hasChanges,
       ),
     );
   }
 
   void _createEventItemList() {
-    final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
+    final eventItems = ref.read(eventItemsNotifierProvider).eventItems;
     ref
         .read(eventItemsNotifierProvider.notifier)
         .addEventItems(eventItems, widget.eventId);
 
-    if (widget.isCreatingEvent) {
-      context.goNamed(
-        AppRoute.eventDetails.name,
-        queryParameters: {'eventId': widget.eventId},
-      );
-    } else {}
     widget.onSave?.call();
+    ref.read(hasChangesProvider.notifier).state = false;
   }
 
   Widget _buildStaticList(List<EventItem> eventItems) {
@@ -119,6 +115,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     ref
         .read(eventItemsNotifierProvider.notifier)
         .changeOrderCache(oldIndex, newIndex);
+    ref.read(hasChangesProvider.notifier).state = true;
   }
 
   Widget _buildEventItemTile(EventItem eventItem, {bool isStatic = false}) {
@@ -128,24 +125,20 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       name: eventItem.name ?? '',
       onDelete: isStatic
           ? null
-          : () => ref
-              .read(eventItemsNotifierProvider.notifier)
-              .removeEventItemCache(eventItem),
+          : () {
+              ref
+                  .read(eventItemsNotifierProvider.notifier)
+                  .removeEventItemCache(eventItem);
+              ref.read(hasChangesProvider.notifier).state = true;
+            },
       onTap: () {
-        if (eventItem.song == null) {
-          return;
-        }
-        final eventItems = ref.watch(eventItemsNotifierProvider).songEventItems;
-
+        if (eventItem.song == null) return;
+        final eventItems = ref.read(eventItemsNotifierProvider).songEventItems;
         final queryParams = {
-          'currentIndex': eventItems.indexOf(eventItem).toString(),
+          'currentIndex': eventItems.indexOf(eventItem).toString()
         };
-
-        context.pushNamed(
-          AppRoute.song.name,
-          queryParameters: queryParams,
-          extra: eventItems,
-        );
+        context.pushNamed(AppRoute.song.name,
+            queryParameters: queryParams, extra: eventItems);
       },
       isAdmin: ref.watch(appDataControllerProvider).hasEditorsRight,
     );
@@ -155,7 +148,11 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     return Column(
       children: [
         EventActionButton(
-          onTap: () => AddItemsToEventModal.show(context: context),
+          onTap: () => AddItemsToEventModal.show(
+            context: context,
+            onItemsAdded: () =>
+                ref.read(hasChangesProvider.notifier).state = true,
+          ),
           text: 'Add Songs or Moments',
           icon: Icons.add,
         ),
