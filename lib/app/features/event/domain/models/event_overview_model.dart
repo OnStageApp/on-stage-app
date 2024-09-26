@@ -13,6 +13,7 @@ class EventOverview with _$EventOverview {
     required String? name,
     required String? dateTime,
     required EventStatus? eventStatus,
+    int? stagerCount,
     @JsonKey(includeFromJson: false)
     @Default([])
     List<Uint8List?> participantPhotos,

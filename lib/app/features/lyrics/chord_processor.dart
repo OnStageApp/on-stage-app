@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/lyrics/chord_processor_state.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chord_processor.g.dart';
@@ -26,11 +27,11 @@ class ChordProcessor extends _$ChordProcessor {
     double scaleFactor = 1.0,
     int widgetPadding = 0,
     int transposeIncrement = 0,
-    ChordNotation chordNotation = ChordNotation.american,
+    SongViewMode songViewMode = SongViewMode.american,
     required String key,
   }) {
     final chordTransposer = ChordTransposer(
-      chordNotation,
+      songViewMode,
       transpose: transposeIncrement,
       key: key,
     );

@@ -11,7 +11,7 @@ class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
     required String email,
-    required String name,
+    String? name,
     @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
     Uint8List? image,
   }) = _User;

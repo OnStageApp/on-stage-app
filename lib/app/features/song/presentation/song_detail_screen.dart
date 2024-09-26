@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
@@ -118,7 +117,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                   ? const SizedBox()
                   : SongDetailWidget(
                       widgetPadding: 64,
-                      chordNotation:
+                      songViewMode:
                           ref.watch(preferencesNotifierProvider).chordViewMode,
                       onTapChord: () {},
                     ),

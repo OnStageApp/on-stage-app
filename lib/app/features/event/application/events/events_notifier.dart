@@ -50,7 +50,15 @@ class EventsNotifier extends _$EventsNotifier {
   Future<void> getUpcomingEvent() async {
     try {
       final event = await _eventsRepository.getUpcomingEvent();
-      if (event == null || event.userIdsWithPhoto == null) {
+
+      if (event == null) {
+        final eventsState = EventsState(
+          upcomingEventsResponse: state.upcomingEventsResponse,
+          pastEventsResponse: state.pastEventsResponse,
+          isLoading: state.isLoading,
+        );
+        state = eventsState;
+      } else if (event.userIdsWithPhoto == null) {
         state = state.copyWith(upcomingEvent: event);
       } else {
         final photos =

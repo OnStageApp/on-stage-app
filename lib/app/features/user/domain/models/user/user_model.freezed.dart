@@ -22,7 +22,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 mixin _$UserModel {
   String get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
   Uint8List? get image => throw _privateConstructorUsedError;
 
@@ -44,7 +44,7 @@ abstract class $UserModelCopyWith<$Res> {
   $Res call(
       {String id,
       String email,
-      String name,
+      String? name,
       @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
       Uint8List? image});
 }
@@ -66,7 +66,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
+    Object? name = freezed,
     Object? image = freezed,
   }) {
     return _then(_value.copyWith(
@@ -78,10 +78,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image: freezed == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
@@ -100,7 +100,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserModelCopyWith<$Res> {
   $Res call(
       {String id,
       String email,
-      String name,
+      String? name,
       @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
       Uint8List? image});
 }
@@ -119,7 +119,7 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
+    Object? name = freezed,
     Object? image = freezed,
   }) {
     return _then(_$UserImpl(
@@ -131,10 +131,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image: freezed == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
@@ -149,7 +149,7 @@ class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.id,
       required this.email,
-      required this.name,
+      this.name,
       @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
       this.image});
 
@@ -161,7 +161,7 @@ class _$UserImpl implements _User {
   @override
   final String email;
   @override
-  final String name;
+  final String? name;
   @override
   @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
   final Uint8List? image;
@@ -207,7 +207,7 @@ abstract class _User implements UserModel {
   const factory _User(
       {required final String id,
       required final String email,
-      required final String name,
+      final String? name,
       @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
       final Uint8List? image}) = _$UserImpl;
 
@@ -218,7 +218,7 @@ abstract class _User implements UserModel {
   @override
   String get email;
   @override
-  String get name;
+  String? get name;
   @override
   @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
   Uint8List? get image;

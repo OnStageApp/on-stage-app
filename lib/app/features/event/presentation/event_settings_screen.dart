@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/editors_section.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_actions_section.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_details_section.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/reminders_section.dart';
@@ -33,10 +32,10 @@ class EventSettingsScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             const DashedLineDivider(),
             const SizedBox(height: 24),
-            const EditorsSection(),
-            const SizedBox(height: 16),
-            const DashedLineDivider(),
-            const SizedBox(height: 16),
+            // const EditorsSection(),
+            // const SizedBox(height: 16),
+            // const DashedLineDivider(),
+            // const SizedBox(height: 16),
             const EventActionsSection(),
             const SizedBox(height: 32),
           ],

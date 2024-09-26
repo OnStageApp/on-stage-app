@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
+import 'package:on_stage_app/app/features/login/presentation/sign_up_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
@@ -77,11 +78,15 @@ class NavigationNotifier extends _$NavigationNotifier {
         }
 
         if (isLoggedIn) {
-          if (currentLocation == '/login' || currentLocation == '/welcome') {
+          if (currentLocation == '/login' ||
+              currentLocation == '/welcome' ||
+              currentLocation == '/login/signUp') {
             return '/home';
           }
         } else {
-          if (currentLocation != '/login' && currentLocation != '/loading') {
+          if (currentLocation != '/login' &&
+              currentLocation != '/loading' &&
+              currentLocation != '/login/signUp') {
             return '/login';
           }
         }
@@ -268,6 +273,13 @@ class NavigationNotifier extends _$NavigationNotifier {
           name: AppRoute.login.name,
           path: '/login',
           builder: (context, state) => const LoginScreen(),
+          routes: [
+            GoRoute(
+              name: AppRoute.signUp.name,
+              path: 'signUp',
+              builder: (context, state) => const SignUpScreen(),
+            ),
+          ],
         ),
         GoRoute(
           name: AppRoute.welcome.name,

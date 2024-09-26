@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/login/application/login_state.dart';
 import 'package:on_stage_app/app/features/login/data/login_repository.dart';
 import 'package:on_stage_app/app/features/login/domain/login_request_model.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
@@ -161,20 +162,16 @@ class LoginNotifier extends _$LoginNotifier {
 
   Future<bool> signInWithApple() async {
     try {
-      final rawNonce = _generateNonce();
-      final nonce = _sha256ofString(rawNonce);
-
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
-        nonce: nonce,
       );
 
-      final oauthCredential = OAuthProvider('apple.com').credential(
+      final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode,
       );
 
       final userCredential =
@@ -182,19 +179,12 @@ class LoginNotifier extends _$LoginNotifier {
       final user = userCredential.user;
 
       if (user != null) {
-        final displayName =
-            '${appleCredential.givenName} ${appleCredential.familyName}';
-        if (userCredential.additionalUserInfo!.isNewUser) {
-          await user.updateDisplayName(displayName);
-        }
-
         final idToken = await user.getIdToken();
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
         await _login(idToken);
         state = state.copyWith(isLoggedIn: true);
-
         return true;
       }
       return false;
@@ -212,6 +202,13 @@ class LoginNotifier extends _$LoginNotifier {
       await _secureStorage.delete(key: 'token');
 
       state = const LoginState();
+      ref
+        ..invalidate(userNotifierProvider)
+        ..invalidate(teamNotifierProvider)
+        ..invalidate(teamMembersNotifierProvider)
+        ..invalidate(userSettingsNotifierProvider)
+        ..invalidate(databaseProvider)
+        ..invalidate(currentTeamMemberNotifierProvider);
 
       logger.i('User signed out successfully');
     } catch (e, s) {

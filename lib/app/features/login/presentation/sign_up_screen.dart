@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/login_text_field.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -17,145 +15,165 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class SignUpScreenState extends ConsumerState<SignUpScreen> {
-  bool isObscurePassword = true;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: defaultScreenPadding.copyWith(left: 24, right: 24),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    MediaQuery.of(context).padding.bottom,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: StageAppBar(
+        title: 'Sign Up',
+        isBackButtonVisible: true,
+        background: context.colorScheme.surface,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: defaultScreenHorizontalPadding,
+        child: ContinueButton(
+          text: 'Sign Up',
+          onPressed: _submitForm,
+          isEnabled: true,
+        ),
+      ),
+      body: CustomScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          SliverToBoxAdapter(
+            child: SafeArea(
+              child: Padding(
+                padding: defaultScreenHorizontalPadding,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                     children: [
-                      const SizedBox(height: Insets.large),
-                      Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            'assets/images/onstageapp_logo.png',
-                            height: 120,
-                            width: 160,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      const SizedBox(height: 24),
+                      _buildTextField(
+                        label: 'Full Name',
+                        hint: 'John Doe',
+                        icon: Icons.person,
+                        controller: _fullNameController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your full name';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: Insets.medium),
-                      Text(
-                        'Sign Up',
-                        style: context.textTheme.headlineLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: Insets.medium),
-                      LoginTextField(
-                        controller: _nameController,
-                        label: 'Name',
-                        hintText: 'Enter your full name',
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.name,
-                      ),
-                      const SizedBox(height: Insets.medium),
-                      LoginTextField(
-                        controller: _emailController,
+                      const SizedBox(height: 12),
+                      _buildTextField(
                         label: 'Email',
-                        hintText: 'example@email.com',
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.emailAddress,
+                        hint: 'johndoe@example.com',
+                        icon: Icons.email,
+                        controller: _emailController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: Insets.medium),
-                      LoginTextField(
-                        controller: _passwordController,
+                      const SizedBox(height: 12),
+                      _buildTextField(
                         label: 'Password',
-                        hintText: 'Enter your password',
-                        obscureText: isObscurePassword,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isObscurePassword = !isObscurePassword;
-                            });
-                          },
-                          icon: Icon(
-                            isObscurePassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                        ),
+                        hint: 'Enter your password',
+                        icon: Icons.lock,
+                        controller: _passwordController,
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a password';
+                          }
+                          if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: Insets.medium),
-                      Column(
-                        children: [
-                          ContinueButton(
-                            isLoading: false,
-                            text: 'Sign Up',
-                            onPressed: () async {
-                              final status = await ref
-                                  .read(loginNotifierProvider.notifier)
-                                  .signUpWithCredentials(
-                                    _nameController.text,
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
-                              if (status == true && mounted) {
-                                unawaited(
-                                  context.pushNamed(AppRoute.home.name),
-                                );
-                              }
-                            },
-                            isEnabled: true,
-                          ),
-                        ],
+                      const SizedBox(height: 12),
+                      _buildTextField(
+                        label: 'Confirm Password',
+                        hint: 'Re-enter your password',
+                        icon: Icons.lock,
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your password';
+                          }
+                          if (value != _passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Already have an account? ',
-                            style: context.textTheme.bodyMedium,
-                          ),
-                          InkWell(
-                            splashColor: lightColorScheme.surfaceTint,
-                            highlightColor: lightColorScheme.surfaceTint,
-                            onTap: () {
-                              context.pushNamed(AppRoute.login.name);
-                            },
-                            child: Text(
-                              'Log in',
-                              style: context.textTheme.bodyMedium!.copyWith(
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: Insets.large),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Container(), // This ensures the form is pushed to the top
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required IconData icon,
+    required TextEditingController controller,
+    required String? Function(String?) validator,
+    bool obscureText = false,
+  }) {
+    return CustomTextField(
+      label: label,
+      hint: hint,
+      icon: icon,
+      controller: controller,
+      obscureText: obscureText,
+      validator: validator,
+    );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      ref
+          .read(loginNotifierProvider.notifier)
+          .signUpWithCredentials(
+            _fullNameController.text,
+            _emailController.text,
+            _passwordController.text,
+          )
+          .then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign up successful!')),
+        );
+        // Navigate to next screen or perform other actions
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${error.toString()}')),
+        );
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 }

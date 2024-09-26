@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TopFlushBar {
-  static void show(BuildContext context, String message,
-      {bool isError = false}) {
+  static void show(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     Flushbar(
       icon: const Icon(
         Icons.info_outline,
