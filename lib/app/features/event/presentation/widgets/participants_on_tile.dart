@@ -29,7 +29,7 @@ class ParticipantsOnTile extends StatelessWidget {
 
   bool get _isMoreThanMax => _participantsLength > _participantsMax;
 
-  double get _tileWidth {
+  double get tileWidth {
     final count = _isMoreThanMax ? _participantsMax + 1 : _participantsLength;
     return (count * width) - (count - 1) * 10;
   }
@@ -38,7 +38,7 @@ class ParticipantsOnTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: width,
-      width: _tileWidth,
+      width: (_participantsLength * width) - (_participantsLength - 1) * 10,
       child: Stack(
         children: [
           ...(participantsProfileBytes.length > 2
@@ -51,7 +51,7 @@ class ParticipantsOnTile extends StatelessWidget {
               final index = entry.key;
               if (showOverlay) {
                 return Positioned(
-                  left: index * (width - 10),
+                  left: index * 20,
                   child: Container(
                     width: width,
                     height: width,

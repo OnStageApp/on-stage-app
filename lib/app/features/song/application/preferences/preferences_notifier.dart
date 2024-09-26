@@ -1,5 +1,5 @@
-import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/song/application/preferences/preferences_state.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,7 +18,7 @@ class PreferencesNotifier extends _$PreferencesNotifier {
     );
   }
 
-  void setChordViewMode(ChordNotation viewModeEnum) {
+  void setChordViewMode(SongViewMode viewModeEnum) {
     state = state.copyWith(
       chordViewMode: viewModeEnum,
     );

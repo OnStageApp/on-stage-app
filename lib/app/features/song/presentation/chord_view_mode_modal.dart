@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -37,7 +37,7 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
 }
 
 class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
-  var _selectedValue = ChordNotation.american;
+  var _selectedValue = SongViewMode.american;
 
   @override
   void initState() {
@@ -63,14 +63,14 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...ChordNotation.values.map(
+        ...SongViewMode.values.map(
           _buildChordTypeTile,
         ),
       ],
     );
   }
 
-  Widget _buildChordTypeTile(ChordNotation chordTypeDisplay) {
+  Widget _buildChordTypeTile(SongViewMode chordTypeDisplay) {
     return InkWell(
       onTap: () {
         setState(() {

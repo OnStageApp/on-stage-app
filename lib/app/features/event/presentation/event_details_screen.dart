@@ -86,6 +86,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
             ],
           ),
         ),
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton:
             ref.watch(appDataControllerProvider).hasEditorsRight &&

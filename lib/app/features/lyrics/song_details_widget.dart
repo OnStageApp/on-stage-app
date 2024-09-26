@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
-import 'package:on_stage_app/app/features/lyrics/chord_transposer.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
@@ -23,7 +23,6 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     super.key,
     // this.capoStyle,
     this.scaleFactor = 1.0,
-    this.showChord = true,
     this.widgetPadding = 0,
     this.transposeIncrement = 0,
     this.scrollSpeed = 0,
@@ -32,14 +31,14 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
-    this.chordNotation = ChordNotation.american,
+    this.songViewMode = SongViewMode.american,
   });
 
   // final String lyrics;
   // final TextStyle textStyle;
   // final TextStyle chordStyle;
   // final TextStyle structureStyle;
-  final bool showChord;
+
   final Function onTapChord;
 
   /// To help stop overflow, this should be the sum of left & right padding
@@ -69,7 +68,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
   final double scaleFactor;
 
   /// Notation that will be handled by the transposer
-  final ChordNotation chordNotation;
+  final SongViewMode songViewMode;
 
   /// Define physics of scrolling
   final ScrollPhysics scrollPhysics;
@@ -146,7 +145,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           transposeIncrement:
               ref.watch(songNotifierProvider).transposeIncremenet,
           media: MediaQuery.of(context).size.width - 48,
-          chordNotation: widget.chordNotation,
+          songViewMode: widget.songViewMode,
           key: ref.watch(songNotifierProvider).song.key ?? 'C',
         );
   }
@@ -310,7 +309,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.showChord) _buildChordsLine(line),
+                if (widget.songViewMode != SongViewMode.lyrics)
+                  _buildChordsLine(line),
                 RichText(
                   text: TextSpan(
                     text: line.lyrics,

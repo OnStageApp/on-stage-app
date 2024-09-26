@@ -34,6 +34,7 @@ class EventsList extends StatelessWidget {
               dateTime: event.dateTime?.let(DateTime.parse),
               isDraft: event.eventStatus == EventStatus.draft,
               participantsProfile: event.participantPhotos,
+              stagersCount: event.stagerCount ?? 0,
             ),
           ),
           if (hasMore) LoadMoreButton(onPressed: loadMore),

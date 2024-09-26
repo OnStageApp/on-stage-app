@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_state.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
@@ -164,6 +165,11 @@ class EventNotifier extends _$EventNotifier {
       duplicateEventRequest,
     );
     state = state.copyWith(event: newEvent, isLoading: false);
+  }
+
+  Future<void> deleteEventAndGetAll() async {
+    await deleteEvent();
+    unawaited(ref.read(eventsNotifierProvider.notifier).initEvents());
   }
 
   Future<void> deleteEvent() async {

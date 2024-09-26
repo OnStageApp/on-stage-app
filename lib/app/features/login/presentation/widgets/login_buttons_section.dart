@@ -11,17 +11,20 @@ class LoginButtonsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    //TODO: Complete signUp with email and email verification
     return Column(
       children: [
-        LoginButton(
-          text: 'Continue with Email',
-          onPressed: onContinueWithEmail,
-          isEnabled: true,
-          textColor: context.colorScheme.onSurfaceVariant,
-          backgroundColor: context.colorScheme.onSecondary,
-          borderColor: context.colorScheme.primaryContainer,
-          splashColor: context.colorScheme.surfaceBright,
-        ),
+        // LoginButton(
+        //   text: 'Sign up with Email',
+        //   onPressed: () {
+        //     context.pushNamed(AppRoute.signUp.name);
+        //   },
+        //   isEnabled: true,
+        //   textColor: context.colorScheme.onSurfaceVariant,
+        //   backgroundColor: context.colorScheme.onSecondary,
+        //   borderColor: context.colorScheme.primaryContainer,
+        //   splashColor: context.colorScheme.surfaceBright,
+        // ),
         const SizedBox(height: 8),
         LoginButton(
           text: 'Continue with Apple',
@@ -48,6 +51,14 @@ class LoginButtonsSection extends ConsumerWidget {
           asset: 'assets/icons/google_sign_in.svg',
           splashColor: context.colorScheme.surfaceDim,
         ),
+        // const SizedBox(height: 8),
+        // TextButton(
+        //   onPressed: onContinueWithEmail,
+        //   child: Text(
+        //     'Log In',
+        //     style: context.textTheme.titleMedium,
+        //   ),
+        // ),
       ],
     );
   }

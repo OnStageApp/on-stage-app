@@ -1,49 +1,22 @@
-enum ChordNotation { italian, american, numeric }
-
-extension ChordNotationValues on ChordNotation {
-  String get name {
-    switch (this) {
-      case ChordNotation.american:
-        return 'American Chords';
-      case ChordNotation.italian:
-        return 'Italian Chords';
-      case ChordNotation.numeric:
-        return 'Numbers';
-    }
-  }
-
-  String get example {
-    switch (this) {
-      case ChordNotation.american:
-        return 'C#';
-      case ChordNotation.italian:
-        return 'Do#';
-      case ChordNotation.numeric:
-        return 'IV';
-    }
-  }
-}
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 
 class ChordTransposer {
   ChordTransposer(
     this.chordNotation, {
-    this.transpose = 0,
     required this.key,
+    this.transpose = 0,
   }) {
     switch (chordNotation) {
-      case ChordNotation.italian:
-        cycle = italianNotes;
+      case SongViewMode.lyrics:
         break;
-      case ChordNotation.american:
+      case SongViewMode.american:
         cycle = americanNotes;
-        break;
-      case ChordNotation.numeric:
+      case SongViewMode.numeric:
         cycle = romanNumerals;
-        break;
     }
   }
 
-  final ChordNotation chordNotation;
+  final SongViewMode chordNotation;
   late List<String> cycle;
   int transpose;
   String key;
@@ -89,7 +62,7 @@ class ChordTransposer {
   ];
 
   String transposeChord(String chord) {
-    if (transpose == 0 && chordNotation != ChordNotation.numeric) {
+    if (transpose == 0 && chordNotation != SongViewMode.numeric) {
       return chord;
     }
     final outChord = <String>[];
@@ -101,7 +74,7 @@ class ChordTransposer {
   }
 
   String _processChord(String chord) {
-    if (chordNotation == ChordNotation.numeric) {
+    if (chordNotation == SongViewMode.numeric) {
       return _toNumeric(chord);
     }
 
@@ -169,25 +142,25 @@ class ChordTransposer {
     switch (numericValue) {
       case 0:
         scaleDegree = 1;
-        break; // I (Root)
+// I (Root)
       case 2:
         scaleDegree = 2;
-        break; // II
+// II
       case 4:
         scaleDegree = 3;
-        break; // III
+// III
       case 5:
         scaleDegree = 4;
-        break; // IV
+// IV
       case 7:
         scaleDegree = 5;
-        break; // V
+// V
       case 9:
         scaleDegree = 6;
-        break; // VI
+// VI
       case 11:
         scaleDegree = 7;
-        break; // VII
+// VII
       default:
         return chord; // Return unchanged if not a valid scale degree
     }

@@ -23,6 +23,7 @@ enum AppRoute {
   addTeamMember,
   onboarding,
   loading,
+  signUp,
 }
 
 extension GoRouterExtension on GoRouter {

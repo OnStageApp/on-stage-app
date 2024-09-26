@@ -12,6 +12,7 @@ class EventTile extends StatelessWidget {
     this.isDraft = true,
     required this.onTap,
     this.participantsProfile = const [],
+    this.stagersCount = 0,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class EventTile extends StatelessWidget {
   final bool isDraft;
   final VoidCallback onTap;
   final List<Uint8List?> participantsProfile;
+  final int stagersCount;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +97,7 @@ class EventTile extends StatelessWidget {
   Widget _buildParticipantsTile() {
     return ParticipantsOnTile(
       participantsProfileBytes: participantsProfile,
-      participantsLength: 3,
+      participantsLength: stagersCount,
     );
   }
 
