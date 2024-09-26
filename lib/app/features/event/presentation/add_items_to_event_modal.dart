@@ -10,22 +10,26 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class AddItemsToEventModal extends ConsumerStatefulWidget {
   const AddItemsToEventModal({
     super.key,
+    required this.onItemsAdded,
   });
+
+  final VoidCallback onItemsAdded;
 
   @override
   AddItemsToEventModalState createState() => AddItemsToEventModalState();
 
-  static void show({
+  static Future<void> show({
     required BuildContext context,
-  }) {
-    showModalBottomSheet<Widget>(
+    required VoidCallback onItemsAdded,
+  }) async {
+    await showModalBottomSheet<Widget>(
       useRootNavigator: true,
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
         buildContent: () {
-          return const SingleChildScrollView(
-            child: AddItemsToEventModal(),
+          return SingleChildScrollView(
+            child: AddItemsToEventModal(onItemsAdded: onItemsAdded),
           );
         },
       ),
@@ -34,13 +38,6 @@ class AddItemsToEventModal extends ConsumerStatefulWidget {
 }
 
 class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
-  List<int> selectedReminders = [0];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -55,7 +52,10 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
             backgroundColor: context.colorScheme.onSurfaceVariant,
             onPressed: () {
               context.popDialog();
-              AddSongsModal.show(context: context);
+              AddSongsModal.show(
+                context: context,
+                onSongsAdded: widget.onItemsAdded,
+              );
             },
           ),
           const SizedBox(height: 10),
@@ -67,7 +67,10 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
             backgroundColor: context.colorScheme.onSurfaceVariant,
             onPressed: () {
               context.popDialog();
-              AddMomentsModal.show(context: context);
+              AddMomentsModal.show(
+                context: context,
+                onMomentsAdded: widget.onItemsAdded,
+              );
             },
           ),
           const SizedBox(height: 10),

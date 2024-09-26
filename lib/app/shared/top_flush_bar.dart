@@ -6,11 +6,12 @@ class TopFlushBar {
   static void show(
     BuildContext context,
     String message, {
+    IconData? icon,
     bool isError = false,
   }) {
     Flushbar(
-      icon: const Icon(
-        Icons.info_outline,
+      icon: Icon(
+        icon ?? Icons.info_outline,
         color: Colors.white,
         size: 20,
       ),

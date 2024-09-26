@@ -185,15 +185,7 @@ class NavigationNotifier extends _$NavigationNotifier {
                       path: 'addEventSongs',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId']!;
-
-                        final isCreatingEvent =
-                            state.uri.queryParameters['isCreatingEvent'] ==
-                                'true';
-
-                        return AddEventMomentsScreen(
-                          eventId: eventId,
-                          isCreatingEvent: isCreatingEvent,
-                        );
+                        return AddEventMomentsScreen(eventId: eventId);
                       },
                     ),
                     GoRoute(
