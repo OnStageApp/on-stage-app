@@ -31,14 +31,18 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   final TextEditingController _nameController = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
-    final user = ref.read(userNotifierProvider).currentUser;
-    if (user != null) {
-      _nameController.text = user.name ?? '';
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = ref.read(userNotifierProvider).currentUser;
+      if (user != null) {
+        _nameController.text = user.name ?? '';
+      }
+    });
   }
+
 
   @override
   void dispose() {
@@ -49,25 +53,17 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Future<void> _editProfile() async {
     final user = ref.read(userNotifierProvider).currentUser;
 
-    if (user != null) {
-      final updatedName = _nameController.text.trim();
+      final updatedName = _nameController.text;
 
       if (updatedName.isNotEmpty) {
-        final updatedUser = user.copyWith(name: updatedName);
+        final updatedUser = user?.copyWith(name: updatedName);
 
         await ref.read(userNotifierProvider.notifier).editUserById(
-          user.id,
-          updatedUser,
-        );
+              user!.id,
+              updatedUser!,
+            );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Name cannot be empty')),
-        );
-      }
+
     }
   }
 
@@ -124,7 +120,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 const SizedBox(height: 12),
                 CustomTextField(
                   label: 'Full Name',
-                  hint: '${user?.name}',
+                  hint: '',
                   icon: Icons.church,
                   controller: _nameController,
                   validator: (value) {
@@ -132,9 +128,6 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       return 'Please enter an event name';
                     }
                     return null;
-                  },
-                  onChanged: (value) {
-                    _nameController.text = value;
                   },
                 ),
                 const SizedBox(height: 12),
@@ -211,9 +204,12 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                ContinueButton(text: 'Edit Profile', onPressed: _editProfile, isEnabled: true),
+                ContinueButton(
+                  text: 'Edit Profile',
+                  onPressed: _editProfile,
+                  isEnabled: true,
+                ),
                 const SizedBox(height: 24),
-
               ],
             ),
           ),
