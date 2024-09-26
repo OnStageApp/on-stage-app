@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
-import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
 
@@ -31,7 +31,6 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
-    this.songViewMode = SongViewMode.american,
   });
 
   // final String lyrics;
@@ -66,9 +65,6 @@ class SongDetailWidget extends ConsumerStatefulWidget {
 
   /// Scale factor of chords and lyrics
   final double scaleFactor;
-
-  /// Notation that will be handled by the transposer
-  final SongViewMode songViewMode;
 
   /// Define physics of scrolling
   final ScrollPhysics scrollPhysics;
@@ -113,10 +109,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   void _getTextStyles() {
     _textStyle = WidgetUtils.getLyricsStyle(context).copyWith(
-      fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+      fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size ?? 18,
     );
     _chordStyle = WidgetUtils.getChordsStyle(context).copyWith(
-      fontSize: ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+      fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size ?? 18,
     );
   }
 
@@ -145,7 +141,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           transposeIncrement:
               ref.watch(songNotifierProvider).transposeIncremenet,
           media: MediaQuery.of(context).size.width - 48,
-          songViewMode: widget.songViewMode,
+          songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
+              SongViewMode.american,
           key: ref.watch(songNotifierProvider).song.key ?? 'C',
         );
   }
@@ -195,15 +192,18 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   void _listens() {
     ref
-      ..listen(preferencesNotifierProvider, (previous, next) {
+      ..listen(userSettingsNotifierProvider, (previous, next) {
+        if (previous?.songView != next.songView) {
+          _processSong();
+        }
+      })
+      ..listen(userSettingsNotifierProvider, (previous, next) {
         setState(() {
           _textStyle = _textStyle.copyWith(
-            fontSize:
-                ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+            fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size,
           );
           _chordStyle = _chordStyle.copyWith(
-            fontSize:
-                ref.watch(preferencesNotifierProvider).lyricsChordsSize.size,
+            fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size,
           );
         });
         _processSong();
@@ -309,7 +309,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.songViewMode != SongViewMode.lyrics)
+                if (ref.watch(userSettingsNotifierProvider).songView !=
+                    SongViewMode.lyrics)
                   _buildChordsLine(line),
                 RichText(
                   text: TextSpan(

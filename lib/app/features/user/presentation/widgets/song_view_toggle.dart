@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/domain/enums/song_view.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -19,9 +19,9 @@ class SongViewToggle extends ConsumerWidget {
       child: SizedBox(
         width: double.infinity,
         child: ToggleSwitch(
-          initialLabelIndex: SongViewEnum.values.indexOf(
+          initialLabelIndex: SongViewMode.values.indexOf(
             ref.watch(userSettingsNotifierProvider).songView ??
-                SongViewEnum.american,
+                SongViewMode.american,
           ),
           borderWidth: 5,
           activeFgColor: context.colorScheme.onSurfaceVariant,
@@ -34,11 +34,11 @@ class SongViewToggle extends ConsumerWidget {
           cornerRadius: 10,
           totalSwitches: 3,
           radiusStyle: true,
-          labels: SongViewEnum.values.map((e) => e.name).toList(),
+          labels: SongViewMode.values.map((e) => e.name).toList(),
           onToggle: (index) {
             ref
                 .read(userSettingsNotifierProvider.notifier)
-                .updateSongView(SongViewEnum.values[index ?? 0]);
+                .updateSongView(SongViewMode.values[index ?? 0]);
             if (kDebugMode) {
               print('switched to: $index');
             }

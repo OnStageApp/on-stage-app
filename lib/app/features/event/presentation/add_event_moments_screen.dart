@@ -66,14 +66,13 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       child: ContinueButton(
         text: 'Save Changes',
         onPressed: _createEventItemList,
-        isEnabled: ref.watch(eventItemsNotifierProvider).hasChanges,
+        isEnabled: true,
       ),
     );
   }
 
   void _createEventItemList() {
     final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
-    ref.read(eventItemsNotifierProvider.notifier).resetChanges();
     ref
         .read(eventItemsNotifierProvider.notifier)
         .addEventItems(eventItems, widget.eventId);

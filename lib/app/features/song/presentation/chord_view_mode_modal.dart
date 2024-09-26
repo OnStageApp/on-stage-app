@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ChordViewModeModal extends ConsumerStatefulWidget {
-  const ChordViewModeModal({
+class SongViewModeModal extends ConsumerStatefulWidget {
+  const SongViewModeModal({
     super.key,
   });
 
@@ -28,7 +28,7 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
         },
         buildContent: () {
           return const SingleChildScrollView(
-            child: ChordViewModeModal(),
+            child: SongViewModeModal(),
           );
         },
       ),
@@ -36,11 +36,17 @@ class ChordViewModeModal extends ConsumerStatefulWidget {
   }
 }
 
-class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
-  var _selectedValue = SongViewMode.american;
+class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
+  SongViewMode? _selectedValue;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _selectedValue = ref.watch(userSettingsNotifierProvider).songView ??
+            SongViewMode.american;
+      });
+    });
     super.initState();
   }
 
@@ -70,14 +76,14 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
     );
   }
 
-  Widget _buildChordTypeTile(SongViewMode chordTypeDisplay) {
+  Widget _buildChordTypeTile(SongViewMode songViewMode) {
     return InkWell(
       onTap: () {
         setState(() {
-          _selectedValue = chordTypeDisplay;
+          _selectedValue = songViewMode;
         });
-        ref.read(preferencesNotifierProvider.notifier).setChordViewMode(
-              chordTypeDisplay,
+        ref.read(userSettingsNotifierProvider.notifier).setSongViewMode(
+              songViewMode,
             );
       },
       child: Container(
@@ -85,7 +91,7 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: _selectedValue == chordTypeDisplay
+            color: _selectedValue == songViewMode
                 ? context.colorScheme.primary
                 : context.colorScheme.onSurfaceVariant,
             width: 2,
@@ -98,7 +104,7 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
             SizedBox(
               width: 42,
               child: Text(
-                chordTypeDisplay.example,
+                songViewMode.example,
                 style: context.textTheme.titleMedium!.copyWith(
                   color: context.colorScheme.outline,
                 ),
@@ -106,7 +112,7 @@ class ChordViewModeModalState extends ConsumerState<ChordViewModeModal> {
             ),
             const SizedBox(width: 12),
             Text(
-              chordTypeDisplay.name,
+              songViewMode.name,
               style: context.textTheme.titleMedium,
             ),
           ],
