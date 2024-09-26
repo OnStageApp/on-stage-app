@@ -8,6 +8,8 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -40,7 +42,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final songs = ref.watch(songsNotifierProvider).filteredSongs;
-
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -122,6 +123,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
     final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
+    final currentTeam = ref.watch(teamNotifierProvider).currentTeam;
+
     return Row(
       children: [
         SizedBox(
@@ -150,6 +153,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 16),
                 child: GroupTile(
+                  onTap: (){
+                    context.pushNamed(
+                      AppRoute.teamDetails.name,
+                      extra: currentTeam,
+                    );
+                  },
                   title: 'Group',
                   hasUpcomingEvent: hasUpcomingEvent,
                 ),
