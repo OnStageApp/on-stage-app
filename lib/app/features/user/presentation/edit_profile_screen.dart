@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_mo
 import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
+import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -28,8 +29,47 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   bool _isUploading = false;
 
+  final TextEditingController _nameController = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = ref.read(userNotifierProvider).currentUser;
+      if (user != null) {
+        _nameController.text = user.name ?? '';
+      }
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _editProfile() async {
+    final user = ref.read(userNotifierProvider).currentUser;
+
+      final updatedName = _nameController.text;
+
+      if (updatedName.isNotEmpty) {
+        final updatedUser = user?.copyWith(name: updatedName);
+
+        await ref.read(userNotifierProvider.notifier).editUserById(
+              user!.id,
+              updatedUser!,
+            );
+
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userNotifierProvider).currentUser;
     return Scaffold(
       appBar: StageAppBar(
         title: 'Edit Profile',
@@ -80,16 +120,15 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 const SizedBox(height: 12),
                 CustomTextField(
                   label: 'Full Name',
-                  hint: 'Eugen Ionescu',
+                  hint: '',
                   icon: Icons.church,
-                  controller: TextEditingController(),
+                  controller: _nameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an event name';
                     }
                     return null;
                   },
-                  onChanged: (value) {},
                 ),
                 const SizedBox(height: 12),
                 Align(
@@ -136,8 +175,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
+                  enabled: false,
                   label: 'Email',
-                  hint: 'eionescu@gmail.com',
+                  hint: '${user?.email}',
                   icon: Icons.church,
                   controller: TextEditingController(),
                   validator: (value) {
@@ -162,6 +202,12 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   onTap: () {
                     context.pushNamed(AppRoute.changePassword.name);
                   },
+                ),
+                const SizedBox(height: 24),
+                ContinueButton(
+                  text: 'Edit Profile',
+                  onPressed: _editProfile,
+                  isEnabled: true,
                 ),
                 const SizedBox(height: 24),
               ],
