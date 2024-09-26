@@ -17,13 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$EventItemsState {
   bool get isLoading => throw _privateConstructorUsedError;
-  bool get hasChanges => throw _privateConstructorUsedError;
   List<EventItem> get eventItems => throw _privateConstructorUsedError;
   List<EventItem> get songEventItems => throw _privateConstructorUsedError;
 
-  /// Create a copy of EventItemsState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $EventItemsStateCopyWith<EventItemsState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -36,7 +33,6 @@ abstract class $EventItemsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isLoading,
-      bool hasChanges,
       List<EventItem> eventItems,
       List<EventItem> songEventItems});
 }
@@ -51,13 +47,10 @@ class _$EventItemsStateCopyWithImpl<$Res, $Val extends EventItemsState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of EventItemsState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? isLoading = null,
-    Object? hasChanges = null,
     Object? eventItems = null,
     Object? songEventItems = null,
   }) {
@@ -65,10 +58,6 @@ class _$EventItemsStateCopyWithImpl<$Res, $Val extends EventItemsState>
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasChanges: null == hasChanges
-          ? _value.hasChanges
-          : hasChanges // ignore: cast_nullable_to_non_nullable
               as bool,
       eventItems: null == eventItems
           ? _value.eventItems
@@ -92,7 +81,6 @@ abstract class _$$EventItemsStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isLoading,
-      bool hasChanges,
       List<EventItem> eventItems,
       List<EventItem> songEventItems});
 }
@@ -105,13 +93,10 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
       _$EventItemsStateImpl _value, $Res Function(_$EventItemsStateImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of EventItemsState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? isLoading = null,
-    Object? hasChanges = null,
     Object? eventItems = null,
     Object? songEventItems = null,
   }) {
@@ -119,10 +104,6 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasChanges: null == hasChanges
-          ? _value.hasChanges
-          : hasChanges // ignore: cast_nullable_to_non_nullable
               as bool,
       eventItems: null == eventItems
           ? _value._eventItems
@@ -141,7 +122,6 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
 class _$EventItemsStateImpl implements _EventItemsState {
   const _$EventItemsStateImpl(
       {this.isLoading = false,
-      this.hasChanges = false,
       final List<EventItem> eventItems = const [],
       final List<EventItem> songEventItems = const []})
       : _eventItems = eventItems,
@@ -150,9 +130,6 @@ class _$EventItemsStateImpl implements _EventItemsState {
   @override
   @JsonKey()
   final bool isLoading;
-  @override
-  @JsonKey()
-  final bool hasChanges;
   final List<EventItem> _eventItems;
   @override
   @JsonKey()
@@ -173,7 +150,7 @@ class _$EventItemsStateImpl implements _EventItemsState {
 
   @override
   String toString() {
-    return 'EventItemsState(isLoading: $isLoading, hasChanges: $hasChanges, eventItems: $eventItems, songEventItems: $songEventItems)';
+    return 'EventItemsState(isLoading: $isLoading, eventItems: $eventItems, songEventItems: $songEventItems)';
   }
 
   @override
@@ -183,8 +160,6 @@ class _$EventItemsStateImpl implements _EventItemsState {
             other is _$EventItemsStateImpl &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
-            (identical(other.hasChanges, hasChanges) ||
-                other.hasChanges == hasChanges) &&
             const DeepCollectionEquality()
                 .equals(other._eventItems, _eventItems) &&
             const DeepCollectionEquality()
@@ -195,13 +170,10 @@ class _$EventItemsStateImpl implements _EventItemsState {
   int get hashCode => Object.hash(
       runtimeType,
       isLoading,
-      hasChanges,
       const DeepCollectionEquality().hash(_eventItems),
       const DeepCollectionEquality().hash(_songEventItems));
 
-  /// Create a copy of EventItemsState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$EventItemsStateImplCopyWith<_$EventItemsStateImpl> get copyWith =>
@@ -212,23 +184,17 @@ class _$EventItemsStateImpl implements _EventItemsState {
 abstract class _EventItemsState implements EventItemsState {
   const factory _EventItemsState(
       {final bool isLoading,
-      final bool hasChanges,
       final List<EventItem> eventItems,
       final List<EventItem> songEventItems}) = _$EventItemsStateImpl;
 
   @override
   bool get isLoading;
   @override
-  bool get hasChanges;
-  @override
   List<EventItem> get eventItems;
   @override
   List<EventItem> get songEventItems;
-
-  /// Create a copy of EventItemsState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$EventItemsStateImplCopyWith<_$EventItemsStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

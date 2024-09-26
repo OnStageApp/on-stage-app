@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:on_stage_app/app/features/song/domain/enums/song_view.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/user_settings/data/user_settings_repository.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
@@ -18,6 +19,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   static const String _songViewKey = 'songView';
   static const String _notificationEnabledKey = 'isNotificationEnabled';
   static const String _isOnboardingDone = 'isOnboardingDone';
+  static const String _textSizeKey = 'textSize';
 
   UserSettingsRepository get userSettingsRepository {
     _userSettingsRepository ??= UserSettingsRepository(ref.read(dioProvider));
@@ -65,7 +67,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
-  Future<void> updateSongView(SongViewEnum songView) async {
+  Future<void> updateSongView(SongViewMode songView) async {
     try {
       state = state.copyWith(songView: songView);
       final userSettings = UserSettings(songView: songView);
@@ -110,6 +112,40 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
+  Future<void> setTextSize(TextSize textSize) async {
+    try {
+      final userSettings = UserSettings(textSize: textSize);
+      state = state.copyWith(
+        textSize: textSize,
+      );
+
+      await userSettingsRepository.updateUserSettings(
+        userSettings: userSettings,
+      );
+
+      _saveSettingsToPrefs(userSettings);
+    } catch (e) {
+      logger.e('Error setting text size: $e');
+    }
+  }
+
+  Future<void> setSongViewMode(SongViewMode songView) async {
+    try {
+      final userSettings = UserSettings(songView: songView);
+      state = state.copyWith(
+        songView: songView,
+      );
+
+      await userSettingsRepository.updateUserSettings(
+        userSettings: userSettings,
+      );
+
+      _saveSettingsToPrefs(userSettings);
+    } catch (e) {
+      logger.e('Error setting song view mode: $e');
+    }
+  }
+
   Future<void> setOnboardingDone() async {
     try {
       const userSettings = UserSettings(isOnboardingDone: true);
@@ -133,19 +169,25 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     final isNotificationEnabled = prefs.getBool(_notificationEnabledKey);
     final isOnboardingDone =
         ref.read(sharedPreferencesProvider).getBool(_isOnboardingDone);
+    final textSizeIndex = prefs.getInt(_textSizeKey);
 
     state = state.copyWith(
       isDarkMode: isDarkMode,
-      songView:
-          songViewIndex != null ? SongViewEnum.values[songViewIndex] : null,
+      songView: songViewIndex != null
+          ? SongViewMode.values[songViewIndex]
+          : SongViewMode.american,
       isNotificationsEnabled: isNotificationEnabled,
       isOnboardingDone: isOnboardingDone,
+      textSize: textSizeIndex != null
+          ? TextSize.values[textSizeIndex]
+          : TextSize.normal,
     );
 
     if (isDarkMode == null ||
         songViewIndex == null ||
         isNotificationEnabled == null ||
-        isOnboardingDone == null) {
+        isOnboardingDone == null ||
+        textSizeIndex == null) {
       await getUserSettings();
     }
   }
@@ -164,6 +206,9 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       ref
           .read(sharedPreferencesProvider)
           .setBool(_isOnboardingDone, settings.isOnboardingDone!);
+    }
+    if (settings.textSize != null) {
+      prefs.setInt(_textSizeKey, settings.textSize!.index);
     }
   }
 }

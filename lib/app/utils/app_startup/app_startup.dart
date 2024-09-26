@@ -29,8 +29,8 @@ Future<void> appStartup(AppStartupRef ref) async {
   await ref.read(firebaseNotifierProvider.future);
   ref.read(firebaseNotifierProvider.notifier).onAppReady();
   if (ref.read(loginNotifierProvider).isLoggedIn) {
-    unawaited(ref.read(userNotifierProvider.notifier).init());
-    unawaited(ref.read(teamNotifierProvider.notifier).getCurrentTeam());
+    await ref.read(userNotifierProvider.notifier).init();
+    await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
     ref.read(databaseProvider);
     await ref.read(userSettingsNotifierProvider.notifier).init();
   }

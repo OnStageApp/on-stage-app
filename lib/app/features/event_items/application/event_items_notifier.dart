@@ -66,14 +66,12 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     state = state.copyWith(
       isLoading: false,
       eventItems: updatedEventItems,
-      hasChanges: true,
     );
   }
 
   void addEventItemCache(EventItem eventItem) {
     state = state.copyWith(
       eventItems: [...state.eventItems, eventItem],
-      hasChanges: true,
     );
   }
 
@@ -82,7 +80,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
       eventItems: state.eventItems
           .where((item) => item.index != eventItem.index)
           .toList(),
-      hasChanges: true,
     );
   }
 
@@ -104,7 +101,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
         ...state.eventItems,
         ...newSongItems,
       ],
-      hasChanges: true,
     );
   }
 
@@ -120,7 +116,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
 
     state = state.copyWith(
       eventItems: [...state.eventItems, ...newMomentItems],
-      hasChanges: true,
     );
   }
 
@@ -132,7 +127,7 @@ class EventItemsNotifier extends _$EventItemsNotifier {
 
     items.insert(adjustedNewIndex, item);
     final reorderAllEvents = _reorderAllEvents(items);
-    state = state.copyWith(eventItems: reorderAllEvents, hasChanges: true);
+    state = state.copyWith(eventItems: reorderAllEvents);
   }
 
   List<EventItem> _reorderAllEvents(List<EventItem> items) {
@@ -145,9 +140,5 @@ class EventItemsNotifier extends _$EventItemsNotifier {
       );
     }).toList();
     return reorderAllEvents;
-  }
-
-  void resetChanges() {
-    state = state.copyWith(hasChanges: false);
   }
 }

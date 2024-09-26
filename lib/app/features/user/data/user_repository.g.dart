@@ -194,12 +194,12 @@ class _UserRepository implements UserRepository {
   @override
   Future<UserModel> editUserById(
     String id,
-    UserModel user,
+    UserModel updatedUser,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = user;
+    final _data = updatedUser;
     final _options = _setStreamType<UserModel>(Options(
       method: 'PUT',
       headers: _headers,

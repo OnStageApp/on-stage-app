@@ -4,11 +4,11 @@ extension SongViewModeValues on SongViewMode {
   String get name {
     switch (this) {
       case SongViewMode.american:
-        return 'American Chords';
+        return 'Chords';
       case SongViewMode.lyrics:
-        return 'Only Lyrics';
+        return 'Lyrics';
       case SongViewMode.numeric:
-        return 'Numbers';
+        return 'Numeric';
     }
   }
 

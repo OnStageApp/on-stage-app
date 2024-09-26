@@ -7,7 +7,6 @@ part 'event_items_state.freezed.dart';
 class EventItemsState with _$EventItemsState {
   const factory EventItemsState({
     @Default(false) bool isLoading,
-    @Default(false) bool hasChanges,
     @Default([]) List<EventItem> eventItems,
     @Default([]) List<EventItem> songEventItems,
   }) = _EventItemsState;

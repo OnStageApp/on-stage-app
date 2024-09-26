@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/application/preferences/preferences_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -43,7 +44,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
               children: [
                 _buildTextSizeButton(context, TextSize.small),
                 const Spacer(),
-                _buildTextSizeButton(context, TextSize.medium),
+                _buildTextSizeButton(context, TextSize.normal),
                 const Spacer(),
                 _buildTextSizeButton(context, TextSize.large),
               ],
@@ -58,15 +59,14 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
     return InkWell(
       onTap: () {
         setState(() {
-          ref.read(preferencesNotifierProvider.notifier).setFontSize(textSize);
+          ref.read(userSettingsNotifierProvider.notifier).setTextSize(textSize);
         });
       },
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: ref.watch(preferencesNotifierProvider).lyricsChordsSize ==
-                  textSize
+          color: ref.watch(userSettingsNotifierProvider).textSize == textSize
               ? context.colorScheme.primary
               : context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(5),
@@ -74,8 +74,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
         child: Text(
           'A',
           style: context.textTheme.titleMedium!.copyWith(
-            color: ref.watch(preferencesNotifierProvider).lyricsChordsSize ==
-                    textSize
+            color: ref.watch(userSettingsNotifierProvider).textSize == textSize
                 ? context.colorScheme.onSurfaceVariant
                 : context.colorScheme.onSurface,
             fontSize: textSize.size,
@@ -83,24 +82,5 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
         ),
       ),
     );
-  }
-}
-
-enum TextSize {
-  small,
-  medium,
-  large,
-}
-
-extension TextSizeExtension on TextSize {
-  double get size {
-    switch (this) {
-      case TextSize.small:
-        return 16;
-      case TextSize.medium:
-        return 18;
-      case TextSize.large:
-        return 20;
-    }
   }
 }
