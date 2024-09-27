@@ -29,7 +29,7 @@ class ChordTypeWidget extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             chordType,
-            style: _getStyling(context),
+            style: _getStyling(context, isSelected: isEnabled),
           ),
         ),
       ),
@@ -42,7 +42,12 @@ class ChordTypeWidget extends StatelessWidget {
         : context.colorScheme.onSurfaceVariant;
   }
 
-  TextStyle _getStyling(BuildContext context) {
-    return context.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600);
+  TextStyle _getStyling(BuildContext context, {bool isSelected = false}) {
+    return context.textTheme.bodyMedium!.copyWith(
+      fontWeight: FontWeight.w600,
+      color: isSharp
+          ? context.colorScheme.onSurfaceVariant
+          : context.colorScheme.onSurface,
+    );
   }
 }
