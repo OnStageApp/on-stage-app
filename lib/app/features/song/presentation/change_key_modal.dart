@@ -60,7 +60,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildKey(),
+          _buildKeys(),
           const SizedBox(height: Insets.small),
           _buildChordTypes(widget.songKey.isSharp ?? false),
           const SizedBox(height: Insets.normal),
@@ -74,7 +74,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     );
   }
 
-  Widget _buildKey() {
+  Widget _buildKeys() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,7 +86,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               style: context.textTheme.titleSmall,
             ),
             Text(
-              widget.songKey.name ?? '',
+              'Original ${widget.songKey.chord?.name}',
               style: context.textTheme.titleSmall!.copyWith(
                 color: context.colorScheme.primary,
               ),
@@ -127,14 +127,11 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           decoration: BoxDecoration(
             color: isSelected
                 ? context.colorScheme.primary
-                : context.colorScheme.surfaceContainerHighest,
+                : context.colorScheme.surface,
             borderRadius: BorderRadius.circular(5),
           ),
           alignment: Alignment.center,
-          child: Text(
-            chord.name,
-            style: _getStyling()
-          ),
+          child: Text(chord.name, style: _getStyling(isSelected: isSelected)),
         ),
       ),
     );
@@ -180,8 +177,12 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         _songKey.chord!.name != ChordEnum.B.name;
   }
 
-  TextStyle _getStyling() {
-    return context.textTheme.titleMedium!;
+  TextStyle _getStyling({bool isSelected = false}) {
+    return context.textTheme.titleMedium!.copyWith(
+      color: isSelected
+          ? context.colorScheme.onSurfaceVariant
+          : context.colorScheme.onSurface,
+    );
   }
 
   Future<void> _submitForm() async {

@@ -20,59 +20,48 @@ class TeamsSection extends ConsumerWidget {
       children: [
         const SwitchTeamsButton(),
         const SizedBox(height: 12),
-        if (currentTeam != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              splashColor: context.colorScheme.surfaceBright,
-              tileColor: context.colorScheme.onSurfaceVariant,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-              title: Text(
-                currentTeam.name,
-                style: context.textTheme.headlineMedium,
-              ),
-              subtitle: Text(
-                (currentTeam.membersCount ?? 0) > 1
-                    ? '${currentTeam.membersCount} Members'
-                    : '${currentTeam.membersCount} Member',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  color: context.colorScheme.outline,
-                ),
-              ),
-              trailing: ParticipantsOnTile(
-                participantsProfileBytes: currentTeam.memberPhotos,
-                participantsLength: currentTeam.membersCount,
-              ),
-              onTap: () {
-                context.pushNamed(
-                  AppRoute.teamDetails.name,
-                  extra: currentTeam,
-                );
-              },
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            splashColor: context.colorScheme.surfaceBright,
+            tileColor: context.colorScheme.onSurfaceVariant,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          )
-        else
-          //shimmer
-          Shimmer.fromColors(
-            baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
-            highlightColor: context.colorScheme.onSurfaceVariant,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Container(
-                height: 60,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
             ),
+            title: (currentTeam != null)
+                ? Text(
+                    currentTeam.name,
+                    style: context.textTheme.headlineMedium,
+                  )
+                : //shimmer
+                _buildShimmer(context, height: 18, width: 200),
+            subtitle: (currentTeam != null)
+                ? Text(
+                    (currentTeam.membersCount ?? 0) > 1
+                        ? '${currentTeam.membersCount} Members'
+                        : '${currentTeam.membersCount} Member',
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: context.colorScheme.outline,
+                    ),
+                  )
+                : _buildShimmer(context, height: 14),
+            trailing: (currentTeam != null)
+                ? ParticipantsOnTile(
+                    participantsProfileBytes: currentTeam.memberPhotos,
+                    participantsLength: currentTeam.membersCount,
+                  )
+                : const SizedBox(),
+            onTap: () {
+              context.pushNamed(
+                AppRoute.teamDetails.name,
+                extra: currentTeam,
+              );
+            },
           ),
+        ),
         CreateNewTeamButton(
           icon: Icons.group,
           title: 'Create New Team',
@@ -82,6 +71,28 @@ class TeamsSection extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildShimmer(
+    BuildContext context, {
+    double height = 12,
+    double width = 100,
+  }) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Shimmer.fromColors(
+        baseColor: context.colorScheme.surface.withOpacity(0.4),
+        highlightColor: context.colorScheme.surface,
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
     );
   }
 }

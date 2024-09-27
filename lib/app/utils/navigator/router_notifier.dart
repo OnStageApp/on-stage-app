@@ -74,36 +74,30 @@ class NavigationNotifier extends _$NavigationNotifier {
         final isLoading = loginState.isLoading;
         final currentLocation = state.uri.toString();
 
-        // If loading, always show loading screen
         if (isLoading) {
           return '/loading';
         }
 
         if (isLoggedIn) {
-          // If logged in, handle startup state
           final startupState = ref.watch(appStartupProvider);
           return startupState.when(
             data: (_) {
-              // If on login-related pages, redirect to home
               if (['/login', '/welcome', '/login/signUp']
                   .contains(currentLocation)) {
                 return '/home';
               }
-              // Otherwise, stay on current page
               return null;
             },
             loading: () => '/loading',
             error: (_, __) => '/login',
           );
         } else {
-          // If not logged in, redirect to login unless already on a login-related page
           if (!['/login', '/loading', '/login/signUp']
               .contains(currentLocation)) {
             return '/login';
           }
         }
 
-        // No redirection needed
         return null;
       },
       routes: _routes(),
