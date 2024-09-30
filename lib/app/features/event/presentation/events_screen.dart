@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
-import 'package:on_stage_app/app/features/event/application/events/events_state.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
 import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -28,18 +29,22 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchFocused = false;
-  final GlobalKey<StageTooltipState> _tooltipKey =
+  final GlobalKey<StageTooltipState> _createEventTooltipKey =
       GlobalKey<StageTooltipState>();
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initializeEvents());
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        // _tooltipKey.currentState?.showTooltip();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeEvents();
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted &&
+            ref.read(userSettingsNotifierProvider).isCreateEventTooltipShown ==
+                false) {
+          _createEventTooltipKey.currentState?.showTooltip();
+        }
+      });
     });
   }
 
@@ -109,11 +114,12 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   Widget _buildTrailingButton(BuildContext context) {
+    final userSettingsNotifier = ref.watch(userSettingsNotifierProvider);
     return Padding(
       padding: const EdgeInsets.only(right: Insets.normal),
       child: StageTooltip(
         message: 'Add your first Event',
-        key: _tooltipKey,
+        key: _createEventTooltipKey,
         child: IconButton(
           style: IconButton.styleFrom(
             visualDensity: VisualDensity.compact,
@@ -125,6 +131,10 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
             ),
           ),
           onPressed: () {
+            if (userSettingsNotifier.isCreateEventTooltipShown == false) {
+              _disableTooltip();
+            }
+
             context.pushNamed(AppRoute.addEvent.name);
           },
           icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
@@ -133,8 +143,12 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     );
   }
 
-  bool _eventsListIsEmpty(EventsState eventsState) {
-    return eventsState.upcomingEventsResponse.events.isEmpty &&
-        eventsState.pastEventsResponse.events.isEmpty;
+  void _disableTooltip() {
+    _createEventTooltipKey.currentState?.hideTooltip();
+    ref.read(userSettingsNotifierProvider.notifier).updateUserSettings(
+          const UserSettings(
+            isCreateEventTooltipShown: true,
+          ),
+        );
   }
 }

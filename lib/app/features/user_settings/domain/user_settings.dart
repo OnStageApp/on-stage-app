@@ -15,6 +15,8 @@ class UserSettings with _$UserSettings {
     bool? isDarkMode,
     bool? isNotificationsEnabled,
     bool? isOnboardingDone,
+    bool? isCreateEventTooltipShown,
+    bool? isAddRemindersTooltipShown,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>

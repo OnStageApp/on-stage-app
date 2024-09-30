@@ -163,6 +163,18 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
+  Future<void> updateUserSettings(UserSettings userSettings) async {
+    try {
+      await userSettingsRepository.updateUserSettings(
+        userSettings: userSettings,
+      );
+
+      _saveSettingsToPrefs(userSettings);
+    } catch (e) {
+      logger.e('Error updating user settings: $e');
+    }
+  }
+
   Future<void> _loadLocalSettings() async {
     final isDarkMode = prefs.getBool(_darkModeKey);
     final songViewIndex = prefs.getInt(_songViewKey);
@@ -183,13 +195,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
           : TextSize.normal,
     );
 
-    if (isDarkMode == null ||
-        songViewIndex == null ||
-        isNotificationEnabled == null ||
-        isOnboardingDone == null ||
-        textSizeIndex == null) {
-      await getUserSettings();
-    }
+    await getUserSettings();
   }
 
   void _saveSettingsToPrefs(UserSettings settings) {
@@ -209,6 +215,18 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
     if (settings.textSize != null) {
       prefs.setInt(_textSizeKey, settings.textSize!.index);
+    }
+    if (settings.isCreateEventTooltipShown != null) {
+      prefs.setBool(
+        'isCreateEventTooltipShown',
+        settings.isCreateEventTooltipShown!,
+      );
+    }
+    if (settings.isAddRemindersTooltipShown != null) {
+      prefs.setBool(
+        'isAddRemindersTooltipShown',
+        settings.isAddRemindersTooltipShown!,
+      );
     }
   }
 }
