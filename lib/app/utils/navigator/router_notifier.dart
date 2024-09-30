@@ -14,6 +14,7 @@ import 'package:on_stage_app/app/features/notifications/presentation/notificatio
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
+import 'package:on_stage_app/app/features/song/presentation/song_details_with_pages_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
@@ -23,7 +24,6 @@ import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/utils/app_startup/app_startup.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router_notifier.g.dart';
@@ -79,18 +79,11 @@ class NavigationNotifier extends _$NavigationNotifier {
         }
 
         if (isLoggedIn) {
-          final startupState = ref.watch(appStartupProvider);
-          return startupState.when(
-            data: (_) {
-              if (['/login', '/welcome', '/login/signUp']
-                  .contains(currentLocation)) {
-                return '/home';
-              }
-              return null;
-            },
-            loading: () => '/loading',
-            error: (_, __) => '/login',
-          );
+          if (['/login', '/welcome', '/login/signUp']
+              .contains(currentLocation)) {
+            return '/home';
+          }
+          return null;
         } else {
           if (!['/login', '/loading', '/login/signUp']
               .contains(currentLocation)) {
@@ -143,15 +136,8 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.song.name,
                       path: 'song',
                       builder: (context, state) {
-                        final eventItems = state.extra as List<EventItem>?;
-                        final currentIndex =
-                            state.uri.queryParameters['currentIndex'];
-                        final songId = state.uri.queryParameters['songId'];
+                        final songId = state.uri.queryParameters['songId']!;
                         return SongDetailScreen(
-                          eventItems: eventItems,
-                          currentIndex: currentIndex != null
-                              ? int.parse(currentIndex)
-                              : null,
                           songId: songId,
                         );
                       },
@@ -175,13 +161,30 @@ class NavigationNotifier extends _$NavigationNotifier {
                           const AddEventDetailsScreen(),
                     ),
                     GoRoute(
-                      name: AppRoute.addEventSongs.name,
-                      path: 'addEventSongs',
-                      builder: (context, state) {
-                        final eventId = state.uri.queryParameters['eventId']!;
-                        return AddEventMomentsScreen(eventId: eventId);
-                      },
-                    ),
+                        name: AppRoute.addEventSongs.name,
+                        path: 'addEventSongs',
+                        builder: (context, state) {
+                          final eventId = state.uri.queryParameters['eventId']!;
+                          return AddEventMomentsScreen(eventId: eventId);
+                        },
+                        routes: [
+                          GoRoute(
+                            name: AppRoute.songDetailsWithPages.name,
+                            path: 'songDetailsWithPages',
+                            builder: (context, state) {
+                              final eventItems =
+                                  state.extra as List<EventItem>?;
+                              final currentIndex =
+                                  state.uri.queryParameters['currentIndex'];
+                              return SongDetailsWithPagesScreen(
+                                eventItems: eventItems,
+                                currentIndex: currentIndex != null
+                                    ? int.parse(currentIndex)
+                                    : null,
+                              );
+                            },
+                          ),
+                        ]),
                     GoRoute(
                       name: AppRoute.eventDetails.name,
                       path: 'eventDetails',

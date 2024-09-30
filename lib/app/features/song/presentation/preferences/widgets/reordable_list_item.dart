@@ -9,6 +9,7 @@ class ReordableListItem extends StatefulWidget {
     required this.color,
     required this.shortName,
     required this.name,
+    this.canSlide = true,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class ReordableListItem extends StatefulWidget {
   final int color;
   final String shortName;
   final String name;
+  final bool canSlide;
 
   @override
   _ReordableListItemState createState() => _ReordableListItemState();
@@ -36,6 +38,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Slidable(
+        enabled: widget.canSlide,
         key: ValueKey(widget.itemKey),
         endActionPane: ActionPane(
           dragDismissible: false,
@@ -50,8 +53,9 @@ class _ReordableListItemState extends State<ReordableListItem> {
                   color: Colors.blue,
                   child: Text(
                     'Clone',
-                    style: context.textTheme.bodyLarge!
-                        .copyWith(color: context.colorScheme.onSurface),
+                    style: context.textTheme.bodyLarge!.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),
@@ -69,8 +73,9 @@ class _ReordableListItemState extends State<ReordableListItem> {
                   ),
                   child: Text(
                     'Delete',
-                    style: context.textTheme.bodyLarge!
-                        .copyWith(color: Colors.white),
+                    style: context.textTheme.bodyLarge!.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),
@@ -118,7 +123,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
                     alignment: Alignment.center,
                     key: ValueKey(widget.itemId),
                     decoration: BoxDecoration(
-                      color:  context.colorScheme.onSurfaceVariant,
+                      color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
                         color: Color(widget.color),
                         width: 3,

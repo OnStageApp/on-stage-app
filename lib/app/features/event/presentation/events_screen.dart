@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimm
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
+import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -27,11 +28,19 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchFocused = false;
+  final GlobalKey<StageTooltipState> _tooltipKey =
+      GlobalKey<StageTooltipState>();
 
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _initializeEvents());
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        // _tooltipKey.currentState?.showTooltip();
+      }
+    });
   }
 
   Future<void> _initializeEvents() async {
@@ -102,18 +111,24 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   Widget _buildTrailingButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: Insets.normal),
-      child: IconButton(
-        style: IconButton.styleFrom(
-          visualDensity: VisualDensity.compact,
-          highlightColor: context.colorScheme.surfaceBright,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
+      child: StageTooltip(
+        message: 'Add your first Event',
+        key: _tooltipKey,
+        child: IconButton(
+          style: IconButton.styleFrom(
+            visualDensity: VisualDensity.compact,
+            highlightColor: context.colorScheme.surfaceBright,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
             ),
           ),
+          onPressed: () {
+            context.pushNamed(AppRoute.addEvent.name);
+          },
+          icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
         ),
-        onPressed: () => context.pushNamed(AppRoute.addEvent.name),
-        icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
       ),
     );
   }

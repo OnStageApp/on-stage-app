@@ -22,7 +22,7 @@ class SongViewModeModal extends ConsumerStatefulWidget {
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Chords View Mode'),
+        buildHeader: () => const ModalHeader(title: 'Song View'),
         headerHeight: () {
           return 64;
         },
@@ -85,6 +85,7 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
         ref.read(userSettingsNotifierProvider.notifier).setSongViewMode(
               songViewMode,
             );
+        context.popDialog();
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/reminder/presentation/reminder_controller.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -9,26 +10,21 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ChoosePositionModal extends ConsumerStatefulWidget {
   const ChoosePositionModal({
-    required this.cacheReminders,
-    this.onSaved,
+    required this.onSaved,
     super.key,
   });
 
-  final void Function(List<int>)? onSaved;
-
-  final List<int> cacheReminders;
+  final void Function(Position) onSaved;
 
   @override
   ChoosePositionModalState createState() => ChoosePositionModalState();
 
   static void show({
     required BuildContext context,
-    required WidgetRef ref,
-    required void Function(List<int>) onSaved,
-    required List<int> cacheReminders,
-    void Function(int)? onSelected,
-    void Function(int)? onRemoved,
+    required void Function(Position) onSaved,
   }) {
+    final modalKey = GlobalKey<ChoosePositionModalState>();
+
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
@@ -40,15 +36,16 @@ class ChoosePositionModal extends ConsumerStatefulWidget {
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Select Positions'),
+        buildHeader: () => const ModalHeader(title: 'Select Position'),
         buildFooter: () => Container(
           margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
           child: ContinueButton(
             text: 'Save',
             onPressed: () {
-              onSaved.call(
-                ref.read(reminderControllerProvider).selectedReminders,
-              );
+              final selectedPosition = modalKey.currentState?.selectedPosition;
+              if (selectedPosition != null) {
+                onSaved(selectedPosition);
+              }
               context.popDialog();
             },
             isEnabled: true,
@@ -59,8 +56,8 @@ class ChoosePositionModal extends ConsumerStatefulWidget {
         buildContent: () {
           return SingleChildScrollView(
             child: ChoosePositionModal(
+              key: modalKey,
               onSaved: onSaved,
-              cacheReminders: cacheReminders,
             ),
           );
         },
@@ -70,36 +67,45 @@ class ChoosePositionModal extends ConsumerStatefulWidget {
 }
 
 class ChoosePositionModalState extends ConsumerState<ChoosePositionModal> {
+  var _selectedPosition = Position.values.first;
+
+  Position get selectedPosition => _selectedPosition;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _selectedPosition =
+            ref.read(currentTeamMemberNotifierProvider).teamMember?.position ??
+                Position.values.first;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final reminders = ref.watch(reminderControllerProvider).selectedReminders;
     return Padding(
       padding: defaultScreenPadding,
       child: ListView.builder(
-        itemCount: _defaultReminders.length,
+        itemCount: Position.values.length,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Column(
             children: [
               _buildAlert(
-                _defaultReminders[index].toString(),
+                Position.values[index].title,
                 () {
-                  _setReminders(_defaultReminders[index]);
+                  _setPosition(Position.values[index]);
                 },
-                // isSelected: reminders.contains(_defaultReminders[index]),
+                isSelected: Position.values[index] == _selectedPosition,
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 child: SizedBox(),
               ),
-              if (index == _defaultReminders.length - 1)
+              if (index == Position.values.length - 1)
                 const SizedBox(height: 24),
             ],
           );
@@ -108,32 +114,14 @@ class ChoosePositionModalState extends ConsumerState<ChoosePositionModal> {
     );
   }
 
-  void _setReminders(int daysBeforeEvent) {
-    final controller = ref.read(reminderControllerProvider.notifier);
-    final currentReminders =
-        ref.watch(reminderControllerProvider).selectedReminders;
-
-    if (daysBeforeEvent == 0) {
-      controller
-        ..clearAllReminders()
-        ..addReminder(0);
-    } else {
-      if (currentReminders.contains(daysBeforeEvent)) {
-        controller.removeReminder(daysBeforeEvent);
-        if (currentReminders.length == 1) {
-          controller.addReminder(0);
-        }
-      } else {
-        if (currentReminders.contains(0)) {
-          controller.removeReminder(0);
-        }
-        controller.addReminder(daysBeforeEvent);
-      }
-    }
+  void _setPosition(Position position) {
+    setState(() {
+      _selectedPosition = position;
+    });
   }
 
   Widget _buildAlert(
-    String daysBefore,
+    String position,
     void Function() onTap, {
     bool isSelected = false,
   }) {
@@ -151,7 +139,12 @@ class ChoosePositionModalState extends ConsumerState<ChoosePositionModal> {
           ),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Text(
+              position,
+              style: context.textTheme.titleSmall,
+            ),
             if (isSelected)
               Icon(
                 Icons.check_circle,
@@ -169,12 +162,4 @@ class ChoosePositionModalState extends ConsumerState<ChoosePositionModal> {
       ),
     );
   }
-
-  final List<int> _defaultReminders = [
-    0,
-    1,
-    3,
-    7,
-    14,
-  ];
 }

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/domain/edit_team_member_request/edit_team_member_request.dart';
+import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
@@ -185,9 +188,13 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                       dense: true,
                       title: Text(
-                        'Chit. Bass',
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: context.colorScheme.outline),
+                        ref
+                                .watch(currentTeamMemberNotifierProvider)
+                                .teamMember
+                                ?.position
+                                ?.title ??
+                            'None',
+                        style: context.textTheme.titleMedium,
                       ),
                       trailing: Container(
                         height: 30,
@@ -203,9 +210,15 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       onTap: () {
                         ChoosePositionModal.show(
                           context: context,
-                          ref: ref,
-                          onSaved: (i) {},
-                          cacheReminders: [123],
+                          onSaved: (position) {
+                            final teamMember =
+                                EditTeamMemberRequest(position: position);
+                            ref
+                                .read(
+                                  currentTeamMemberNotifierProvider.notifier,
+                                )
+                                .updateTeamMember(teamMember);
+                          },
                         );
                       },
                     ),
@@ -225,7 +238,8 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       onChanged: (value) {},
                     ),
                     const SizedBox(
-                        height: 100), // Add extra padding at the bottom
+                      height: 100,
+                    ), // Add extra padding at the bottom
                   ],
                 ),
               ),

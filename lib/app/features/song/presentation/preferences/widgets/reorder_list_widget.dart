@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
@@ -28,39 +29,63 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final hasEditorsRight =
+        ref.watch(appDataControllerProvider).hasEditorsRight;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          ReorderableListView.builder(
-            onReorder: _onReorder,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _sections.length,
-            proxyDecorator: (child, index, animation) => Material(
-              color: Colors.transparent,
-              elevation: 6,
-              shadowColor: Colors.black.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              child: child,
-            ),
-            itemBuilder: (context, index) {
-              return Container(
-                key: ValueKey('${_sections[index].structure.id}_$index'),
-                child: ReordableListItem(
-                  itemKey: '${_sections[index].structure.id}_$index',
-                  itemId: _sections[index].structure.id,
-                  color: _sections[index].structure.item.color,
-                  shortName: _sections[index].structure.item.shortName,
-                  name: _sections[index].structure.item.name,
-                ),
-              );
-            },
-          ),
+          if (hasEditorsRight) _buildReordableList() else _buildList(),
         ],
       ),
+    );
+  }
+
+  Widget _buildList() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: _sections.length,
+      itemBuilder: (context, index) {
+        return ReordableListItem(
+          canSlide: false,
+          itemKey: '${_sections[index].structure.id}_$index',
+          itemId: _sections[index].structure.id,
+          color: _sections[index].structure.item.color,
+          shortName: _sections[index].structure.item.shortName,
+          name: _sections[index].structure.item.name,
+        );
+      },
+    );
+  }
+
+  Widget _buildReordableList() {
+    return ReorderableListView.builder(
+      onReorder: _onReorder,
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: _sections.length,
+      proxyDecorator: (child, index, animation) => Material(
+        color: Colors.transparent,
+        elevation: 6,
+        shadowColor: Colors.black.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        child: child,
+      ),
+      itemBuilder: (context, index) {
+        return Container(
+          key: ValueKey('${_sections[index].structure.id}_$index'),
+          child: ReordableListItem(
+            itemKey: '${_sections[index].structure.id}_$index',
+            itemId: _sections[index].structure.id,
+            color: _sections[index].structure.item.color,
+            shortName: _sections[index].structure.item.shortName,
+            name: _sections[index].structure.item.name,
+          ),
+        );
+      },
     );
   }
 

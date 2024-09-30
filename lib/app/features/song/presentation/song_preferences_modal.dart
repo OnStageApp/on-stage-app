@@ -13,9 +13,14 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongPreferencesModal extends ConsumerStatefulWidget {
-  const SongPreferencesModal(this.tonality, {super.key});
+  const SongPreferencesModal(
+    this.tonality, {
+    this.isFromEvent = false,
+    super.key,
+  });
 
   final SongKey tonality;
+  final bool isFromEvent;
 
   @override
   SongPreferencesModalState createState() => SongPreferencesModalState();
@@ -23,6 +28,7 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required SongKey tonality,
+    bool isFromEvent = false,
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
@@ -36,7 +42,7 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
           },
           buildContent: () {
             return SingleChildScrollView(
-              child: SongPreferencesModal(tonality),
+              child: SongPreferencesModal(tonality, isFromEvent: isFromEvent),
             );
           },
         ),
@@ -53,38 +59,34 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: defaultScreenPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          PreferencesVocalLead(),
-          SizedBox(height: Insets.medium),
-          Row(
+          if (widget.isFromEvent) ...[
+            const PreferencesVocalLead(),
+            const SizedBox(height: Insets.medium),
+          ],
+          const Row(
             children: [
               PreferencesTempo(),
               SizedBox(width: Insets.medium),
               PreferencesTextSize(),
             ],
           ),
-          SizedBox(height: Insets.medium),
-          PreferencesViewMode(),
-          SizedBox(height: Insets.medium),
-          PreferencesKey(),
-          SizedBox(height: Insets.medium),
-          PreferencesSongStructure(),
-          SizedBox(height: Insets.medium),
-          // const SizedBox(height: Insets.normal),
-          // ContinueButton(
-          //   text: 'Save',
-          //   onPressed: _submitForm,
-          //   isEnabled: true,
-          // ),
+          const SizedBox(height: Insets.medium),
+          const PreferencesViewMode(),
+          const SizedBox(height: Insets.medium),
+          const PreferencesKey(),
+          if (widget.isFromEvent) ...[
+            const SizedBox(height: Insets.medium),
+            const PreferencesSongStructure(),
+          ],
+          const SizedBox(height: Insets.medium),
         ],
       ),
     );
   }
-
-  Future<void> _submitForm() async {}
 }

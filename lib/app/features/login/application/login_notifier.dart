@@ -78,6 +78,7 @@ class LoginNotifier extends _$LoginNotifier {
           throw Exception('Failed to get ID Token');
         }
         await _login(idToken);
+
         return true;
       }
 
@@ -221,17 +222,7 @@ class LoginNotifier extends _$LoginNotifier {
       LoginRequest(firebaseToken: idToken),
     );
     await _saveAuthToken(authToken as String);
-    await _initProviders(authToken);
     state = state.copyWith(isLoading: false);
-  }
-
-  Future<void> _initProviders(authToken) async {
-    ref.read(databaseProvider);
-    await Future.wait([
-      ref
-          .read(teamMembersNotifierProvider.notifier)
-          .fetchAndSaveTeamMemberPhotos(),
-    ]);
   }
 
   Future<void> _saveAuthToken(String authToken) async {

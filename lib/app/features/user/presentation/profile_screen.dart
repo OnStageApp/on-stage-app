@@ -18,8 +18,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
-  bool _value = false;
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {

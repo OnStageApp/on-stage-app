@@ -116,7 +116,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               tag: 'searchBar',
               child: StageSearchBar(
                 focusNode: FocusNode(),
-                onTap: () => context.pushNamed(AppRoute.songs.name),
+                onTap: () {
+                  context.goNamed(AppRoute.songs.name);
+                },
               ),
             ),
           ),
@@ -145,6 +147,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
               date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
               stagerPhotos: upcomingEvent?.stagerPhotos ?? [],
+              stagerCount: upcomingEvent?.stagerCount ?? 0,
               hasUpcomingEvent: upcomingEvent != null,
             ),
           ),
@@ -157,7 +160,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 16),
                 child: GroupTile(
-                  title: 'Group',
+                  title: 'Team',
                   hasUpcomingEvent: hasUpcomingEvent,
                 ),
               ),
