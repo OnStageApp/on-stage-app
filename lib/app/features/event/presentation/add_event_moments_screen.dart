@@ -137,8 +137,11 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         final queryParams = {
           'currentIndex': eventItems.indexOf(eventItem).toString()
         };
-        context.pushNamed(AppRoute.song.name,
-            queryParameters: queryParams, extra: eventItems);
+        context.pushNamed(
+          AppRoute.songDetailsWithPages.name,
+          queryParameters: queryParams,
+          extra: eventItems,
+        );
       },
       isAdmin: ref.watch(appDataControllerProvider).hasEditorsRight,
     );

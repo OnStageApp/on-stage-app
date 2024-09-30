@@ -1,10 +1,6 @@
 class API {
-  // static const String baseUrl = 'https://onstage-event-service.onrender.com/';
-
-  // static const String baseUrl = 'http://192.168.150.65:9876/';
-  static const String baseUrl = 'https://6d1a-86-125-110-196.ngrok-free.app/';
-
-  // static const String baseUrl = 'http://localhost:9000/';
+  // static const String baseUrl = 'https://dev.on-stage.app/';
+  static const String baseUrl = 'https://23d6-86-127-188-157.ngrok-free.app/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {
@@ -49,6 +45,7 @@ class API {
   static const String setCurrentTeam = 'users/team/{teamId}';
 
   static const String teamMembers = 'team-members';
+  static const String teamMembersById = 'team-members/{id}';
   static const String currentTeamMember = 'team-members/current';
   static const String uninvitedTeamMembers = 'team-members/uninvited';
   static const String addTeamMember = 'team-members/invite';

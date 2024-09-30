@@ -16,6 +16,7 @@ class UpcomingEventModel with _$UpcomingEventModel {
     EventStatus? eventStatus,
     List<String>? userIdsWithPhoto,
     @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> stagerPhotos,
+    int? stagerCount,
   }) = _UpcomingEventModel;
 
   factory UpcomingEventModel.fromJson(Map<String, dynamic> json) =>

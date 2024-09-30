@@ -8,11 +8,12 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongAppBarLeading extends ConsumerWidget {
-  const SongAppBarLeading({super.key});
+  const SongAppBarLeading({this.isFromEvent = false, super.key});
+
+  final bool isFromEvent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //TODO: This has to come from the song configuration, if song configuration is null, then should take this value
     final key = ref.watch(songNotifierProvider).song.key;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -51,6 +52,7 @@ class SongAppBarLeading extends ConsumerWidget {
             SongPreferencesModal.show(
               context: context,
               tonality: ref.watch(songNotifierProvider).song.songKey,
+              isFromEvent: isFromEvent,
             );
           },
         ),

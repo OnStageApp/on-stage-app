@@ -15,6 +15,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
     required this.hasUpcomingEvent,
     required this.onTap,
     required this.stagerPhotos,
+    required this.stagerCount,
     this.location,
     super.key,
   });
@@ -25,6 +26,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
   final String? location;
   final bool hasUpcomingEvent;
   final List<Uint8List?> stagerPhotos;
+  final int stagerCount;
   final void Function()? onTap;
 
   @override
@@ -91,6 +93,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
                         backgroundColor: Colors.white,
                         borderColor: Colors.transparent,
                         participantsProfileBytes: stagerPhotos,
+                        participantsLength: stagerCount,
                       ),
                     ],
                   ),

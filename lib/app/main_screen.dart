@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({
@@ -37,8 +43,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initProviders();
+    });
     super.initState();
+  }
+
+  Future<void> _initProviders() async {
+    logger.i('Init providers');
+    ref.read(databaseProvider);
+
+    await Future.wait([
+      ref
+          .read(teamMembersNotifierProvider.notifier)
+          .fetchAndSaveTeamMemberPhotos(),
+      ref.read(userNotifierProvider.notifier).init(),
+      ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
+      ref.read(userSettingsNotifierProvider.notifier).init(),
+    ]);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
@@ -8,26 +9,39 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 
-class SongDetailScreen extends ConsumerStatefulWidget {
-  const SongDetailScreen({
-    required this.songId,
+class SongDetailsWithPagesScreen extends ConsumerStatefulWidget {
+  const SongDetailsWithPagesScreen({
+    required this.eventItems,
+    this.currentIndex = 0,
     super.key,
   });
 
-  final String songId;
+  final List<EventItem>? eventItems;
+  final int? currentIndex;
 
   @override
-  SongDetailScreenState createState() => SongDetailScreenState();
+  SongDetailsWithPagesScreenState createState() =>
+      SongDetailsWithPagesScreenState();
 }
 
-class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
+class SongDetailsWithPagesScreenState
+    extends ConsumerState<SongDetailsWithPagesScreen> {
+  late final PageController _pageController;
+  late int _currentIndex;
+
   @override
   void initState() {
     super.initState();
-
+    _currentIndex = widget.currentIndex!;
+    _pageController = PageController(initialPage: widget.currentIndex!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songNotifierProvider.notifier).init(widget.songId);
+      _initSong(_currentIndex);
     });
+  }
+
+  Future<void> _initSong(int index) async {
+    final currentSongId = widget.eventItems![index].song!.id;
+    await ref.read(songNotifierProvider.notifier).init(currentSongId);
   }
 
   bool _isSongNull() =>
@@ -43,7 +57,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         background: context.colorScheme.surface,
         isBackButtonVisible: true,
         title: ref.watch(songNotifierProvider).song.title ?? '',
-        trailing: const SongAppBarLeading(),
+        trailing: const SongAppBarLeading(isFromEvent: true),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(52),
           child: Padding(
@@ -52,7 +66,24 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           ),
         ),
       ),
-      body: _buildContent(),
+      body: _buildSongsWithPageView(),
+    );
+  }
+
+  Widget _buildSongsWithPageView() {
+    return PageView.builder(
+      physics: const BouncingScrollPhysics(),
+      controller: _pageController,
+      itemCount: widget.eventItems!.length,
+      itemBuilder: (context, index) {
+        return _buildContent();
+      },
+      onPageChanged: (int page) async {
+        setState(() {
+          _currentIndex = page;
+        });
+        await _initSong(page);
+      },
     );
   }
 

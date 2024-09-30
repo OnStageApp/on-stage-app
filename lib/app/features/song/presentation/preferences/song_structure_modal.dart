@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
@@ -69,47 +70,53 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
           16,
           32,
         ),
-        child: ContinueButton(
-          text: isOrderPage ? 'Save' : 'Add',
-          onPressed: () {
-            if (!isOrderPage) {
-              final newSections =
-                  ref.watch(songPreferencesControllerProvider).songSections;
-              final existingSections = ref.watch(songNotifierProvider).sections;
-              existingSections.addAll(newSections);
-              ref
-                  .read(songNotifierProvider.notifier)
-                  .updateSongSections(existingSections);
-              ref
-                  .read(songPreferencesControllerProvider.notifier)
-                  .resetSongSections();
+        child: ref.watch(appDataControllerProvider).hasEditorsRight
+            ? ContinueButton(
+                text: isOrderPage ? 'Save' : 'Add',
+                onPressed: () {
+                  if (!isOrderPage) {
+                    final newSections = ref
+                        .watch(songPreferencesControllerProvider)
+                        .songSections;
+                    final existingSections =
+                        ref.watch(songNotifierProvider).sections;
+                    existingSections.addAll(newSections);
+                    ref
+                        .read(songNotifierProvider.notifier)
+                        .updateSongSections(existingSections);
+                    ref
+                        .read(songPreferencesControllerProvider.notifier)
+                        .resetSongSections();
 
-              setState(() {
-                isOrderPage = true;
-              });
-            } else {
-              context.popDialog();
-            }
-          },
-          isEnabled: true,
-        ),
+                    setState(() {
+                      isOrderPage = true;
+                    });
+                  } else {
+                    context.popDialog();
+                  }
+                },
+                isEnabled: true,
+              )
+            : const SizedBox(),
       ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
     return ModalHeader(
-      leadingButton: SizedBox(
-        width: 80 - 12,
-        child: InkWell(
-          onTap: () {
-            setState(() {
-              isOrderPage = !isOrderPage;
-            });
-          },
-          child: _buildLeadingTile(context),
-        ),
-      ),
+      leadingButton: ref.watch(appDataControllerProvider).hasEditorsRight
+          ? SizedBox(
+              width: 80 - 12,
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    isOrderPage = !isOrderPage;
+                  });
+                },
+                child: _buildLeadingTile(context),
+              ),
+            )
+          : const SizedBox(width: 80 - 12),
       title: 'Song Structure',
     );
   }

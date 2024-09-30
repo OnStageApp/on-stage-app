@@ -156,8 +156,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   @override
   Widget build(BuildContext context) {
     _listens();
-    if (_chordLyricsDocument == null) return Container();
-    if (_chordLyricsDocument!.chordLyricsLines.isEmpty) return Container();
+    if (_chordLyricsDocument == null) return const SizedBox();
+    if (_chordLyricsDocument!.chordLyricsLines.isEmpty) return const SizedBox();
     return SingleChildScrollView(
       controller: _controller,
       physics: widget.scrollPhysics,
