@@ -5,18 +5,15 @@ import 'package:shimmer/shimmer.dart';
 
 class EventShimmerList extends StatelessWidget {
   const EventShimmerList({
-    required this.isSearchContent,
     super.key,
   });
-
-  final bool isSearchContent;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          if (index == 0 && !isSearchContent) {
+          if (index == 0) {
             // Featured Event Shimmer
             return Shimmer.fromColors(
               baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),

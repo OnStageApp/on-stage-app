@@ -32,6 +32,11 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.7,
+        maxWidth: MediaQuery.of(context).size.width,
+      ),
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => FractionallySizedBox(
@@ -42,7 +47,10 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
           },
           buildContent: () {
             return SingleChildScrollView(
-              child: SongPreferencesModal(tonality, isFromEvent: isFromEvent),
+              child: SongPreferencesModal(
+                tonality,
+                isFromEvent: isFromEvent,
+              ),
             );
           },
         ),

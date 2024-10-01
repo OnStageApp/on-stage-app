@@ -9,7 +9,6 @@ import 'package:on_stage_app/app/features/event/domain/models/event_overview_mod
 import 'package:on_stage_app/app/features/event/domain/models/events_filter.dart';
 import 'package:on_stage_app/app/features/event/domain/models/events_response.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -75,7 +74,7 @@ class EventsNotifier extends _$EventsNotifier {
 
   Future<void> searchEvents(String? search) async {
     state = state.copyWith(isLoading: true);
-    if (search.isNullEmptyOrWhitespace) {
+    if (search == null) {
       state = state.copyWith(
         filteredEventsResponse: state.eventsResponse,
         isLoading: false,

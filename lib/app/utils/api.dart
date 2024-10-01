@@ -19,6 +19,7 @@ class API {
   static const String stagers = 'stagers';
   static const String stagersById = 'stagers/{id}';
   static const String eventItems = 'event-items';
+  static const String leadVocalsByEventItemId = 'event-items/{id}/lead-vocals';
   static const String upcomingEvent = 'events/upcoming';
 
   static const String artists = 'artists';

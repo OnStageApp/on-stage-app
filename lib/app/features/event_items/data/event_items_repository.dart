@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_items_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -21,5 +22,16 @@ abstract class EventItemsRepository {
   @PUT(API.eventItems)
   Future<List<EventItem>> updateEventItems(
     @Body() EventItemsRequest eventItemsRequest,
+  );
+
+  @GET(API.leadVocalsByEventItemId)
+  Future<List<Stager>> getLeadVocals(
+    @Path('id') String id,
+  );
+
+  @PUT(API.leadVocalsByEventItemId)
+  Future<void> updateLeadVocals(
+    @Path('id') String id,
+    @Body() List<String> leadVocalIds,
   );
 }
