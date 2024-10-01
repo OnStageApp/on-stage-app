@@ -1,85 +1,98 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/app_data/app_data_controller.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_item_notifier/event_item_notifier.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/vocal_lead_modal.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
 
-class PreferencesVocalLead extends StatelessWidget {
+class PreferencesVocalLead extends ConsumerStatefulWidget {
   const PreferencesVocalLead({super.key});
 
   @override
+  ConsumerState<PreferencesVocalLead> createState() =>
+      _PreferencesVocalLeadState();
+}
+
+class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final eventItemId = ref
+          .read(eventItemsNotifierProvider)
+          .eventItems[ref.read(eventItemsNotifierProvider).currentIndex]
+          .id;
+      ref.read(eventItemNotifierProvider.notifier).getLeadVocals(eventItemId!);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final leadVocals = ref.watch(eventItemNotifierProvider).leadVocals;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Vocal Lead',
+          'Lead Vocals',
           style: context.textTheme.titleSmall,
         ),
-        const SizedBox(height: Insets.small),
-        Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              height: 48,
-              decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return _buildVocal(context);
-                },
-              ),
+        if (leadVocals.isNotNullOrEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              color: context.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadius.circular(10),
             ),
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: InkWell(
-                onTap: () {
-                  VocalLeadModal.show(context: context);
-                },
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: context.colorScheme.onSurfaceVariant, width: 2,),
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Color(0xFF828282),
-                  ),
-                ),
-              ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: leadVocals.length,
+              itemBuilder: (context, index) {
+                return _buildVocal(context, leadVocals[index]);
+              },
             ),
-          ],
-        ),
+          ),
+        if (ref.watch(appDataControllerProvider).hasEditorsRight) ...[
+          const SizedBox(height: 12),
+          EventActionButton(
+            icon: Icons.add,
+            onTap: () {
+              VocalLeadModal.show(context: context);
+            },
+            text: 'Add Lead Vocal',
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildVocal(BuildContext context) {
+  Widget _buildVocal(BuildContext context, Stager leadVocal) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      margin: const EdgeInsets.all(12),
       alignment: Alignment.center,
       child: Row(
         children: [
-          Image.asset('assets/images/profile1.png', width: 24, height: 24),
-          const SizedBox(width: 6),
-          Text('Marcelo', style: context.textTheme.bodyLarge),
-          const SizedBox(width: 2),
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: MemoryImage(
+                  leadVocal.profilePicture ?? Uint8List(0),
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(leadVocal.name ?? 'None', style: context.textTheme.titleMedium),
         ],
       ),
     );

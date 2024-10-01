@@ -161,30 +161,26 @@ class NavigationNotifier extends _$NavigationNotifier {
                           const AddEventDetailsScreen(),
                     ),
                     GoRoute(
-                        name: AppRoute.addEventSongs.name,
-                        path: 'addEventSongs',
-                        builder: (context, state) {
-                          final eventId = state.uri.queryParameters['eventId']!;
-                          return AddEventMomentsScreen(eventId: eventId);
-                        },
-                        routes: [
-                          GoRoute(
-                            name: AppRoute.songDetailsWithPages.name,
-                            path: 'songDetailsWithPages',
-                            builder: (context, state) {
-                              final eventItems =
-                                  state.extra as List<EventItem>?;
-                              final currentIndex =
-                                  state.uri.queryParameters['currentIndex'];
-                              return SongDetailsWithPagesScreen(
-                                eventItems: eventItems,
-                                currentIndex: currentIndex != null
-                                    ? int.parse(currentIndex)
-                                    : null,
-                              );
-                            },
-                          ),
-                        ]),
+                      name: AppRoute.addEventSongs.name,
+                      path: 'addEventSongs',
+                      builder: (context, state) {
+                        final eventId = state.uri.queryParameters['eventId']!;
+                        return AddEventMomentsScreen(eventId: eventId);
+                      },
+                      routes: [
+                        GoRoute(
+                          name: AppRoute.songDetailsWithPages.name,
+                          path: 'songDetailsWithPages',
+                          builder: (context, state) {
+                            final eventItems = state.extra as List<EventItem>?;
+
+                            return SongDetailsWithPagesScreen(
+                              eventItems: eventItems,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     GoRoute(
                       name: AppRoute.eventDetails.name,
                       path: 'eventDetails',

@@ -60,8 +60,11 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   void _onSearchFocusChange() {
-    setState(() => _isSearchFocused = _searchFocusNode.hasFocus);
-    if (_isSearchFocused) {
+    setState(() {
+      _isSearchFocused =
+          _searchFocusNode.hasFocus || _searchController.text.isNotEmpty;
+    });
+    if (_isSearchFocused && _searchController.text.isEmpty) {
       ref.read(eventsNotifierProvider.notifier).searchEvents('');
     }
   }
@@ -94,19 +97,19 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
             controller: _searchController,
             notifier: ref.read(eventsNotifierProvider.notifier),
           ),
-          if (eventsState.isLoading)
-            EventShimmerList(isSearchContent: _isSearchFocused)
+          if (eventsState.isLoading && !_isSearchFocused)
+            const EventShimmerList()
           else
             SliverAnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              child: (_isSearchFocused
+              child: _isSearchFocused
                   ? SearchResultsList(
                       key: const ValueKey('search'),
                       events: eventsState.filteredEventsResponse.events,
                     )
                   : const EventsContent(
                       key: ValueKey('content'),
-                    )),
+                    ),
             ),
         ],
       ),

@@ -9,5 +9,6 @@ class EventItemsState with _$EventItemsState {
     @Default(false) bool isLoading,
     @Default([]) List<EventItem> eventItems,
     @Default([]) List<EventItem> songEventItems,
+    @Default(0) int currentIndex,
   }) = _EventItemsState;
 }

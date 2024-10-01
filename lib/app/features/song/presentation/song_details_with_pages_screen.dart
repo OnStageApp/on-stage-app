@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
@@ -12,12 +15,10 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 class SongDetailsWithPagesScreen extends ConsumerStatefulWidget {
   const SongDetailsWithPagesScreen({
     required this.eventItems,
-    this.currentIndex = 0,
     super.key,
   });
 
   final List<EventItem>? eventItems;
-  final int? currentIndex;
 
   @override
   SongDetailsWithPagesScreenState createState() =>
@@ -32,8 +33,8 @@ class SongDetailsWithPagesScreenState
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.currentIndex!;
-    _pageController = PageController(initialPage: widget.currentIndex!);
+    _currentIndex = ref.read(eventItemsNotifierProvider).currentIndex;
+    _pageController = PageController(initialPage: _currentIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initSong(_currentIndex);
     });
@@ -57,7 +58,9 @@ class SongDetailsWithPagesScreenState
         background: context.colorScheme.surface,
         isBackButtonVisible: true,
         title: ref.watch(songNotifierProvider).song.title ?? '',
-        trailing: const SongAppBarLeading(isFromEvent: true),
+        trailing: const SongAppBarLeading(
+          isFromEvent: true,
+        ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(52),
           child: Padding(
@@ -82,6 +85,7 @@ class SongDetailsWithPagesScreenState
         setState(() {
           _currentIndex = page;
         });
+        ref.read(eventItemsNotifierProvider.notifier).setCurrentIndex(page);
         await _initSong(page);
       },
     );

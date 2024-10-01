@@ -12,14 +12,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_items_notifier.g.dart';
 
-@Riverpod()
+@Riverpod(keepAlive: false)
 class EventItemsNotifier extends _$EventItemsNotifier {
-  late final EventItemsRepository _eventItemsRepository;
+  EventItemsRepository? _eventItemsRepository;
+
+  EventItemsRepository get eventItemsRepository {
+    _eventItemsRepository ??= EventItemsRepository(ref.read(dioProvider));
+    return _eventItemsRepository!;
+  }
 
   @override
   EventItemsState build() {
     final dio = ref.read(dioProvider);
     _eventItemsRepository = EventItemsRepository(dio);
+    print('Event Items Notifier rebuild');
     return const EventItemsState();
   }
 
@@ -31,7 +37,7 @@ class EventItemsNotifier extends _$EventItemsNotifier {
   }
 
   Future<void> getEventItems(String eventId) async {
-    final eventItemsFuture = _eventItemsRepository.getEventItems(eventId);
+    final eventItemsFuture = eventItemsRepository.getEventItems(eventId);
 
     final results = await Future.wait([
       eventItemsFuture,
@@ -62,7 +68,7 @@ class EventItemsNotifier extends _$EventItemsNotifier {
       eventId: eventId,
     );
     final updatedEventItems =
-        await _eventItemsRepository.addEventItems(eventItemsRequest);
+        await eventItemsRepository.addEventItems(eventItemsRequest);
     state = state.copyWith(
       isLoading: false,
       eventItems: updatedEventItems,
@@ -128,6 +134,10 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     items.insert(adjustedNewIndex, item);
     final reorderAllEvents = _reorderAllEvents(items);
     state = state.copyWith(eventItems: reorderAllEvents);
+  }
+
+  void setCurrentIndex(int index) {
+    state = state.copyWith(currentIndex: index);
   }
 
   List<EventItem> _reorderAllEvents(List<EventItem> items) {

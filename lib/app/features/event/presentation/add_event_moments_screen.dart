@@ -134,12 +134,12 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       onTap: () {
         if (eventItem.song == null) return;
         final eventItems = ref.read(eventItemsNotifierProvider).songEventItems;
-        final queryParams = {
-          'currentIndex': eventItems.indexOf(eventItem).toString()
-        };
+        ref
+            .read(eventItemsNotifierProvider.notifier)
+            .setCurrentIndex(eventItems.indexOf(eventItem));
+
         context.pushNamed(
           AppRoute.songDetailsWithPages.name,
-          queryParameters: queryParams,
           extra: eventItems,
         );
       },

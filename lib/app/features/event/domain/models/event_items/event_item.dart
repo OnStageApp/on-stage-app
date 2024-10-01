@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item_type.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
@@ -14,6 +15,7 @@ class EventItem with _$EventItem {
     EventItemType? eventType,
     SongOverview? song,
     String? eventId,
+    @Default([]) List<Stager>? leadVocals,
   }) = _EventItem;
 
   const EventItem._();

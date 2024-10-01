@@ -38,7 +38,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
   late final TextEditingController _internalController;
   late final AnimationController _animationController;
   late final Animation<double> _animation;
-  final FocusNode _focusNode = FocusNode();
+  late FocusNode _focusNode;
 
   var _isFilteringActive = false;
 
@@ -47,7 +47,7 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
     super.initState();
     _internalController = widget.controller ?? TextEditingController();
     _internalController.addListener(_onSearchChanged);
-
+    _focusNode = widget.focusNode;
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),

@@ -19,6 +19,7 @@ mixin _$EventItemsState {
   bool get isLoading => throw _privateConstructorUsedError;
   List<EventItem> get eventItems => throw _privateConstructorUsedError;
   List<EventItem> get songEventItems => throw _privateConstructorUsedError;
+  int get currentIndex => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EventItemsStateCopyWith<EventItemsState> get copyWith =>
@@ -34,7 +35,8 @@ abstract class $EventItemsStateCopyWith<$Res> {
   $Res call(
       {bool isLoading,
       List<EventItem> eventItems,
-      List<EventItem> songEventItems});
+      List<EventItem> songEventItems,
+      int currentIndex});
 }
 
 /// @nodoc
@@ -53,6 +55,7 @@ class _$EventItemsStateCopyWithImpl<$Res, $Val extends EventItemsState>
     Object? isLoading = null,
     Object? eventItems = null,
     Object? songEventItems = null,
+    Object? currentIndex = null,
   }) {
     return _then(_value.copyWith(
       isLoading: null == isLoading
@@ -67,6 +70,10 @@ class _$EventItemsStateCopyWithImpl<$Res, $Val extends EventItemsState>
           ? _value.songEventItems
           : songEventItems // ignore: cast_nullable_to_non_nullable
               as List<EventItem>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -82,7 +89,8 @@ abstract class _$$EventItemsStateImplCopyWith<$Res>
   $Res call(
       {bool isLoading,
       List<EventItem> eventItems,
-      List<EventItem> songEventItems});
+      List<EventItem> songEventItems,
+      int currentIndex});
 }
 
 /// @nodoc
@@ -99,6 +107,7 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? eventItems = null,
     Object? songEventItems = null,
+    Object? currentIndex = null,
   }) {
     return _then(_$EventItemsStateImpl(
       isLoading: null == isLoading
@@ -113,6 +122,10 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
           ? _value._songEventItems
           : songEventItems // ignore: cast_nullable_to_non_nullable
               as List<EventItem>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -123,7 +136,8 @@ class _$EventItemsStateImpl implements _EventItemsState {
   const _$EventItemsStateImpl(
       {this.isLoading = false,
       final List<EventItem> eventItems = const [],
-      final List<EventItem> songEventItems = const []})
+      final List<EventItem> songEventItems = const [],
+      this.currentIndex = 0})
       : _eventItems = eventItems,
         _songEventItems = songEventItems;
 
@@ -149,8 +163,12 @@ class _$EventItemsStateImpl implements _EventItemsState {
   }
 
   @override
+  @JsonKey()
+  final int currentIndex;
+
+  @override
   String toString() {
-    return 'EventItemsState(isLoading: $isLoading, eventItems: $eventItems, songEventItems: $songEventItems)';
+    return 'EventItemsState(isLoading: $isLoading, eventItems: $eventItems, songEventItems: $songEventItems, currentIndex: $currentIndex)';
   }
 
   @override
@@ -163,7 +181,9 @@ class _$EventItemsStateImpl implements _EventItemsState {
             const DeepCollectionEquality()
                 .equals(other._eventItems, _eventItems) &&
             const DeepCollectionEquality()
-                .equals(other._songEventItems, _songEventItems));
+                .equals(other._songEventItems, _songEventItems) &&
+            (identical(other.currentIndex, currentIndex) ||
+                other.currentIndex == currentIndex));
   }
 
   @override
@@ -171,7 +191,8 @@ class _$EventItemsStateImpl implements _EventItemsState {
       runtimeType,
       isLoading,
       const DeepCollectionEquality().hash(_eventItems),
-      const DeepCollectionEquality().hash(_songEventItems));
+      const DeepCollectionEquality().hash(_songEventItems),
+      currentIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -185,7 +206,8 @@ abstract class _EventItemsState implements EventItemsState {
   const factory _EventItemsState(
       {final bool isLoading,
       final List<EventItem> eventItems,
-      final List<EventItem> songEventItems}) = _$EventItemsStateImpl;
+      final List<EventItem> songEventItems,
+      final int currentIndex}) = _$EventItemsStateImpl;
 
   @override
   bool get isLoading;
@@ -193,6 +215,8 @@ abstract class _EventItemsState implements EventItemsState {
   List<EventItem> get eventItems;
   @override
   List<EventItem> get songEventItems;
+  @override
+  int get currentIndex;
   @override
   @JsonKey(ignore: true)
   _$$EventItemsStateImplCopyWith<_$EventItemsStateImpl> get copyWith =>
