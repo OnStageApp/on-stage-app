@@ -9,6 +9,7 @@ class EventItemTile extends StatefulWidget {
     required this.isAdmin,
     this.onTap,
     this.onDelete,
+    this.trailing,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class EventItemTile extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onDelete;
   final bool isAdmin;
+  final Widget? trailing;
 
   @override
   _EventItemTileState createState() => _EventItemTileState();
@@ -119,6 +121,8 @@ class _EventItemTileState extends State<EventItemTile> {
                           ),
                       ],
                     ),
+                    const Spacer(),
+                    widget.trailing ?? const SizedBox(),
                   ],
                 ),
               );

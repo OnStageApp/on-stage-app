@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dar
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
-import 'package:on_stage_app/app/features/song_configuration/domain/song_configuration.dart';
 
 class SongState extends Equatable {
   const SongState({
@@ -13,7 +12,6 @@ class SongState extends Equatable {
     this.transposeIncremenet = 0,
     this.document,
     this.selectedSectionIndex,
-    this.songConfiguration,
     this.processingSong = false,
   });
 
@@ -25,7 +23,6 @@ class SongState extends Equatable {
   final int transposeIncremenet;
   final StructureItem? selectedSectionIndex;
   final bool processingSong;
-  final SongConfiguration? songConfiguration;
 
   @override
   List<Object> get props => [

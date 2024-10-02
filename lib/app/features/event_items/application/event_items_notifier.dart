@@ -72,6 +72,7 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     state = state.copyWith(
       isLoading: false,
       eventItems: updatedEventItems,
+      songEventItems: _getSongEventItems(updatedEventItems),
     );
   }
 

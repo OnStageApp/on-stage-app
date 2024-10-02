@@ -144,6 +144,24 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
         );
       },
       isAdmin: ref.watch(appDataControllerProvider).hasEditorsRight,
+      // trailing: eventItem.song?.id != null
+      //     ? Container(
+      //         height: 28,
+      //         width: 28,
+      //         margin: const EdgeInsets.symmetric(horizontal: 8),
+      //         decoration: BoxDecoration(
+      //           borderRadius: BorderRadius.circular(6),
+      //           color: context.colorScheme.surface,
+      //         ),
+      //         child: InkWell(
+      //             overlayColor: WidgetStateProperty.all(
+      //                 context.colorScheme.surfaceBright),
+      //             // onTap: () => SongFilterModal.show(context: context),
+      //             child: Center(
+      //               child: Assets.icons.arrowDown.svg(),
+      //             )),
+      //       )
+      //     : const SizedBox(),
     );
   }
 

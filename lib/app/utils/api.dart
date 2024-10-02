@@ -53,4 +53,7 @@ class API {
   static const String teamMemberPhotos = 'team-members/photos';
 
   static const String userSettings = 'user-settings';
+
+  static const String songConfigBySongId = 'song-config/{songId}';
+  static const String songConfig = 'song-config';
 }

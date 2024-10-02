@@ -29,10 +29,12 @@ class SongDetailsWithPagesScreenState
     extends ConsumerState<SongDetailsWithPagesScreen> {
   late final PageController _pageController;
   late int _currentIndex;
+  var _eventItems = <EventItem>[];
 
   @override
   void initState() {
     super.initState();
+    _eventItems = widget.eventItems ?? [];
     _currentIndex = ref.read(eventItemsNotifierProvider).currentIndex;
     _pageController = PageController(initialPage: _currentIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,7 +43,7 @@ class SongDetailsWithPagesScreenState
   }
 
   Future<void> _initSong(int index) async {
-    final currentSongId = widget.eventItems![index].song!.id;
+    final currentSongId = _eventItems[index].song!.id;
     await ref.read(songNotifierProvider.notifier).init(currentSongId);
   }
 
@@ -52,6 +54,7 @@ class SongDetailsWithPagesScreenState
 
   @override
   Widget build(BuildContext context) {
+    _eventItems = ref.watch(eventItemsNotifierProvider).songEventItems;
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       appBar: StageAppBar(
@@ -77,7 +80,7 @@ class SongDetailsWithPagesScreenState
     return PageView.builder(
       physics: const BouncingScrollPhysics(),
       controller: _pageController,
-      itemCount: widget.eventItems!.length,
+      itemCount: _eventItems.length,
       itemBuilder: (context, index) {
         return _buildContent();
       },
