@@ -208,6 +208,11 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         });
         _processSong();
       })
+      // ..listen(songNotifierProvider, (previous, next) {
+      //   if (previous?.sections != next.sections) {
+      //     _processSong();
+      //   }
+      // })
       ..listen(songNotifierProvider, (previous, next) {
         if (previous?.selectedSectionIndex != next.selectedSectionIndex) {
           _scrollToIndex();
@@ -220,17 +225,27 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           final lines = _chordLyricsDocument!.chordLyricsLines;
           ref.read(songNotifierProvider.notifier).getSections(lines);
           _sections = ref.watch(songNotifierProvider).sections;
-          _structures = _sections.map((e) => e.structure).toList();
+          _structures = ref
+              .watch(songNotifierProvider)
+              .sections
+              .map((e) => e.structure)
+              .toList();
         }
       });
   }
 
   void _scrollToIndex() {
     final item = ref.watch(songNotifierProvider).selectedSectionIndex;
+    final structures = ref
+        .watch(songNotifierProvider)
+        .sections
+        .map((e) => e.structure)
+        .toList();
+
     if (item == null) return;
 
     final indexToScrollTo =
-        _structures.indexWhere((element) => element.item == item);
+        structures.indexWhere((element) => element.item == item);
     if (indexToScrollTo == -1) return;
 
     setState(() {

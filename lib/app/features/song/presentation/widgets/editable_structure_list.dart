@@ -23,43 +23,41 @@ class EditableStructureList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         itemCount: structures.length,
         itemBuilder: (context, index) {
-          final item = structures[index];
-          int xTimes = 1;
+          final structureItem = structures[index];
+          var xTimes = 1;
           while (index + 1 < structures.length &&
-              structures[index + 1].item == item.item) {
+              structures[index + 1].item == structureItem.item) {
             xTimes++;
             index++;
           }
-          return _buildTile(context, ref, item, xTimes);
+          return AnimatedTile(
+            key: ValueKey('${structureItem.id}-$xTimes'),
+            structureItem: structureItem,
+            xTimes: xTimes,
+            onTap: () {
+              ref
+                  .read(songNotifierProvider.notifier)
+                  .selectSection(structureItem.item);
+              logger.i('selected ${structureItem.item.name}');
+            },
+          );
         },
       ),
-    );
-  }
-
-  Widget _buildTile(
-      BuildContext context, WidgetRef ref, SongStructure item, int xTimes) {
-    return AnimatedTile(
-      item: item,
-      xTimes: xTimes,
-      onTap: () {
-        ref.read(songNotifierProvider.notifier).selectSection(item.item);
-        logger.i('selected ${item.item.name}');
-      },
     );
   }
 }
 
 class AnimatedTile extends StatefulWidget {
-  final SongStructure item;
-  final int xTimes;
-  final VoidCallback onTap;
-
   const AnimatedTile({
-    Key? key,
-    required this.item,
+    required this.structureItem,
     required this.xTimes,
     required this.onTap,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final SongStructure structureItem;
+  final int xTimes;
+  final VoidCallback onTap;
 
   @override
   _AnimatedTileState createState() => _AnimatedTileState();
@@ -79,15 +77,7 @@ class _AnimatedTileState extends State<AnimatedTile>
       vsync: this,
     );
 
-    _colorAnimation = ColorTween(
-      begin: Color(widget.item.item.color),
-      end: Color(widget.item.item.color).withOpacity(0.7),
-    ).animate(_controller);
-
-    _borderColorAnimation = ColorTween(
-      begin: Color(widget.item.item.color),
-      end: Colors.white,
-    ).animate(_controller);
+    _initializeAnimations();
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -105,6 +95,25 @@ class _AnimatedTileState extends State<AnimatedTile>
   void _handleTap() {
     _controller.forward();
     widget.onTap();
+  }
+
+  void _initializeAnimations() {
+    _colorAnimation = ColorTween(
+      begin: Color(widget.structureItem.item.color),
+      end: Color(widget.structureItem.item.color).withOpacity(0.7),
+    ).animate(_controller);
+    _borderColorAnimation = ColorTween(
+      begin: Color(widget.structureItem.item.color),
+      end: Colors.white,
+    ).animate(_controller);
+  }
+
+  @override
+  void didUpdateWidget(AnimatedTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.structureItem != oldWidget.structureItem) {
+      _initializeAnimations();
+    }
   }
 
   @override
@@ -129,7 +138,7 @@ class _AnimatedTileState extends State<AnimatedTile>
                     width: 36,
                     height: 36,
                     alignment: Alignment.center,
-                    key: ValueKey(widget.item.id),
+                    key: ValueKey(widget.structureItem.id),
                     decoration: BoxDecoration(
                       color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
@@ -139,18 +148,18 @@ class _AnimatedTileState extends State<AnimatedTile>
                       shape: BoxShape.circle,
                     ),
                     child: Text(
-                      widget.item.item.shortName,
+                      widget.structureItem.item.shortName,
                       textAlign: TextAlign.center,
-                      style: context.textTheme.titleSmall
+                      style: context.textTheme.titleSmall,
                     ),
                   ),
                   if (widget.xTimes > 1) ...[
                     const SizedBox(width: 4),
                     Text(
                       'x ${widget.xTimes}',
-                      style: context.textTheme.labelSmall!
-                          .copyWith(fontWeight: FontWeight.bold,
-                          color: context.colorScheme.shadow
+                      style: context.textTheme.labelSmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: context.colorScheme.shadow,
                       ),
                     ),
                   ],

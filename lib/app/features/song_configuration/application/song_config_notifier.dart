@@ -29,6 +29,6 @@ class SongConfigurationNotifier extends _$SongConfigurationNotifier {
 
   Future<void> updateSongConfiguration(SongConfigRequest songConfig) async {
     state = state.copyWith(isCustom: songConfig.isCustom ?? false);
-    await songConfigRepository.createSongConfig(songConfigRequest: songConfig);
+    await songConfigRepository.updateSongConfig(songConfigRequest: songConfig);
   }
 }

@@ -78,9 +78,10 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                     final newSections = ref
                         .watch(songPreferencesControllerProvider)
                         .songSections;
-                    final existingSections =
-                        ref.watch(songNotifierProvider).sections;
-                    existingSections.addAll(newSections);
+                    final existingSections = ref
+                        .watch(songNotifierProvider)
+                        .sections
+                      ..addAll(newSections);
                     ref
                         .read(songNotifierProvider.notifier)
                         .updateSongSections(existingSections);
@@ -92,6 +93,9 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                       isOrderPage = true;
                     });
                   } else {
+                    ref
+                        .read(songNotifierProvider.notifier)
+                        .updateSongStructure();
                     context.popDialog();
                   }
                 },

@@ -16,7 +16,7 @@ abstract class SongConfigRepository {
   });
 
   @POST(API.songConfig)
-  Future<SongConfig> createSongConfig({
+  Future<SongConfig> updateSongConfig({
     @Body() SongConfigRequest? songConfigRequest,
   });
 }
