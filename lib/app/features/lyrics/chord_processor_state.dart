@@ -4,16 +4,16 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dar
 class ChordProcessorState extends Equatable {
   const ChordProcessorState({this.document});
 
-  final ChordLyricsDocument? document;
+  final Content? document;
 
   @override
   List<Object> get props => [];
 
   ChordProcessorState copyWith({
-    ChordLyricsDocument? document,
+    Content? content,
   }) {
     return ChordProcessorState(
-      document: document ?? this.document,
+      document: content ?? this.document,
     );
   }
 }

@@ -15,7 +15,7 @@ class AddStructureItemsWidget extends ConsumerStatefulWidget {
 
 class AddStructureItemsWidgetState
     extends ConsumerState<AddStructureItemsWidget> {
-  Set<Section> _sectionsSet = {};
+  List<Section> _originalSections = [];
   final List<Section> _addedSections = [];
 
   @override
@@ -23,7 +23,8 @@ class AddStructureItemsWidgetState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _sectionsSet = ref.watch(songNotifierProvider).sections.toSet();
+        _originalSections =
+            ref.watch(songNotifierProvider).originalSongSections;
       });
     });
   }
@@ -39,27 +40,22 @@ class AddStructureItemsWidgetState
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: _sectionsSet.length,
+            itemCount: _originalSections.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
                   setState(() {
                     if (_isItemChecked(index)) {
-                      _addedSections.remove(_sectionsSet.elementAt(index));
+                      _addedSections.remove(_originalSections.elementAt(index));
                       ref
                           .read(songPreferencesControllerProvider.notifier)
-                          .removeSongSection(_sectionsSet.elementAt(index));
-                      // ref
-                      //     .read(songNotifierProvider.notifier)
-                      //     .removeSongSections(_sectionsSet.elementAt(index));
+                          .removeSongSection(
+                              _originalSections.elementAt(index));
                     } else {
-                      _addedSections.add(_sectionsSet.elementAt(index));
+                      _addedSections.add(_originalSections.elementAt(index));
                       ref
                           .read(songPreferencesControllerProvider.notifier)
-                          .addSongSection(_sectionsSet.elementAt(index));
-                      // ref
-                      //     .read(songNotifierProvider.notifier)
-                      //     .addSongSection(_sectionsSet.elementAt(index));
+                          .addSongSection(_originalSections.elementAt(index));
                     }
                   });
                 },
@@ -84,13 +80,13 @@ class AddStructureItemsWidgetState
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                          _sectionsSet.elementAt(index).structure.id,
+                          _originalSections.elementAt(index).structure.id,
                         ),
                         decoration: BoxDecoration(
                           color: context.colorScheme.onSurfaceVariant,
                           border: Border.all(
                             color: Color(
-                              _sectionsSet
+                              _originalSections
                                   .elementAt(index)
                                   .structure
                                   .item
@@ -101,7 +97,7 @@ class AddStructureItemsWidgetState
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          _sectionsSet
+                          _originalSections
                               .elementAt(index)
                               .structure
                               .item
@@ -113,7 +109,11 @@ class AddStructureItemsWidgetState
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _sectionsSet.elementAt(index).structure.item.name,
+                          _originalSections
+                              .elementAt(index)
+                              .structure
+                              .item
+                              .name,
                           style: context.textTheme.titleSmall,
                         ),
                       ),
@@ -142,6 +142,6 @@ class AddStructureItemsWidgetState
   }
 
   bool _isItemChecked(int index) => _addedSections.contains(
-        _sectionsSet.elementAt(index),
+        _originalSections.elementAt(index),
       );
 }
