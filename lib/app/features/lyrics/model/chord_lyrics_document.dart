@@ -1,20 +1,11 @@
-import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
+import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 
-class ChordLyricsDocument {
-  ChordLyricsDocument(
-    this.chordLyricsLines, {
-    this.capo,
-    this.title,
-    this.artist,
-    this.key,
-    this.structure,
+class Content {
+  Content({
+    required this.sections,
+    required this.originalSections,
   });
 
-  final List<ChordLyricsLine> chordLyricsLines;
-  final int? capo;
-  final String? title;
-  final String? artist;
-  final String? key;
-
-  final String? structure;
+  final List<Section> sections;
+  final List<Section> originalSections;
 }

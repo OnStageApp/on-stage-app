@@ -1,13 +1,11 @@
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
-import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
+import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -33,7 +31,10 @@ class SongNotifier extends _$SongNotifier {
     }
     state = state.copyWith(isLoading: true);
     final song = await _songRepository.getSong(songId: songId);
-    state = state.copyWith(song: song, isLoading: false);
+    state = state.copyWith(
+      song: song,
+      isLoading: false,
+    );
     logger.i('init song with title: ${state.song.title}');
   }
 
@@ -41,38 +42,38 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(processingSong: isLoading);
   }
 
-  void getSections(List<ChordLyricsLine> lines) {
-    final sections = <Section>[];
-    var items = <ChordLyricsLine>[];
-
-    var structure = const SongStructure(StructureItem.none, 0);
-    for (var i = 0; i < lines.length; i++) {
-      if (lines[i].structure.isNotNullEmptyOrWhitespace ||
-          i == lines.length - 1) {
-        if (items.isNotNullOrEmpty && structure.item != StructureItem.none) {
-          sections.add(
-            Section(items, structure),
-          );
-        }
-        structure = SongStructure(
-          stringToEnum(
-            lines[i].structure,
-          ),
-          i,
-        );
-        items = [];
-      } else {
-        items.add(lines[i]);
-      }
-    }
-
+  void setSections(Content? document) {
     state = state.copyWith(
-      sections: sections,
+      sections: document?.sections,
+      originalSongSections: document?.originalSections,
     );
+  }
+
+  List<StructureItem> getOriginalStructure() {
+    return state.originalSongSections.map((e) => e.structure.item).toList();
   }
 
   void updateSongSections(List<Section> newSections) {
     state = state.copyWith(sections: newSections);
+  }
+
+  void updateSongSectionsWithNewStructureItems(
+      List<StructureItem> structureItems) {
+    final newSections = _createSectionBasedOnNewStructureItems(structureItems);
+    final allSections = state.sections;
+    final updatedSections = [...allSections, ...newSections];
+    updateSongSections(updatedSections);
+  }
+
+  List<Section> _createSectionBasedOnNewStructureItems(
+      List<StructureItem> structureItems) {
+    final newSections = <Section>[];
+    for (final item in structureItems) {
+      final section = state.originalSongSections
+          .firstWhere((element) => element.structure.item == item);
+      newSections.add(section);
+    }
+    return newSections;
   }
 
   void transpose(SongKey newTonality) {

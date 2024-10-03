@@ -14,18 +14,11 @@ import 'package:on_stage_app/app/utils/widget_utils.dart';
 
 class SongDetailWidget extends ConsumerStatefulWidget {
   const SongDetailWidget({
-    // required this.lyrics,
-    // required this.textStyle,
-    // required this.chordStyle,
-    // required this.structureStyle,
     required this.onTapChord,
-    // required this.chorusStyle,
     super.key,
-    // this.capoStyle,
     this.scaleFactor = 1.0,
     this.widgetPadding = 0,
     this.transposeIncrement = 0,
-    this.scrollSpeed = 0,
     this.lineHeight = 8.0,
     this.horizontalAlignment = CrossAxisAlignment.center,
     this.scrollPhysics = const ClampingScrollPhysics(),
@@ -33,47 +26,23 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.trailingWidget,
   });
 
-  // final String lyrics;
-  // final TextStyle textStyle;
-  // final TextStyle chordStyle;
-  // final TextStyle structureStyle;
-
   final Function onTapChord;
 
-  /// To help stop overflow, this should be the sum of left & right padding
   final int widgetPadding;
 
-  /// Transpose Increment for the Chords,
-  /// default value is 0, which means no transpose is applied
   final int transposeIncrement;
 
-  /// Auto Scroll Speed,
-  /// default value is 0, which means no auto scroll is applied
-  final int scrollSpeed;
-
-  /// Extra height between each line
   final double lineHeight;
 
-  /// Widget before the lyrics starts
   final Widget? leadingWidget;
 
-  /// Widget after the lyrics finishes
   final Widget? trailingWidget;
 
-  /// Horizontal alignment
   final CrossAxisAlignment horizontalAlignment;
 
-  /// Scale factor of chords and lyrics
   final double scaleFactor;
 
-  /// Define physics of scrolling
   final ScrollPhysics scrollPhysics;
-
-  /// If not defined it will be the bold version of [textStyle]
-  // final TextStyle chorusStyle;
-
-  /// If not defined it will be the italic version of [textStyle]
-  // final TextStyle? capoStyle;
 
   @override
   SongDetailWidgetState createState() => SongDetailWidgetState();
@@ -82,11 +51,10 @@ class SongDetailWidget extends ConsumerStatefulWidget {
 class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   late final ScrollController _controller;
 
-  // late TextStyle chorusStyle;
   late TextStyle capoStyle;
   late TextStyle commentStyle;
   List<Section> _sections = List.empty(growable: true);
-  ChordLyricsDocument? _chordLyricsDocument;
+  Content? _chordLyricsDocument;
 
   List<SongStructure> _structures = List.empty(growable: true);
   final Map<int, GlobalKey> _itemKey = {};
@@ -119,12 +87,15 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   Future<void> _processSong() async {
     _processText();
 
+    _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
+    ref.read(songNotifierProvider.notifier).setSections(_chordLyricsDocument);
+    _sections = ref.watch(songNotifierProvider).sections;
+    _structures = ref
+        .watch(songNotifierProvider)
+        .sections
+        .map((e) => e.structure)
+        .toList();
     setState(() {
-      _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
-      final lines = _chordLyricsDocument!.chordLyricsLines;
-      ref.read(songNotifierProvider.notifier).getSections(lines);
-      _sections = ref.watch(songNotifierProvider).sections;
-      _structures = _sections.map((e) => e.structure).toList();
       for (var i = 0; i < _structures.length; i++) {
         _itemKey[i] = GlobalKey();
       }
@@ -133,7 +104,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   void _processText() {
     ref.read(chordProcessorProvider.notifier).processText(
-          text: ref.watch(songNotifierProvider).song.lyrics!,
+          rawSections: ref.watch(songNotifierProvider).song.rawSections ?? [],
+          structures: ref.watch(songNotifierProvider).song.structure ?? [],
           lyricsStyle: _textStyle,
           chordStyle: _chordStyle,
           widgetPadding: widget.widgetPadding,
@@ -157,7 +129,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   Widget build(BuildContext context) {
     _listens();
     if (_chordLyricsDocument == null) return const SizedBox();
-    if (_chordLyricsDocument!.chordLyricsLines.isEmpty) return const SizedBox();
+    if (_chordLyricsDocument!.sections.isEmpty) {
+      return const SizedBox();
+    }
     return SingleChildScrollView(
       controller: _controller,
       physics: widget.scrollPhysics,
@@ -217,8 +191,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         if (previous?.transposeIncremenet != next.transposeIncremenet) {
           _processText();
           _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
-          final lines = _chordLyricsDocument!.chordLyricsLines;
-          ref.read(songNotifierProvider.notifier).getSections(lines);
+          ref
+              .read(songNotifierProvider.notifier)
+              .setSections(_chordLyricsDocument);
           _sections = ref.watch(songNotifierProvider).sections;
           _structures = _sections.map((e) => e.structure).toList();
         }
@@ -327,7 +302,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     );
   }
 
-  Widget _buildChordsLine(ChordLyricsLine line) {
+  Widget _buildChordsLine(SongLines line) {
     return Row(
       children: line.chords
           .map(
@@ -389,7 +364,7 @@ class TextRender extends CustomPainter {
 class Section {
   Section(this.lines, this.structure);
 
-  final List<ChordLyricsLine> lines;
+  final List<SongLines> lines;
   final SongStructure structure;
 
   @override

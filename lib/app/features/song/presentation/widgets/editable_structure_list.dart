@@ -23,12 +23,15 @@ class EditableStructureList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         itemCount: structures.length,
         itemBuilder: (context, index) {
+          if (index > 0 &&
+              structures[index].item == structures[index - 1].item) {
+            return const SizedBox.shrink(); // Skip duplicate items
+          }
           final item = structures[index];
           int xTimes = 1;
-          while (index + 1 < structures.length &&
-              structures[index + 1].item == item.item) {
+          while (index + xTimes < structures.length &&
+              structures[index + xTimes].item == item.item) {
             xTimes++;
-            index++;
           }
           return _buildTile(context, ref, item, xTimes);
         },
@@ -138,20 +141,17 @@ class _AnimatedTileState extends State<AnimatedTile>
                       ),
                       shape: BoxShape.circle,
                     ),
-                    child: Text(
-                      widget.item.item.shortName,
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleSmall
-                    ),
+                    child: Text(widget.item.item.shortName,
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.titleSmall),
                   ),
                   if (widget.xTimes > 1) ...[
                     const SizedBox(width: 4),
                     Text(
                       'x ${widget.xTimes}',
-                      style: context.textTheme.labelSmall!
-                          .copyWith(fontWeight: FontWeight.bold,
-                          color: context.colorScheme.shadow
-                      ),
+                      style: context.textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.colorScheme.shadow),
                     ),
                   ],
                 ],
