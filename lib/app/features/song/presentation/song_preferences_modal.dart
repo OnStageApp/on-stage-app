@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_vocal_lead.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_structure.dart';

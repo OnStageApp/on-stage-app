@@ -23,7 +23,7 @@ class SongAppBarLeading extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (key != null && key.isNotEmpty)
+        if (key != null)
           TextButton(
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -37,13 +37,13 @@ class SongAppBarLeading extends ConsumerWidget {
             onPressed: () {
               ChangeKeyModal.show(
                 context: context,
-                songKey: ref.watch(songNotifierProvider).song.songKey,
+                songKey: ref.watch(songNotifierProvider).song.updateKey!,
               );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                ref.watch(songNotifierProvider).song.key ?? '',
+                ref.watch(songNotifierProvider).song.updateKey?.name ?? '',
                 style: context.textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
@@ -56,7 +56,7 @@ class SongAppBarLeading extends ConsumerWidget {
           onTap: () {
             SongPreferencesModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.songKey,
+              tonality: ref.watch(songNotifierProvider).song.updateKey!,
               isFromEvent: isFromEvent,
             );
           },

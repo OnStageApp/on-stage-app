@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/chord_type_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -49,6 +49,11 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   @override
   void initState() {
     _songKey = widget.songKey;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _songKey = ref.read(songNotifierProvider).song.updateKey!;
+      });
+    });
     super.initState();
   }
 
@@ -62,7 +67,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         children: [
           _buildKeys(),
           const SizedBox(height: Insets.small),
-          _buildChordTypes(widget.songKey.isSharp ?? false),
+          _buildChordTypes(_songKey.isSharp),
           const SizedBox(height: Insets.normal),
           ContinueButton(
             text: 'Save',
@@ -86,7 +91,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               style: context.textTheme.titleSmall,
             ),
             Text(
-              'Original ${widget.songKey.chord?.name}',
+              'Original ${ref.watch(songNotifierProvider).song.key?.name}',
               style: context.textTheme.titleSmall!.copyWith(
                 color: context.colorScheme.primary,
               ),
@@ -102,7 +107,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
-            children: ChordsEnum.values.map((chord) {
+            children: ChordsWithoutSharp.values.map((chord) {
               if (chord == _songKey.chord) {
                 return _buildChordLabel(chord, isSelected: true);
               }
@@ -114,7 +119,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     );
   }
 
-  Widget _buildChordLabel(ChordsEnum chord, {bool isSelected = false}) {
+  Widget _buildChordLabel(ChordsWithoutSharp chord, {bool isSelected = false}) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -158,7 +163,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           ),
           ChordTypeWidget(
             chordType: '♯',
-            isSharp: _songKey.isSharp! == true,
+            isSharp: _songKey.isSharp == true,
             onTap: _getInactiveForEAndB()
                 ? () {
                     setState(() {
@@ -173,8 +178,8 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   bool _getInactiveForEAndB() {
-    return _songKey.chord!.name != ChordsEnum.E.name &&
-        _songKey.chord!.name != ChordEnum.B.name;
+    return _songKey.chord!.name != ChordsWithoutSharp.E.name &&
+        _songKey.chord!.name != ChordsWithoutSharp.B.name;
   }
 
   TextStyle _getStyling({bool isSelected = false}) {

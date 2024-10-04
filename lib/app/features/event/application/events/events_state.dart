@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/events_response.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/event/domain/models/upcoming_event/upcoming_event_model.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model.dart';
 
 class EventsState extends Equatable {
   const EventsState({
@@ -45,7 +44,6 @@ class EventsState extends Equatable {
     EventsResponse? upcomingEventsResponse,
     EventsResponse? filteredEventsResponse,
     UpcomingEventModel? upcomingEvent,
-    List<SongModel>? playlist,
     List<StagerOverview>? stagers,
     EventModel? event,
     bool? isLoading,

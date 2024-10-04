@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 part 'song_model_v2.freezed.dart';
 part 'song_model_v2.g.dart';
@@ -15,7 +15,8 @@ class SongModelV2 with _$SongModelV2 {
     List<RawSection>? rawSections,
     List<StructureItem>? structure,
     int? tempo,
-    String? key,
+    SongKey? key,
+    SongKey? updateKey,
     String? createdAt,
     String? updatedAt,
     Artist? artist,
@@ -27,6 +28,4 @@ class SongModelV2 with _$SongModelV2 {
       _$SongModelV2FromJson(json);
 
   const SongModelV2._();
-
-  SongKey get songKey => SongKey.fromString(key);
 }

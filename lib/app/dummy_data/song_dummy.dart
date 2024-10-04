@@ -1,8 +1,10 @@
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 class SongDummy {
   static const song = SongModelV2(
@@ -53,7 +55,16 @@ class SongDummy {
       StructureItem.C1,
     ],
     tempo: 120,
-    key: 'G',
+    key: SongKey(
+      chord: ChordsWithoutSharp.G,
+      isMajor: true,
+      isSharp: false,
+    ),
+    updateKey: SongKey(
+      chord: ChordsWithoutSharp.G,
+      isMajor: true,
+      isSharp: false,
+    ),
     createdAt: '2024-10-03T12:00:00Z',
     updatedAt: '2024-10-03T14:30:00Z',
     artist: Artist(id: 'artist456', name: 'John Doe'),

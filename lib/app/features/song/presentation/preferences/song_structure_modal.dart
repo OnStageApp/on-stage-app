@@ -92,6 +92,9 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                       isOrderPage = true;
                     });
                   } else {
+                    // ref
+                    //     .read(songNotifierProvider.notifier)
+                    //     .updateSongStructure();
                     context.popDialog();
                   }
                 },

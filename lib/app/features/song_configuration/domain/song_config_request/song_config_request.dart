@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 part 'song_config_request.freezed.dart';
 part 'song_config_request.g.dart';

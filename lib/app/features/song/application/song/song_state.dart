@@ -9,7 +9,6 @@ class SongState extends Equatable {
     this.song = const SongModelV2(),
     this.sections = const [],
     this.isLoading = false,
-    this.transposeIncremenet = 0,
     this.document,
     this.selectedSectionIndex,
     this.processingSong = false,
@@ -22,7 +21,6 @@ class SongState extends Equatable {
   final SongModelV2 song;
   final List<Section> sections;
   final List<Section> originalSongSections;
-  final int transposeIncremenet;
   final StructureItem? selectedSectionIndex;
   final bool processingSong;
 
@@ -37,17 +35,15 @@ class SongState extends Equatable {
     bool? processingSong,
     List<Section>? sections,
     SongModelV2? song,
-    int? transposeIncrement,
     Content? document,
-    StructureItem? selectedSectionIndex,
+    StructureItem? selectedStructureItem,
     List<Section>? originalSongSections,
   }) {
     return SongState(
       song: song ?? this.song,
       sections: sections ?? this.sections,
       isLoading: isLoading ?? this.isLoading,
-      transposeIncremenet: transposeIncrement ?? transposeIncremenet,
-      selectedSectionIndex: selectedSectionIndex ?? this.selectedSectionIndex,
+      selectedSectionIndex: selectedStructureItem ?? this.selectedSectionIndex,
       document: document ?? this.document,
       processingSong: processingSong ?? this.processingSong,
       originalSongSections: originalSongSections ?? this.originalSongSections,
