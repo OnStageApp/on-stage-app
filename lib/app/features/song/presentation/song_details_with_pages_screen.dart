@@ -97,28 +97,20 @@ class SongDetailsWithPagesScreenState
   Widget _buildContent() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: _isSongNull()
-                  ? const SizedBox()
-                  : SongDetailWidget(
-                      widgetPadding: 64,
-                      onTapChord: () {},
-                    ),
-            ),
-          ],
-        ),
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: _isSongNull()
+            ? const SizedBox()
+            : SongDetailWidget(
+                widgetPadding: 64,
+                onTapChord: () {},
+              ),
       ),
     );
   }

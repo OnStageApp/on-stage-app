@@ -96,7 +96,8 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
     }
 
     setState(() {
-      _sections.insert(newIndex, _sections.removeAt(oldIndex));
+      final old = _sections.removeAt(oldIndex);
+      _sections.insert(newIndex, old);
     });
 
     ref.read(songNotifierProvider.notifier).updateSongSections(_sections);

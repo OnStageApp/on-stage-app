@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart'
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chord_processor.g.dart';
@@ -29,16 +30,19 @@ class ChordProcessor extends _$ChordProcessor {
     required TextStyle lyricsStyle,
     required TextStyle chordStyle,
     required double media,
-    required String key,
+    required SongKey originalSongKey,
+    required SongKey updateSongKey,
     double scaleFactor = 1.0,
     int widgetPadding = 0,
-    int transposeIncrement = 0,
     SongViewMode songViewMode = SongViewMode.american,
   }) {
+    //diff between original key and new key
+
+    final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
     final chordTransposer = ChordTransposer(
       songViewMode,
       transpose: transposeIncrement,
-      key: key,
+      key: originalSongKey.name!,
     );
 
     _textScaleFactor = scaleFactor;
@@ -215,4 +219,43 @@ class ChordProcessor extends _$ChordProcessor {
 
     return chordLyricsLine;
   }
+
+  int differenceFrom(SongKey oldKey, SongKey newKey) {
+    if (oldKey.chord == null || newKey.chord == null) {
+      return 0; // or throw an exception
+    }
+
+    final thisIndex = _getIndex(oldKey);
+    final otherIndex = _getIndex(newKey);
+
+    var difference = otherIndex - thisIndex;
+    if (difference < 0) {
+      difference += 12;
+    }
+
+    return difference;
+  }
+
+  static int _getIndex(SongKey key) {
+    var noteName = key.chord!.name;
+    if (key.isSharp == true) {
+      noteName += '#';
+    }
+    return _chromaticScale.indexOf(noteName);
+  }
+
+  static const List<String> _chromaticScale = [
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B',
+  ];
 }

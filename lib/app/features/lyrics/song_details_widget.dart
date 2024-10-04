@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
-import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
@@ -11,6 +10,8 @@ import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
+import 'package:on_stage_app/logger.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class SongDetailWidget extends ConsumerStatefulWidget {
   const SongDetailWidget({
@@ -18,7 +19,6 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     super.key,
     this.scaleFactor = 1.0,
     this.widgetPadding = 0,
-    this.transposeIncrement = 0,
     this.lineHeight = 8.0,
     this.horizontalAlignment = CrossAxisAlignment.center,
     this.scrollPhysics = const ClampingScrollPhysics(),
@@ -29,8 +29,6 @@ class SongDetailWidget extends ConsumerStatefulWidget {
   final Function onTapChord;
 
   final int widgetPadding;
-
-  final int transposeIncrement;
 
   final double lineHeight;
 
@@ -49,29 +47,23 @@ class SongDetailWidget extends ConsumerStatefulWidget {
 }
 
 class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
-  late final ScrollController _controller;
-
-  late TextStyle capoStyle;
-  late TextStyle commentStyle;
-  List<Section> _sections = List.empty(growable: true);
-  Content? _chordLyricsDocument;
-
-  List<SongStructure> _structures = List.empty(growable: true);
-  final Map<int, GlobalKey> _itemKey = {};
-  final _scrollController = ScrollController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
 
   late TextStyle _textStyle;
   late TextStyle _chordStyle;
+
+  var _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = ScrollController();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _getTextStyles();
-      await _processSong();
+      setState(_getTextStyles);
+      await _processTextAndSetSections();
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -84,157 +76,116 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     );
   }
 
-  Future<void> _processSong() async {
+  Future<void> _processTextAndSetSections() async {
     _processText();
 
-    _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
-    ref.read(songNotifierProvider.notifier).setSections(_chordLyricsDocument);
-    _sections = ref.watch(songNotifierProvider).sections;
-    _structures = ref
-        .watch(songNotifierProvider)
-        .sections
-        .map((e) => e.structure)
-        .toList();
-    setState(() {
-      for (var i = 0; i < _structures.length; i++) {
-        _itemKey[i] = GlobalKey();
-      }
-    });
+    ref
+        .read(songNotifierProvider.notifier)
+        .setSections(ref.watch(chordProcessorProvider).document);
   }
 
   void _processText() {
+    final structures = ref.watch(songNotifierProvider).song.structure ?? [];
     ref.read(chordProcessorProvider.notifier).processText(
           rawSections: ref.watch(songNotifierProvider).song.rawSections ?? [],
-          structures: ref.watch(songNotifierProvider).song.structure ?? [],
+          structures: structures,
           lyricsStyle: _textStyle,
           chordStyle: _chordStyle,
           widgetPadding: widget.widgetPadding,
           scaleFactor: widget.scaleFactor,
-          transposeIncrement:
-              ref.watch(songNotifierProvider).transposeIncremenet,
+          updateSongKey: ref.watch(songNotifierProvider).song.updateKey!,
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
               SongViewMode.american,
-          key: ref.watch(songNotifierProvider).song.key ?? 'C',
+          originalSongKey: ref.watch(songNotifierProvider).song.key!,
         );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final sections = ref.watch(songNotifierProvider).sections;
+    final chordLyricsDocument = ref.watch(chordProcessorProvider).document;
     _listens();
-    if (_chordLyricsDocument == null) return const SizedBox();
-    if (_chordLyricsDocument!.sections.isEmpty) {
+    if (chordLyricsDocument == null ||
+        chordLyricsDocument.sections.isEmpty ||
+        _isLoading) {
       return const SizedBox();
     }
-    return SingleChildScrollView(
-      controller: _controller,
-      physics: widget.scrollPhysics,
-      child: Column(
-        crossAxisAlignment: widget.horizontalAlignment,
-        children: [
-          const SizedBox(
-            height: 24,
+
+    return ScrollablePositionedList.builder(
+      itemScrollController: _itemScrollController,
+      physics: const BouncingScrollPhysics(),
+      itemCount: sections.length,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: context.colorScheme.onSurfaceVariant,
           ),
-          ListView.builder(
-            controller: _scrollController,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _sections.length,
-            itemBuilder: (context, index) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-                child: _buildLines(index, context),
-              );
-            },
-          ),
-          if (widget.trailingWidget != null) widget.trailingWidget!,
-        ],
-      ),
+          child: _buildLines(index, context),
+        );
+      },
     );
   }
 
   void _listens() {
     ref
       ..listen(userSettingsNotifierProvider, (previous, next) {
-        if (previous?.songView != next.songView) {
-          _processSong();
+        if (previous?.songView != next.songView ||
+            previous?.textSize != next.textSize) {
+          logger.i('user settings changed');
+          setState(_getTextStyles);
+          _processTextAndSetSections();
         }
       })
-      ..listen(userSettingsNotifierProvider, (previous, next) {
-        setState(() {
-          _textStyle = _textStyle.copyWith(
-            fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size,
-          );
-          _chordStyle = _chordStyle.copyWith(
-            fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size,
-          );
-        });
-        _processSong();
-      })
       ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.selectedSectionIndex != next.selectedSectionIndex) {
+        if (previous?.selectedSectionIndex != next.selectedSectionIndex &&
+            next.selectedSectionIndex != StructureItem.none) {
+          logger.i('scrolling to index');
           _scrollToIndex();
         }
       })
       ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.transposeIncremenet != next.transposeIncremenet) {
-          _processText();
-          _chordLyricsDocument = ref.watch(chordProcessorProvider).document;
-          ref
-              .read(songNotifierProvider.notifier)
-              .setSections(_chordLyricsDocument);
-          _sections = ref.watch(songNotifierProvider).sections;
-          _structures = _sections.map((e) => e.structure).toList();
+        if (previous?.song.updateKey != next.song.updateKey) {
+          logger.i('transpose increment changed');
+          _processTextAndSetSections();
         }
       });
   }
 
-  void _scrollToIndex() {
-    final item = ref.watch(songNotifierProvider).selectedSectionIndex;
+  Future<void> _scrollToIndex() async {
+    final item = ref.read(songNotifierProvider).selectedSectionIndex;
     if (item == null) return;
+    final structures = ref
+        .read(songNotifierProvider)
+        .sections
+        .map((e) => e.structure)
+        .toList();
 
     final indexToScrollTo =
-        _structures.indexWhere((element) => element.item == item);
+        structures.indexWhere((element) => element.item == item);
     if (indexToScrollTo == -1) return;
 
-    setState(() {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
+    if (_itemScrollController.isAttached) {
+      await _itemScrollController.scrollTo(
+        index: indexToScrollTo,
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
-        duration: const Duration(milliseconds: 300),
       );
-
-      Future.delayed(const Duration(milliseconds: 350), () {
-        final globalKey = _itemKey[indexToScrollTo];
-        if (globalKey != null) {
-          final itemContext = globalKey.currentContext;
-          if (itemContext != null) {
-            Scrollable.ensureVisible(
-              itemContext,
-              alignment: 0.5,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          }
-        }
-      });
-    });
+    }
+    ref.read(songNotifierProvider.notifier).selectSection(StructureItem.none);
   }
 
   Widget _buildLines(int index, BuildContext context) {
+    final sections = ref.watch(songNotifierProvider).sections;
     return Column(
-      key: _itemKey[index],
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
@@ -242,7 +193,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60),
-            color: Color(_sections[index].structure.item.color),
+            color: Color(sections[index].structure.item.color),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -254,14 +205,14 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                   color: context.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(
-                  _sections[index].structure.item.shortName,
+                  sections[index].structure.item.shortName,
                   style: context.textTheme.labelMedium!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(width: 12),
               Text(
-                _sections[index].structure.item.name,
+                sections[index].structure.item.name,
                 style: context.textTheme.labelLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.shadow,
@@ -277,9 +228,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           separatorBuilder: (context, index) => SizedBox(
             height: widget.lineHeight,
           ),
-          itemCount: _sections[index].lines.length,
+          itemCount: sections[index].lines.length,
           itemBuilder: (context, index2) {
-            final line = _sections[index].lines[index2];
+            final line =
+                ref.watch(songNotifierProvider).sections[index].lines[index2];
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

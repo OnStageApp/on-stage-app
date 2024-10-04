@@ -1,10 +1,10 @@
-import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
+import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/tonality_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -14,7 +14,12 @@ part 'song_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class SongNotifier extends _$SongNotifier {
-  late final SongRepository _songRepository;
+  SongRepository? _songRepository;
+
+  SongRepository get songRepository {
+    _songRepository ??= SongRepository(ref.read(dioProvider));
+    return _songRepository!;
+  }
 
   bool isChorus = false;
 
@@ -30,7 +35,9 @@ class SongNotifier extends _$SongNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    final song = await _songRepository.getSong(songId: songId);
+    // var song = await songRepository.getSong(songId: songId);
+    var song = SongDummy.song;
+
     state = state.copyWith(
       song: song,
       isLoading: false,
@@ -58,7 +65,8 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void updateSongSectionsWithNewStructureItems(
-      List<StructureItem> structureItems) {
+    List<StructureItem> structureItems,
+  ) {
     final newSections = _createSectionBasedOnNewStructureItems(structureItems);
     final allSections = state.sections;
     final updatedSections = [...allSections, ...newSections];
@@ -66,7 +74,8 @@ class SongNotifier extends _$SongNotifier {
   }
 
   List<Section> _createSectionBasedOnNewStructureItems(
-      List<StructureItem> structureItems) {
+    List<StructureItem> structureItems,
+  ) {
     final newSections = <Section>[];
     for (final item in structureItems) {
       final section = state.originalSongSections
@@ -77,43 +86,15 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void transpose(SongKey newTonality) {
-    final currentTonality = state.song.songKey;
-    final currentChord = currentTonality;
-    final changedChord = newTonality;
-    final currentSemitone = currentTonality!.isSharp ?? false;
-    final changedSemitone = newTonality.isSharp ?? false;
-
-    var currentChordValue = currentChord.chord!.value;
-    var changedChordValue = changedChord.chord!.value;
-
-    if (currentSemitone) {
-      currentChordValue++;
-    }
-
-    if (changedSemitone) {
-      changedChordValue++;
-    }
-
-    var difference = changedChordValue - currentChordValue;
-
-    if (difference > 6) {
-      difference -= 12;
-    } else if (difference < -6) {
-      difference += 12;
-    }
-
-    final newSong = state.song.copyWith(
-        //TODO: This has to be changeed using a song configuration
-        // songKey: newTonality,
-        );
-
+    final updatedSong = state.song.copyWith(
+      updateKey: newTonality,
+    );
     state = state.copyWith(
-      transposeIncrement: difference,
-      song: newSong,
+      song: updatedSong,
     );
   }
 
   void selectSection(StructureItem item) {
-    state = state.copyWith(selectedSectionIndex: item);
+    state = state.copyWith(selectedStructureItem: item);
   }
 }
