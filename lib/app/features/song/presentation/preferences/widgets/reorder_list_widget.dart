@@ -51,11 +51,11 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       itemBuilder: (context, index) {
         return ReordableListItem(
           canSlide: false,
-          itemKey: '${_sections[index].structure.id}_$index',
-          itemId: _sections[index].structure.id,
-          color: _sections[index].structure.item.color,
-          shortName: _sections[index].structure.item.shortName,
-          name: _sections[index].structure.item.name,
+          itemKey: '${_sections[index].structure.shortName}_$index',
+          itemId: _sections[index].structure.index,
+          color: _sections[index].structure.color,
+          shortName: _sections[index].structure.shortName,
+          name: _sections[index].structure.name,
         );
       },
     );
@@ -76,13 +76,13 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       ),
       itemBuilder: (context, index) {
         return Container(
-          key: ValueKey('${_sections[index].structure.id}_$index'),
+          key: ValueKey('${_sections[index].structure.shortName}_$index'),
           child: ReordableListItem(
-            itemKey: '${_sections[index].structure.id}_$index',
-            itemId: _sections[index].structure.id,
-            color: _sections[index].structure.item.color,
-            shortName: _sections[index].structure.item.shortName,
-            name: _sections[index].structure.item.name,
+            itemKey: '${_sections[index].structure.shortName}_$index',
+            itemId: _sections[index].structure.index,
+            color: _sections[index].structure.color,
+            shortName: _sections[index].structure.shortName,
+            name: _sections[index].structure.name,
           ),
         );
       },

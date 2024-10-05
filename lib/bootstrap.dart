@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,16 +16,17 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         ..profilesSampleRate = 1.0;
     },
     appRunner: () async {
-      FlutterError.onError = (FlutterErrorDetails details) {
-        Sentry.captureException(
-          details.exception,
-          stackTrace: details.stack,
-        );
-        log(
-          details.exceptionAsString(),
-          stackTrace: details.stack,
-        );
-      };
+      //TODO: Uncomment when we need sentry
+      // FlutterError.onError = (FlutterErrorDetails details) {
+      //   Sentry.captureException(
+      //     details.exception,
+      //     stackTrace: details.stack,
+      //   );
+      //   log(
+      //     details.exceptionAsString(),
+      //     stackTrace: details.stack,
+      //   );
+      // };
 
       final sharedPreferences = await SharedPreferences.getInstance();
 

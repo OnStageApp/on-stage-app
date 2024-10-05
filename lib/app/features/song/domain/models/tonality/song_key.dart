@@ -14,6 +14,9 @@ class SongKey with _$SongKey {
 
   const SongKey._();
 
+  factory SongKey.fromJson(Map<String, dynamic> json) =>
+      _$SongKeyFromJson(json);
+
   String get name {
     if (chord == null) {
       return 'Key not found';
@@ -30,7 +33,4 @@ class SongKey with _$SongKey {
     }
     return result;
   }
-
-  factory SongKey.fromJson(Map<String, dynamic> json) =>
-      _$SongKeyFromJson(json);
 }

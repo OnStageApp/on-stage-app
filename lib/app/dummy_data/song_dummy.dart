@@ -55,15 +55,15 @@ class SongDummy {
       StructureItem.C1,
     ],
     tempo: 120,
-    key: SongKey(
+    originalKey: SongKey(
       chord: ChordsWithoutSharp.G,
-      isMajor: true,
-      isSharp: false,
+      isMajor: false,
+      isSharp: true,
     ),
-    updateKey: SongKey(
-      chord: ChordsWithoutSharp.G,
-      isMajor: true,
-      isSharp: false,
+    key: SongKey(
+      chord: ChordsWithoutSharp.A,
+      isMajor: false,
+      isSharp: true,
     ),
     createdAt: '2024-10-03T12:00:00Z',
     updatedAt: '2024-10-03T14:30:00Z',

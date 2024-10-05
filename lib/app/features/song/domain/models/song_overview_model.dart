@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 part 'song_overview_model.freezed.dart';
 part 'song_overview_model.g.dart';
@@ -10,7 +11,7 @@ class SongOverview with _$SongOverview {
     required String id,
     String? title,
     int? tempo,
-    String? key,
+    @JsonKey(name: 'originalKey') SongKey? key,
     Artist? artist,
     @Default(false) bool isFavorite,
   }) = _SongOverview;

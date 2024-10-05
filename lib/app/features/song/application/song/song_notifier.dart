@@ -1,4 +1,3 @@
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
@@ -35,8 +34,8 @@ class SongNotifier extends _$SongNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    // var song = await songRepository.getSong(songId: songId);
-    var song = SongDummy.song;
+    var song = await songRepository.getSong(songId: songId);
+    // var song = SongDummy.song;
 
     state = state.copyWith(
       song: song,
@@ -57,7 +56,7 @@ class SongNotifier extends _$SongNotifier {
   }
 
   List<StructureItem> getOriginalStructure() {
-    return state.originalSongSections.map((e) => e.structure.item).toList();
+    return state.originalSongSections.map((e) => e.structure).toList();
   }
 
   void updateSongSections(List<Section> newSections) {
@@ -79,7 +78,7 @@ class SongNotifier extends _$SongNotifier {
     final newSections = <Section>[];
     for (final item in structureItems) {
       final section = state.originalSongSections
-          .firstWhere((element) => element.structure.item == item);
+          .firstWhere((element) => element.structure == item);
       newSections.add(section);
     }
     return newSections;
@@ -87,7 +86,7 @@ class SongNotifier extends _$SongNotifier {
 
   void transpose(SongKey newTonality) {
     final updatedSong = state.song.copyWith(
-      updateKey: newTonality,
+      key: newTonality,
     );
     state = state.copyWith(
       song: updatedSong,

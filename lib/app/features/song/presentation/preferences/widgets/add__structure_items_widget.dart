@@ -80,7 +80,7 @@ class AddStructureItemsWidgetState
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                          _originalSections.elementAt(index).structure.id,
+                          _originalSections.elementAt(index).structure.index,
                         ),
                         decoration: BoxDecoration(
                           color: context.colorScheme.onSurfaceVariant,
@@ -89,7 +89,6 @@ class AddStructureItemsWidgetState
                               _originalSections
                                   .elementAt(index)
                                   .structure
-                                  .item
                                   .color,
                             ),
                             width: 3,
@@ -100,7 +99,6 @@ class AddStructureItemsWidgetState
                           _originalSections
                               .elementAt(index)
                               .structure
-                              .item
                               .shortName,
                           textAlign: TextAlign.center,
                           style: context.textTheme.titleSmall,
@@ -109,11 +107,7 @@ class AddStructureItemsWidgetState
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _originalSections
-                              .elementAt(index)
-                              .structure
-                              .item
-                              .name,
+                          _originalSections.elementAt(index).structure.name,
                           style: context.textTheme.titleSmall,
                         ),
                       ),
