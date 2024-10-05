@@ -8,7 +8,6 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -36,13 +35,11 @@ class ChordProcessor extends _$ChordProcessor {
     int widgetPadding = 0,
     SongViewMode songViewMode = SongViewMode.american,
   }) {
-    //diff between original key and new key
-
     final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
     final chordTransposer = ChordTransposer(
       songViewMode,
       transpose: transposeIncrement,
-      key: originalSongKey.name!,
+      key: originalSongKey.name,
     );
 
     _textScaleFactor = scaleFactor;
@@ -77,13 +74,7 @@ class ChordProcessor extends _$ChordProcessor {
         }
       }
       sections.add(
-        Section(
-          lyricsLine,
-          SongStructure(
-            rawSection.structureItem ?? StructureItem.none,
-            rawSection.structureItem?.index ?? 0,
-          ),
-        ),
+        Section(lyricsLine, rawSection.structureItem ?? StructureItem.none),
       );
     }
 
@@ -91,10 +82,10 @@ class ChordProcessor extends _$ChordProcessor {
     final modifiedDocumentContent = structures
         .map(
           (structure) => sections.firstWhere(
-            (section) => section.structure.item == structure,
+            (section) => section.structure == structure,
             orElse: () => Section(
               [],
-              SongStructure(structure, structure.index),
+              structure,
             ),
           ),
         )

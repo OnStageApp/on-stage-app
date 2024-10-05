@@ -19,7 +19,7 @@ class SongAppBarLeading extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final key = ref.watch(songNotifierProvider).song.key;
+    final key = ref.watch(songNotifierProvider).song.originalKey;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -37,13 +37,14 @@ class SongAppBarLeading extends ConsumerWidget {
             onPressed: () {
               ChangeKeyModal.show(
                 context: context,
-                songKey: ref.watch(songNotifierProvider).song.updateKey!,
+                songKey: ref.watch(songNotifierProvider).song.key!,
+                isFromEvent: isFromEvent,
               );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                ref.watch(songNotifierProvider).song.updateKey?.name ?? '',
+                ref.watch(songNotifierProvider).song.key?.name ?? '',
                 style: context.textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
@@ -56,7 +57,7 @@ class SongAppBarLeading extends ConsumerWidget {
           onTap: () {
             SongPreferencesModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.updateKey!,
+              tonality: ref.watch(songNotifierProvider).song.key!,
               isFromEvent: isFromEvent,
             );
           },

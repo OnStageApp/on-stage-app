@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -24,25 +23,24 @@ class EditableStructureList extends ConsumerWidget {
         itemCount: structures.length,
         itemBuilder: (context, index) {
           final structureItem = structures[index];
-          if (index > 0 &&
-              structures[index].item == structures[index - 1].item) {
+          if (index > 0 && structures[index] == structures[index - 1]) {
             return const SizedBox.shrink();
           }
           final item = structures[index];
           int xTimes = 1;
           while (index + xTimes < structures.length &&
-              structures[index + xTimes].item == item.item) {
+              structures[index + xTimes] == item) {
             xTimes++;
           }
           return AnimatedTile(
-            key: ValueKey('${structureItem.id}-$xTimes'),
+            key: ValueKey('${structureItem.shortName}_${structureItem.index}'),
             structureItem: structureItem,
             xTimes: xTimes,
             onTap: () {
               ref
                   .read(songNotifierProvider.notifier)
-                  .selectSection(structureItem.item);
-              logger.i('selected ${structureItem.item.name}');
+                  .selectSection(structureItem);
+              logger.i('selected ${structureItem.name}');
             },
           );
         },
@@ -52,7 +50,7 @@ class EditableStructureList extends ConsumerWidget {
 }
 
 class AnimatedTile extends StatefulWidget {
-  final SongStructure structureItem;
+  final StructureItem structureItem;
   final int xTimes;
   final VoidCallback onTap;
 
@@ -103,11 +101,11 @@ class _AnimatedTileState extends State<AnimatedTile>
 
   void _initializeAnimations() {
     _colorAnimation = ColorTween(
-      begin: Color(widget.structureItem.item.color),
-      end: Color(widget.structureItem.item.color).withOpacity(0.7),
+      begin: Color(widget.structureItem.color),
+      end: Color(widget.structureItem.color).withOpacity(0.7),
     ).animate(_controller);
     _borderColorAnimation = ColorTween(
-      begin: Color(widget.structureItem.item.color),
+      begin: Color(widget.structureItem.color),
       end: Colors.white,
     ).animate(_controller);
   }
@@ -142,7 +140,9 @@ class _AnimatedTileState extends State<AnimatedTile>
                     width: 36,
                     height: 36,
                     alignment: Alignment.center,
-                    key: ValueKey(widget.structureItem.id),
+                    key: ValueKey(
+                      '${widget.structureItem.shortName}_${widget.structureItem.index}',
+                    ),
                     decoration: BoxDecoration(
                       color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
@@ -151,17 +151,20 @@ class _AnimatedTileState extends State<AnimatedTile>
                       ),
                       shape: BoxShape.circle,
                     ),
-                    child: Text(widget.structureItem.item.shortName,
-                        textAlign: TextAlign.center,
-                        style: context.textTheme.titleSmall),
+                    child: Text(
+                      widget.structureItem.shortName,
+                      textAlign: TextAlign.center,
+                      style: context.textTheme.titleSmall,
+                    ),
                   ),
                   if (widget.xTimes > 1) ...[
                     const SizedBox(width: 4),
                     Text(
                       'x ${widget.xTimes}',
                       style: context.textTheme.labelSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.colorScheme.shadow),
+                        fontWeight: FontWeight.bold,
+                        color: context.colorScheme.shadow,
+                      ),
                     ),
                   ],
                 ],

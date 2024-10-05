@@ -5,6 +5,9 @@ import 'package:on_stage_app/app/features/song/application/song/song_notifier.da
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
+import 'package:on_stage_app/app/features/song_configuration/application/song_config_notifier.dart';
+import 'package:on_stage_app/app/features/song_configuration/domain/song_config_request/song_config_request.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -92,9 +95,25 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                       isOrderPage = true;
                     });
                   } else {
-                    // ref
-                    //     .read(songNotifierProvider.notifier)
-                    //     .updateSongStructure();
+                    final songId = ref.watch(songNotifierProvider).song.id;
+                    final teamId =
+                        ref.watch(teamNotifierProvider).currentTeam?.id;
+                    final structure = ref
+                        .watch(songNotifierProvider)
+                        .sections
+                        .map((e) => e.structure)
+                        .toList();
+                    ref
+                        .read(songConfigurationNotifierProvider.notifier)
+                        .updateSongConfiguration(
+                          SongConfigRequest(
+                            songId: songId,
+                            teamId: teamId,
+                            isCustom: true,
+                            structure: structure,
+                          ),
+                        );
+
                     context.popDialog();
                   }
                 },

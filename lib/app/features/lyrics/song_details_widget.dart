@@ -5,7 +5,6 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_structure/song_structure.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -93,11 +92,11 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           chordStyle: _chordStyle,
           widgetPadding: widget.widgetPadding,
           scaleFactor: widget.scaleFactor,
-          updateSongKey: ref.watch(songNotifierProvider).song.updateKey!,
+          updateSongKey: ref.watch(songNotifierProvider).song.key!,
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
               SongViewMode.american,
-          originalSongKey: ref.watch(songNotifierProvider).song.key!,
+          originalSongKey: ref.watch(songNotifierProvider).song.originalKey!,
         );
   }
 
@@ -153,7 +152,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         }
       })
       ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.song.updateKey != next.song.updateKey) {
+        if (previous?.song.key != next.song.key) {
           logger.i('transpose increment changed');
           _processTextAndSetSections();
         }
@@ -169,8 +168,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         .map((e) => e.structure)
         .toList();
 
-    final indexToScrollTo =
-        structures.indexWhere((element) => element.item == item);
+    final indexToScrollTo = structures.indexWhere((element) => element == item);
     if (indexToScrollTo == -1) return;
 
     if (_itemScrollController.isAttached) {
@@ -193,7 +191,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60),
-            color: Color(sections[index].structure.item.color),
+            color: Color(sections[index].structure.color),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -205,14 +203,14 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                   color: context.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(
-                  sections[index].structure.item.shortName,
+                  sections[index].structure.shortName,
                   style: context.textTheme.labelMedium!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(width: 12),
               Text(
-                sections[index].structure.item.name,
+                sections[index].structure.name,
                 style: context.textTheme.labelLarge!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.shadow,
@@ -317,15 +315,15 @@ class Section {
   Section(this.lines, this.structure);
 
   final List<SongLines> lines;
-  final SongStructure structure;
+  final StructureItem structure;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Section &&
           runtimeType == other.runtimeType &&
-          structure.item.name == other.structure.item.name;
+          structure.name == other.structure.name;
 
   @override
-  int get hashCode => structure.item.name.hashCode;
+  int get hashCode => structure.name.hashCode;
 }

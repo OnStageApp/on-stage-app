@@ -26,7 +26,6 @@ class _SongTileState extends ConsumerState<SongTile> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // ref.read(songNotifierProvider.notifier).init(widget.song.id);
         final queryParams = {'songId': widget.song.id};
         context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
       },
@@ -67,7 +66,9 @@ class _SongTileState extends ConsumerState<SongTile> {
                         const SizedBox(
                           width: 8,
                         ),
-                        SongKeyLabelWidget(songKey: widget.song.key ?? ''),
+                        SongKeyLabelWidget(
+                          songKey: widget.song.key?.name ?? '',
+                        ),
                       ],
                     ),
                   ],
@@ -75,7 +76,6 @@ class _SongTileState extends ConsumerState<SongTile> {
               ),
               InkWell(
                 onTap: () {
-                  // setState(() {
                   if (widget.song.isFavorite) {
                     ref.read(songsNotifierProvider.notifier).removeFavorite(
                           widget.song.id,
@@ -85,9 +85,6 @@ class _SongTileState extends ConsumerState<SongTile> {
                           widget.song.id,
                         );
                   }
-
-                  // saved = !saved;
-                  // });
                 },
                 child: Icon(
                   widget.song.isFavorite

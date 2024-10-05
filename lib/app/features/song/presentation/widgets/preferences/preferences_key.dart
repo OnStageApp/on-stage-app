@@ -29,12 +29,12 @@ class PreferencesKey extends ConsumerWidget {
               BlendMode.srcIn,
             ),
           ),
-          title: ref.watch(songNotifierProvider).song.key?.name ?? '',
+          title: ref.watch(songNotifierProvider).song.originalKey?.name ?? '',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
             ChangeKeyModal.show(
               context: context,
-              songKey: ref.watch(songNotifierProvider).song.key!,
+              songKey: ref.watch(songNotifierProvider).song.originalKey!,
             );
           },
         ),

@@ -150,7 +150,8 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
                                           .read(songsNotifierProvider)
                                           .songs
                                           .elementAt(index)
-                                          .key ??
+                                          .key
+                                          ?.name ??
                                       '',
                                 ),
                               ],
