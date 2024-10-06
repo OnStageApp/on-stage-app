@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:895845013571:android:4ab276bb36b796ed2f9cf6",
+        "mobilesdk_app_id": "1:895845013571:android:fff396a3c5e01d242f9cf6",
         "android_client_info": {
           "package_name": "com.onstage.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "895845013571-8mc037shnsc7l201f1s41joppiqj9v10.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onstage.app",
+            "certificate_hash": "b6774adf833f0c7a0b89ba7c1d5f2533f8a07113"
+          }
+        },
+        {
+          "client_id": "895845013571-tlcrf7vub0fm4fokrmauc1vpp6bljmua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCPYY7_-cEcqNDo-e88XBIBPeXEHMcS8rg"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "895845013571-tlcrf7vub0fm4fokrmauc1vpp6bljmua.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "895845013571-j78fsqbihesjarrijqaelec90c7in36h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.onstage.app"
+              }
+            }
+          ]
         }
       }
     }
