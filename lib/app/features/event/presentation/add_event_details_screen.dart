@@ -19,7 +19,7 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
-import 'package:on_stage_app/app/shared/event_tile.dart';
+import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -156,10 +156,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               const SizedBox(height: Insets.smallNormal),
               ...ref.watch(eventControllerProvider).rehearsals.map(
                 (rehearsal) {
-                  return EventTile(
+                  return RehearsalTile(
                     title: rehearsal.name ?? '',
                     dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {},
+                    onTap: () {}, onDelete: () {  },
                   );
                 },
               ),
