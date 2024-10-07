@@ -24,6 +24,7 @@ import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 
 class AddEventDetailsScreen extends ConsumerStatefulWidget {
@@ -125,6 +126,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               const SizedBox(height: Insets.medium),
               DateTimeTextFieldWidget(
+                initialDateTime: TimeUtils().approximateToNearestTen(
+                  DateTime.now(),
+                ),
                 onDateTimeChanged: (dateTime) {
                   setState(() {
                     _dateTimeString = dateTime;
@@ -159,7 +163,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                   return RehearsalTile(
                     title: rehearsal.name ?? '',
                     dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {}, onDelete: () {  },
+                    onTap: () {},
+                    onDelete: () {},
                   );
                 },
               ),

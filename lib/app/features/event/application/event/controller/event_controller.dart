@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
-import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -29,7 +28,7 @@ class EventController extends _$EventController {
   }
 
   void setDateTime(String dateTimeString) {
-    final dateTime = TimeUtils().parseDateTime(dateTimeString);
+    final dateTime = DateTime.parse(dateTimeString);
     state = state.copyWith(dateTime: dateTime);
   }
 
