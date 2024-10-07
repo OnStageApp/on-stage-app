@@ -49,7 +49,7 @@ class TimeUtils {
 
   DateTime approximateToNearestTen(DateTime dateTime) {
     final minute = dateTime.minute;
-    final remainder = minute % 10;
+    final remainder = minute % 5;
 
     final adjustment = remainder < 5 ? (10 - remainder) : (10 - remainder);
 

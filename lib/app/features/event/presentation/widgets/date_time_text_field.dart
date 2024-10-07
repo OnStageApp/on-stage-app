@@ -1,6 +1,7 @@
 import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
@@ -89,7 +90,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Date', style: Theme.of(context).textTheme.titleSmall),
+              Text('Date', style: context.textTheme.titleSmall),
               const SizedBox(height: 12),
               InkWell(
                 key: _datePickerKey,
@@ -105,13 +106,14 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       initialDateTime: _selectedDate ?? _now,
                       onDateTimeChanged: _onDateChanged,
                       minuteInterval: 10,
+                      mainColor: context.colorScheme.primary,
                     );
                   }
                 },
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.colorScheme.onSurfaceVariant,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -122,15 +124,11 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                         _selectedDate != null
                             ? _formatDate(_selectedDate!)
                             : 'Select Date',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: _selectedDate != null
-                                      ? Theme.of(context).colorScheme.onSurface
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.5),
-                                ),
+                        style: context.textTheme.titleMedium!.copyWith(
+                          color: _selectedDate != null
+                              ? context.colorScheme.onSurface
+                              : context.colorScheme.onSurface.withOpacity(0.5),
+                        ),
                       ),
                       const Spacer(),
                       Container(
@@ -140,12 +138,12 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                         ),
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                          color: context.colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           Icons.calendar_today,
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.colorScheme.outline,
                           size: 15,
                         ),
                       ),
@@ -157,13 +155,11 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
           ),
         ),
         const SizedBox(width: 24),
-
-        // Time Picker Section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Time', style: Theme.of(context).textTheme.titleSmall),
+              Text('Time', style: context.textTheme.titleSmall),
               const SizedBox(height: 12),
               InkWell(
                 key: _timePickerKey,
@@ -176,14 +172,14 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       widgetRenderBox: renderBox,
                       initialTime: _selectedTime ?? TimeOfDay.now(),
                       onTimeChanged: _onTimeChanged,
-                      minuteInterval: 10,
+                      minuteInterval: 5,
                     );
                   }
                 },
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.colorScheme.onSurfaceVariant,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -192,15 +188,11 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       const SizedBox(width: 16),
                       Text(
                         _selectedTime?.format(context) ?? 'Select hour',
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  color: _selectedTime != null
-                                      ? Theme.of(context).colorScheme.onSurface
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.5),
-                                ),
+                        style: context.textTheme.titleMedium!.copyWith(
+                          color: _selectedTime != null
+                              ? context.colorScheme.onSurface
+                              : context.colorScheme.onSurface.withOpacity(0.5),
+                        ),
                       ),
                       const Spacer(),
                       Container(
@@ -210,12 +202,12 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                         ),
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                          color: context.colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
                           Icons.access_time,
-                          color: Theme.of(context).colorScheme.outline,
+                          color: context.colorScheme.outline,
                           size: 15,
                         ),
                       ),
