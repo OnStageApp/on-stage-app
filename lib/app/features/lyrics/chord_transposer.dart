@@ -60,7 +60,7 @@ class ChordTransposer {
 
   String _processChord(String chord) {
     if (chordNotation == SongViewMode.numeric) {
-      return _toNumeric(chord);
+      return _toNumeric(chord, key);
     }
 
     var index = cycle.lastIndexWhere((note) => chord.startsWith(note));
@@ -95,12 +95,12 @@ class ChordTransposer {
     return cycle[index % cycle.length];
   }
 
-  String _toNumeric(String chord) {
+  String _toNumeric(String chord, String key) {
     // Match the chord root and its suffix
     final match = RegExp(r'^([A-G]#?)(.*)$').firstMatch(chord);
     if (match == null) return chord;
 
-    final root = match.group(1)!; // The root note (e.g., G, Am)
+    final root = match.group(1)!; // The root note (e.g., G, A#)
     final suffix = match.group(2)!; // The rest of the chord (e.g., m7, sus4)
 
     // Extract the key root and mode (major or minor)
@@ -112,7 +112,21 @@ class ChordTransposer {
     final keyRoot = keyMatch.group(1)!;
     final keyMode = keyMatch.group(2)!.toLowerCase();
 
-    // Find the index of the key root and chord root in the American note system
+    // Define the American note system
+    final americanNotes = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B'
+    ];
     final keyIndex = americanNotes.indexOf(keyRoot);
     final chordIndex = americanNotes.indexOf(root);
 
@@ -122,48 +136,67 @@ class ChordTransposer {
     // Calculate the relative degree of the chord based on the key
     var numericValue = (chordIndex - keyIndex + 12) % 12;
 
-    // Convert the numeric value to the corresponding scale degree in the key
-    var scaleDegree = -1;
-    switch (numericValue) {
-      case 0:
-        scaleDegree = 1;
-// I (Root)
-      case 2:
-        scaleDegree = 2;
-// II
-      case 4:
-        scaleDegree = 3;
-// III
-      case 5:
-        scaleDegree = 4;
-// IV
-      case 7:
-        scaleDegree = 5;
-// V
-      case 9:
-        scaleDegree = 6;
-// VI
-      case 11:
-        scaleDegree = 7;
-// VII
-      default:
-        return chord; // Return unchanged if not a valid scale degree
+    // Define Roman numerals with accidentals for chromatic chords
+    final chromaticRomanNumerals = {
+      0: 'I',
+      1: 'bII',
+      2: 'II',
+      3: 'bIII',
+      4: 'III',
+      5: 'IV',
+      6: '#IV',
+      7: 'V',
+      8: 'bVI',
+      9: 'VI',
+      10: 'bVII',
+      11: 'VII'
+    };
+
+    // Determine if the chord is minor
+    bool isMinorChord = suffix.contains('m');
+
+    // Get the Roman numeral for the scale degree, with accidentals if needed
+    var romanNumeral = chromaticRomanNumerals[numericValue] ?? chord;
+
+    // Define expected major/minor scale degrees for a major key
+    final majorKeyStructure = {
+      0: 'maj',
+      2: 'min',
+      4: 'min',
+      5: 'maj',
+      7: 'maj',
+      9: 'min',
+      11: 'dim'
+    };
+    final minorKeyStructure = {
+      0: 'min',
+      2: 'dim',
+      3: 'maj',
+      5: 'min',
+      7: 'min',
+      8: 'maj',
+      10: 'maj'
+    };
+
+    // Determine the expected chord quality (maj/min) based on the key
+    final expectedQuality = keyMode == 'major'
+        ? majorKeyStructure[numericValue]
+        : minorKeyStructure[numericValue];
+
+    // Adjust the Roman numeral notation to reflect actual and expected qualities
+    if (expectedQuality == 'min' && !isMinorChord) {
+      romanNumeral += 'Maj'; // Out-of-key major chord where minor is expected
+    } else if (expectedQuality == 'maj' && isMinorChord) {
+      romanNumeral += 'min'; // Out-of-key minor chord where major is expected
+    } else if (isMinorChord) {
+      romanNumeral = romanNumeral.toLowerCase(); // Standard lowercase for minor
     }
 
-    // Convert the scale degree to Roman numerals
-    var romanNumeral = romanNumerals[(scaleDegree - 1) % 7];
-
-    // Adjust for minor or major chords based on the key mode
-    if (keyMode == 'minor' && [1, 4, 5].contains(scaleDegree)) {
-      romanNumeral = romanNumeral.toLowerCase(); // Minor chords in minor key
-    } else if (keyMode == 'major' && [2, 3, 6].contains(scaleDegree)) {
-      romanNumeral = romanNumeral.toLowerCase(); // Minor chords in major key
-    }
-
-    // Return the numeric notation with the converted suffix
+    // Convert chord suffix (e.g., 'maj', 'dim') based on notation preferences
     return romanNumeral + _convertSuffix(suffix);
   }
 
+// Helper function to convert chord suffixes like "maj", "m7", "dim", "aug"
   String _convertSuffix(String suffix) {
     suffix = suffix.replaceAll('maj', 'Δ');
     suffix = suffix.replaceAll('m', '');
