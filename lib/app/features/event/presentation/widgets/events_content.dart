@@ -50,6 +50,7 @@ class EventsContent extends ConsumerWidget {
           if (pastIsEmpty)
             const SizedBox()
           else ...[
+            const SectionTitle(title: 'Past Events'),
             EventsList(
               events: pastEventsResponse.events,
               hasMore: pastEventsResponse.hasMore,
@@ -57,7 +58,6 @@ class EventsContent extends ConsumerWidget {
                   .read(eventsNotifierProvider.notifier)
                   .loadMorePastEvents(),
             ),
-            const SectionTitle(title: 'Past Events'),
           ],
         ],
       ),
