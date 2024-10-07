@@ -88,12 +88,13 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           _buildKeys(),
           const SizedBox(height: Insets.small),
           _buildChordTypes(_songKey.isSharp),
-          const SizedBox(height: Insets.normal),
+          const SizedBox(height: Insets.medium),
           ContinueButton(
             text: 'Save',
             onPressed: _submitForm,
             isEnabled: _hasChanged,
           ),
+          const SizedBox(height: Insets.normal),
         ],
       ),
     );
@@ -150,7 +151,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           decoration: BoxDecoration(
             color: isSelected
                 ? context.colorScheme.primary
-                : context.colorScheme.surface,
+                : context.colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(5),
           ),
           alignment: Alignment.center,
@@ -198,9 +199,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
 
   TextStyle _getStyling({bool isSelected = false}) {
     return context.textTheme.titleMedium!.copyWith(
-      color: isSelected
-          ? context.colorScheme.onSurfaceVariant
-          : context.colorScheme.onSurface,
+      color: isSelected ? Colors.white : context.colorScheme.onSurface,
     );
   }
 

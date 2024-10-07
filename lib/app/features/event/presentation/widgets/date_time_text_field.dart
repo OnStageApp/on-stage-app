@@ -2,6 +2,7 @@ import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
@@ -170,7 +171,12 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                     showCupertinoTimePicker(
                       context,
                       widgetRenderBox: renderBox,
-                      initialTime: _selectedTime ?? TimeOfDay.now(),
+                      initialTime: _selectedTime ??
+                          TimeOfDay.fromDateTime(
+                            TimeUtils().approximateToNearestTen(
+                              DateTime.now(),
+                            ),
+                          ),
                       onTimeChanged: _onTimeChanged,
                       minuteInterval: 5,
                     );
