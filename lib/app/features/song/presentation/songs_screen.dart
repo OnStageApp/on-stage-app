@@ -54,12 +54,14 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               TextSpan(
                 text: songsState.songs.length.toString(),
                 style: context.textTheme.headlineLarge?.copyWith(
+                  fontSize: 28,
                   color: context.colorScheme.surfaceDim,
                 ),
               ),
               TextSpan(
                 text: ' Songs',
                 style: context.textTheme.headlineLarge!.copyWith(
+                  fontSize: 28,
                   color: context.colorScheme.onSurface,
                 ),
               ),
