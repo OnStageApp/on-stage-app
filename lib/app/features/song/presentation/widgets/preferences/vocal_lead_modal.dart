@@ -24,7 +24,7 @@ class VocalLeadModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFFF4F4F4),
+      backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.7,
@@ -117,10 +117,12 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colorScheme.onSurfaceVariant,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isChecked ? Colors.blue : Colors.white,
+                        color: isChecked
+                            ? Colors.blue
+                            : context.colorScheme.onSurfaceVariant,
                         width: 1.6,
                       ),
                     ),
@@ -148,7 +150,7 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
                             size: 20,
                             color: isChecked
                                 ? Colors.blue
-                                : const Color(0xFFE3E3E3),
+                                : context.colorScheme.outline,
                           ),
                         ),
                       ],
