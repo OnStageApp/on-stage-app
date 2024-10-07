@@ -1,8 +1,6 @@
+import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/date_time_formatters.dart';
+import 'package:intl/intl.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
   const DateTimeTextFieldWidget({
@@ -24,34 +22,64 @@ class DateTimeTextFieldWidget extends StatefulWidget {
 }
 
 class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
-  final dateController = TextEditingController();
-  final timeController = TextEditingController();
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
+  late DateTime _now;
+  late DateTime _minimumDateTime;
+  late DateTime _maximumDateTime;
+
+  final GlobalKey _datePickerKey = GlobalKey();
+  final GlobalKey _timePickerKey = GlobalKey();
 
   @override
   void initState() {
-    dateController.addListener(_updateCombinedDateTime);
-    timeController.addListener(_updateCombinedDateTime);
-    _initControllers();
     super.initState();
-  }
 
-  @override
-  void dispose() {
-    dateController.removeListener(_updateCombinedDateTime);
-    timeController.removeListener(_updateCombinedDateTime);
-    super.dispose();
-  }
+    _now = DateTime.now();
+    _selectedDate = widget.initialDateTime;
+    _selectedTime = widget.initialDateTime != null
+        ? TimeOfDay.fromDateTime(widget.initialDateTime!)
+        : null;
 
-  void _initControllers() {
-    dateController.text =
-        widget.initialDateTime?.toIso8601String().substring(0, 10) ?? '';
-    timeController.text =
-        widget.initialDateTime?.toIso8601String().substring(11, 16) ?? '';
+    _minimumDateTime = _now.subtract(const Duration(days: 40));
+    _maximumDateTime = _now.add(const Duration(days: 365));
   }
 
   void _updateCombinedDateTime() {
-    final combinedString = '${dateController.text} ${timeController.text}';
-    widget.onDateTimeChanged(combinedString);
+    if (_selectedDate != null && _selectedTime != null) {
+      final DateTime combinedDateTime = DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
+
+      String formattedDateTime = DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(combinedDateTime);
+
+      print('Formatted DateTime: $formattedDateTime');
+
+
+      widget.onDateTimeChanged(formattedDateTime);
+    }
+  }
+
+  void _onDateChanged(DateTime newDate) {
+    setState(() {
+      _selectedDate = newDate;
+    });
+    _updateCombinedDateTime();
+  }
+
+  void _onTimeChanged(TimeOfDay newTime) {
+    setState(() {
+      _selectedTime = newTime;
+    });
+    _updateCombinedDateTime();
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('MMM d, yyyy').format(date);
   }
 
   @override
@@ -59,59 +87,74 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Date Picker Section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Date',
-                style: context.textTheme.titleSmall,
-              ),
+              Text('Date', style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
-              TextFormField(
-                enabled: widget.enabled,
-                focusNode: widget.focusNode,
-                controller: dateController,
-                style: context.textTheme.titleSmall,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a date';
+              InkWell(
+                key: _datePickerKey,
+                onTap: () {
+                  final renderBox = _datePickerKey.currentContext
+                      ?.findRenderObject() as RenderBox?;
+                  if (renderBox != null) {
+                    showCupertinoCalendarPicker(
+                      context,
+                      widgetRenderBox: renderBox,
+                      minimumDateTime: _minimumDateTime,
+                      maximumDateTime: _maximumDateTime,
+                      initialDateTime: _selectedDate ?? _now,
+                      onDateTimeChanged: _onDateChanged,
+                      minuteInterval: 10,
+                      mode: CupertinoCalendarMode.date,
+                    );
                   }
-                  return null;
                 },
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(10),
-                  DateInputFormatter(),
-                ],
-                decoration: InputDecoration(
-                  hintStyle: context.textTheme.titleSmall!.copyWith(
-                    color: context.colorScheme.outline,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  isDense: true,
-                  fillColor: context.colorScheme.onSurfaceVariant,
-                  filled: true,
-                  hintText: 'YYYY/MM/DD',
-                  suffixIcon: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 8,
-                    ),
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(Insets.small),
-                    ),
-                    child: Icon(
-                      Icons.calendar_today,
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(Insets.small),
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: 16),
+                      Text(
+                        _selectedDate != null
+                            ? _formatDate(_selectedDate!)
+                            : 'DD / MM / YYYY',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                          color: _selectedDate != null
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.5),
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 8,
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.calendar_today,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -119,67 +162,71 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
           ),
         ),
         const SizedBox(width: 24),
+
+        // Time Picker Section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Time',
-                style: context.textTheme.titleSmall,
-              ),
+              Text('Time', style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      enabled: widget.enabled,
-                      controller: timeController,
-                      style: context.textTheme.titleSmall,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a time';
-                        }
-                        return null;
-                      },
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(5),
-                        TimeInputFormatter(),
-                      ],
-                      decoration: InputDecoration(
-                        hintStyle: context.textTheme.titleMedium!.copyWith(
-                          color: context.colorScheme.outline,
-                        ),
-                        isDense: true,
-                        fillColor: context.colorScheme.onSurfaceVariant,
-                        filled: true,
-                        hintText: 'HH:MM',
-                        suffixIcon: Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 8,
-                          ),
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(Insets.small),
-                          ),
-                          child: Icon(
-                            Icons.access_time,
-                            color: context.colorScheme.outline,
-                          ),
-                        ),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(Insets.small),
-                          ),
+              InkWell(
+                key: _timePickerKey,
+                onTap: () {
+                  final renderBox = _timePickerKey.currentContext
+                      ?.findRenderObject() as RenderBox?;
+                  if (renderBox != null) {
+                    showCupertinoTimePicker(
+                      context,
+                      widgetRenderBox: renderBox,
+                      initialTime: _selectedTime ?? TimeOfDay.now(),
+                      onTimeChanged: _onTimeChanged,
+                    );
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: 16),
+                      Text(
+                        _selectedTime?.format(context) ?? 'HH:MM',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                          color: _selectedTime != null
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.5),
                         ),
                       ),
-                      onTap: () {},
-                    ),
+                      const Spacer(),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 8,
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.access_time,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
           ),
