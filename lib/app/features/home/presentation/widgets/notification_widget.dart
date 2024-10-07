@@ -42,7 +42,8 @@ class NotificationWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: Colors.red,
                   shape: BoxShape.circle,
-                  border: Border.all(color: context.colorScheme.onSurfaceVariant, width: 2),
+                  border: Border.all(
+                      color: context.colorScheme.onSurfaceVariant, width: 2),
                 ),
               ),
             ),

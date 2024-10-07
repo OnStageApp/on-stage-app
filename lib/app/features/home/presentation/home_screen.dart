@@ -7,11 +7,11 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/notification
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
@@ -49,6 +49,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     final songs = ref.watch(songsNotifierProvider).filteredSongs;
 
     return Scaffold(
+      appBar: const StageAppBar(
+        title: 'Dashboard',
+        trailing: Padding(
+          padding: EdgeInsets.only(right: 16),
+          child: NotificationWidget(),
+        ),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -64,8 +71,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  _buildTopBar(),
-                  const SizedBox(height: Insets.large),
+                  const SizedBox(height: Insets.medium),
                   _buildEnhanced(hasUpcomingEvent),
                   const SizedBox(height: Insets.extraLarge),
                 ],
@@ -102,29 +108,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopBar() {
-    return Padding(
-      padding: defaultScreenHorizontalPadding,
-      child: Row(
-        children: [
-          Expanded(
-            child: Hero(
-              tag: 'searchBar',
-              child: StageSearchBar(
-                focusNode: FocusNode(),
-                onTap: () {
-                  context.goNamed(AppRoute.songs.name);
-                },
-              ),
-            ),
-          ),
-          const SizedBox(width: Insets.smallNormal),
-          const NotificationWidget(),
-        ],
       ),
     );
   }
