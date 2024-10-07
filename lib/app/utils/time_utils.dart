@@ -41,31 +41,26 @@ class TimeUtils {
 
   DateTime? parseDateTime(String dateTimeString) {
     try {
-      final parts = dateTimeString.split(' ');
-      if (parts.length != 2) {
-        return null;
-      }
-      final datePart = parts[0];
-      final timePart = parts[1];
-
-      final dateParts = datePart.split('/');
-      if (dateParts.length != 3) {
-        return null;
-      }
-      final year = int.parse(dateParts[0]);
-      final month = int.parse(dateParts[1]);
-      final day = int.parse(dateParts[2]);
-
-      final timeParts = timePart.split(':');
-      if (timeParts.length != 2) {
-        return null;
-      }
-      final hour = int.parse(timeParts[0]);
-      final minute = int.parse(timeParts[1]);
-
-      return DateTime(year, month, day, hour, minute);
+      return DateTime.parse(dateTimeString);
     } catch (e) {
       return null;
     }
+  }
+
+  DateTime approximateToNearestTen(DateTime dateTime) {
+    int minute = dateTime.minute;
+    int remainder = minute % 10;
+
+    // Calculate how many minutes to add to reach the nearest 10-minute mark
+    int adjustment = remainder < 5 ? (10 - remainder) : (10 - remainder);
+
+    // Create the new DateTime with adjusted minutes
+    return DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      dateTime.hour,
+      minute + adjustment,
+    );
   }
 }

@@ -47,7 +47,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
 
   void _updateCombinedDateTime() {
     if (_selectedDate != null && _selectedTime != null) {
-      final DateTime combinedDateTime = DateTime(
+      final combinedDateTime = DateTime(
         _selectedDate!.year,
         _selectedDate!.month,
         _selectedDate!.day,
@@ -55,10 +55,8 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
         _selectedTime!.minute,
       );
 
-      String formattedDateTime = DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(combinedDateTime);
-
-      print('Formatted DateTime: $formattedDateTime');
-
+      final formattedDateTime =
+          DateFormat("yyyy-MM-dd'T'HH:mm:ss.ms").format(combinedDateTime);
 
       widget.onDateTimeChanged(formattedDateTime);
     }
@@ -87,7 +85,6 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Date Picker Section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +105,6 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       initialDateTime: _selectedDate ?? _now,
                       onDateTimeChanged: _onDateChanged,
                       minuteInterval: 10,
-                      mode: CupertinoCalendarMode.date,
                     );
                   }
                 },
@@ -125,18 +121,16 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       Text(
                         _selectedDate != null
                             ? _formatDate(_selectedDate!)
-                            : 'DD / MM / YYYY',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                          color: _selectedDate != null
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.5),
-                        ),
+                            : 'Select Date',
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: _selectedDate != null
+                                      ? Theme.of(context).colorScheme.onSurface
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.5),
+                                ),
                       ),
                       const Spacer(),
                       Container(
@@ -144,7 +138,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                           vertical: 8,
                           horizontal: 8,
                         ),
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
@@ -152,6 +146,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                         child: Icon(
                           Icons.calendar_today,
                           color: Theme.of(context).colorScheme.outline,
+                          size: 15,
                         ),
                       ),
                     ],
@@ -181,6 +176,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       widgetRenderBox: renderBox,
                       initialTime: _selectedTime ?? TimeOfDay.now(),
                       onTimeChanged: _onTimeChanged,
+                      minuteInterval: 10,
                     );
                   }
                 },
@@ -195,18 +191,16 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                     children: [
                       const SizedBox(width: 16),
                       Text(
-                        _selectedTime?.format(context) ?? 'HH:MM',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                          color: _selectedTime != null
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.5),
-                        ),
+                        _selectedTime?.format(context) ?? 'Select hour',
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: _selectedTime != null
+                                      ? Theme.of(context).colorScheme.onSurface
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.5),
+                                ),
                       ),
                       const Spacer(),
                       Container(
@@ -214,7 +208,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                           vertical: 8,
                           horizontal: 8,
                         ),
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
@@ -222,6 +216,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                         child: Icon(
                           Icons.access_time,
                           color: Theme.of(context).colorScheme.outline,
+                          size: 15,
                         ),
                       ),
                     ],
