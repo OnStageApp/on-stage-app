@@ -21,7 +21,9 @@ mixin _$EventItemsState {
   List<EventItem> get songEventItems => throw _privateConstructorUsedError;
   int get currentIndex => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of EventItemsState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $EventItemsStateCopyWith<EventItemsState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +51,8 @@ class _$EventItemsStateCopyWithImpl<$Res, $Val extends EventItemsState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of EventItemsState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -101,6 +105,8 @@ class __$$EventItemsStateImplCopyWithImpl<$Res>
       _$EventItemsStateImpl _value, $Res Function(_$EventItemsStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of EventItemsState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -194,7 +200,9 @@ class _$EventItemsStateImpl implements _EventItemsState {
       const DeepCollectionEquality().hash(_songEventItems),
       currentIndex);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of EventItemsState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$EventItemsStateImplCopyWith<_$EventItemsStateImpl> get copyWith =>
@@ -217,8 +225,11 @@ abstract class _EventItemsState implements EventItemsState {
   List<EventItem> get songEventItems;
   @override
   int get currentIndex;
+
+  /// Create a copy of EventItemsState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventItemsStateImplCopyWith<_$EventItemsStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
