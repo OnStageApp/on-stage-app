@@ -115,13 +115,20 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               if (rehearsals.isNotEmpty)
-                ...rehearsals.map(
-                  (rehearsal) {
+                ...rehearsals.asMap().entries.map(
+                  (entry) {
+                    final rehearsal = entry.value;
+
                     return RehearsalTile(
+                      key: ValueKey(rehearsal.id),
                       onDelete: () {
                         ref
                             .read(eventNotifierProvider.notifier)
                             .deleteRehearsal(rehearsal.id!);
+
+                        setState(() {
+                          rehearsals.removeAt(entry.key);
+                        });
                       },
                       title: rehearsal.name ?? '',
                       dateTime: rehearsal.dateTime ?? DateTime.now(),

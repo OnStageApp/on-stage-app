@@ -2,6 +2,7 @@ import 'package:cupertino_calendar_picker/cupertino_calendar_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/constants.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class DateTimeTextFieldWidget extends StatefulWidget {
@@ -36,12 +37,18 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
   @override
   void initState() {
     super.initState();
-
     _now = DateTime.now();
-    _selectedDate = widget.initialDateTime;
-    _selectedTime = widget.initialDateTime != null
-        ? TimeOfDay.fromDateTime(widget.initialDateTime!)
-        : null;
+
+    if (widget.initialDateTime != null) {
+      final roundedTime = TimeUtils().approximateToNearestInterval(
+        widget.initialDateTime!,
+        UtilConstants.minuteInterval,
+      );
+      _selectedTime = TimeOfDay.fromDateTime(roundedTime);
+      _selectedDate = widget.initialDateTime ?? _now;
+    } else {
+      _selectedTime = null;
+    }
 
     _minimumDateTime = _now.subtract(const Duration(days: 40));
     _maximumDateTime = _now.add(const Duration(days: 365));
@@ -59,7 +66,6 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
 
       final formattedDateTime =
           DateFormat("yyyy-MM-dd'T'HH:mm:ss.ms").format(combinedDateTime);
-
       widget.onDateTimeChanged(formattedDateTime);
     }
   }
@@ -173,8 +179,9 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       widgetRenderBox: renderBox,
                       initialTime: _selectedTime ??
                           TimeOfDay.fromDateTime(
-                            TimeUtils().approximateToNearestTen(
+                            TimeUtils().approximateToNearestInterval(
                               DateTime.now(),
+                              UtilConstants.minuteInterval,
                             ),
                           ),
                       onTimeChanged: _onTimeChanged,

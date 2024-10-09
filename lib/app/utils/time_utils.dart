@@ -47,11 +47,12 @@ class TimeUtils {
     }
   }
 
-  DateTime approximateToNearestTen(DateTime dateTime) {
+  DateTime approximateToNearestInterval(DateTime dateTime, int minuteInterval) {
     final minute = dateTime.minute;
-    final remainder = minute % 5;
-
-    final adjustment = remainder < 5 ? (10 - remainder) : (10 - remainder);
+    final remainder = minute % minuteInterval;
+    final adjustment = remainder < (minuteInterval / 2)
+        ? -remainder
+        : (minuteInterval - remainder);
 
     return DateTime(
       dateTime.year,

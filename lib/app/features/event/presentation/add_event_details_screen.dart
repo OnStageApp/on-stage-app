@@ -126,8 +126,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               const SizedBox(height: Insets.medium),
               DateTimeTextFieldWidget(
-                initialDateTime: TimeUtils().approximateToNearestTen(
+                initialDateTime: TimeUtils().approximateToNearestInterval(
                   DateTime.now(),
+                  5,
                 ),
                 onDateTimeChanged: (dateTime) {
                   setState(() {
