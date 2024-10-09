@@ -3,6 +3,7 @@ import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -34,8 +35,7 @@ class SongNotifier extends _$SongNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
-    var song = await songRepository.getSong(songId: songId);
-    // var song = SongDummy.song;
+    final song = await songRepository.getSong(songId: songId);
 
     state = state.copyWith(
       song: song,
@@ -61,6 +61,25 @@ class SongNotifier extends _$SongNotifier {
 
   void updateSongSections(List<Section> newSections) {
     state = state.copyWith(sections: newSections);
+  }
+
+  void updateStructureOnSong(List<StructureItem> structureItems) {
+    state = state.copyWith(
+      song: state.song.copyWith(structure: structureItems),
+    );
+    logger.i('updated song with structure: ${state.song.structure}');
+  }
+
+  void updateSong(SongModelV2 newSong) {
+    final updatedSong = state.song.copyWith(
+      title: newSong.title ?? state.song.title,
+      key: newSong.key ?? state.song.key,
+      originalKey: newSong.originalKey ?? state.song.originalKey,
+      rawSections: newSong.rawSections ?? state.song.rawSections,
+      structure: newSong.structure ?? state.song.structure,
+    );
+    state = state.copyWith(song: updatedSong);
+    logger.i('updated song with title: ${state.song.structure}');
   }
 
   void updateSongSectionsWithNewStructureItems(
@@ -95,5 +114,12 @@ class SongNotifier extends _$SongNotifier {
 
   void selectSection(StructureItem item) {
     state = state.copyWith(selectedStructureItem: item);
+  }
+
+  Future<void> saveSongToDB() async {
+    final savedSong = await songRepository.addSong(song: state.song);
+    state = state.copyWith(
+      song: savedSong,
+    );
   }
 }

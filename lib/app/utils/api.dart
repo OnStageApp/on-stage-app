@@ -1,6 +1,6 @@
 class API {
   static const String baseUrl = 'https://dev.on-stage.app/';
-  // static const String baseUrl = 'https://23d6-86-127-188-157.ngrok-free.app/';
+  // static const String baseUrl = 'http://6dcd-86-127-188-157.ngrok-free.app/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {
@@ -28,6 +28,7 @@ class API {
 
   //Songs
   static const String getSongs = 'songs';
+  static const String addSong = 'songs';
   static const String getSongsById = 'songs/{id}';
   static const String savedSongs = 'songs/favorites';
   static const String savedSongsWithUserId = 'songs/favorites/{songId}';
@@ -56,4 +57,9 @@ class API {
 
   static const String songConfigBySongId = 'song-config/{songId}';
   static const String songConfig = 'song-config';
+
+  //ws
+
+  static const String wsBaseUrl = 'ws/websocket';
+  static const String wsTopicMessage = '/topic/messages';
 }

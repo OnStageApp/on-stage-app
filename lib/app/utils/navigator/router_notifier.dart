@@ -12,6 +12,8 @@ import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/sign_up_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_first_step_details.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_details_with_pages_screen.dart';
@@ -140,6 +142,20 @@ class NavigationNotifier extends _$NavigationNotifier {
                         return SongDetailScreen(
                           songId: songId,
                         );
+                      },
+                    ),
+                    GoRoute(
+                      name: AppRoute.addSong.name,
+                      path: 'addSong',
+                      builder: (context, state) {
+                        return const AddSongFirstStepDetails();
+                      },
+                    ),
+                    GoRoute(
+                      name: AppRoute.editSongContent.name,
+                      path: 'editSongContent',
+                      builder: (context, state) {
+                        return const AddSongSecondStepContent();
                       },
                     ),
                   ],

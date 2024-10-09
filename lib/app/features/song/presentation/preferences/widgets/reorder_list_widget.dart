@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
-import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reordable_list_item.dart';
 
 class ReorderListWidget extends ConsumerStatefulWidget {
@@ -15,14 +15,16 @@ class ReorderListWidget extends ConsumerStatefulWidget {
 }
 
 class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
-  List<Section> _sections = [];
+  List<StructureItem> _structureItems = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _sections = ref.watch(songNotifierProvider).sections;
+        _structureItems = List.of(
+          ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
+        );
       });
     });
   }
@@ -38,6 +40,7 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
         children: [
           const SizedBox(height: 16),
           if (hasEditorsRight) _buildReordableList() else _buildList(),
+          const SizedBox(height: 42),
         ],
       ),
     );
@@ -47,15 +50,15 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _sections.length,
+      itemCount: _structureItems.length,
       itemBuilder: (context, index) {
         return ReordableListItem(
           canSlide: false,
-          itemKey: '${_sections[index].structure.shortName}_$index',
-          itemId: _sections[index].structure.index,
-          color: _sections[index].structure.color,
-          shortName: _sections[index].structure.shortName,
-          name: _sections[index].structure.name,
+          itemKey: '${_structureItems[index].shortName}_$index',
+          itemId: _structureItems[index].index,
+          color: _structureItems[index].color,
+          shortName: _structureItems[index].shortName,
+          name: _structureItems[index].name,
         );
       },
     );
@@ -66,7 +69,7 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       onReorder: _onReorder,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _sections.length,
+      itemCount: _structureItems.length,
       proxyDecorator: (child, index, animation) => Material(
         color: Colors.transparent,
         elevation: 6,
@@ -76,13 +79,13 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       ),
       itemBuilder: (context, index) {
         return Container(
-          key: ValueKey('${_sections[index].structure.shortName}_$index'),
+          key: ValueKey('${_structureItems[index].shortName}_$index'),
           child: ReordableListItem(
-            itemKey: '${_sections[index].structure.shortName}_$index',
-            itemId: _sections[index].structure.index,
-            color: _sections[index].structure.color,
-            shortName: _sections[index].structure.shortName,
-            name: _sections[index].structure.name,
+            itemKey: '${_structureItems[index].shortName}_$index',
+            itemId: _structureItems[index].index,
+            color: _structureItems[index].color,
+            shortName: _structureItems[index].shortName,
+            name: _structureItems[index].name,
           ),
         );
       },
@@ -96,10 +99,12 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
     }
 
     setState(() {
-      final old = _sections.removeAt(oldIndex);
-      _sections.insert(newIndex, old);
+      final old = _structureItems.removeAt(oldIndex);
+      _structureItems.insert(newIndex, old);
     });
 
-    ref.read(songNotifierProvider.notifier).updateSongSections(_sections);
+    ref
+        .read(songPreferencesControllerProvider.notifier)
+        .addAllStructureItems(_structureItems);
   }
 }

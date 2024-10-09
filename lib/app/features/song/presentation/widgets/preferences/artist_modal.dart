@@ -9,13 +9,16 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ArtistModal extends ConsumerStatefulWidget {
-  const ArtistModal({super.key});
+  const ArtistModal(this.onArtistSelected, {super.key});
+
+  final void Function(Artist) onArtistSelected;
 
   @override
   ArtistModalState createState() => ArtistModalState();
 
   static void show({
     required BuildContext context,
+    required void Function(Artist) onArtistSelected,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -37,7 +40,7 @@ class ArtistModal extends ConsumerStatefulWidget {
         footerHeight: () {
           return 64;
         },
-        buildContent: ArtistModal.new,
+        buildContent: () => ArtistModal(onArtistSelected),
       ),
     );
   }
@@ -70,7 +73,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
           StageSearchBar(
             focusNode: _focusNode,
             controller: _searchController,
-            onChanged: _searchArtists,
+            // onChanged: _searchArtists,
           ),
           const SizedBox(height: 12),
           ListView.builder(
@@ -80,9 +83,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  ref.read(searchNotifierProvider.notifier).setArtistFilter(
-                        _isItemChecked(index) ? null : _artists[index],
-                      );
+                  widget.onArtistSelected(_artists.elementAt(index));
                   context.popDialog();
                 },
                 child: Container(
@@ -111,11 +112,6 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        // child: _artists.elementAt(index).imageUrl != null
-                        //     ? Image.asset(
-                        //         _artists.elementAt(index).imageUrl ?? '',
-                        //       )
-                        //     :
                         child: Icon(
                           Icons.person,
                           color: context.colorScheme.surfaceDim,
@@ -137,25 +133,6 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
         ],
       ),
     );
-  }
-
-  void _searchArtists(String value) {
-    // if (value.isEmpty) {
-    //   _clearSearch();
-    // }
-    // setState(() {
-    //   _artists = _allArtists.where((element) {
-    //     return element.name.toLowerCase().contains(
-    //           _searchController.text.toLowerCase(),
-    //         );
-    //   }).toList();
-    // });
-  }
-
-  void _clearSearch() {
-    // _searchController.clear();
-    // _artists = _allArtists;
-    // _focusNode.unfocus();
   }
 
   bool _isItemChecked(int index) =>

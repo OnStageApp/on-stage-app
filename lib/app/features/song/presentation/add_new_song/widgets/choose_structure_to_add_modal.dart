@@ -1,61 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
+import 'package:on_stage_app/app/shared/continue_button.dart';
+import 'package:on_stage_app/app/shared/modal_header.dart';
+import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class AddStructureItemsWidget extends ConsumerStatefulWidget {
-  const AddStructureItemsWidget({super.key});
+class ChooseStructureToAddModal extends ConsumerStatefulWidget {
+  const ChooseStructureToAddModal({
+    super.key,
+  });
 
   @override
-  AddStructureItemsWidgetState createState() => AddStructureItemsWidgetState();
+  ChooseStructureToAddModalState createState() =>
+      ChooseStructureToAddModalState();
+
+  static Future<StructureItem?> show({
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    return showModalBottomSheet<StructureItem>(
+      enableDrag: false,
+      isScrollControlled: true,
+      backgroundColor: context.colorScheme.surface,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.7,
+        maxWidth: MediaQuery.of(context).size.width,
+      ),
+      context: context,
+      builder: (context) => const ChooseStructureToAddModal(),
+    );
+  }
 }
 
-class AddStructureItemsWidgetState
-    extends ConsumerState<AddStructureItemsWidget> {
-  List<StructureItem> _originalStructureItems = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _originalStructureItems =
-            ref.read(songNotifierProvider).song.availableStructureItems;
-      });
-    });
-  }
+class ChooseStructureToAddModalState
+    extends ConsumerState<ChooseStructureToAddModal> {
+  StructureItem? _selectedStructureItem;
 
   @override
   Widget build(BuildContext context) {
+    return NestedScrollModal(
+      buildHeader: () => _buildHeader(context),
+      buildFooter: () => _buildFooter(context),
+      headerHeight: () {
+        return 64;
+      },
+      footerHeight: () {
+        return 64;
+      },
+      buildContent: () => _buildContent(context),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: _originalStructureItems.length,
+            itemCount: StructureItem.values.length,
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
                   setState(() {
                     if (_isItemChecked(index)) {
-                      ref
-                          .read(songPreferencesControllerProvider.notifier)
-                          .removeStructureItem(
-                            _originalStructureItems[index],
-                          );
+                      setState(() {
+                        _selectedStructureItem = null;
+                      });
                     } else {
-                      ref
-                          .read(songPreferencesControllerProvider.notifier)
-                          .addStructureItem(
-                            _originalStructureItems[index],
-                          );
+                      setState(() {
+                        _selectedStructureItem = StructureItem.values[index];
+                      });
                     }
                   });
                 },
@@ -80,20 +100,20 @@ class AddStructureItemsWidgetState
                         height: 30,
                         alignment: Alignment.center,
                         key: ValueKey(
-                          _originalStructureItems[index].index,
+                          StructureItem.values[index].index,
                         ),
                         decoration: BoxDecoration(
                           color: context.colorScheme.onSurfaceVariant,
                           border: Border.all(
                             color: Color(
-                              _originalStructureItems[index].color,
+                              StructureItem.values[index].color,
                             ),
                             width: 3,
                           ),
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          _originalStructureItems[index].shortName,
+                          StructureItem.values[index].shortName,
                           textAlign: TextAlign.center,
                           style: context.textTheme.titleSmall,
                         ),
@@ -101,7 +121,7 @@ class AddStructureItemsWidgetState
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _originalStructureItems[index].name,
+                          StructureItem.values[index].name,
                           style: context.textTheme.titleSmall,
                         ),
                       ),
@@ -129,8 +149,32 @@ class AddStructureItemsWidgetState
     );
   }
 
-  bool _isItemChecked(int index) =>
-      ref.watch(songPreferencesControllerProvider).structureItems.contains(
-            _originalStructureItems[index],
-          );
+  bool _isItemChecked(int index) {
+    return _selectedStructureItem == StructureItem.values[index];
+  }
+
+  Widget _buildFooter(BuildContext context) {
+    return SizedBox(
+      child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            32,
+          ),
+          child: ContinueButton(
+            text: 'Add',
+            onPressed: () {
+              Navigator.of(context).pop(_selectedStructureItem);
+            },
+            isEnabled: true,
+          )),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return const ModalHeader(
+      title: 'Song Structure',
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,20 +15,23 @@ class SongPreferencesController extends _$SongPreferencesController {
     state = state.copyWith(isOnAddStructurePage: isOnAddStructurePage);
   }
 
-  void addSongSection(Section section) {
-    final sections = List<Section>.from(state.songSections);
-
-    sections.add(section);
-    state = state.copyWith(songSections: sections);
+  void removeStructureItem(StructureItem structureItem) {
+    final structureItems = List<StructureItem>.from(state.structureItems)
+      ..remove(structureItem);
+    state = state.copyWith(structureItems: structureItems);
   }
 
-  void resetSongSections() {
-    state = state.copyWith(songSections: []);
+  void addStructureItem(StructureItem structureItem) {
+    final structureItems = List<StructureItem>.from(state.structureItems)
+      ..add(structureItem);
+    state = state.copyWith(structureItems: structureItems);
   }
 
-  void removeSongSection(Section section) {
-    final sections = List<Section>.from(state.songSections);
-    sections.remove(section);
-    state = state.copyWith(songSections: sections);
+  void clearStructureItems() {
+    state = state.copyWith(structureItems: []);
+  }
+
+  void addAllStructureItems(List<StructureItem> structureItems) {
+    state = state.copyWith(structureItems: structureItems);
   }
 }

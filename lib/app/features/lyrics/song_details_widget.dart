@@ -152,6 +152,18 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         }
       })
       ..listen(songNotifierProvider, (previous, next) {
+        if (previous?.song.rawSections != next.song.rawSections) {
+          logger.i('raw sections changed');
+          _processTextAndSetSections();
+        }
+      })
+      ..listen(songNotifierProvider, (previous, next) {
+        if (previous?.song.structure != next.song.structure) {
+          logger.i('raw sections changed');
+          _processTextAndSetSections();
+        }
+      })
+      ..listen(songNotifierProvider, (previous, next) {
         if (previous?.song.key != next.song.key) {
           logger.i('transpose increment changed');
           _processTextAndSetSections();

@@ -52,7 +52,7 @@ class SongsNotifier extends _$SongsNotifier {
     state = state.copyWith(isLoading: true, error: null);
     try {
       _updateSongFavoriteStatus(id, true);
-      await _songRepository.saveSong(
+      await _songRepository.saveFavoriteSong(
         songId: id,
         userId: _userId,
       );

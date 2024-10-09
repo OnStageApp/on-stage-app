@@ -6,9 +6,6 @@ import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/chord_type_widget.dart';
-import 'package:on_stage_app/app/features/song_configuration/application/song_config_notifier.dart';
-import 'package:on_stage_app/app/features/song_configuration/domain/song_config_request/song_config_request.dart';
-import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -18,12 +15,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ChangeKeyModal extends ConsumerStatefulWidget {
   const ChangeKeyModal(
     this.songKey, {
-    this.isFromEvent = false,
+    required this.onKeyChanged,
+    this.title = 'Change Key',
     super.key,
   });
 
   final SongKey songKey;
-  final bool isFromEvent;
+  final void Function(SongKey) onKeyChanged;
+  final String title;
 
   @override
   ChangeKeyModalState createState() => ChangeKeyModalState();
@@ -31,21 +30,25 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required SongKey songKey,
+    required void Function(SongKey) onKeyChanged,
     bool isFromEvent = false,
+    String title = 'Change Key',
   }) {
     showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => ModalHeader(
-          title: isFromEvent ? 'Change Key' : 'Preview Key',
-        ),
+        buildHeader: () => const ModalHeader(title: 'Change Key'),
         headerHeight: () {
           return 64;
         },
         buildContent: () {
           return SingleChildScrollView(
-            child: ChangeKeyModal(songKey, isFromEvent: isFromEvent),
+            child: ChangeKeyModal(
+              songKey,
+              title: title,
+              onKeyChanged: onKeyChanged,
+            ),
           );
         },
       ),
@@ -64,7 +67,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     _songKey = widget.songKey;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _songKey = ref.read(songNotifierProvider).song.key!;
+        _songKey = ref.read(songNotifierProvider).song.key ?? _songKey;
         _initialSongKey = _songKey;
       });
     });
@@ -111,12 +114,14 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               'Key',
               style: context.textTheme.titleSmall,
             ),
-            Text(
-              'Original ${ref.watch(songNotifierProvider).song.originalKey?.name}',
-              style: context.textTheme.titleSmall!.copyWith(
-                color: context.colorScheme.primary,
+            if (ref.watch(songNotifierProvider).song.originalKey != null)
+              Text(
+                'Original '
+                '${ref.watch(songNotifierProvider).song.originalKey?.name}',
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.primary,
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: Insets.small),
@@ -204,26 +209,9 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   Future<void> _submitForm() async {
-    ref.read(songNotifierProvider.notifier).transpose(_songKey);
-    if (widget.isFromEvent) await _updateSongOnDB();
+    widget.onKeyChanged(_songKey);
     if (mounted) {
       context.popDialog();
     }
-  }
-
-  Future<void> _updateSongOnDB() async {
-    final songId = ref.read(songNotifierProvider).song.id;
-    final teamId = ref.read(teamNotifierProvider).currentTeam?.id;
-    await ref
-        .read(songConfigurationNotifierProvider.notifier)
-        .updateSongConfiguration(
-          SongConfigRequest(
-            songId: songId,
-            teamId: teamId,
-            isCustom: true,
-            key: _songKey,
-          ),
-        );
-    unawaited(ref.read(songNotifierProvider.notifier).init(songId!));
   }
 }

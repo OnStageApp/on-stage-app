@@ -6,11 +6,15 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class EditableStructureList extends ConsumerWidget {
-  const EditableStructureList({super.key});
+  const EditableStructureList({this.isEditing = false, super.key});
+
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final structures = ref
+    var structures = <StructureItem>[];
+
+    structures = ref
         .watch(songNotifierProvider)
         .sections
         .map((e) => e.structure)
