@@ -50,7 +50,14 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
           title: ref.watch(searchNotifierProvider).artistFilter?.name ?? 'None',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
-            ArtistModal.show(context: context);
+            ArtistModal.show(
+              context: context,
+              onArtistSelected: (artist) {
+                ref
+                    .read(searchNotifierProvider.notifier)
+                    .setArtistFilter(artist);
+              },
+            );
           },
         ),
       ],

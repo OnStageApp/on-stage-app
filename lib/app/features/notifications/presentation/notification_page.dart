@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
-import 'package:on_stage_app/app/shared/event_tile.dart';
 import 'package:on_stage_app/app/shared/notification_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -16,13 +15,12 @@ class NotificationPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationNotifierProvider);
 
-    ref.read(notificationNotifierProvider.notifier).getNotifications();
     return Scaffold(
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: 'Notifications',
         trailing: SettingsTrailingAppBarButton(
-          onTap: () {}
+          onTap: () {},
         ),
       ),
       body: notifications.isNotEmpty
@@ -38,12 +36,11 @@ class NotificationPage extends ConsumerWidget {
     final oneWeekAgo = today.subtract(const Duration(days: 7));
     final oneMonthAgo = today.subtract(const Duration(days: 30));
 
-    final Map<String, List<StageNotification>> categorizedNotifications = {
+    final categorizedNotifications = <String, List<StageNotification>>{
       'New': notifications.where((n) => n.dateTime.isAfter(today)).toList(),
       'Last 7 days': notifications
-          .where(
-            (n) => n.dateTime.isAfter(oneWeekAgo) && n.dateTime.isBefore(today)
-          )
+          .where((n) =>
+              n.dateTime.isAfter(oneWeekAgo) && n.dateTime.isBefore(today))
           .toList(),
       'Last 30 days':
           notifications.where((n) => n.dateTime.isBefore(oneMonthAgo)).toList(),
@@ -83,7 +80,6 @@ class NotificationPage extends ConsumerWidget {
       itemBuilder: (context, index) {
         final notification = notifications[index];
         final leftTime = _getLeftTime(notification.dateTime);
-
 
         return NotificationTile(
           title: notification.title,

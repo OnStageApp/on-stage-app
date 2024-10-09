@@ -25,6 +25,9 @@ enum AppRoute {
   loading,
   signUp,
   songDetailsWithPages,
+  addSong,
+  editSongContent,
+  addStructureForSong,
 }
 
 extension GoRouterExtension on GoRouter {

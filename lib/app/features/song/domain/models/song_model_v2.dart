@@ -28,4 +28,15 @@ class SongModelV2 with _$SongModelV2 {
       _$SongModelV2FromJson(json);
 
   const SongModelV2._();
+
+  List<StructureItem> get availableStructureItems {
+    if (rawSections == null || rawSections!.isEmpty) {
+      return [];
+    }
+
+    return rawSections!
+        .map((section) => section.structureItem)
+        .whereType<StructureItem>()
+        .toList();
+  }
 }

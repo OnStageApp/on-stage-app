@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
-import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
-import 'package:on_stage_app/app/features/song_configuration/application/song_config_notifier.dart';
-import 'package:on_stage_app/app/features/song_configuration/domain/song_config_request/song_config_request.dart';
-import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -15,8 +11,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongStructureModal extends ConsumerStatefulWidget {
   const SongStructureModal({
+    required this.onSave,
     super.key,
   });
+
+  final void Function(bool isOrderPage) onSave;
 
   @override
   SongStructureModalState createState() => SongStructureModalState();
@@ -24,6 +23,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required WidgetRef ref,
+    required void Function(bool isOrderPage) onSave,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -35,7 +35,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
         maxWidth: MediaQuery.of(context).size.width,
       ),
       context: context,
-      builder: (context) => const SongStructureModal(),
+      builder: (context) => SongStructureModal(onSave: onSave),
     );
   }
 }
@@ -77,44 +77,11 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
             ? ContinueButton(
                 text: isOrderPage ? 'Save' : 'Add',
                 onPressed: () {
+                  widget.onSave(isOrderPage);
                   if (!isOrderPage) {
-                    final newSections = ref
-                        .watch(songPreferencesControllerProvider)
-                        .songSections;
-                    final existingSections =
-                        ref.watch(songNotifierProvider).sections;
-                    existingSections.addAll(newSections);
-                    ref
-                        .read(songNotifierProvider.notifier)
-                        .updateSongSections(existingSections);
-                    ref
-                        .read(songPreferencesControllerProvider.notifier)
-                        .resetSongSections();
-
                     setState(() {
                       isOrderPage = true;
                     });
-                  } else {
-                    final songId = ref.watch(songNotifierProvider).song.id;
-                    final teamId =
-                        ref.watch(teamNotifierProvider).currentTeam?.id;
-                    final structure = ref
-                        .watch(songNotifierProvider)
-                        .sections
-                        .map((e) => e.structure)
-                        .toList();
-                    ref
-                        .read(songConfigurationNotifierProvider.notifier)
-                        .updateSongConfiguration(
-                          SongConfigRequest(
-                            songId: songId,
-                            teamId: teamId,
-                            isCustom: true,
-                            structure: structure,
-                          ),
-                        );
-
-                    context.popDialog();
                   }
                 },
                 isEnabled: true,
@@ -131,6 +98,12 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
               width: 80 - 12,
               child: InkWell(
                 onTap: () {
+                  if (isOrderPage) {
+                    ref
+                        .read(songPreferencesControllerProvider.notifier)
+                        .clearStructureItems();
+                  }
+
                   setState(() {
                     isOrderPage = !isOrderPage;
                   });

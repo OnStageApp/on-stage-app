@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_vocal_lead.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_structure.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_tempo.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
@@ -80,24 +79,17 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
               PreferencesTextSize(),
             ],
           ),
-          const SizedBox(height: Insets.medium),
           if (widget.isFromEvent) ...[
+            const SizedBox(height: Insets.medium),
             const PreferencesVocalLead(),
             const SizedBox(height: Insets.medium),
           ],
-
-          const PreferencesKey(),
           if (widget.isFromEvent) ...[
-            const SizedBox(height: Insets.medium),
             const PreferencesSongStructure(),
           ],
-
           const SizedBox(height: Insets.medium),
           const SongVersionDropdown(),
           const SizedBox(height: Insets.medium),
-
-          // We don't need this per song
-          // const PreferencesViewMode(),
         ],
       ),
     );

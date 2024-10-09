@@ -80,6 +80,7 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   web_socket_channel: ^3.0.1
   cupertino_calendar_picker: ^2.0.0+1
+  stomp_dart_client: ^2.1.0
 dev_dependencies:
   build_runner: ^2.4.11
   custom_lint: ^0.6.4

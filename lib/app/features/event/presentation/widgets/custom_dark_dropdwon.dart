@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class CustomAnimatedTabSwitch extends StatefulWidget {
@@ -39,39 +40,15 @@ class _CustomAnimatedTabSwitchState extends State<CustomAnimatedTabSwitch> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-          child: Text(
-            widget.tabs[widget.tabController.index],
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
-          ),
-        ),
-        const SizedBox(width: 4),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-          child: InkWell(
-            onTap: widget.onSwitch,
-            child: Icon(
-              Icons.swap_horiz,
-              color: context.colorScheme.outline,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-      ],
+    final buttonText = widget.tabController.index == 0 ? 'Preview' : 'Edit';
+
+    return ContinueButton(
+      text: buttonText,
+      onPressed: widget.onSwitch,
+      isEnabled: true,
+      hasShadow: false,
+      backgroundColor: context.colorScheme.onSurfaceVariant,
+      textColor: context.colorScheme.onSurface,
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -64,7 +63,7 @@ class LibrarySection extends ConsumerWidget {
             ),
             trailing: _buildArrowWidget(context),
             onTap: () {
-              showOnboardingOverlay(context);
+              context.pushNamed(AppRoute.addSong.name);
             },
           ),
         ),

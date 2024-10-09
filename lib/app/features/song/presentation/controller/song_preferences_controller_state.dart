@@ -9,5 +9,6 @@ class SongPreferencesControllerState with _$SongPreferencesControllerState {
   const factory SongPreferencesControllerState({
     @Default(false) bool isOnAddStructurePage,
     @Default([]) List<Section> songSections,
+    @Default([]) List<StructureItem> structureItems,
   }) = _SongPreferencesControllerState;
 }
