@@ -28,8 +28,10 @@ class AddSongFirstStepDetailsState
   final _songNameController = TextEditingController();
   final _bpmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  SongKey? _selectedKey;
+  SongKey _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
   Artist? _selectedArtist;
+  String? _keyError;
+  String? _artistError;
 
   @override
   void initState() {
@@ -46,7 +48,8 @@ class AddSongFirstStepDetailsState
         child: ContinueButton(
           text: 'Continue',
           onPressed: () async {
-            _createDraftEvent(context);
+            ref.read(songNotifierProvider.notifier).resetState();
+            _addSongDetails(context);
           },
           isEnabled: true,
         ),
@@ -64,12 +67,13 @@ class AddSongFirstStepDetailsState
             children: [
               CustomTextField(
                 label: 'Song Name',
-                hint: 'In Christ Alone',
+                hint: 'Enter Song Name',
                 icon: Icons.church,
+                keyboardType: TextInputType.text,
                 controller: _songNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an event name';
+                    return 'Please enter a song name';
                   }
                   return null;
                 },
@@ -78,15 +82,42 @@ class AddSongFirstStepDetailsState
               const SizedBox(height: Insets.medium),
               CustomTextField(
                 label: 'Tempo (bpm)',
-                hint: '128',
+                hint: 'Enter Tempo',
+                keyboardType: TextInputType.number,
                 icon: Icons.church,
                 controller: _bpmController,
                 onChanged: (value) {},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter tempo';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: Insets.medium),
               ..._buildKeyTile(context),
+              if (_keyError != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 4),
+                  child: Text(
+                    _keyError!,
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.error,
+                    ),
+                  ),
+                ),
               const SizedBox(height: Insets.medium),
               ..._buildArtistTile(context),
+              if (_artistError != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 4),
+                  child: Text(
+                    _artistError!,
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.error,
+                    ),
+                  ),
+                ),
               const SizedBox(height: Insets.medium),
             ],
           ),
@@ -115,23 +146,20 @@ class AddSongFirstStepDetailsState
           ),
           dense: true,
           title: Text(
-            _selectedKey?.name ?? 'Choose Your Key',
-            style: context.textTheme.titleMedium!.copyWith(
-              color: _selectedKey != null
-                  ? context.colorScheme.onSurface
-                  : context.colorScheme.outline,
-            ),
+            _selectedKey.name,
+            style: context.textTheme.titleMedium!
+                .copyWith(color: context.colorScheme.onSurface),
           ),
           trailing: _buildArrowWidget(context),
           onTap: () {
             ChangeKeyModal.show(
               context: context,
               title: 'Select Key',
-              songKey:
-                  _selectedKey ?? const SongKey(chord: ChordsWithoutSharp.C),
+              songKey: const SongKey(chord: ChordsWithoutSharp.C),
               onKeyChanged: (key) {
                 setState(() {
                   _selectedKey = key;
+                  _keyError = null;
                 });
               },
             );
@@ -175,6 +203,7 @@ class AddSongFirstStepDetailsState
               onArtistSelected: (artist) {
                 setState(() {
                   _selectedArtist = artist;
+                  _artistError = null;
                 });
               },
             );
@@ -198,13 +227,16 @@ class AddSongFirstStepDetailsState
     );
   }
 
-  void _createDraftEvent(BuildContext context) {
-    _setFieldsOnController();
+  void _addSongDetails(BuildContext context) {
+    setState(() {
+      _artistError = _selectedArtist == null ? 'Please select an artist' : null;
+    });
 
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _selectedArtist != null) {
+      _setFieldsOnController();
       context.pushNamed(AppRoute.editSongContent.name);
     } else {
-      logger.e('error');
+      logger.e('Validation failed');
     }
   }
 

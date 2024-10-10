@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/song/application/song/song_state.dart'
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -44,6 +45,10 @@ class SongNotifier extends _$SongNotifier {
     logger.i('init song with title: ${state.song.title}');
   }
 
+  void resetState() {
+    state = const SongState();
+  }
+
   void setProcessingSongLoading(bool isLoading) {
     state = state.copyWith(processingSong: isLoading);
   }
@@ -75,11 +80,13 @@ class SongNotifier extends _$SongNotifier {
       title: newSong.title ?? state.song.title,
       key: newSong.key ?? state.song.key,
       originalKey: newSong.originalKey ?? state.song.originalKey,
+      tempo: newSong.tempo ?? state.song.tempo,
+      artist: newSong.artist ?? state.song.artist,
       rawSections: newSong.rawSections ?? state.song.rawSections,
       structure: newSong.structure ?? state.song.structure,
     );
     state = state.copyWith(song: updatedSong);
-    logger.i('updated song with title: ${state.song.structure}');
+    logger.i('updated song');
   }
 
   void updateSongSectionsWithNewStructureItems(
@@ -117,7 +124,8 @@ class SongNotifier extends _$SongNotifier {
   }
 
   Future<void> saveSongToDB() async {
-    final savedSong = await songRepository.addSong(song: state.song);
+    final songRequestModel = SongRequest.fromSongModel(state.song);
+    final savedSong = await songRepository.addSong(song: songRequestModel);
     state = state.copyWith(
       song: savedSong,
     );

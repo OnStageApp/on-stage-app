@@ -150,13 +150,15 @@ class NavigationNotifier extends _$NavigationNotifier {
                       builder: (context, state) {
                         return const AddSongFirstStepDetails();
                       },
-                    ),
-                    GoRoute(
-                      name: AppRoute.editSongContent.name,
-                      path: 'editSongContent',
-                      builder: (context, state) {
-                        return const AddSongSecondStepContent();
-                      },
+                      routes: [
+                        GoRoute(
+                          name: AppRoute.editSongContent.name,
+                          path: 'editSongContent',
+                          builder: (context, state) {
+                            return const AddSongSecondStepContent();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

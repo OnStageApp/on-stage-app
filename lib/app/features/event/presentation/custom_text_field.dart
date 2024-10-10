@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.borderColor,
     this.obscureText = false,
     this.suffixIcon,
+    this.keyboardType,
   });
 
   final String? label;
@@ -32,6 +33,7 @@ class CustomTextField extends StatelessWidget {
   final Color? borderColor;
   final bool obscureText;
   final Widget? suffixIcon;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class CustomTextField extends StatelessWidget {
           ),
         const SizedBox(height: Insets.small),
         TextFormField(
+          keyboardType: keyboardType,
           obscureText: obscureText,
           focusNode: focusNode ?? FocusNode(),
           enabled: enabled ?? true,
@@ -59,6 +62,9 @@ class CustomTextField extends StatelessWidget {
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
               .copyWith(
             suffixIcon: suffixIcon,
+            errorStyle: context.textTheme.bodySmall!.copyWith(
+              color: context.colorScheme.error,
+            ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
