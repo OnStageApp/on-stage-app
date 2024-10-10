@@ -32,14 +32,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
       await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
 
       // Start the onboarding process
-      onboardingKey.currentState?.show();
+      // onboardingKey.currentState?.show();
     });
   }
 
   @override
   void dispose() {
     // Dispose the focus node
-    _songViewSettingsFocusNode.dispose();
+    // _songViewSettingsFocusNode.dispose();
     super.dispose();
   }
 

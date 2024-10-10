@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_filter/song_filter.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -33,7 +34,7 @@ abstract class SongRepository {
 
   @POST(API.addSong)
   Future<SongModelV2> addSong({
-    @Body() required SongModelV2 song,
+    @Body() required SongRequest song,
   });
 
   @DELETE(API.savedSongsWithUserId)

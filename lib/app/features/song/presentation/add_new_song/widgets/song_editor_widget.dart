@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
@@ -13,38 +14,23 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongEditorWidget extends ConsumerStatefulWidget {
   const SongEditorWidget({
-    required TextEditingController lyricsController,
     super.key,
-  }) : _lyricsController = lyricsController;
-
-  final TextEditingController _lyricsController;
+  });
 
   @override
   _SongEditorWidgetState createState() => _SongEditorWidgetState();
 }
 
 class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
-  final List<SectionData> _sections = [];
+  List<SectionData> _sections = [];
 
   @override
   void initState() {
     super.initState();
-    if (widget._lyricsController.text.isNotEmpty) {
-      _sections.add(
-        SectionData(
-          rawSection: RawSection(
-            content: widget._lyricsController.text,
-          ),
-        ),
-      );
-    }
   }
 
   @override
   void dispose() {
-    for (final section in _sections) {
-      section.controller.dispose();
-    }
     super.dispose();
   }
 
@@ -65,7 +51,29 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           ),
         );
       });
+      _updateSong();
     }
+  }
+
+  void _updateSectionsFromSong() {
+    final song = ref.read(songNotifierProvider).song;
+    final rawSections = song.rawSections ?? [];
+    setState(() {
+      _sections = rawSections
+          .map(
+            (rawSection) => SectionData(
+              rawSection: rawSection,
+              controller: CustomTextEditingController(text: rawSection.content),
+            ),
+          )
+          .toList();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateSectionsFromSong();
   }
 
   @override
@@ -73,23 +81,30 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     _listenForTabsChange();
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      child: ListView.builder(
-        itemCount: _sections.length + 1,
-        itemBuilder: (context, index) {
-          if (index == _sections.length) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 64),
-              child: EventActionButton(
-                onTap: _addNewSection,
-                text: 'Add New Section',
-                icon: Icons.add,
-              ),
-            );
-          }
-          final section = _sections[index];
-          return _buildSongContentView(context, section, index);
-        },
-      ),
+      child: _sections.isEmpty
+          ? _buildEmptySections()
+          : ListView.builder(
+              itemCount: _sections.length + 1,
+              itemBuilder: (context, index) {
+                if (index == _sections.length) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 64),
+                        child: EventActionButton(
+                          onTap: _addNewSection,
+                          text: 'Add New Section',
+                          icon: Icons.add,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                final section = _sections[index];
+                return _buildSongContentView(context, section, index);
+              },
+            ),
     );
   }
 
@@ -99,6 +114,35 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
         _updateSong();
       }
     });
+  }
+
+  Widget _buildEmptySections() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 64),
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'No sections added yet, ',
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colorScheme.surfaceDim,
+                ),
+              ),
+              TextSpan(
+                text: 'add one.',
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.colorScheme.primary,
+                ),
+                recognizer: TapGestureRecognizer()..onTap = _addNewSection,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16)
+      ],
+    );
   }
 
   void _updateSong() {
@@ -175,12 +219,16 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
+                InkWell(
+                  child: Icon(
+                    Icons.remove_circle_outline,
+                    color: context.colorScheme.outline,
+                  ),
+                  onTap: () {
                     setState(() {
                       _sections.removeAt(index);
                     });
+                    _updateSong();
                   },
                 ),
               ],
