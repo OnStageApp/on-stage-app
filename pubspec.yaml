@@ -48,7 +48,7 @@ dependencies:
   retrofit_generator: ^9.1.2
   firebase_auth: ^5.1.4
   google_sign_in: ^6.2.1
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage: ^9.2.2
   shimmer: ^3.0.0
   pretty_dio_logger: ^1.4.0
   sliver_tools: ^0.2.12
