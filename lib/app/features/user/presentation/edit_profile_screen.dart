@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
-import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
-import 'package:on_stage_app/app/features/team_member/domain/edit_team_member_request/edit_team_member_request.dart';
-import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
-import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/position_tile_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -17,7 +14,6 @@ import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as path_provider;
 
@@ -74,7 +70,6 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       final updatedUser = user?.copyWith(name: updatedName);
 
       await ref.read(userNotifierProvider.notifier).editUserById(
-            user!.id,
             updatedUser!,
           );
 
@@ -178,50 +173,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ListTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      tileColor: context.colorScheme.onSurfaceVariant,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      dense: true,
-                      title: Text(
-                        ref
-                                .watch(currentTeamMemberNotifierProvider)
-                                .teamMember
-                                ?.position
-                                ?.title ??
-                            'None',
-                        style: context.textTheme.titleMedium,
-                      ),
-                      trailing: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Center(
-                          child: Assets.icons.arrowForward.svg(),
-                        ),
-                      ),
-                      onTap: () {
-                        ChoosePositionModal.show(
-                          context: context,
-                          onSaved: (position) {
-                            final teamMember =
-                                EditTeamMemberRequest(position: position);
-                            ref
-                                .read(
-                                  currentTeamMemberNotifierProvider.notifier,
-                                )
-                                .updateTeamMember(teamMember);
-                          },
-                        );
-                      },
-                    ),
+                    const PositionTile(),
                     const SizedBox(height: 12),
                     CustomTextField(
                       enabled: false,

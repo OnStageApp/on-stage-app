@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_state.dart';
 import 'package:on_stage_app/app/features/team_member/data/team_member_repository.dart';
 import 'package:on_stage_app/app/features/team_member/domain/edit_team_member_request/edit_team_member_request.dart';
+import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
@@ -25,12 +26,12 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
   CurrentTeamMemberState build() {
     final dio = ref.read(dioProvider);
     _teamMemberRepository = TeamMemberRepository(dio);
-    _initializeState();
+    initializeState();
     logger.i('CurrentTeamMemberNotifier initialized');
     return const CurrentTeamMemberState();
   }
 
-  Future<void> _initializeState() async {
+  Future<void> initializeState() async {
     final teamMember = await teamMemberRepository.getCurrentTeamMember();
     await setTeamMemberRoleToSharedPrefs(teamMember: teamMember);
     state = state.copyWith(teamMember: teamMember);
@@ -45,13 +46,19 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
         .setMemberRole(newMember.role ?? TeamMemberRole.None);
   }
 
-  Future<void> updateTeamMember(EditTeamMemberRequest teamMember) async {
+  Future<void> updateTeamMemberPosition(Position? position) async {
     final teamMemberId = state.teamMember?.id;
-    if (teamMemberId == null) return;
+    if (teamMemberId == null) {
+      await initializeState();
+    }
+    if (teamMemberId == null || position == null) return;
     state = state.copyWith(
-      teamMember: state.teamMember?.copyWith(position: teamMember.position),
+      teamMember: state.teamMember?.copyWith(position: position),
     );
-    unawaited(teamMemberRepository.updateTeamMember(teamMemberId, teamMember));
+    final request = EditTeamMemberRequest(position: position);
+    unawaited(
+      teamMemberRepository.updateTeamMember(teamMemberId, request),
+    );
   }
 
   Future<void> clearTeamMember() async {
