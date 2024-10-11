@@ -30,11 +30,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userSettings = ref.watch(userSettingsNotifierProvider);
-
-      if (userSettings.isOnboardingDone == false) {
-        showOnboardingOverlay(context);
-      }
       initializeNotifiers();
     });
   }
@@ -46,6 +41,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _listenToOnboardingStatus();
     final songs = ref.watch(songsNotifierProvider).filteredSongs;
 
     return Scaffold(
@@ -109,6 +105,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _listenToOnboardingStatus() {
+    ref.listen<bool>(
+      userSettingsNotifierProvider
+          .select((settings) => settings.isOnboardingDone!),
+      (_, isOnboardingDone) {
+        if (isOnboardingDone == false) {
+          showOnboardingOverlay(context);
+        }
+      },
     );
   }
 

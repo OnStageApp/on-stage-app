@@ -58,7 +58,7 @@ class CustomTextField extends StatelessWidget {
           ),
           onChanged: onChanged,
           onEditingComplete: onTapOutside,
-          controller: controller,
+          controller: controller ?? TextEditingController(),
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
               .copyWith(
             suffixIcon: suffixIcon,

@@ -36,7 +36,7 @@ class CreateNewTeamModal extends ConsumerStatefulWidget {
       context: context,
       builder: (context) => SafeArea(
         child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Rehearsal'),
+          buildHeader: () => const ModalHeader(title: 'New Team'),
           headerHeight: () => 64,
           buildContent: () => SingleChildScrollView(
             child: CreateNewTeamModal(
@@ -80,13 +80,13 @@ class CreateNewTeamModalState extends ConsumerState<CreateNewTeamModal> {
             CustomTextField(
               enabled: true,
               label: 'Team Name',
-              hint: 'Elevation Worship',
+              hint: 'Rocket Team',
               icon: null,
               focusNode: _rehearsalNameFocus,
               controller: _teamNameController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a rehearsal name';
+                  return 'Please enter a team name';
                 }
                 return null;
               },

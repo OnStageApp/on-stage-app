@@ -11,7 +11,6 @@ import 'package:on_stage_app/app/features/login/application/login_notifier.dart'
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/sign_up_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
-import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_first_step_details.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
@@ -113,16 +112,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                   name: AppRoute.home.name,
                   path: '/home',
                   builder: (context, state) => const HomeScreen(),
-                ),
-                GoRoute(
-                  name: AppRoute.onboarding.name,
-                  path: '/onboarding',
-                  builder: (context, state) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      showOnboardingOverlay(context);
-                    });
-                    return const SizedBox.shrink();
-                  },
                 ),
               ],
             ),
