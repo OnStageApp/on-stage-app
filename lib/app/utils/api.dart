@@ -29,6 +29,7 @@ class API {
   //Songs
   static const String getSongs = 'songs';
   static const String addSong = 'songs';
+  static const String updateSongById = 'songs/{id}';
   static const String getSongsById = 'songs/{id}';
   static const String savedSongs = 'songs/favorites';
   static const String savedSongsWithUserId = 'songs/favorites/{songId}';

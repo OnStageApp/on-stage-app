@@ -134,10 +134,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
-                      name: AppRoute.addSong.name,
-                      path: 'addSong',
+                      name: AppRoute.addEditSong.name,
+                      path: 'addEditSong',
                       builder: (context, state) {
-                        return const AddSongFirstStepDetails();
+                        final songId = state.uri.queryParameters['songId'];
+                        return AddSongFirstStepDetails(
+                          songId: songId,
+                        );
                       },
                       routes: [
                         GoRoute(

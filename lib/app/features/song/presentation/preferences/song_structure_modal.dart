@@ -65,6 +65,8 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildFooter(BuildContext context) {
+    final structureItemsChanged =
+        ref.watch(songPreferencesControllerProvider).structureItems;
     return SizedBox(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -77,6 +79,9 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
             ? ContinueButton(
                 text: isOrderPage ? 'Save' : 'Add',
                 onPressed: () {
+                  if (structureItemsChanged.isEmpty) {
+                    return;
+                  }
                   widget.onSave(isOrderPage);
                   if (!isOrderPage) {
                     setState(() {
@@ -84,7 +89,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                     });
                   }
                 },
-                isEnabled: true,
+                isEnabled: structureItemsChanged.isNotEmpty,
               )
             : const SizedBox(),
       ),

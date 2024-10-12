@@ -130,9 +130,8 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                           color: context.colorScheme.surface,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        //TODO: We have to replace this with current participationStatus
                         child: Text(
-                          'Leader',
+                          '${team.role}',
                           style: context.textTheme.titleMedium!
                               .copyWith(color: context.colorScheme.outline),
                         ),

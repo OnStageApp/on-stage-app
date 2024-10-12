@@ -8,19 +8,22 @@ import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart'
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class AddSongFirstStepDetails extends ConsumerStatefulWidget {
-  const AddSongFirstStepDetails({super.key});
+  const AddSongFirstStepDetails({this.songId, super.key});
+
+  final String? songId;
 
   @override
-  AddSongFirstStepDetailsState createState() => AddSongFirstStepDetailsState();
+  ConsumerState<AddSongFirstStepDetails> createState() =>
+      AddSongFirstStepDetailsState();
 }
 
 class AddSongFirstStepDetailsState
@@ -35,8 +38,29 @@ class AddSongFirstStepDetailsState
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initSong();
+    });
     super.initState();
+  }
+
+  Future<void> _initSong() async {
+    ref.read(songNotifierProvider.notifier).resetState();
+    if (widget.songId != null) {
+      await ref.read(songNotifierProvider.notifier).init(widget.songId!);
+      _prefillValuesIfEditing();
+    }
+  }
+
+  void _prefillValuesIfEditing() {
+    final song = ref.watch(songNotifierProvider).song;
+    if (song.id != null) {
+      _songNameController.text = song.title ?? '';
+      _bpmController.text = song.tempo.toString();
+      _selectedKey =
+          song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
+      _selectedArtist = song.artist;
+    }
   }
 
   @override
@@ -48,7 +72,6 @@ class AddSongFirstStepDetailsState
         child: ContinueButton(
           text: 'Continue',
           onPressed: () async {
-            ref.read(songNotifierProvider.notifier).resetState();
             _addSongDetails(context);
           },
           isEnabled: true,
@@ -135,36 +158,22 @@ class AddSongFirstStepDetailsState
         ),
       ),
       const SizedBox(height: Insets.small),
-      Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          dense: true,
-          title: Text(
-            _selectedKey.name,
-            style: context.textTheme.titleMedium!
-                .copyWith(color: context.colorScheme.onSurface),
-          ),
-          trailing: _buildArrowWidget(context),
-          onTap: () {
-            ChangeKeyModal.show(
-              context: context,
-              title: 'Select Key',
-              songKey: const SongKey(chord: ChordsWithoutSharp.C),
-              onKeyChanged: (key) {
-                setState(() {
-                  _selectedKey = key;
-                  _keyError = null;
-                });
-              },
-            );
-          },
-        ),
+      PreferencesActionTile(
+        title: _selectedKey.name,
+        trailingIcon: Icons.keyboard_arrow_down_rounded,
+        onTap: () {
+          ChangeKeyModal.show(
+            context: context,
+            title: 'Select Key',
+            songKey: const SongKey(chord: ChordsWithoutSharp.C),
+            onKeyChanged: (key) {
+              setState(() {
+                _selectedKey = key;
+                _keyError = null;
+              });
+            },
+          );
+        },
       ),
     ];
   }
@@ -178,53 +187,22 @@ class AddSongFirstStepDetailsState
         ),
       ),
       const SizedBox(height: Insets.small),
-      Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          dense: true,
-          title: Text(
-            _selectedArtist?.name ?? 'Choose Artist',
-            style: context.textTheme.titleMedium!.copyWith(
-              color: _selectedArtist != null
-                  ? context.colorScheme.onSurface
-                  : context.colorScheme.outline,
-            ),
-          ),
-          trailing: _buildArrowWidget(context),
-          onTap: () {
-            ArtistModal.show(
-              context: context,
-              onArtistSelected: (artist) {
-                setState(() {
-                  _selectedArtist = artist;
-                  _artistError = null;
-                });
-              },
-            );
-          },
-        ),
+      PreferencesActionTile(
+        title: _selectedArtist?.name ?? 'Choose Artist',
+        trailingIcon: Icons.keyboard_arrow_down_rounded,
+        onTap: () {
+          ArtistModal.show(
+            context: context,
+            onArtistSelected: (artist) {
+              setState(() {
+                _selectedArtist = artist;
+                _artistError = null;
+              });
+            },
+          );
+        },
       ),
     ];
-  }
-
-  Widget _buildArrowWidget(BuildContext context) {
-    return Container(
-      height: 30,
-      width: 30,
-      decoration: BoxDecoration(
-        color: context.colorScheme.surface,
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Center(
-        child: Assets.icons.arrowDown.svg(),
-      ),
-    );
   }
 
   void _addSongDetails(BuildContext context) {

@@ -25,7 +25,7 @@ enum AppRoute {
   loading,
   signUp,
   songDetailsWithPages,
-  addSong,
+  addEditSong,
   editSongContent,
   addStructureForSong,
 }
