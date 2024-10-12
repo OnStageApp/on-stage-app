@@ -6,6 +6,9 @@ import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart'
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
+import 'package:on_stage_app/app/features/song_configuration/application/song_config_notifier.dart';
+import 'package:on_stage_app/app/features/song_configuration/domain/song_config_request/song_config_request.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -72,7 +75,33 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(
       song: state.song.copyWith(structure: structureItems),
     );
+
+    if (state.song.teamId == null) {
+      _updateSongConfig();
+    } else {
+      updateSongToDB(
+        SongRequest(
+          structure: structureItems,
+        ),
+      );
+    }
+
     logger.i('updated song with structure: ${state.song.structure}');
+  }
+
+  void _updateSongConfig() {
+    final songId = ref.read(songNotifierProvider).song.id;
+    final teamId = ref.read(teamNotifierProvider).currentTeam?.id;
+    ref
+        .read(songConfigurationNotifierProvider.notifier)
+        .updateSongConfiguration(
+          SongConfigRequest(
+            songId: songId,
+            teamId: teamId,
+            isCustom: true,
+            structure: state.song.structure,
+          ),
+        );
   }
 
   void updateSong(SongModelV2 newSong) {
@@ -86,6 +115,7 @@ class SongNotifier extends _$SongNotifier {
       structure: newSong.structure ?? state.song.structure,
     );
     state = state.copyWith(song: updatedSong);
+
     logger.i('updated song');
   }
 
@@ -126,6 +156,17 @@ class SongNotifier extends _$SongNotifier {
   Future<void> saveSongToDB() async {
     final songRequestModel = SongRequest.fromSongModel(state.song);
     final savedSong = await songRepository.addSong(song: songRequestModel);
+    state = state.copyWith(
+      song: savedSong,
+    );
+  }
+
+  Future<void> updateSongToDB(SongRequest songRequest) async {
+    final songRequestModel = songRequest;
+    final savedSong = await songRepository.updateSong(
+      song: songRequestModel,
+      id: state.song.id!,
+    );
     state = state.copyWith(
       song: savedSong,
     );

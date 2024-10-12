@@ -11,9 +11,10 @@ class SongOverview with _$SongOverview {
     required String id,
     String? title,
     int? tempo,
-    @JsonKey(name: 'originalKey') SongKey? key,
+    SongKey? key,
     Artist? artist,
     @Default(false) bool isFavorite,
+    String? teamId,
   }) = _SongOverview;
 
   factory SongOverview.fromJson(Map<String, dynamic> json) =>

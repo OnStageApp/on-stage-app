@@ -1,76 +1,70 @@
-import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
-import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
-import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 class SongDummy {
-  static const song = SongModelV2(
-    id: 'song123',
-    title: 'Esti Marele Eu Sunt',
-    rawSections: [
-      RawSection(
-        structureItem: StructureItem.V1,
-        content: 'Esti Marele "Eu sunt" [G] \n'
-            'In lumina umbrei Tale ma ascund [Am]\n'
-            '[Em]Acoperit de har [G]',
-      ),
-      RawSection(
-        structureItem: StructureItem.C,
-        content: 'Esti Marele "Eu sunt" [G] \n'
-            'In lumina umbrei Tale ma ascund [Am] dfadsfgd adafasfds afa[A]sdf sadgds g\n'
-            '[Em]Acoperit de har [G] \n'
-            'Ma odihnesc atunci cand Tu apari [Am]',
-      ),
-      RawSection(
-        structureItem: StructureItem.C1,
-        content: 'Nu e munte[G] prea mare [G] \n'
-            'Nu-i pustiu prea uscat [D] \n'
-            'Nu e vale prea adanca [Am] \n'
-            'Nu-i nimic mu[G]lt prea greu [C] \n'
-            'Nimic mult prea greu [D]',
-      ),
-      RawSection(
-        structureItem: StructureItem.B,
-        content: 'Est[G]e pace in furtuni \n'
-            'La Cuvantul Tau si stele se supun \n'
-            'Mi-ai dat pu[G]terea Ta \n'
-            'Sa fiu mai mu[G]lt decat eu p[G]ot visa',
-      ),
-    ],
-    structure: [
-      StructureItem.V1,
-      StructureItem.V1,
-      StructureItem.V1,
-      StructureItem.V1,
-      StructureItem.C,
-      StructureItem.C,
-      StructureItem.C,
-      StructureItem.C1,
-      StructureItem.C1,
-      StructureItem.B,
-      StructureItem.C,
-      StructureItem.C1,
-    ],
-    tempo: 120,
-    originalKey: SongKey(
-      chord: ChordsWithoutSharp.G,
-      isMajor: false,
-      isSharp: true,
-    ),
-    key: SongKey(
-      chord: ChordsWithoutSharp.A,
-      isMajor: false,
-      isSharp: true,
-    ),
-    createdAt: '2024-10-03T12:00:00Z',
-    updatedAt: '2024-10-03T14:30:00Z',
-    artist: Artist(id: 'artist456', name: 'John Doe'),
-    album: 'Worship Collection',
-    capo: 2,
-  );
+  // static const song = SongModelV2(
+  //   id: 'song123',
+  //   title: 'Esti Marele Eu Sunt',
+  //   rawSections: [
+  //     RawSection(
+  //       structureItem: StructureItem.V1,
+  //       content: 'Esti Marele "Eu sunt" [G] \n'
+  //           'In lumina umbrei Tale ma ascund [Am]\n'
+  //           '[Em]Acoperit de har [G]',
+  //     ),
+  //     RawSection(
+  //       structureItem: StructureItem.C,
+  //       content: 'Esti Marele "Eu sunt" [G] \n'
+  //           'In lumina umbrei Tale ma ascund [Am] dfadsfgd adafasfds afa[A]sdf sadgds g\n'
+  //           '[Em]Acoperit de har [G] \n'
+  //           'Ma odihnesc atunci cand Tu apari [Am]',
+  //     ),
+  //     RawSection(
+  //       structureItem: StructureItem.C1,
+  //       content: 'Nu e munte[G] prea mare [G] \n'
+  //           'Nu-i pustiu prea uscat [D] \n'
+  //           'Nu e vale prea adanca [Am] \n'
+  //           'Nu-i nimic mu[G]lt prea greu [C] \n'
+  //           'Nimic mult prea greu [D]',
+  //     ),
+  //     RawSection(
+  //       structureItem: StructureItem.B,
+  //       content: 'Est[G]e pace in furtuni \n'
+  //           'La Cuvantul Tau si stele se supun \n'
+  //           'Mi-ai dat pu[G]terea Ta \n'
+  //           'Sa fiu mai mu[G]lt decat eu p[G]ot visa',
+  //     ),
+  //   ],
+  //   structure: [
+  //     StructureItem.V1,
+  //     StructureItem.V1,
+  //     StructureItem.V1,
+  //     StructureItem.V1,
+  //     StructureItem.C,
+  //     StructureItem.C,
+  //     StructureItem.C,
+  //     StructureItem.C1,
+  //     StructureItem.C1,
+  //     StructureItem.B,
+  //     StructureItem.C,
+  //     StructureItem.C1,
+  //   ],
+  //   tempo: 120,
+  //   originalKey: SongKey(
+  //     chord: ChordsWithoutSharp.G,
+  //     isMajor: false,
+  //     isSharp: true,
+  //   ),
+  //   key: SongKey(
+  //     chord: ChordsWithoutSharp.A,
+  //     isMajor: false,
+  //     isSharp: true,
+  //   ),
+  //   createdAt: '2024-10-03T12:00:00Z',
+  //   updatedAt: '2024-10-03T14:30:00Z',
+  //   artist: Artist(id: 'artist456', name: 'John Doe'),
+  //   album: 'Worship Collection',
+  //   capo: 2,
+  // );
   static final notificationsDummy = <StageNotification>[
     //fill with dummy data
     StageNotification(

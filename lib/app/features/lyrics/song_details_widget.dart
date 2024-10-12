@@ -23,6 +23,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.scrollPhysics = const ClampingScrollPhysics(),
     this.leadingWidget,
     this.trailingWidget,
+    this.showContentByStructure = true,
   });
 
   final Function onTapChord;
@@ -40,6 +41,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
   final double scaleFactor;
 
   final ScrollPhysics scrollPhysics;
+  final bool showContentByStructure;
 
   @override
   SongDetailWidgetState createState() => SongDetailWidgetState();
@@ -84,7 +86,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   }
 
   void _processText() {
-    final structures = ref.watch(songNotifierProvider).song.structure ?? [];
+    final structures = _getStructure();
     ref.read(chordProcessorProvider.notifier).processText(
           rawSections: ref.watch(songNotifierProvider).song.rawSections ?? [],
           structures: structures,
@@ -98,6 +100,22 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
               SongViewMode.american,
           originalSongKey: ref.watch(songNotifierProvider).song.originalKey!,
         );
+  }
+
+  List<StructureItem> _getStructure() {
+    List<StructureItem> structures;
+    if (widget.showContentByStructure) {
+      structures = ref.watch(songNotifierProvider).song.structure ?? [];
+    } else {
+      structures = ref
+              .watch(songNotifierProvider)
+              .song
+              .rawSections
+              ?.map((e) => e.structureItem ?? StructureItem.none)
+              .toList() ??
+          [];
+    }
+    return structures;
   }
 
   @override

@@ -16,6 +16,7 @@ abstract class SongRepository {
   Future<SongModelV2> getSong({
     @Path('id') required String songId,
   });
+
   @GET(API.getSongs)
   Future<List<SongOverview>> getSongs({
     @Body() required SongFilter songFilter,
@@ -34,6 +35,12 @@ abstract class SongRepository {
 
   @POST(API.addSong)
   Future<SongModelV2> addSong({
+    @Body() required SongRequest song,
+  });
+
+  @PUT(API.updateSongById)
+  Future<SongModelV2> updateSong({
+    @Path('id') required String id,
     @Body() required SongRequest song,
   });
 
