@@ -119,6 +119,7 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
             if (widget.enabled) ...[
               ContinueButton(
                 isEnabled: true,
+                hasShadow: false,
                 text: widget.rehearsal != null ? 'Update' : 'Create',
                 onPressed: _createRehearsal,
               ),

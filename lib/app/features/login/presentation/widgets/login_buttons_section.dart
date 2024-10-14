@@ -13,7 +13,6 @@ class LoginButtonsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //TODO: Complete signUp with email and email verification
     return Column(
       children: [
         // LoginButton(

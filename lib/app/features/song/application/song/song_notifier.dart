@@ -90,7 +90,7 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void _updateSongConfig() {
-    final songId = ref.read(songNotifierProvider).song.id;
+    final songId = state.song.id;
     final teamId = ref.read(teamNotifierProvider).currentTeam?.id;
     ref
         .read(songConfigurationNotifierProvider.notifier)

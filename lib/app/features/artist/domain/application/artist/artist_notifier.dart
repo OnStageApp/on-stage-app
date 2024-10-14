@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/artist/domain/application/artists_state.dart';
 import 'package:on_stage_app/app/features/artist/domain/data/artist_repository.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,5 +25,9 @@ class ArtistNotifier extends _$ArtistNotifier {
       artists: artists,
       filteredArtists: artists,
     );
+  }
+
+  Future<void> addArtist(String name) async {
+    await _artistRepository.addArtist(ArtistRequest(name: name));
   }
 }

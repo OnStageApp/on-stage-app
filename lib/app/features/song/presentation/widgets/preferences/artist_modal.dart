@@ -4,6 +4,8 @@ import 'package:on_stage_app/app/features/artist/domain/application/artists_noti
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/add_artist_modal.dart';
+import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -76,59 +78,46 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
             // onChanged: _searchArtists,
           ),
           const SizedBox(height: 12),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _artists.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  widget.onArtistSelected(_artists.elementAt(index));
-                  context.popDialog();
-                },
-                child: Container(
-                  height: 48,
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: _isItemChecked(index)
-                          ? context.colorScheme.primary
-                          : context.colorScheme.onSurfaceVariant,
-                      width: 1.6,
+          Column(
+            children: List.generate(
+              _artists.length + 1,
+              (index) {
+                if (_artists.length == index) {
+                  return EventActionButton(
+                    text: 'Add Artist',
+                    icon: Icons.add,
+                    onTap: () async {
+                      await AddArtistModal.show(
+                        context: context,
+                      );
+                      await ref
+                          .read(artistsNotifierProvider.notifier)
+                          .getArtists();
+                    },
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    dense: true,
+                    title: Text(
+                      _artists.elementAt(index).name,
+                      style: context.textTheme.titleSmall,
                     ),
+                    tileColor: _isItemChecked(index)
+                        ? context.colorScheme.primary.withOpacity(0.1)
+                        : context.colorScheme.onSurfaceVariant,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    onTap: () {
+                      widget.onArtistSelected(_artists.elementAt(index));
+                      context.popDialog();
+                    },
                   ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        key: ValueKey(
-                          _artists.elementAt(index).hashCode.toString(),
-                        ),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          color: context.colorScheme.surfaceDim,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Text(
-                          _artists.elementAt(index).name,
-                          style: context.textTheme.titleSmall,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),
