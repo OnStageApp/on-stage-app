@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/add_structure_controller.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddStructureItemsWidget extends ConsumerStatefulWidget {
@@ -46,13 +46,13 @@ class AddStructureItemsWidgetState
                   setState(() {
                     if (_isItemChecked(index)) {
                       ref
-                          .read(songPreferencesControllerProvider.notifier)
+                          .read(addStructureControllerProvider.notifier)
                           .removeStructureItem(
                             _originalStructureItems[index],
                           );
                     } else {
                       ref
-                          .read(songPreferencesControllerProvider.notifier)
+                          .read(addStructureControllerProvider.notifier)
                           .addStructureItem(
                             _originalStructureItems[index],
                           );
@@ -130,7 +130,7 @@ class AddStructureItemsWidgetState
   }
 
   bool _isItemChecked(int index) =>
-      ref.watch(songPreferencesControllerProvider).structureItems.contains(
+      ref.watch(addStructureControllerProvider).structureItemsToAdd.contains(
             _originalStructureItems[index],
           );
 }

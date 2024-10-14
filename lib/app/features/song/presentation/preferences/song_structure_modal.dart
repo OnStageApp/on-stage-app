@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/add_structure_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
@@ -13,11 +14,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongStructureModal extends ConsumerStatefulWidget {
   const SongStructureModal({
-    required this.onSave,
     super.key,
   });
-
-  final void Function(bool isOrderPage) onSave;
 
   @override
   SongStructureModalState createState() => SongStructureModalState();
@@ -25,7 +23,6 @@ class SongStructureModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required WidgetRef ref,
-    required void Function(bool isOrderPage) onSave,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -37,17 +34,26 @@ class SongStructureModal extends ConsumerStatefulWidget {
         maxWidth: MediaQuery.of(context).size.width,
       ),
       context: context,
-      builder: (context) => SongStructureModal(onSave: onSave),
+      builder: (context) => const SongStructureModal(),
     );
   }
 }
 
 class SongStructureModalState extends ConsumerState<SongStructureModal> {
-  bool isOrderPage = true;
+  bool isReorderPage = true;
 
   @override
   void initState() {
+    _initCacheStructure();
     super.initState();
+  }
+
+  void _initCacheStructure() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(songPreferencesControllerProvider.notifier).addAllStructureItems(
+            ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
+          );
+    });
   }
 
   @override
@@ -62,40 +68,23 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
         return 64;
       },
       buildContent:
-          isOrderPage ? ReorderListWidget.new : AddStructureItemsWidget.new,
+          isReorderPage ? ReorderListWidget.new : AddStructureItemsWidget.new,
     );
   }
 
   Widget _buildFooter(BuildContext context) {
-    final isEdited = !listEquals(
-      ref.watch(songPreferencesControllerProvider).structureItems,
-      ref.watch(songNotifierProvider).song.structure,
-    );
-    return SizedBox(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          16,
-          16,
-          16,
-          32,
-        ),
-        child: ref.watch(appDataControllerProvider).hasEditorsRight
-            ? ContinueButton(
-                text: isOrderPage ? 'Save' : 'Add',
-                onPressed: () {
-                  if (!isEdited) {
-                    return;
-                  }
-                  widget.onSave(isOrderPage);
-                  if (!isOrderPage) {
-                    setState(() {
-                      isOrderPage = true;
-                    });
-                  }
-                },
-                isEnabled: isEdited,
-              )
-            : const SizedBox(),
+    final hasEditRights = ref.watch(appDataControllerProvider).hasEditorsRight;
+    final hasChanges = _hasChanges();
+    final buttonText = isReorderPage ? 'Save' : 'Add';
+
+    if (!hasEditRights) return const SizedBox();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      child: ContinueButton(
+        text: buttonText,
+        onPressed: hasChanges ? _handleButtonPress : () {},
+        isEnabled: hasChanges,
       ),
     );
   }
@@ -107,14 +96,8 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
               width: 80 - 12,
               child: InkWell(
                 onTap: () {
-                  if (isOrderPage) {
-                    ref
-                        .read(songPreferencesControllerProvider.notifier)
-                        .clearStructureItems();
-                  }
-
                   setState(() {
-                    isOrderPage = !isOrderPage;
+                    isReorderPage = !isReorderPage;
                   });
                 },
                 child: _buildLeadingTile(context),
@@ -126,7 +109,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildLeadingTile(BuildContext context) {
-    return isOrderPage
+    return isReorderPage
         ? SizedBox(
             child: Row(
               children: [
@@ -146,5 +129,48 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
               color: const Color(0xFF828282),
             ),
           );
+  }
+
+  void _handleButtonPress() {
+    if (isReorderPage) {
+      _changeOrder();
+    } else {
+      _addStructureItems();
+      setState(() => isReorderPage = true);
+    }
+  }
+
+  bool _hasChanges() {
+    if (isReorderPage) {
+      return !listEquals(
+        ref.watch(songPreferencesControllerProvider).structureItems,
+        ref.watch(songNotifierProvider).song.structure,
+      );
+    } else {
+      return ref
+          .watch(addStructureControllerProvider)
+          .structureItemsToAdd
+          .isNotEmpty;
+    }
+  }
+
+  void _addStructureItems() {
+    final strItemsToAdd =
+        ref.watch(addStructureControllerProvider).structureItemsToAdd;
+
+    ref
+        .read(songPreferencesControllerProvider.notifier)
+        .addStructureItemsToCurrent(strItemsToAdd);
+
+    ref.read(addStructureControllerProvider.notifier).clearStructureItems();
+  }
+
+  void _changeOrder() {
+    final songPrefsController = ref.watch(songPreferencesControllerProvider);
+    final songNotifier = ref.read(songNotifierProvider.notifier);
+    final reorderedStructure = songPrefsController.structureItems;
+    songNotifier.updateStructureOnSong(reorderedStructure);
+
+    context.popDialog();
   }
 }

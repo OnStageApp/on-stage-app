@@ -165,12 +165,12 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
         )
         .toList();
     SongModelV2 song;
-    song = _getSongModifOnIsCreatingOrEditing(rawSections);
+    song = _getSongChangesBasedOnIsCreatingOrEditing(rawSections);
 
     ref.read(songNotifierProvider.notifier).updateSong(song);
   }
 
-  SongModelV2 _getSongModifOnIsCreatingOrEditing(
+  SongModelV2 _getSongChangesBasedOnIsCreatingOrEditing(
     List<RawSection> rawSections,
   ) {
     SongModelV2 song;
@@ -184,6 +184,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     } else {
       song = SongModelV2(
         rawSections: rawSections,
+        structure: ref.watch(songNotifierProvider).song.structure,
       );
     }
     return song;

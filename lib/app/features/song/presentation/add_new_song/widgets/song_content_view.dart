@@ -76,7 +76,7 @@ class SongContentView extends StatelessWidget {
                   onTap: onDelete,
                   child: Icon(
                     Icons.remove_circle_outline,
-                    color: context.colorScheme.outline,
+                    color: context.colorScheme.error,
                   ),
                 ),
               ],

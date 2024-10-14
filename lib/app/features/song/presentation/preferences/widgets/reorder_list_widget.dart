@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
-import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reordable_list_item.dart';
@@ -18,15 +17,6 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   @override
   void initState() {
     super.initState();
-    _initCacheStructure();
-  }
-
-  void _initCacheStructure() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songPreferencesControllerProvider.notifier).addAllStructureItems(
-            ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
-          );
-    });
   }
 
   @override
