@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "895845013571-gnpqlia9e5cpfd7fhjnien6stf24k7uq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.avtech.onstage",
+            "certificate_hash": "b6774adf833f0c7a0b89ba7c1d5f2533f8a07113"
+          }
+        },
+        {
           "client_id": "895845013571-kk0umjupon2d23kdogt2m7abjtfj3i4u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

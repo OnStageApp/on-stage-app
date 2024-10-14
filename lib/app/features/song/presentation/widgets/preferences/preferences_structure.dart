@@ -54,8 +54,9 @@ class PreferencesSongStructure extends ConsumerWidget {
     final newStructure =
         ref.watch(songPreferencesControllerProvider).structureItems.toList();
 
+    final oldStructure = ref.watch(songNotifierProvider).song.structure;
     ref.read(songNotifierProvider.notifier).updateStructureOnSong([
-      ...?ref.watch(songNotifierProvider).song.structure,
+      ...?oldStructure,
       ...newStructure,
     ]);
 

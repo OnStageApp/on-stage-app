@@ -100,10 +100,6 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
           if (widget.isFromEvent || isSongAddedByCurrentTeam) ...[
             const PreferencesSongStructure(),
           ],
-          if (!isSongAddedByCurrentTeam) ...[
-            const SizedBox(height: Insets.medium),
-            const PreferencesSongStructure(),
-          ],
           if (isSongAddedByCurrentTeam) ...[
             const SizedBox(height: Insets.medium),
             Text(
