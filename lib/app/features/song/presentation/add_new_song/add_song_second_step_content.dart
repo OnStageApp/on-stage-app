@@ -116,7 +116,9 @@ class AddSongSecondStepContentState
   Future<void> _onSavedSong(BuildContext context) async {
     final song = ref.watch(songNotifierProvider).song;
     final songNotifier = ref.read(songNotifierProvider.notifier);
+
     if (song.id == null) {
+      songNotifier.setDefaultStructureLocally(song.availableStructureItems);
       await songNotifier.saveSongToDB();
     } else {
       await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));

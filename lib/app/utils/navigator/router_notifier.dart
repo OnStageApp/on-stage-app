@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/login/application/login_notifier.dart'
 import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/sign_up_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
+import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_first_step_details.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
@@ -220,6 +221,11 @@ class NavigationNotifier extends _$NavigationNotifier {
                   path: '/profile',
                   builder: (context, state) => const ProfileScreen(),
                   routes: [
+                    GoRoute(
+                      name: AppRoute.plans.name,
+                      path: 'plans',
+                      builder: (context, state) => PlansScreen(),
+                    ),
                     GoRoute(
                       name: AppRoute.editProfile.name,
                       path: 'editProfile',
