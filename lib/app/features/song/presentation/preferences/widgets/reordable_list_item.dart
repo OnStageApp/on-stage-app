@@ -10,6 +10,8 @@ class ReordableListItem extends StatefulWidget {
     required this.shortName,
     required this.name,
     this.canSlide = true,
+    this.onRemove,
+    this.onClone,
     super.key,
   });
 
@@ -19,13 +21,25 @@ class ReordableListItem extends StatefulWidget {
   final String shortName;
   final String name;
   final bool canSlide;
+  final void Function()? onRemove;
+  final void Function()? onClone;
 
   @override
   _ReordableListItemState createState() => _ReordableListItemState();
 }
 
-class _ReordableListItemState extends State<ReordableListItem> {
+class _ReordableListItemState extends State<ReordableListItem>
+    with SingleTickerProviderStateMixin {
   bool isSliding = false;
+  late SlidableController _controller;
+
+  @override
+  void initState() {
+    _controller = SlidableController(
+      this,
+    );
+    super.initState();
+  }
 
   void _setSliding(bool sliding) {
     setState(() {
@@ -39,14 +53,18 @@ class _ReordableListItemState extends State<ReordableListItem> {
       margin: const EdgeInsets.only(bottom: 8),
       child: Slidable(
         enabled: widget.canSlide,
+        controller: _controller,
         key: ValueKey(widget.itemKey),
         endActionPane: ActionPane(
           dragDismissible: false,
           motion: const ScrollMotion(),
-          dismissible: DismissiblePane(onDismissed: () {}),
           children: [
             Expanded(
               child: InkWell(
+                onTap: () async {
+                  await _controller.close();
+                  widget.onClone?.call();
+                },
                 child: Container(
                   height: double.infinity,
                   alignment: Alignment.center,
@@ -54,7 +72,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
                   child: Text(
                     'Clone',
                     style: context.textTheme.bodyLarge!.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -62,6 +80,10 @@ class _ReordableListItemState extends State<ReordableListItem> {
             ),
             Expanded(
               child: InkWell(
+                onTap: () async {
+                  await _controller.close();
+                  widget.onRemove?.call();
+                },
                 child: Container(
                   height: double.infinity,
                   alignment: Alignment.center,
@@ -74,7 +96,7 @@ class _ReordableListItemState extends State<ReordableListItem> {
                   child: Text(
                     'Delete',
                     style: context.textTheme.bodyLarge!.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+                      color: Colors.white,
                     ),
                   ),
                 ),

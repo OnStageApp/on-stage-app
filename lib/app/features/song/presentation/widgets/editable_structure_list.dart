@@ -54,16 +54,15 @@ class EditableStructureList extends ConsumerWidget {
 }
 
 class AnimatedTile extends StatefulWidget {
-  final StructureItem structureItem;
-  final int xTimes;
-  final VoidCallback onTap;
-
   const AnimatedTile({
-    Key? key,
     required this.structureItem,
     required this.xTimes,
     required this.onTap,
+    Key? key,
   }) : super(key: key);
+  final StructureItem structureItem;
+  final int xTimes;
+  final VoidCallback onTap;
 
   @override
   _AnimatedTileState createState() => _AnimatedTileState();
@@ -145,7 +144,8 @@ class _AnimatedTileState extends State<AnimatedTile>
                     height: 36,
                     alignment: Alignment.center,
                     key: ValueKey(
-                      '${widget.structureItem.shortName}_${widget.structureItem.index}',
+                      '${widget.structureItem.shortName}_'
+                      '${widget.structureItem.index}',
                     ),
                     decoration: BoxDecoration(
                       color: context.colorScheme.onSurfaceVariant,

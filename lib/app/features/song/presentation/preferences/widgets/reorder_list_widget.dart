@@ -15,17 +15,17 @@ class ReorderListWidget extends ConsumerStatefulWidget {
 }
 
 class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
-  List<StructureItem> _structureItems = [];
-
   @override
   void initState() {
     super.initState();
+    _initCacheStructure();
+  }
+
+  void _initCacheStructure() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _structureItems = List.of(
-          ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
-        );
-      });
+      ref.read(songPreferencesControllerProvider.notifier).addAllStructureItems(
+            ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
+          );
     });
   }
 
@@ -47,29 +47,33 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   }
 
   Widget _buildList() {
+    final cacheStructureItems =
+        ref.watch(songPreferencesControllerProvider).structureItems.toList();
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _structureItems.length,
+      itemCount: cacheStructureItems.length,
       itemBuilder: (context, index) {
         return ReordableListItem(
           canSlide: false,
-          itemKey: '${_structureItems[index].shortName}_$index',
-          itemId: _structureItems[index].index,
-          color: _structureItems[index].color,
-          shortName: _structureItems[index].shortName,
-          name: _structureItems[index].name,
+          itemKey: '${cacheStructureItems[index].shortName}_$index',
+          itemId: cacheStructureItems[index].index,
+          color: cacheStructureItems[index].color,
+          shortName: cacheStructureItems[index].shortName,
+          name: cacheStructureItems[index].name,
         );
       },
     );
   }
 
   Widget _buildReordableList() {
+    final cacheStructureItems =
+        ref.watch(songPreferencesControllerProvider).structureItems.toList();
     return ReorderableListView.builder(
       onReorder: _onReorder,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: _structureItems.length,
+      itemCount: cacheStructureItems.length,
       proxyDecorator: (child, index, animation) => Material(
         color: Colors.transparent,
         elevation: 6,
@@ -79,13 +83,23 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       ),
       itemBuilder: (context, index) {
         return Container(
-          key: ValueKey('${_structureItems[index].shortName}_$index'),
+          key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
           child: ReordableListItem(
-            itemKey: '${_structureItems[index].shortName}_$index',
-            itemId: _structureItems[index].index,
-            color: _structureItems[index].color,
-            shortName: _structureItems[index].shortName,
-            name: _structureItems[index].name,
+            itemKey: '${cacheStructureItems[index].shortName}_$index',
+            itemId: cacheStructureItems[index].index,
+            color: cacheStructureItems[index].color,
+            shortName: cacheStructureItems[index].shortName,
+            name: cacheStructureItems[index].name,
+            onRemove: () {
+              ref
+                  .read(songPreferencesControllerProvider.notifier)
+                  .removeStructureItem(cacheStructureItems[index]);
+            },
+            onClone: () {
+              ref
+                  .read(songPreferencesControllerProvider.notifier)
+                  .addStructureItem(cacheStructureItems[index]);
+            },
           ),
         );
       },
@@ -93,18 +107,20 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   }
 
   void _onReorder(int oldIndex, int index) {
+    final cacheStructureItems =
+        ref.watch(songPreferencesControllerProvider).structureItems.toList();
     var newIndex = index;
     if (newIndex > oldIndex) {
       newIndex = newIndex - 1;
     }
 
     setState(() {
-      final old = _structureItems.removeAt(oldIndex);
-      _structureItems.insert(newIndex, old);
+      final old = cacheStructureItems.removeAt(oldIndex);
+      cacheStructureItems.insert(newIndex, old);
     });
 
     ref
         .read(songPreferencesControllerProvider.notifier)
-        .addAllStructureItems(_structureItems);
+        .addAllStructureItems(cacheStructureItems);
   }
 }

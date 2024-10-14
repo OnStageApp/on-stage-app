@@ -126,6 +126,8 @@ app.*.map.json
 !.idea/runConfigurations/
 
 lib/firebase_options.dart
+google-services.json
+**/google-services.json
 
 lib/resources/generated
 
@@ -133,3 +135,6 @@ lib/resources/generated
 **/*.g.dart
 **/*.config.dart
 **/*.gr.dart
+*.g.dart
+*.freezed.dart
+

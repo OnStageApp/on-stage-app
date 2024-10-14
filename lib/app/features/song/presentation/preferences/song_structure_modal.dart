@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/app_data/app_data_controller.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/add__structure_items_widget.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
@@ -65,8 +67,10 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildFooter(BuildContext context) {
-    final structureItemsChanged =
-        ref.watch(songPreferencesControllerProvider).structureItems;
+    final isEdited = !listEquals(
+      ref.watch(songPreferencesControllerProvider).structureItems,
+      ref.watch(songNotifierProvider).song.structure,
+    );
     return SizedBox(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -79,7 +83,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
             ? ContinueButton(
                 text: isOrderPage ? 'Save' : 'Add',
                 onPressed: () {
-                  if (structureItemsChanged.isEmpty) {
+                  if (!isEdited) {
                     return;
                   }
                   widget.onSave(isOrderPage);
@@ -89,7 +93,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                     });
                   }
                 },
-                isEnabled: structureItemsChanged.isNotEmpty,
+                isEnabled: isEdited,
               )
             : const SizedBox(),
       ),
