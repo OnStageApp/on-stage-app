@@ -105,6 +105,8 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void updateSong(SongModelV2 newSong) {
+    final updatedStructure = _filterStructureByAvailableSections(newSong);
+
     final updatedSong = state.song.copyWith(
       title: newSong.title ?? state.song.title,
       key: newSong.key ?? state.song.key,
@@ -112,11 +114,24 @@ class SongNotifier extends _$SongNotifier {
       tempo: newSong.tempo ?? state.song.tempo,
       artist: newSong.artist ?? state.song.artist,
       rawSections: newSong.rawSections ?? state.song.rawSections,
-      structure: newSong.structure ?? state.song.structure,
+      structure: updatedStructure,
     );
+
     state = state.copyWith(song: updatedSong);
 
     logger.i('updated song');
+  }
+
+  List<StructureItem> _filterStructureByAvailableSections(SongModelV2 newSong) {
+    if (newSong.rawSections == null) {
+      return state.song.structure ?? [];
+    }
+
+    final availableStructure =
+        newSong.rawSections!.map((e) => e.structureItem).toSet();
+    return (state.song.structure ?? [])
+        .where(availableStructure.contains)
+        .toList();
   }
 
   void updateSongSectionsWithNewStructureItems(
