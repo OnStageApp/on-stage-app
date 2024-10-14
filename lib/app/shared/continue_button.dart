@@ -11,6 +11,7 @@ class ContinueButton extends StatelessWidget {
     this.isLoading = false,
     this.backgroundColor,
     this.textColor,
+    this.borderColor,
     super.key,
   });
 
@@ -21,6 +22,7 @@ class ContinueButton extends StatelessWidget {
   final bool hasShadow;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,9 @@ class ContinueButton extends StatelessWidget {
           elevation: WidgetStateProperty.all(4),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
+              side: BorderSide(
+                color: borderColor ?? Colors.transparent,
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
           ),

@@ -71,6 +71,12 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(sections: newSections);
   }
 
+  void setDefaultStructureLocally(List<StructureItem> structureItems) {
+    state = state.copyWith(
+      song: state.song.copyWith(structure: structureItems),
+    );
+  }
+
   void updateStructureOnSong(List<StructureItem> structureItems) {
     state = state.copyWith(
       song: state.song.copyWith(structure: structureItems),

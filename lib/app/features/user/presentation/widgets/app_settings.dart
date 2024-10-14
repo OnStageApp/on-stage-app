@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
@@ -78,7 +78,7 @@ class AppSettingsState extends ConsumerState<AppSettings> {
                 .copyWith(color: context.colorScheme.outline),
           ),
           onTap: () {
-            context.goNamed(AppRoute.favorites.name);
+            showPlanUpgrades(context);
           },
         ),
       ],

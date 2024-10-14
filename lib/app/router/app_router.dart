@@ -28,6 +28,7 @@ enum AppRoute {
   addEditSong,
   editSongContent,
   addStructureForSong,
+  plans,
 }
 
 extension GoRouterExtension on GoRouter {
