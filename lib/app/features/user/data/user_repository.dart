@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/login/domain/user_model.dart';
-import 'package:on_stage_app/app/features/user/domain/models/user/user_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -11,7 +10,7 @@ abstract class UserRepository {
   factory UserRepository(Dio dio) = _UserRepository;
 
   @GET(API.users)
-  Future<List<User>> getUsers();
+  Future<List<UserModel>> getUsers();
 
   @GET(API.user)
   Future<UserModel> getUserById(
@@ -33,5 +32,4 @@ abstract class UserRepository {
     @Path('id') String id,
     @Body() UserModel updatedUser,
   );
-
 }

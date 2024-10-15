@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
+import 'package:on_stage_app/app/features/login/domain/user_model.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
-import 'package:on_stage_app/app/features/user/domain/models/user/user_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -80,7 +80,7 @@ class UserNotifier extends _$UserNotifier {
     logger
         .i('Fetching user photo ${DateTime.now()}, forceUpdate: $forceUpdate');
 
-    if (!forceUpdate && state.userPhoto != null) {
+    if (!forceUpdate && state.currentUser?.image != null) {
       logger.i('Using cached user photo');
       return;
     }
@@ -89,15 +89,22 @@ class UserNotifier extends _$UserNotifier {
       final photoBytes = await _getPhotoBytes(forceUpdate);
 
       if (photoBytes != null) {
-        state = state.copyWith(userPhoto: photoBytes);
+        state = state.copyWith(
+            currentUser: state.currentUser?.copyWith(image: photoBytes));
         await _savePhotoToLocalStorage(photoBytes);
         logger.i('Done fetching and saving user photo ${DateTime.now()}');
       } else {
-        state = state.copyWith(userPhoto: null);
+        state = state.copyWith(
+          currentUser: state.currentUser?.copyWith(
+            image: photoBytes,
+          ),
+        );
         logger.i('Photo not found');
       }
     } catch (e) {
-      state = state.copyWith(userPhoto: null);
+      state = state.copyWith(
+        currentUser: state.currentUser?.copyWith(image: null),
+      );
       logger.e('Error fetching user photo: $e');
     }
   }
