@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
+import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
   const ProfileImageWidget({
+    required this.name,
+    required this.photo,
     required this.userId,
     Key? key,
     this.canChangeProfilePicture = false,
@@ -14,6 +19,8 @@ class ProfileImageWidget extends ConsumerWidget {
   final String userId;
   final bool canChangeProfilePicture;
   final double size;
+  final String name;
+  final Uint8List? photo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,19 +40,11 @@ class ProfileImageWidget extends ConsumerWidget {
               )
             : null,
       ),
-      child: profilePicture == null
-          ? Container(
-              decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.person,
-                color: context.colorScheme.primaryContainer,
-                size: size * 0.6,
-              ),
-            )
-          : null,
+      child: ImageWithPlaceholder(
+        photo: photo,
+        name: name,
+        isLargeTitle: true,
+      ),
     );
   }
 }

@@ -18,6 +18,8 @@ class ProfileHeader extends ConsumerWidget {
         children: [
           ProfileImageWidget(
             userId: user?.id ?? '',
+            name: user!.name ?? 'User',
+            photo: user.image,
           ),
           const SizedBox(width: 22),
           Expanded(

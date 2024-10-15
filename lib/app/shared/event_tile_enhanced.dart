@@ -15,6 +15,7 @@ class EventTileEnhanced extends StatelessWidget {
     required this.locationName,
     required this.participantsProfileBytes,
     required this.participantsCount,
+    this.participantsName,
     this.isEventEmpty = false,
     super.key,
   });
@@ -24,6 +25,7 @@ class EventTileEnhanced extends StatelessWidget {
   final String? locationName;
   final bool isEventEmpty;
   final int participantsCount;
+  final String? participantsName;
   final List<Uint8List?> participantsProfileBytes;
   final void Function() onTap;
 
@@ -98,6 +100,7 @@ class EventTileEnhanced extends StatelessWidget {
                   borderColor: Colors.transparent,
                   participantsProfileBytes: participantsProfileBytes,
                   participantsLength: participantsCount,
+                  participantsName: participantsName,
                 ),
             ],
           ),

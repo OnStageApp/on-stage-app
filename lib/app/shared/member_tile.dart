@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class MemberTileWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class MemberTileWidget extends StatelessWidget {
   });
 
   final Uint8List? photo;
-  final String name;
+  final String? name;
   final String trailing;
   final void Function() onTap;
 
@@ -30,31 +31,13 @@ class MemberTileWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: context.colorScheme.primaryContainer,
-                  ),
-                  shape: BoxShape.circle,
-                  image: photo != null
-                      ? DecorationImage(
-                          image: MemoryImage(photo!),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
+              ImageWithPlaceholder(
+                  photo: photo,
+                  name: name!,
                 ),
-                child: photo == null
-                    ? Icon(
-                        Icons.person,
-                        color: context.colorScheme.outline,
-                      )
-                    : null,
-              ),
               const SizedBox(width: 10),
               Text(
-                name,
+                name ?? 'Unknown',
                 style: context.textTheme.titleMedium,
               ),
               const Spacer(),
