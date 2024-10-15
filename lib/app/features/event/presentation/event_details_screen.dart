@@ -212,6 +212,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         onTap: () {},
         participantsProfileBytes: stagers.map((e) => e.profilePicture).toList(),
         participantsCount: stagers.length,
+        participantsName: stagers.isNotEmpty ? stagers[0].name ?? '' : '',
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/event_items/application/event_item_not
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/vocal_lead_modal.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
+import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 
@@ -78,18 +79,9 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
       alignment: Alignment.center,
       child: Row(
         children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: MemoryImage(
-                  leadVocal.profilePicture ?? Uint8List(0),
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
+          ImageWithPlaceholder(
+            photo: leadVocal.profilePicture,
+            name: leadVocal.name ?? '',
           ),
           const SizedBox(width: 10),
           Text(leadVocal.name ?? 'None', style: context.textTheme.titleMedium),

@@ -115,9 +115,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       child: ProfileImageWidget(
                         size: 140,
                         canChangeProfilePicture: true,
-                        userId:
-                            ref.watch(userNotifierProvider).currentUser?.id ??
-                                '',
+                        userId: user?.id ?? '',
+                        name: user?.name ?? 'User',
+                        photo: user?.image,
                       ),
                     ),
                     const SizedBox(height: 18),

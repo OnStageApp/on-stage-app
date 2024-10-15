@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ParticipantsOnTile extends StatelessWidget {
@@ -12,6 +13,7 @@ class ParticipantsOnTile extends StatelessWidget {
     this.borderColor,
     this.backgroundColor,
     this.participantsLength,
+    this.participantsName,
     super.key,
   });
 
@@ -24,6 +26,7 @@ class ParticipantsOnTile extends StatelessWidget {
   final Color? borderColor;
   final Color? backgroundColor;
   final int? participantsLength;
+  final String? participantsName;
 
   int get _participantsLength => participantsLength ?? 0;
 
@@ -52,32 +55,13 @@ class ParticipantsOnTile extends StatelessWidget {
               if (showOverlay) {
                 return Positioned(
                   left: index * 20,
-                  child: Container(
+                  child: SizedBox(
                     width: width,
                     height: width,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: backgroundColor ??
-                          context.colorScheme.primaryContainer,
-                      border: Border.all(
-                        color:
-                            borderColor ?? context.colorScheme.onSurfaceVariant,
-                        width: 2,
-                      ),
-                      image: participantsProfileBytes[index] != null
-                          ? DecorationImage(
-                              image:
-                                  MemoryImage(participantsProfileBytes[index]!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
+                    child: ImageWithPlaceholder(
+                      photo: participantsProfileBytes[index],
+                      name: participantsName ?? '',
                     ),
-                    child: participantsProfileBytes[index] == null
-                        ? Icon(
-                            Icons.person,
-                            color: context.colorScheme.surface,
-                          )
-                        : const SizedBox(),
                   ),
                 );
               } else {

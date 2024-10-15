@@ -8,10 +8,12 @@ class ImageWithPlaceholder extends StatelessWidget {
     super.key,
     this.photo,
     this.name = '',
+    this.isLargeTitle = false,
   });
 
   final Uint8List? photo;
   final String name;
+  final bool isLargeTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class ImageWithPlaceholder extends StatelessWidget {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
+        color: context.colorScheme.onPrimaryFixedVariant,
         border: Border.all(
           color: context.colorScheme.primaryContainer,
         ),
@@ -31,8 +34,14 @@ class ImageWithPlaceholder extends StatelessWidget {
             : null,
       ),
       child: photo == null || photo!.isEmpty
-          ? PlaceholderImageWidget(title: name)
-          : null,
+          ? PlaceholderImageWidget(
+              title: name,
+              isLargeTitle: isLargeTitle,
+            )
+          : Icon(
+        Icons.person,
+        color: context.colorScheme.primaryContainer,
+      ),
     );
   }
 }
