@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class InviteButton extends StatelessWidget {
   const InviteButton({
@@ -30,15 +29,15 @@ class InviteButton extends StatelessWidget {
         ),
         backgroundColor: WidgetStateProperty.all(
           isConfirm
-              ? context.colorScheme.tertiary
+              ? context.colorScheme.onSurface
               : context.colorScheme.surface,
         ),
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
-              (Set<WidgetState> states) {
-                if (states.contains(WidgetState.pressed)) {
-                  return context.colorScheme.primary.withOpacity(0.1);
-                }
-                return null;
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.pressed)) {
+              return context.colorScheme.primary.withOpacity(0.1);
+            }
+            return null;
           },
         ),
       ),
@@ -46,10 +45,10 @@ class InviteButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (!isConfirm)
-            Assets.icons.close.svg()
-          else
-            Assets.icons.confirm.svg(),
+          // if (!isConfirm)
+          //   Assets.icons.close.svg()
+          // else
+          //   Assets.icons.confirm.svg(),
           const SizedBox(width: 6),
           Text(
             text,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -19,7 +19,7 @@ class NotificationWidget extends ConsumerWidget {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(Insets.smallNormal),
-        backgroundColor: SongDummy.notificationsDummy.isNotEmpty
+        backgroundColor: ref.watch(notificationNotifierProvider).isNotEmpty
             ? context.colorScheme.onSurfaceVariant
             : const Color(0xFFE2E2E5),
         shape: RoundedRectangleBorder(
@@ -32,7 +32,7 @@ class NotificationWidget extends ConsumerWidget {
             height: 20,
             width: 20,
           ),
-          if (SongDummy.notificationsDummy.isNotEmpty)
+          if (ref.watch(notificationNotifierProvider).isNotEmpty)
             Positioned(
               top: 0,
               right: 0,
@@ -43,7 +43,9 @@ class NotificationWidget extends ConsumerWidget {
                   color: Colors.red,
                   shape: BoxShape.circle,
                   border: Border.all(
-                      color: context.colorScheme.onSurfaceVariant, width: 2),
+                    color: context.colorScheme.onSurfaceVariant,
+                    width: 2,
+                  ),
                 ),
               ),
             ),
