@@ -1,6 +1,6 @@
 class API {
-  static const String baseUrl = 'https://dev.on-stage.app/';
-  // static const String baseUrl = 'http://6dcd-86-127-188-157.ngrok-free.app/';
+  // static const String baseUrl = 'https://dev.on-stage.app/';
+  static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {
@@ -62,5 +62,5 @@ class API {
   //ws
 
   static const String wsBaseUrl = 'ws/websocket';
-  static const String wsTopicMessage = '/topic/messages';
+  static const String wsTopicMessage = '/user/';
 }

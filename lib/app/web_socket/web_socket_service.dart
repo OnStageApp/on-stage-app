@@ -21,7 +21,7 @@ class WebSocketService {
 
     _client = StompClient(
       config: StompConfig(
-        url: 'ws://6dcd-86-127-188-157.ngrok-free.app/${API.wsBaseUrl}',
+        url: 'ws://fb72-86-127-188-157.ngrok-free.app/${API.wsBaseUrl}',
         onConnect: _onConnect,
         beforeConnect: () async {
           logger.i('Connecting to WebSocket...');
