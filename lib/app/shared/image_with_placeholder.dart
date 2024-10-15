@@ -17,6 +17,9 @@ class ImageWithPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = photo != null && photo!.isNotEmpty;
+    final hasName = name.isNotEmpty;
+
     return Container(
       width: 36,
       height: 36,
@@ -26,22 +29,24 @@ class ImageWithPlaceholder extends StatelessWidget {
           color: context.colorScheme.primaryContainer,
         ),
         shape: BoxShape.circle,
-        image: photo != null && photo!.isNotEmpty
+        image: hasPhoto
             ? DecorationImage(
-                image: MemoryImage(photo!),
-                fit: BoxFit.cover,
-              )
+          image: MemoryImage(photo!),
+          fit: BoxFit.cover,
+        )
             : null,
       ),
-      child: photo == null || photo!.isEmpty
+      child: !hasPhoto
+          ? hasName
           ? PlaceholderImageWidget(
-              title: name,
-              isLargeTitle: isLargeTitle,
-            )
+        title: name,
+        isLargeTitle: isLargeTitle,
+      )
           : Icon(
         Icons.person,
         color: context.colorScheme.primaryContainer,
-      ),
+      )
+          : null,
     );
   }
 }
