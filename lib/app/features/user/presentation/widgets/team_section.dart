@@ -15,6 +15,7 @@ class TeamsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentTeam = ref.watch(teamNotifierProvider).currentTeam;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,6 +53,7 @@ class TeamsSection extends ConsumerWidget {
                 ? ParticipantsOnTile(
                     participantsProfileBytes: currentTeam.memberPhotos,
                     participantsLength: currentTeam.membersCount,
+                    participantsName: null,
                   )
                 : const SizedBox(),
             onTap: () {

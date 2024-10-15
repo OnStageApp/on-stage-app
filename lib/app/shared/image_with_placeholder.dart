@@ -27,7 +27,7 @@ class ImageWithPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.onPrimaryFixedVariant,
         border: Border.all(
-          color: context.colorScheme.primaryContainer,
+          color: context.colorScheme.surfaceTint,
         ),
         shape: BoxShape.circle,
         image: hasValidPhoto
@@ -45,7 +45,7 @@ class ImageWithPlaceholder extends StatelessWidget {
                 )
               : Icon(
                   Icons.person,
-                  color: context.colorScheme.primaryContainer,
+                  color: context.colorScheme.outline.withOpacity(0.7),
                 )
           : null,
     );

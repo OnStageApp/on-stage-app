@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -39,36 +38,43 @@ class ParticipantsOnTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final participants = List.generate(
+      _participantsLength,
+      (index) => {
+        'photo': participantsProfileBytes.length > index
+            ? participantsProfileBytes[index]
+            : null,
+        'name': participantsProfile.length > index
+            ? participantsProfile[index]
+            : participantsName ?? '',
+      },
+    );
+
     return SizedBox(
       height: width,
-      width: (_participantsLength * width) - (_participantsLength - 1) * 10,
+      width: tileWidth,
       child: Stack(
         children: [
-          ...(participantsProfileBytes.length > 2
-                  ? participantsProfileBytes.sublist(0, _participantsMax)
-                  : participantsProfileBytes)
-              .asMap()
-              .entries
-              .map(
-            (entry) {
-              final index = entry.key;
-              if (showOverlay) {
-                return Positioned(
-                  left: index * 20,
-                  child: SizedBox(
-                    width: width,
-                    height: width,
-                    child: ImageWithPlaceholder(
-                      photo: participantsProfileBytes[index],
-                      name: participantsName ?? '',
-                    ),
+          ...participants.asMap().entries.map((entry) {
+            final index = entry.key;
+            final participant = entry.value;
+
+            if (showOverlay) {
+              return Positioned(
+                left: index * 20,
+                child: SizedBox(
+                  width: width,
+                  height: width,
+                  child: ImageWithPlaceholder(
+                    photo: participant['photo'] as Uint8List?,
+                    name: participant['name']! as String,
                   ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
-          ),
+                ),
+              );
+            } else {
+              return const SizedBox();
+            }
+          }).toList(),
           if (_participantsLength > _participantsMax)
             Positioned(
               left: _participantsMax * (width - 10),

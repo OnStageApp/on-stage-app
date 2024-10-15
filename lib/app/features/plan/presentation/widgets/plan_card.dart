@@ -27,7 +27,7 @@ class PlanCard extends ConsumerWidget {
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: context.colorScheme.primaryContainer,
+          color: context.colorScheme.onSecondaryFixedVariant,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
