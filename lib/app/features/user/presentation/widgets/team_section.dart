@@ -53,7 +53,6 @@ class TeamsSection extends ConsumerWidget {
                 ? ParticipantsOnTile(
                     participantsProfileBytes: currentTeam.memberPhotos,
                     participantsLength: currentTeam.membersCount,
-                    participantsName: null,
                   )
                 : const SizedBox(),
             onTap: () {
