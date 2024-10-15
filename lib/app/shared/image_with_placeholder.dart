@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
 
 class ImageWithPlaceholder extends StatelessWidget {
   const ImageWithPlaceholder({
@@ -17,7 +18,7 @@ class ImageWithPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasValidPhoto = photo != null && photo!.isNotEmpty;
+    final hasValidPhoto = photo?.isNotNullOrEmpty ?? false;
     final hasName = name.isNotEmpty;
 
     return Container(
