@@ -55,14 +55,14 @@ class ToggleBackgroundPainter extends CustomPainter {
 
     // Draw selected option background
     final selectedPaint = Paint()
-      ..color = Colors.white
+      ..color = context.colorScheme.onSurfaceVariant
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(selectedRect, selectedPaint);
 
     // Draw border for selected item
     final selectedBorderPaint = Paint()
-      ..color = context.colorScheme.primaryContainer
+      ..color = context.colorScheme.onSecondaryFixedVariant
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
