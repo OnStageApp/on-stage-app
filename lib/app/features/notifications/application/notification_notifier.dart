@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:on_stage_app/app/dummy_data/song_dummy.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/stage_notification_model.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/app/web_socket/web_socket_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,7 +29,11 @@ class NotificationNotifier extends _$NotificationNotifier {
     if (!webSocketService.isConnected) {
       await webSocketService.connect();
     }
-    webSocketService.subscribe(API.wsTopicMessage, _handleNotification);
+    final userId = ref.watch(userNotifierProvider).currentUser?.id;
+    webSocketService.subscribe(
+      '${API.wsTopicMessage}/$userId',
+      _handleNotification,
+    );
   }
 
   void _handleNotification(String message) {
