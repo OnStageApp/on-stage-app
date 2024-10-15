@@ -16,10 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$UserState {
-  List<User>? get users => throw _privateConstructorUsedError;
-  List<User> get uninvitedUsers => throw _privateConstructorUsedError;
+  List<UserModel>? get users => throw _privateConstructorUsedError;
+  List<UserModel> get uninvitedUsers => throw _privateConstructorUsedError;
   UserModel? get currentUser => throw _privateConstructorUsedError;
-  Uint8List? get userPhoto => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -33,10 +32,9 @@ abstract class $UserStateCopyWith<$Res> {
       _$UserStateCopyWithImpl<$Res, UserState>;
   @useResult
   $Res call(
-      {List<User>? users,
-      List<User> uninvitedUsers,
+      {List<UserModel>? users,
+      List<UserModel> uninvitedUsers,
       UserModel? currentUser,
-      Uint8List? userPhoto,
       bool isLoading});
 
   $UserModelCopyWith<$Res>? get currentUser;
@@ -58,26 +56,21 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
     Object? users = freezed,
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
-    Object? userPhoto = freezed,
     Object? isLoading = null,
   }) {
     return _then(_value.copyWith(
       users: freezed == users
           ? _value.users
           : users // ignore: cast_nullable_to_non_nullable
-              as List<User>?,
+              as List<UserModel>?,
       uninvitedUsers: null == uninvitedUsers
           ? _value.uninvitedUsers
           : uninvitedUsers // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+              as List<UserModel>,
       currentUser: freezed == currentUser
           ? _value.currentUser
           : currentUser // ignore: cast_nullable_to_non_nullable
               as UserModel?,
-      userPhoto: freezed == userPhoto
-          ? _value.userPhoto
-          : userPhoto // ignore: cast_nullable_to_non_nullable
-              as Uint8List?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -107,10 +100,9 @@ abstract class _$$UserStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<User>? users,
-      List<User> uninvitedUsers,
+      {List<UserModel>? users,
+      List<UserModel> uninvitedUsers,
       UserModel? currentUser,
-      Uint8List? userPhoto,
       bool isLoading});
 
   @override
@@ -131,26 +123,21 @@ class __$$UserStateImplCopyWithImpl<$Res>
     Object? users = freezed,
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
-    Object? userPhoto = freezed,
     Object? isLoading = null,
   }) {
     return _then(_$UserStateImpl(
       users: freezed == users
           ? _value._users
           : users // ignore: cast_nullable_to_non_nullable
-              as List<User>?,
+              as List<UserModel>?,
       uninvitedUsers: null == uninvitedUsers
           ? _value._uninvitedUsers
           : uninvitedUsers // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+              as List<UserModel>,
       currentUser: freezed == currentUser
           ? _value.currentUser
           : currentUser // ignore: cast_nullable_to_non_nullable
               as UserModel?,
-      userPhoto: freezed == userPhoto
-          ? _value.userPhoto
-          : userPhoto // ignore: cast_nullable_to_non_nullable
-              as Uint8List?,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -163,17 +150,16 @@ class __$$UserStateImplCopyWithImpl<$Res>
 
 class _$UserStateImpl implements _UserState {
   const _$UserStateImpl(
-      {final List<User>? users,
-      final List<User> uninvitedUsers = const [],
+      {final List<UserModel>? users,
+      final List<UserModel> uninvitedUsers = const [],
       this.currentUser,
-      this.userPhoto,
       this.isLoading = false})
       : _users = users,
         _uninvitedUsers = uninvitedUsers;
 
-  final List<User>? _users;
+  final List<UserModel>? _users;
   @override
-  List<User>? get users {
+  List<UserModel>? get users {
     final value = _users;
     if (value == null) return null;
     if (_users is EqualUnmodifiableListView) return _users;
@@ -181,10 +167,10 @@ class _$UserStateImpl implements _UserState {
     return EqualUnmodifiableListView(value);
   }
 
-  final List<User> _uninvitedUsers;
+  final List<UserModel> _uninvitedUsers;
   @override
   @JsonKey()
-  List<User> get uninvitedUsers {
+  List<UserModel> get uninvitedUsers {
     if (_uninvitedUsers is EqualUnmodifiableListView) return _uninvitedUsers;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_uninvitedUsers);
@@ -193,14 +179,12 @@ class _$UserStateImpl implements _UserState {
   @override
   final UserModel? currentUser;
   @override
-  final Uint8List? userPhoto;
-  @override
   @JsonKey()
   final bool isLoading;
 
   @override
   String toString() {
-    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, userPhoto: $userPhoto, isLoading: $isLoading)';
+    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, isLoading: $isLoading)';
   }
 
   @override
@@ -213,7 +197,6 @@ class _$UserStateImpl implements _UserState {
                 .equals(other._uninvitedUsers, _uninvitedUsers) &&
             (identical(other.currentUser, currentUser) ||
                 other.currentUser == currentUser) &&
-            const DeepCollectionEquality().equals(other.userPhoto, userPhoto) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading));
   }
@@ -224,7 +207,6 @@ class _$UserStateImpl implements _UserState {
       const DeepCollectionEquality().hash(_users),
       const DeepCollectionEquality().hash(_uninvitedUsers),
       currentUser,
-      const DeepCollectionEquality().hash(userPhoto),
       isLoading);
 
   @JsonKey(ignore: true)
@@ -236,20 +218,17 @@ class _$UserStateImpl implements _UserState {
 
 abstract class _UserState implements UserState {
   const factory _UserState(
-      {final List<User>? users,
-      final List<User> uninvitedUsers,
+      {final List<UserModel>? users,
+      final List<UserModel> uninvitedUsers,
       final UserModel? currentUser,
-      final Uint8List? userPhoto,
       final bool isLoading}) = _$UserStateImpl;
 
   @override
-  List<User>? get users;
+  List<UserModel>? get users;
   @override
-  List<User> get uninvitedUsers;
+  List<UserModel> get uninvitedUsers;
   @override
   UserModel? get currentUser;
-  @override
-  Uint8List? get userPhoto;
   @override
   bool get isLoading;
   @override

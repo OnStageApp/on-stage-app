@@ -82,7 +82,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userNotifierProvider).currentUser;
+    final userState = ref.watch(userNotifierProvider);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
@@ -115,9 +115,9 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       child: ProfileImageWidget(
                         size: 140,
                         canChangeProfilePicture: true,
-                        userId: user?.id ?? '',
-                        name: user?.name ?? 'User',
-                        photo: user?.image,
+                        userId: userState.currentUser?.id ?? '',
+                        name: userState.currentUser?.name ?? 'User',
+                        photo: userState.currentUser?.image,
                       ),
                     ),
                     const SizedBox(height: 18),
@@ -178,7 +178,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     CustomTextField(
                       enabled: false,
                       label: 'Email',
-                      hint: '${user?.email}',
+                      hint: '${userState.currentUser?.email}',
                       icon: Icons.church,
                       controller: TextEditingController(),
                       validator: (value) {

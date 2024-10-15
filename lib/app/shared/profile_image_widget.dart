@@ -24,7 +24,7 @@ class ProfileImageWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profilePicture = ref.watch(userNotifierProvider).userPhoto;
+    final profilePicture = ref.watch(userNotifierProvider).currentUser?.image;
     return Container(
       width: size,
       height: size,
