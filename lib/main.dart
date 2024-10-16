@@ -14,7 +14,5 @@ void main() async {
   Stripe.publishableKey =
       'pk_test_51Q9wEm00OekLPJYVKmp77mJyvOmVmJs9JKvTkICB7Q7xHfGQo8fvw1fUCRIXwQ20dScdIOUn5aGWZlD6GoUloXJi00IfGqsTHm';
 
-  // await FirebaseNotifier().init();
-
   await bootstrap(() => const App());
 }
