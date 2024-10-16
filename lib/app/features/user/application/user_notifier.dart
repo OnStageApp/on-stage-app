@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/login/domain/user_model.dart';
@@ -35,6 +36,7 @@ class UserNotifier extends _$UserNotifier {
   Future<void> getCurrentUser() async {
     state = state.copyWith(isLoading: true);
     final currentUser = await usersRepository.getCurrentUser();
+    _setUserIdInAnalytics(currentUser.id, currentUser.name ?? '');
     state = state.copyWith(currentUser: currentUser, isLoading: false);
   }
 
@@ -143,5 +145,15 @@ class UserNotifier extends _$UserNotifier {
     await ref
         .read(databaseProvider)
         .updateUserProfilePicture(state.currentUser?.id ?? '', photo);
+  }
+
+  void _setUserIdInAnalytics(String userId, String userName) {
+    ref.read(analyticsServiceProvider.notifier).setUserId(
+          userId,
+        );
+    ref.read(analyticsServiceProvider.notifier).setUserProperty(
+          name: 'name',
+          value: userName,
+        );
   }
 }

@@ -26,7 +26,6 @@ class NotificationNotifier extends _$NotificationNotifier {
 
   @override
   NotificationNotifierState build() {
-    _webSocketService = ref.read(webSocketServiceProvider);
     _initializeWebSocket();
     return const NotificationNotifierState();
   }
