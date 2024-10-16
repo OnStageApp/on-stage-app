@@ -42,7 +42,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         if (mounted &&
             ref.read(userSettingsNotifierProvider).isCreateEventTooltipShown ==
                 false) {
-          _createEventTooltipKey.currentState?.showTooltip();
+          //TODO: See if it's needed
+          // _createEventTooltipKey.currentState?.showTooltip();
         }
       });
     });

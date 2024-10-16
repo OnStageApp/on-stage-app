@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -74,7 +75,7 @@ class ParticipantsOnTile extends StatelessWidget {
             } else {
               return const SizedBox();
             }
-          }).toList(),
+          }),
           if (_participantsLength > _participantsMax)
             Positioned(
               left: _participantsMax * (width - 10),

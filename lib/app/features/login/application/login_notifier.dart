@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:on_stage_app/app/analytics/analytics_service.dart';
+import 'package:on_stage_app/app/analytics/enums/login_method.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/login/application/login_state.dart';
 import 'package:on_stage_app/app/features/login/data/login_repository.dart';
@@ -107,6 +109,7 @@ class LoginNotifier extends _$LoginNotifier {
           throw Exception('Failed to get ID Token');
         }
         await _login(idToken);
+
         state = state.copyWith(isLoggedIn: true);
         return true;
       }
@@ -147,6 +150,9 @@ class LoginNotifier extends _$LoginNotifier {
           throw Exception('Failed to get ID Token');
         }
         await _login(idToken);
+
+        _setLoginMethodForAnalytics(LoginMethod.google);
+
         state = state.copyWith(isLoggedIn: true);
         return true;
       }
@@ -156,6 +162,12 @@ class LoginNotifier extends _$LoginNotifier {
       state = LoginState(error: e.toString());
       return false;
     }
+  }
+
+  void _setLoginMethodForAnalytics(LoginMethod loginMethod) {
+    unawaited(
+      ref.read(analyticsServiceProvider.notifier).logLogin(loginMethod.name),
+    );
   }
 
   Future<bool> signInWithApple() async {
@@ -182,6 +194,7 @@ class LoginNotifier extends _$LoginNotifier {
           throw Exception('Failed to get ID Token');
         }
         await _login(idToken);
+        _setLoginMethodForAnalytics(LoginMethod.apple);
         state = state.copyWith(isLoggedIn: true);
         return true;
       }

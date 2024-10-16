@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/analytics/analytics_service.dart';
+import 'package:on_stage_app/app/analytics/enums/login_method.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/shared/login_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -31,7 +34,16 @@ class LoginButtonsSection extends ConsumerWidget {
           LoginButton(
             text: 'Continue with Apple',
             onPressed: () async {
-              await ref.read(loginNotifierProvider.notifier).signInWithApple();
+              final success = await ref
+                  .read(loginNotifierProvider.notifier)
+                  .signInWithApple();
+              if (success) {
+                unawaited(
+                  ref
+                      .read(analyticsServiceProvider.notifier)
+                      .logLogin(LoginMethod.apple.name),
+                );
+              }
             },
             isEnabled: true,
             textColor: context.colorScheme.onSurface,
