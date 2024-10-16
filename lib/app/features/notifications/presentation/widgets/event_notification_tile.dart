@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
-import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/shared/invite_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class EventNotificationTile extends NotificationTile {
@@ -35,62 +34,20 @@ class EventNotificationTile extends NotificationTile {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Row(
-                  // children: [
-                  //   if (NotificationStatus.NEW == status)
-                  // ImageWithPlaceholder(
-                  //   photo: profilePicture,
-                  //   name: 'Ant Vin',
-                  // ),
-                  //   const SizedBox(width: 8),
-                  // Text(
-                  //   title,
-                  //   style: context.textTheme.headlineMedium,
-                  //   maxLines: 1,
-                  //   overflow: TextOverflow.ellipsis,
-                  // ),
-                  // ],
-                  // ),
-                  const SizedBox(height: 3),
-                  if (description.isNotNullEmptyOrWhitespace) ...[
-                    Row(
-                      children: [
-                        const ImageWithPlaceholder(),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            description!,
-                            style: context.textTheme.bodyMedium,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ] else
-                    Row(
-                      children: [
-                        Text(
-                          TimeUtils().formatOnlyTime(dateTime),
-                          style: context.textTheme.bodyMedium!.copyWith(
-                            color: context.colorScheme.surfaceDim,
-                          ),
-                        ),
-                        _buildCircle(
-                          context.colorScheme.outline.withOpacity(0.2),
-                        ),
-                        Text(
-                          dateTime != null
-                              ? TimeUtils().formatOnlyDate(dateTime)
-                              : '',
-                          style: context.textTheme.bodyMedium!.copyWith(
-                            color: context.colorScheme.surfaceDim,
-                          ),
-                        ),
-                      ],
-                    ),
+                  Text(
+                    'Duminica seara',
+                    style: context.textTheme.headlineMedium!
+                        .copyWith(color: context.colorScheme.onSurface),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  _buildDateTime(context),
                 ],
               ),
+            ),
+            const ParticipantsOnTile(
+              participantsLength: 3,
             ),
           ],
         ),
@@ -117,6 +74,30 @@ class EventNotificationTile extends NotificationTile {
               ],
             ),
           ),
+      ],
+    );
+  }
+
+  Row _buildDateTime(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          TimeUtils().formatOnlyTime(dateTime ?? DateTime.now()),
+          style: context.textTheme.bodyMedium!.copyWith(
+            color: context.colorScheme.surfaceDim,
+          ),
+        ),
+        _buildCircle(
+          context.colorScheme.outline.withOpacity(0.2),
+        ),
+        Text(
+          TimeUtils().formatOnlyDate(
+            dateTime ?? DateTime.now(),
+          ),
+          style: context.textTheme.bodyMedium!.copyWith(
+            color: context.colorScheme.surfaceDim,
+          ),
+        ),
       ],
     );
   }

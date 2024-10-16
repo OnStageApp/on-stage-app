@@ -11,6 +11,11 @@ class WebSocketService {
   final Map<String, void Function(String)> _subscriptions = {};
 
   Future<void> connect() async {
+    if (_client != null && (_client?.connected ?? false)) {
+      logger.i('Already connected to WebSocket. Skipping new connection.');
+      return;
+    }
+
     const storage = FlutterSecureStorage();
     final authToken = await storage.read(key: 'token');
 
@@ -21,7 +26,7 @@ class WebSocketService {
 
     _client = StompClient(
       config: StompConfig(
-        url: 'ws://fb72-86-127-188-157.ngrok-free.app/${API.wsBaseUrl}',
+        url: 'wss://dev.on-stage.app/${API.wsBaseUrl}',
         onConnect: _onConnect,
         beforeConnect: () async {
           logger.i('Connecting to WebSocket...');
@@ -29,7 +34,10 @@ class WebSocketService {
         },
         onStompError: (frame) => logger.e('STOMP error: ${frame.body}'),
         onWebSocketError: (error) => logger.e('WebSocket error: $error'),
-        onDisconnect: (_) => logger.i('WebSocket disconnected'),
+        onDisconnect: (_) {
+          logger.i('WebSocket disconnected');
+          _client = null;
+        },
         stompConnectHeaders: {'Authorization': 'Bearer $authToken'},
         webSocketConnectHeaders: {'Authorization': 'Bearer $authToken'},
       ),
@@ -44,7 +52,9 @@ class WebSocketService {
   }
 
   void subscribe(String destination, void Function(String) onMessageReceived) {
+    print('INIT SUBSCRIPTIONS: $_subscriptions');
     _subscriptions[destination] = onMessageReceived;
+    print('Subscriptions: $_subscriptions');
     if (_client?.connected ?? false) {
       _subscribe(destination, onMessageReceived);
     }

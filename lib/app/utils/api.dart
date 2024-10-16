@@ -63,7 +63,7 @@ class API {
   //ws
 
   static const String wsBaseUrl = 'ws/websocket';
-  static const String wsTopicMessage = '/user/';
+  static const String wsTopicMessage = '/user';
 
   static const String notifications = 'notifications';
 }
