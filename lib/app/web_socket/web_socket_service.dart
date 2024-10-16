@@ -26,12 +26,8 @@ class WebSocketService {
 
     _client = StompClient(
       config: StompConfig(
-        url: 'wss://dev.on-stage.app/${API.wsBaseUrl}',
+        url: API.wsBaseUrl,
         onConnect: _onConnect,
-        beforeConnect: () async {
-          logger.i('Connecting to WebSocket...');
-          await Future.delayed(const Duration(milliseconds: 200));
-        },
         onStompError: (frame) => logger.e('STOMP error: ${frame.body}'),
         onWebSocketError: (error) => logger.e('WebSocket error: $error'),
         onDisconnect: (_) {

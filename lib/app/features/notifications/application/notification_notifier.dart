@@ -44,9 +44,9 @@ class NotificationNotifier extends _$NotificationNotifier {
     }
   }
 
-  void _handleNotification(String message) {
+  Future<void> _handleNotification(String message) async {
     logger.i('New notification message received: $message');
-
+    await getNotifications();
     state = state.copyWith(hasNewNotifications: true);
   }
 

@@ -80,8 +80,8 @@ class ParticipantsOnTile extends StatelessWidget {
             Positioned(
               left: _participantsMax * (width - 10),
               child: Container(
-                width: width + 2,
-                height: width + 2,
+                width: width,
+                height: width,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(

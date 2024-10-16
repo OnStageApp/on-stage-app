@@ -9,7 +9,7 @@ part 'notification_repository.g.dart';
 abstract class NotificationRepository {
   factory NotificationRepository(Dio dio) = _NotificationRepository;
 
-  @GET(API.notifications)
+  @GET(API.wsNotifications)
   Future<List<StageNotification>> getNotifications(
     @Query('userId') String userId,
   );
