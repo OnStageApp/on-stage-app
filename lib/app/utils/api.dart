@@ -1,5 +1,7 @@
 class API {
-  static const String baseUrl = 'https://dev.on-stage.app/';
+  static const String domain = 'dev.on-stage.app';
+  static const String baseUrl = 'https://$domain/';
+  static const String wsBaseUrl = 'wss://$domain/ws/websocket';
 
   // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
@@ -61,9 +63,6 @@ class API {
   static const String songConfig = 'song-config';
 
   //ws
-
-  static const String wsBaseUrl = 'ws/websocket';
   static const String wsTopicMessage = '/user';
-
-  static const String notifications = 'notifications';
+  static const String wsNotifications = 'notifications';
 }
