@@ -21,7 +21,7 @@ extension SearchFilterEnumExtension on SearchFilterEnum {
       case SearchFilterEnum.artist:
         return 'Artist';
       case SearchFilterEnum.team:
-        return 'Team';
+        return 'Song Library';
     }
   }
 }
