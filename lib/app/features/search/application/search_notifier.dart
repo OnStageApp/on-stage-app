@@ -95,6 +95,15 @@ class SearchNotifier extends _$SearchNotifier {
         ),
       );
     }
+    if (state.teamFilter != null) {
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.team,
+          value: state.teamFilter! ? 'Team Songs' : 'All Songs',
+        ),
+      );
+    }
+
     return filters;
   }
 }
