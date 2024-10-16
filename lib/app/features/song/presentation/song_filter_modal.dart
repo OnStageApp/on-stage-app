@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/search/application/search_notifier.dar
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/songs_team_modal.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -84,6 +85,8 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
               PreferenceTheme(),
             ],
           ),
+          SizedBox(height: Insets.medium),
+          SongTeamModal(),
           SizedBox(height: Insets.medium),
         ],
       ),
