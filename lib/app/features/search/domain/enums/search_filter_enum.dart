@@ -4,6 +4,7 @@ enum SearchFilterEnum {
   genre,
   theme,
   artist,
+  team,
 }
 
 extension SearchFilterEnumExtension on SearchFilterEnum {
@@ -19,6 +20,8 @@ extension SearchFilterEnumExtension on SearchFilterEnum {
         return 'Theme';
       case SearchFilterEnum.artist:
         return 'Artist';
+      case SearchFilterEnum.team:
+        return 'Song Library';
     }
   }
 }

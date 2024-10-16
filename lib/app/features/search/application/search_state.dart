@@ -16,6 +16,7 @@ class SearchState with _$SearchState {
     GenreFilterEnum? genreFilter,
     ThemeFilterEnum? themeFilter,
     Artist? artistFilter,
+    bool? teamFilter,
   }) = _SearchState;
 
   const SearchState._();
@@ -25,6 +26,7 @@ class SearchState with _$SearchState {
       search: text.isNotEmpty ? text : null,
       artistId: artistFilter?.id,
       genres: genreFilter?.name,
+      includeOnlyTeamSongs: teamFilter,
     );
   }
 }

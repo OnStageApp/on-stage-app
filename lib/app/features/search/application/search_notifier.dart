@@ -39,11 +39,16 @@ class SearchNotifier extends _$SearchNotifier {
     state = state.copyWith(themeFilter: searchFilter);
   }
 
+  void setTeamFilter({required bool teamFilter}) {
+    state = state.copyWith(teamFilter: teamFilter);
+  }
+
   void resetAllFilters() {
     state = state.copyWith(
       genreFilter: null,
       artistFilter: null,
       themeFilter: null,
+      teamFilter: null,
     );
   }
 
@@ -56,6 +61,8 @@ class SearchNotifier extends _$SearchNotifier {
         state = state.copyWith(artistFilter: null);
       case SearchFilterEnum.theme:
         state = state.copyWith(themeFilter: null);
+      case SearchFilterEnum.team:
+        state = state.copyWith(teamFilter: null);
 
       case SearchFilterEnum.all:
       case SearchFilterEnum.bpm:
@@ -88,6 +95,15 @@ class SearchNotifier extends _$SearchNotifier {
         ),
       );
     }
+    if (state.teamFilter != null) {
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.team,
+          value: state.teamFilter! ? 'Team Songs' : 'All Songs',
+        ),
+      );
+    }
+
     return filters;
   }
 }

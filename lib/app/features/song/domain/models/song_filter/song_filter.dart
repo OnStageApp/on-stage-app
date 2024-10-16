@@ -10,6 +10,7 @@ class SongFilter with _$SongFilter {
     String? search,
     String? genres,
     // KeysEnum key,
+    bool? includeOnlyTeamSongs,
   }) = _SongFilter;
 
   factory SongFilter.fromJson(Map<String, dynamic> json) =>
