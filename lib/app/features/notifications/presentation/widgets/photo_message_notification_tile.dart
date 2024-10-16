@@ -35,13 +35,11 @@ class PhotoMessageNotificationTile extends NotificationTile {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 8),
                   if (description.isNotNullEmptyOrWhitespace) ...[
                     Row(
                       children: [
                         ImageWithPlaceholder(
                           photo: profilePicture,
-                          name: 'Ant Vin',
                         ),
                         const SizedBox(width: 8),
                         Expanded(

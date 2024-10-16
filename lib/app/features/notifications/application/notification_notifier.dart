@@ -1,7 +1,5 @@
-import 'dart:convert';
-
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier_state.dart';
 import 'package:on_stage_app/app/features/notifications/data/notification_repository.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -27,10 +25,10 @@ class NotificationNotifier extends _$NotificationNotifier {
   }
 
   @override
-  List<StageNotification> build() {
-    // _webSocketService = ref.read(webSocketServiceProvider);
-    // _initializeWebSocket();
-    return [];
+  NotificationNotifierState build() {
+    _webSocketService = ref.read(webSocketServiceProvider);
+    _initializeWebSocket();
+    return const NotificationNotifierState();
   }
 
   Future<void> _initializeWebSocket() async {
@@ -38,14 +36,18 @@ class NotificationNotifier extends _$NotificationNotifier {
       await webSocketService.connect();
     }
     final userId = ref.watch(userNotifierProvider).currentUser?.id;
-    webSocketService.subscribe(
-      '${API.wsTopicMessage}/$userId/notifications',
-      _handleNotification,
-    );
+    if (userId != null) {
+      webSocketService.subscribe(
+        '${API.wsTopicMessage}/$userId/notifications',
+        _handleNotification,
+      );
+    }
   }
 
   void _handleNotification(String message) {
-    // state = [newNotification, ...state];
+    logger.i('New notification message received: $message');
+
+    state = state.copyWith(hasNewNotifications: true);
   }
 
   Future<void> getNotifications() async {
@@ -53,17 +55,11 @@ class NotificationNotifier extends _$NotificationNotifier {
     final notifications = await notificationRepository.getNotifications(userId);
     logger.i('getNotifications: $notifications');
 
-    state = notifications;
-  }
-
-  void sendNotification(StageNotification notification) {
-    final notificationJson = json.encode(notification.toJson());
-    webSocketService.sendMessage('/app/notifications', notificationJson);
+    state = state.copyWith(notifications: notifications);
   }
 
   @override
   void dispose() {
     webSocketService.unsubscribe(API.wsTopicMessage);
-    // super.dispose(); // Call super.dispose() to ensure the notifier is fully disposed
   }
 }
