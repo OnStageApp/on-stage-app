@@ -162,3 +162,5 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
       ref.watch(searchNotifierProvider).artistFilter ==
       _artists.elementAt(index);
 }
+
+

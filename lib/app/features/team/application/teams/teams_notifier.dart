@@ -26,6 +26,7 @@ class TeamsNotifier extends _$TeamsNotifier {
     );
   }
 
+
   Future<void> setCurrentTeam(String teamId) async {
     state = state.copyWith(
       currentTeamId: teamId,

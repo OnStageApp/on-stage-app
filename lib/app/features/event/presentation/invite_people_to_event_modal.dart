@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
 class InvitePeopleToEventModal extends ConsumerStatefulWidget {
   const InvitePeopleToEventModal({
@@ -140,6 +141,7 @@ class AddParticipantsModalState
   @override
   Widget build(BuildContext context) {
     _setParticipants();
+    print(_searchedParticipants.length);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -149,7 +151,7 @@ class AddParticipantsModalState
           _buildSearchBar(),
           const SizedBox(height: 12),
           if (_areParticipantsLoading)
-            const OnStageLoadingIndicator()
+            _buildShimmerLoading()
           else
             Padding(
               padding: const EdgeInsets.only(bottom: 42),
@@ -282,4 +284,30 @@ class AddParticipantsModalState
 
     return addedMemberIds.contains(currentParticipant.id);
   }
+
+  Widget _buildShimmerLoading() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 42),
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade200,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 48,
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
 }
