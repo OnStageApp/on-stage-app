@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:shimmer/shimmer.dart';
 
 final hasChangesProvider = StateProvider.autoDispose<bool>((ref) => false);
 
@@ -28,13 +29,28 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 }
 
 class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
+
+  bool _areEventItemsLoading = false;
+
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(eventItemsNotifierProvider.notifier)
-          .getEventItems(widget.eventId);
+     _requestEventItems();
+    });
+    super.initState();
+  }
+
+  Future<void> _requestEventItems() async {
+    setState(()  {
+      _areEventItemsLoading = true;
+
+    });
+    await ref
+        .read(eventItemsNotifierProvider.notifier)
+        .getEventItems(widget.eventId);
+
+    setState(()  {
+      _areEventItemsLoading = false;
     });
   }
 
@@ -53,9 +69,30 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
       body: Padding(
         padding: defaultScreenPadding,
-        child: hasEditorRights
+        child: _areEventItemsLoading
+        ? _buildShimmerList()
+        : hasEditorRights
             ? _buildReordableList(eventItemsState.eventItems)
             : _buildStaticList(eventItemsState.eventItems),
+      ),
+    );
+  }
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.shade200,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            height: 70,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
       ),
     );
   }
