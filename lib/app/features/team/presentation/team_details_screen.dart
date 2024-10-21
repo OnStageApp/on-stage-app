@@ -8,12 +8,14 @@ import 'package:on_stage_app/app/features/team/presentation/team_member_modal.da
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/permission/handle_permission.dart';
 
 class TeamDetailsScreen extends ConsumerStatefulWidget {
   const TeamDetailsScreen({
@@ -68,8 +70,15 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             _buildParticipantsList(),
             const SizedBox(height: 12),
             EventActionButton(
-              onTap: () {
-                context.pushNamed(AppRoute.addTeamMember.name);
+              onTap: () async {
+                await handlePermission(
+                  context: context,
+                  ref: ref,
+                  permissionType: PermissionType.addTeamMembers,
+                  onGranted: () {
+                    context.pushNamed(AppRoute.addTeamMember.name);
+                  },
+                );
               },
               text: 'Invite People',
               icon: Icons.add,

@@ -8,9 +8,11 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/custom_sett
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/domain/reminder_model.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/permission/handle_permission.dart';
 
 class RemindersSection extends ConsumerStatefulWidget {
   const RemindersSection({super.key});
@@ -99,16 +101,23 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
   }
 
   void _showSetReminderModal(BuildContext context, EventModel? event) {
-    SetReminderModal.show(
+    handlePermission(
       context: context,
-      cacheReminders: _reminders.map((e) => e.daysBefore).toList(),
       ref: ref,
-      onSaved: (updatedReminders) {
-        if (event != null) {
-          ref
-              .read(reminderNotifierProvider.notifier)
-              .createReminders(updatedReminders, event.id!);
-        }
+      permissionType: PermissionType.reminders,
+      onGranted: () {
+        SetReminderModal.show(
+          context: context,
+          cacheReminders: _reminders.map((e) => e.daysBefore).toList(),
+          ref: ref,
+          onSaved: (updatedReminders) {
+            if (event != null) {
+              ref
+                  .read(reminderNotifierProvider.notifier)
+                  .createReminders(updatedReminders, event.id!);
+            }
+          },
+        );
       },
     );
   }

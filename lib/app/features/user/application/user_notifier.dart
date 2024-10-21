@@ -5,10 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
-import 'package:on_stage_app/app/features/login/domain/user_model.dart';
+import 'package:on_stage_app/app/features/login/domain/user_request.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -40,13 +41,12 @@ class UserNotifier extends _$UserNotifier {
     state = state.copyWith(currentUser: currentUser, isLoading: false);
   }
 
-  Future<void> editUserById(UserModel updatedUser) async {
+  Future<void> editUserById(UserRequest userRequest) async {
     try {
       final userId = state.currentUser?.id;
       if (userId == null) return;
       state = state.copyWith(isLoading: true);
-      final editedUser =
-          await usersRepository.editUserById(userId, updatedUser);
+      final editedUser = await usersRepository.editUser(userRequest);
       state = state.copyWith(currentUser: editedUser, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false);
@@ -109,6 +109,11 @@ class UserNotifier extends _$UserNotifier {
       );
       logger.e('Error fetching user photo: $e');
     }
+  }
+
+  Future<void> checkPermissions(PermissionType permission) async {
+    final hasPermissions =
+        await usersRepository.checkPermission(permission.name);
   }
 
   Future<Uint8List?> _getPhotoBytes(bool forceUpdate) async {

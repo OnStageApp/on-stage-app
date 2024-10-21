@@ -10,12 +10,14 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/events_cont
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
 import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/permission/handle_permission.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
@@ -139,7 +141,14 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               _disableTooltip();
             }
 
-            context.pushNamed(AppRoute.addEvent.name);
+            handlePermission(
+              context: context,
+              ref: ref,
+              permissionType: PermissionType.addEvents,
+              onGranted: () {
+                context.pushNamed(AppRoute.addEvent.name);
+              },
+            );
           },
           icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
         ),

@@ -25,7 +25,9 @@ class ImageWithPlaceholder extends StatelessWidget {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: context.colorScheme.tertiaryContainer,
+        color: context.isDarkMode
+            ? context.colorScheme.secondary
+            : context.colorScheme.tertiaryContainer,
         border: Border.all(
           color: context.colorScheme.surfaceTint,
         ),
@@ -43,9 +45,9 @@ class ImageWithPlaceholder extends StatelessWidget {
                   title: name,
                   isLargeTitle: isLargeTitle,
                 )
-              : Icon(
+              : const Icon(
                   Icons.person,
-                  color: context.colorScheme.onSurfaceVariant.withOpacity(1),
+                  color: Colors.white,
                 )
           : null,
     );

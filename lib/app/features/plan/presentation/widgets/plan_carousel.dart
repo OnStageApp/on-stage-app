@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/plan/data/static_plans.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/plan/application/current_plan_provider.dart';
+import 'package:on_stage_app/app/features/plan/application/filtered_plans_provider.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_card.dart';
 
-class PlanCarousel extends StatelessWidget {
-  final PageController pageController;
-
+class PlanCarousel extends ConsumerWidget {
   const PlanCarousel({
     required this.pageController,
     super.key,
   });
 
+  final PageController pageController;
+
   @override
-  Widget build(BuildContext context) {
-    return PageView(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentPlan = ref.watch(currentPlanProvider);
+
+    final filteredPlans = ref.watch(filteredPlansProvider);
+
+    return PageView.builder(
       controller: pageController,
-      children: plans.map((plan) {
-        return PlanCard(plan: plan);
-      }).toList(),
+      itemCount: filteredPlans.length,
+      itemBuilder: (context, index) {
+        final plan = filteredPlans[index];
+        final isCurrent = currentPlan.entitlementId == plan.entitlementId;
+        return PlanCard(plan: filteredPlans[index], isCurrent: isCurrent);
+      },
     );
   }
 }

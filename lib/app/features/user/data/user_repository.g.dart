@@ -192,10 +192,7 @@ class _UserRepository implements UserRepository {
   }
 
   @override
-  Future<UserModel> editUserById(
-    String id,
-    UserModel updatedUser,
-  ) async {
+  Future<UserModel> editUser(UserRequest updatedUser) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -207,7 +204,7 @@ class _UserRepository implements UserRepository {
     )
         .compose(
           _dio.options,
-          'users/${id}',
+          'users',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -220,6 +217,39 @@ class _UserRepository implements UserRepository {
     late UserModel _value;
     try {
       _value = UserModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<bool> checkPermission(String permission) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'permission': permission};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<bool>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'users/check-permission',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<bool>(_options);
+    late bool _value;
+    try {
+      _value = _result.data!;
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

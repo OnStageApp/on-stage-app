@@ -70,6 +70,9 @@
 		A1693CF42B912D7600598254 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		A1D39FA42A44F959008E83FE /* RunnerTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RunnerTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1D39FA52A44F959008E83FE /* Runner copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Runner copy-Info.plist"; path = "/Users/vinterantonio/Desktop/WORK/On Stage/on-stage-app/ios/Runner copy-Info.plist"; sourceTree = "<absolute>"; };
+		A1E5C47B2CC051370000B9CF /* Runnerdebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runnerdebug.entitlements; sourceTree = "<group>"; };
+		A1E5C4812CC2850E0000B9CF /* ConfigurationV2.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = ConfigurationV2.storekit; sourceTree = "<group>"; };
+		A1E5C4842CC285AE0000B9CF /* StoreKitTestCertificateV2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificateV2.cer; sourceTree = "<group>"; };
 		BE7AFB04FD96F34E730F5B09 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		E3A9A61CC66FDF8A5598CC59 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7A6778BAB4B3318D3CC47FB /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				A1E5C4812CC2850E0000B9CF /* ConfigurationV2.storekit */,
+				A1E5C4842CC285AE0000B9CF /* StoreKitTestCertificateV2.cer */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -131,6 +136,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				A1E5C47B2CC051370000B9CF /* Runnerdebug.entitlements */,
 				A1693CF42B912D7600598254 /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -761,7 +767,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runnerdebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";

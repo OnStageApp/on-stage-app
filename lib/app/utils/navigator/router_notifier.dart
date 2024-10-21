@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
@@ -112,7 +113,12 @@ class NavigationNotifier extends _$NavigationNotifier {
                 GoRoute(
                   name: AppRoute.home.name,
                   path: '/home',
-                  builder: (context, state) => const HomeScreen(),
+                  builder: (context, state) {
+                    ref
+                        .read(analyticsServiceProvider.notifier)
+                        .logScreenView(AppRoute.home.name);
+                    return const HomeScreen();
+                  },
                 ),
               ],
             ),
@@ -122,16 +128,19 @@ class NavigationNotifier extends _$NavigationNotifier {
                 GoRoute(
                   name: AppRoute.songs.name,
                   path: '/songs',
-                  builder: (context, state) => const SongsScreen(),
+                  builder: (context, state) {
+                    return const SongsScreen();
+                  },
                   routes: [
                     GoRoute(
                       name: AppRoute.song.name,
                       path: 'song',
                       builder: (context, state) {
                         final songId = state.uri.queryParameters['songId']!;
-                        return SongDetailScreen(
-                          songId: songId,
-                        );
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView('${AppRoute.song.name}/$songId');
+                        return SongDetailScreen(songId: songId);
                       },
                     ),
                     GoRoute(
@@ -139,15 +148,19 @@ class NavigationNotifier extends _$NavigationNotifier {
                       path: 'addEditSong',
                       builder: (context, state) {
                         final songId = state.uri.queryParameters['songId'];
-                        return AddSongFirstStepDetails(
-                          songId: songId,
-                        );
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.addEditSong.name);
+                        return AddSongFirstStepDetails(songId: songId);
                       },
                       routes: [
                         GoRoute(
                           name: AppRoute.editSongContent.name,
                           path: 'editSongContent',
                           builder: (context, state) {
+                            ref
+                                .read(analyticsServiceProvider.notifier)
+                                .logScreenView(AppRoute.editSongContent.name);
                             return const AddSongSecondStepContent();
                           },
                         ),
@@ -163,19 +176,30 @@ class NavigationNotifier extends _$NavigationNotifier {
                 GoRoute(
                   name: AppRoute.events.name,
                   path: '/events',
-                  builder: (context, state) => const EventsScreen(),
+                  builder: (context, state) {
+                    return const EventsScreen();
+                  },
                   routes: [
                     GoRoute(
                       name: AppRoute.addEvent.name,
                       path: 'addEvent',
-                      builder: (context, state) =>
-                          const AddEventDetailsScreen(),
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.addEvent.name);
+                        return const AddEventDetailsScreen();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.addEventSongs.name,
                       path: 'addEventSongs',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId']!;
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(
+                              '${AppRoute.addEventSongs.name}/$eventId',
+                            );
                         return AddEventMomentsScreen(eventId: eventId);
                       },
                       routes: [
@@ -184,7 +208,11 @@ class NavigationNotifier extends _$NavigationNotifier {
                           path: 'songDetailsWithPages',
                           builder: (context, state) {
                             final eventItems = state.extra as List<EventItem>?;
-
+                            ref
+                                .read(analyticsServiceProvider.notifier)
+                                .logScreenView(
+                                  AppRoute.songDetailsWithPages.name,
+                                );
                             return SongDetailsWithPagesScreen(
                               eventItems: eventItems,
                             );
@@ -196,14 +224,21 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.eventDetails.name,
                       path: 'eventDetails',
                       builder: (context, state) {
-                        final eventId = state.uri.queryParameters['eventId'];
-                        return EventDetailsScreen(eventId!);
+                        final eventId = state.uri.queryParameters['eventId']!;
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(
+                                '${AppRoute.eventDetails.name}/$eventId');
+                        return EventDetailsScreen(eventId);
                       },
                       routes: [
                         GoRoute(
                           name: AppRoute.eventSettings.name,
                           path: 'eventSettings',
                           builder: (context, state) {
+                            ref
+                                .read(analyticsServiceProvider.notifier)
+                                .logScreenView(AppRoute.eventSettings.name);
                             return const EventSettingsScreen();
                           },
                         ),
@@ -219,22 +254,33 @@ class NavigationNotifier extends _$NavigationNotifier {
                 GoRoute(
                   name: AppRoute.profile.name,
                   path: '/profile',
-                  builder: (context, state) => const ProfileScreen(),
+                  builder: (context, state) {
+                    return const ProfileScreen();
+                  },
                   routes: [
                     GoRoute(
                       name: AppRoute.plans.name,
                       path: 'plans',
-                      builder: (context, state) => PlansScreen(),
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.plans.name);
+                        return const PlansScreen();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.editProfile.name,
                       path: 'editProfile',
-                      builder: (context, state) => const EditProfileScreen(),
+                      builder: (context, state) {
+                        return const EditProfileScreen();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.changePassword.name,
                       path: 'changePassword',
-                      builder: (context, state) => const ChangePasswordScreen(),
+                      builder: (context, state) {
+                        return const ChangePasswordScreen();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.teamDetails.name,
@@ -246,7 +292,9 @@ class NavigationNotifier extends _$NavigationNotifier {
                                   .toString(),
                             ) ??
                             false;
-
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.teamDetails.name);
                         return TeamDetailsScreen(
                           isCreating: isCreating,
                           team: team,
@@ -257,6 +305,9 @@ class NavigationNotifier extends _$NavigationNotifier {
                           name: AppRoute.addTeamMember.name,
                           path: 'addTeamMember',
                           builder: (context, state) {
+                            ref
+                                .read(analyticsServiceProvider.notifier)
+                                .logScreenView(AppRoute.addTeamMember.name);
                             return const AddTeamMemberScreen();
                           },
                         ),
@@ -265,12 +316,22 @@ class NavigationNotifier extends _$NavigationNotifier {
                     GoRoute(
                       name: AppRoute.notification.name,
                       path: 'notification',
-                      builder: (context, state) => const NotificationPage(),
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.notification.name);
+                        return const NotificationPage();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.favorites.name,
                       path: 'favorites',
-                      builder: (context, state) => const SavedSongsScreen(),
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.favorites.name);
+                        return const SavedSongsScreen();
+                      },
                     ),
                   ],
                 ),
@@ -281,24 +342,44 @@ class NavigationNotifier extends _$NavigationNotifier {
         GoRoute(
           name: AppRoute.loading.name,
           path: '/loading',
-          builder: (context, state) => const LoadingScreen(),
+          builder: (context, state) {
+            ref
+                .read(analyticsServiceProvider.notifier)
+                .logScreenView(AppRoute.loading.name);
+            return const LoadingScreen();
+          },
         ),
         GoRoute(
           name: AppRoute.login.name,
           path: '/login',
-          builder: (context, state) => const LoginScreen(),
+          builder: (context, state) {
+            ref
+                .read(analyticsServiceProvider.notifier)
+                .logScreenView(AppRoute.login.name);
+            return const LoginScreen();
+          },
           routes: [
             GoRoute(
               name: AppRoute.signUp.name,
               path: 'signUp',
-              builder: (context, state) => const SignUpScreen(),
+              builder: (context, state) {
+                ref
+                    .read(analyticsServiceProvider.notifier)
+                    .logScreenView(AppRoute.signUp.name);
+                return const SignUpScreen();
+              },
             ),
           ],
         ),
         GoRoute(
           name: AppRoute.welcome.name,
           path: '/welcome',
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) {
+            ref
+                .read(analyticsServiceProvider.notifier)
+                .logScreenView(AppRoute.welcome.name);
+            return const HomeScreen();
+          },
           redirect: (context, state) {
             return '/home';
           },
