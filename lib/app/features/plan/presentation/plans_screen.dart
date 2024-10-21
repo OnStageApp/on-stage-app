@@ -39,7 +39,10 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
           end: Alignment.bottomLeft,
           stops: const [0, 0.4],
           colors: [
-            const Color(0xFFEAF5FD),
+            if (context.isDarkMode)
+              context.colorScheme.onSecondary
+            else
+              const Color(0xFFEAF5FD),
             context.colorScheme.surface,
           ],
         ),
@@ -48,7 +51,6 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
         slivers: [
           SliverAppBar(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
-            pinned: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(

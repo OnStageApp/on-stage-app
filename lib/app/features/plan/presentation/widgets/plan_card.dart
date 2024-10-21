@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan_feature.dart';
-import 'package:on_stage_app/app/features/plan/presentation/controller/plan_controller.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -10,24 +10,20 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class PlanCard extends ConsumerWidget {
   const PlanCard({
     required this.plan,
-    this.isPopular = false,
-    this.isCurrent = false,
     super.key,
   });
 
   final Plan plan;
-  final bool isPopular;
-  final bool isCurrent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isYearlySubscription = ref.watch(planControllerProvider).isYearlyPlan;
+    final isCurrent = _isPlanCurrent(ref);
     return Card(
       color: context.colorScheme.onSurfaceVariant,
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(
         side: BorderSide(
-          color: context.colorScheme.onSecondaryFixedVariant,
+          color: context.colorScheme.primaryContainer,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -40,12 +36,12 @@ class PlanCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  plan.title ?? 'None',
+                  plan.name,
                   style: context.textTheme.headlineLarge!.copyWith(
                     color: context.colorScheme.onSecondary,
                   ),
                 ),
-                if (plan.title == 'Pro')
+                if (plan.name == 'Pro')
                   Container(
                     padding: const EdgeInsets.fromLTRB(3, 3, 8, 3),
                     decoration: BoxDecoration(
@@ -86,7 +82,11 @@ class PlanCard extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              _formatPrice(isYearlySubscription: isYearlySubscription),
+              plan.price == 0
+                  ? 'Free'
+                  : plan.isYearly
+                      ? '${plan.price.toInt()} ${plan.currency}/month, billed annually'
+                      : '${plan.price.toInt()} ${plan.currency}/month',
               style: context.textTheme.headlineMedium!.copyWith(
                 color: context.colorScheme.onSecondary,
               ),
@@ -100,18 +100,23 @@ class PlanCard extends ConsumerWidget {
               (feature) => _buildFeatureItem(context, feature),
             ),
             const Spacer(),
-            ContinueButton(
-              text: isCurrent ? 'Current Plan ' : 'Upgrade',
-              textColor: isCurrent
-                  ? context.colorScheme.onSurface
-                  : context.colorScheme.onSurfaceVariant,
-              backgroundColor: isCurrent
-                  ? context.colorScheme.surface
-                  : context.colorScheme.onSecondary,
-              borderColor: context.colorScheme.primaryContainer,
-              onPressed: () {},
-              isEnabled: true,
-            )
+            if (plan.price != 0)
+              ContinueButton(
+                isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
+                text: isCurrent ? 'Current Plan ' : 'Upgrade',
+                textColor: isCurrent
+                    ? context.colorScheme.onSurface
+                    : context.colorScheme.onSurfaceVariant,
+                backgroundColor: isCurrent
+                    ? context.colorScheme.surface
+                    : context.colorScheme.onSecondary,
+                borderColor: context.colorScheme.primaryContainer,
+                onPressed: () {
+                  _handlePurchase(ref);
+                },
+                isEnabled: true,
+                hasShadow: false,
+              )
           ],
         ),
       ),
@@ -146,12 +151,19 @@ class PlanCard extends ConsumerWidget {
     );
   }
 
-  String _formatPrice({bool isYearlySubscription = false}) {
-    if (plan.monthlyPrice == 0 && plan.yearlyPrice == 0) {
-      return 'Free Forever';
-    }
-    final price =
-        isYearlySubscription ? plan.yearlyPrice! / 12 : plan.monthlyPrice;
-    return '${price?.toInt()}€/month';
+  bool _isPlanCurrent(WidgetRef ref) {
+    final isCurrent =
+        ref.watch(subscriptionNotifierProvider).currentSubscription?.plan.id ==
+            plan.id;
+    return isCurrent;
+  }
+
+  Future<void> _handlePurchase(
+    WidgetRef ref,
+  ) async {
+    final subscriptionNotifier =
+        ref.read(subscriptionNotifierProvider.notifier);
+
+    await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
   }
 }

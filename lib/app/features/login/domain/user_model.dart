@@ -13,6 +13,7 @@ class UserModel with _$UserModel {
     String? email,
     String? photoUrl,
     String? name,
+    String? revenueCatId,
     @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
     Uint8List? image,
   }) = _UserModel;

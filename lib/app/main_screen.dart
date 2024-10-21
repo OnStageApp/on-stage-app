@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
@@ -62,7 +63,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
       ref.read(currentTeamMemberNotifierProvider.notifier).initializeState(),
       ref.read(userSettingsNotifierProvider.notifier).init(),
+      ref.read(subscriptionNotifierProvider.notifier).init(),
     ]);
+    _setRevenueCatIdIfNotExist();
   }
 
   @override
@@ -157,5 +160,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
       body: widget.navigationShell,
     );
+  }
+
+  void _setRevenueCatIdIfNotExist() {
+    final revenueCatId =
+        ref.watch(subscriptionNotifierProvider).customerInfo?.originalAppUserId;
+    ref
+        .read(userNotifierProvider.notifier)
+        .updateRevenueCatIdOnUser(revenueCatId);
   }
 }
