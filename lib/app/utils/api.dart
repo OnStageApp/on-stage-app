@@ -1,5 +1,6 @@
 class API {
-  static const String domain = 'dev.on-stage.app';
+  // static const String domain = 'dev.on-stage.app';
+  static const String domain = 'd26d-82-78-122-192.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
   static const String wsBaseUrl = 'wss://$domain/ws/websocket';
 
@@ -44,6 +45,7 @@ class API {
   static const String currentUser = 'users/current';
   static const String user = 'users/{id}';
   static const String userPhoto = 'users/photo';
+  static const String checkPermission = 'users/check-permission';
 
   static const String teams = 'teams';
   static const String teamById = 'teams/{id}';
@@ -65,4 +67,8 @@ class API {
   //ws
   static const String wsTopicMessage = '/user';
   static const String wsNotifications = 'notifications';
+
+  //subscriptions
+  static const String intentSecret = 'stripe/setupIntent';
+  static const String currentSubscription = 'subscription/current';
 }

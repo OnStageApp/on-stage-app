@@ -13,6 +13,7 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/participant
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -23,6 +24,7 @@ import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/action_with_permissions.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -77,18 +79,27 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
           key: _addRemindersTooltipKey,
           child: SettingsTrailingAppBarButton(
             iconPath: 'assets/icons/bell.svg',
-            onTap: () {
-              if (userSettingsNotifier.isAddRemindersTooltipShown == false) {
-                _disableTooltip();
-              }
-              SetReminderModal.show(
-                cacheReminders: _reminders,
+            onTap: () async {
+              await doActionWithPermissionCheck(
                 context: context,
                 ref: ref,
-                onSaved: (List<int> reminders) {
-                  setState(() {
-                    _reminders = reminders;
-                  });
+                permissionType: PermissionType.REMINDERS,
+                deniedMessage: 'Permission denied to set reminders',
+                onGranted: () {
+                  if (userSettingsNotifier.isAddRemindersTooltipShown ==
+                      false) {
+                    _disableTooltip();
+                  }
+                  SetReminderModal.show(
+                    cacheReminders: _reminders,
+                    context: context,
+                    ref: ref,
+                    onSaved: (List<int> reminders) {
+                      setState(() {
+                        _reminders = reminders;
+                      });
+                    },
+                  );
                 },
               );
             },

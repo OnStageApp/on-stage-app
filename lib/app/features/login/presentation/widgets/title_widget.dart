@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TitleWidget extends StatefulWidget {
-  const TitleWidget({Key? key, this.title, this.subtitle}) : super(key: key);
+  const TitleWidget({
+    Key? key,
+    this.title,
+    this.subtitle,
+    this.subtitleFontSize,
+  }) : super(key: key);
 
   final String? title;
   final String? subtitle;
+  final double? subtitleFontSize;
 
   @override
   _TitleWidgetState createState() => _TitleWidgetState();
@@ -126,6 +132,7 @@ class _TitleWidgetState extends State<TitleWidget>
                     widget.subtitle!,
                     style: context.textTheme.titleMedium!.copyWith(
                       color: context.colorScheme.onSecondary,
+                      fontSize: widget.subtitleFontSize ?? 16,
                     ),
                     textAlign: TextAlign.center,
                   ),

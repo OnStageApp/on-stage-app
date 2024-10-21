@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class SettingsTrailingAppBarButton extends StatelessWidget {
+class SettingsTrailingAppBarButton extends ConsumerWidget {
   const SettingsTrailingAppBarButton({
     required this.onTap,
     this.iconPath,
@@ -13,7 +14,7 @@ class SettingsTrailingAppBarButton extends StatelessWidget {
   final String? iconPath;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return IconButton(
       style: IconButton.styleFrom(
         visualDensity: VisualDensity.compact,
