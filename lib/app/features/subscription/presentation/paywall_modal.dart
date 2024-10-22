@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/title_widget.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PaywallModal extends ConsumerWidget {
   const PaywallModal({
-    required this.onGetSubscription,
-    required this.onLearnMore,
-    Key? key,
-  }) : super(key: key);
+    required this.permissionType,
+    super.key,
+  });
 
-  final void Function() onGetSubscription;
-  final void Function() onLearnMore;
+  final PermissionType permissionType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,7 +59,11 @@ class PaywallModal extends ConsumerWidget {
               text: 'Get Pro',
               isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
               backgroundColor: context.colorScheme.secondary,
-              onPressed: onGetSubscription,
+              onPressed: () async {
+                final subscriptionNotifier =
+                    ref.read(subscriptionNotifierProvider.notifier);
+                await subscriptionNotifier.purchasePackage('starter');
+              },
               isEnabled: true,
             ),
           ),
@@ -105,8 +108,7 @@ class PaywallModal extends ConsumerWidget {
   static void show({
     required BuildContext context,
     required WidgetRef ref,
-    required void Function() onGetSubscription,
-    required void Function() onLearnMore,
+    required PermissionType permissionType,
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
@@ -120,8 +122,7 @@ class PaywallModal extends ConsumerWidget {
         return FractionallySizedBox(
           heightFactor: 0.9,
           child: PaywallModal(
-            onGetSubscription: onGetSubscription,
-            onLearnMore: onLearnMore,
+            permissionType: permissionType,
           ),
         );
       },

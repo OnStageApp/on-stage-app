@@ -74,7 +74,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 await handlePermission(
                   context: context,
                   ref: ref,
-                  permissionType: PermissionType.ADD_TEAM_MEMBERS,
+                  permissionType: PermissionType.addTeamMembers,
                   onGranted: () {
                     context.pushNamed(AppRoute.addTeamMember.name);
                   },

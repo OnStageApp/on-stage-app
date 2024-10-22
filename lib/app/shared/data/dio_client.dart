@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:on_stage_app/app/shared/data/interceptors/connectivity_interceptor.dart';
+import 'package:on_stage_app/app/shared/data/interceptors/permission_interceptor.dart';
 import 'package:on_stage_app/app/shared/data/interceptors/token_interceptor.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
@@ -28,6 +29,7 @@ Dio dio(DioRef ref) {
   dio.interceptors.add(TokenInterceptor(storage));
   dio.interceptors.add(prettyDioLogger);
   dio.interceptors.add(ConnectivityInterceptor());
+  dio.interceptors.add(PermissionInterceptor(ref));
   dio.interceptors.add(InterceptorsWrapper(
     onError: (DioException e, ErrorInterceptorHandler handler) {
       logger

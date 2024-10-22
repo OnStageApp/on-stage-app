@@ -135,7 +135,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       plan: const Plan(
         id: "670ff1b5e5844c1f35fd6536",
         name: "Solo Monthly",
-        maxEvents: 1,
+        maxEvents: 10,
         maxMembers: 1,
         hasSongsAccess: true,
         hasAddSong: false,

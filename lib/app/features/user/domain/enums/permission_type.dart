@@ -1,24 +1,30 @@
 enum PermissionType {
-  SONGS_ACCESS,
-  ADD_SONGS,
-  SCREEEN_SYNC,
-  REMINDERS,
-  ADD_TEAM_MEMBERS,
+  songsAccess,
+  addSongs,
+  screenSync,
+  reminders,
+  addTeamMembers,
+  addEvents,
+  none,
 }
 
 extension PermissionTypeX on PermissionType {
   String get name {
     switch (this) {
-      case PermissionType.SONGS_ACCESS:
+      case PermissionType.songsAccess:
         return 'songsAccess';
-      case PermissionType.ADD_SONGS:
+      case PermissionType.addSongs:
         return 'addSongs';
-      case PermissionType.SCREEEN_SYNC:
+      case PermissionType.screenSync:
         return 'screenSync';
-      case PermissionType.REMINDERS:
-        return 'REMINDERS';
-      case PermissionType.ADD_TEAM_MEMBERS:
-        return 'ADD_TEAM_MEMBERS';
+      case PermissionType.reminders:
+        return 'reminders';
+      case PermissionType.addTeamMembers:
+        return 'addTeamMembers';
+      case PermissionType.addEvents:
+        return 'addEvents';
+      case PermissionType.none:
+        return 'none';
     }
   }
 }
