@@ -3,6 +3,7 @@ enum PermissionType {
   ADD_SONGS,
   SCREEEN_SYNC,
   REMINDERS,
+  ADD_TEAM_MEMBERS,
 }
 
 extension PermissionTypeX on PermissionType {
@@ -16,6 +17,8 @@ extension PermissionTypeX on PermissionType {
         return 'screenSync';
       case PermissionType.REMINDERS:
         return 'REMINDERS';
+      case PermissionType.ADD_TEAM_MEMBERS:
+        return 'ADD_TEAM_MEMBERS';
     }
   }
 }

@@ -19,7 +19,7 @@ class PaywallModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: defaultScreenPadding.copyWith(bottom: 64, top: 16),
+      padding: defaultScreenPadding.copyWith(bottom: 32, top: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -54,19 +54,47 @@ class PaywallModal extends ConsumerWidget {
             ),
           ),
           const Spacer(),
-          ContinueButton(
-            text: 'Get Pro',
-            isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
-            backgroundColor: context.colorScheme.secondary,
-            onPressed: onGetSubscription,
-            isEnabled: true,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ContinueButton(
+              text: 'Get Pro',
+              isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
+              backgroundColor: context.colorScheme.secondary,
+              onPressed: onGetSubscription,
+              isEnabled: true,
+            ),
           ),
           const SizedBox(height: 6),
-          TextButton(
-            onPressed: onLearnMore,
-            child: Text(
-              'Learn More',
-              style: context.textTheme.headlineSmall,
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Auto-renews for ',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 11,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '4.99 RON',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.onSurface,
+                      fontSize: 11,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '/month until canceled.',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

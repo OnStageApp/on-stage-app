@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart'; // Make sure to add this package to your pubspec.yaml
+import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/subscription/application/subscription_state.dart';
 import 'package:on_stage_app/app/features/subscription/data/subscription_repository.dart';
+import 'package:on_stage_app/app/features/subscription/domain/subscription.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -56,6 +58,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
       state = state.copyWith(customerInfo: customerInfo);
       _updatePremiumStatus();
+
+      await getCurrentSubscription();
 
       logger.d('SubscriptionNotifier initialization completed');
     } catch (e) {
@@ -124,8 +128,31 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   }
 
   Future<void> getCurrentSubscription() async {
-    final currentSubscription =
-        await subscriptionRepository.getCurrentSubscription();
-    state = state.copyWith(currentSubscription: currentSubscription);
+    final subscription = Subscription(
+      id: "67140628703b1840a6ace9c7",
+      teamId: "670f78a8ded8ce743fd8bf23",
+      userId: "qQnN1Zsri6XLyMSScazW0V7Yswx2",
+      plan: const Plan(
+        id: "670ff1b5e5844c1f35fd6536",
+        name: "Solo Monthly",
+        maxEvents: 1,
+        maxMembers: 1,
+        hasSongsAccess: true,
+        hasAddSong: false,
+        hasScreensSync: false,
+        hasReminders: false,
+        revenueCatProductId: "onstage_50_1m_1m0",
+        price: 49,
+        currency: "RON",
+        isYearly: false,
+      ),
+      purchaseDate: DateTime.parse("2024-10-19T19:19:04.020Z"),
+      expirationDate: DateTime.parse("2024-11-19T20:23:12.402Z"),
+      status: "CANCELLED",
+    );
+    // final currentSubscription =
+    //     await subscriptionRepository.getCurrentSubscription();
+    state = state.copyWith(currentSubscription: subscription);
+    logger.i('Current subscription set');
   }
 }
