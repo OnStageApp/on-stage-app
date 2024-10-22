@@ -24,8 +24,8 @@ import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/action_with_permissions.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/permission/handle_permission.dart';
 import 'package:on_stage_app/logger.dart';
 
 class AddEventDetailsScreen extends ConsumerStatefulWidget {
@@ -80,11 +80,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
           child: SettingsTrailingAppBarButton(
             iconPath: 'assets/icons/bell.svg',
             onTap: () async {
-              await doActionWithPermissionCheck(
+              await handlePermission(
                 context: context,
                 ref: ref,
                 permissionType: PermissionType.REMINDERS,
-                deniedMessage: 'Permission denied to set reminders',
                 onGranted: () {
                   if (userSettingsNotifier.isAddRemindersTooltipShown ==
                       false) {
