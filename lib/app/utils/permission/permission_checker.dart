@@ -1,20 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
-import 'package:on_stage_app/app/utils/permission/permission_types.dart';
 
-class PermissionChecker {
-  PermissionChecker(this.ref);
+final localPermissionCheckerProvider = Provider<LocalPermissionChecker>((ref) {
+  return LocalPermissionChecker(ref);
+});
 
-  final WidgetRef ref;
+class LocalPermissionChecker {
+  LocalPermissionChecker(this.ref);
 
-  final Map<PermissionType, PermissionStrategy> _strategies = {
-    PermissionType.ADD_TEAM_MEMBERS: AddTeamMembersPermission(),
-    PermissionType.REMINDERS: RemindersPermission(),
+  final Ref ref;
+
+  final Map<PermissionType, bool Function(Ref)> _permissionChecks = {
+    PermissionType.addTeamMembers: (ref) {
+      final currentMemberCount =
+          ref.read(teamNotifierProvider).currentTeam?.membersCount ?? 0;
+      final currentSubscription =
+          ref.read(subscriptionNotifierProvider).currentSubscription;
+      return currentSubscription != null &&
+          currentMemberCount < currentSubscription.plan.maxMembers;
+    },
+    PermissionType.reminders: (ref) {
+      final currentSubscription =
+          ref.read(subscriptionNotifierProvider).currentSubscription;
+      return currentSubscription != null &&
+          currentSubscription.plan.hasReminders;
+    },
   };
 
   bool checkPermission(PermissionType permissionType) {
-    final strategy = _strategies[permissionType];
-    if (strategy == null) return false;
-    return strategy.hasPermission(ref);
+    final check = _permissionChecks[permissionType];
+    if (check == null) return false;
+    return check(ref);
   }
 }

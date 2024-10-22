@@ -16,18 +16,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         ..profilesSampleRate = 1.0;
     },
     appRunner: () async {
-      //TODO: Uncomment when we need sentry
-      // FlutterError.onError = (FlutterErrorDetails details) {
-      //   Sentry.captureException(
-      //     details.exception,
-      //     stackTrace: details.stack,
-      //   );
-      //   log(
-      //     details.exceptionAsString(),
-      //     stackTrace: details.stack,
-      //   );
-      // };
-
       final sharedPreferences = await SharedPreferences.getInstance();
 
       runApp(

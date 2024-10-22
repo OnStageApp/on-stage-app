@@ -6,14 +6,17 @@ import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/permission/permission_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -70,6 +73,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _listenForPermissionDeniedAndShowPaywall();
+
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       bottomNavigationBar: BottomNavigationBar(
@@ -168,5 +173,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ref
         .read(userNotifierProvider.notifier)
         .updateRevenueCatIdOnUser(revenueCatId);
+  }
+
+  void _listenForPermissionDeniedAndShowPaywall() {
+    ref.listen<PermissionType?>(
+      permissionNotifierProvider,
+      (previous, permissionType) {
+        if (permissionType != null) {
+          PaywallModal.show(
+            context: context,
+            ref: ref,
+            permissionType: permissionType,
+          );
+
+          ref.read(permissionNotifierProvider.notifier).clearPermission();
+        }
+      },
+    );
   }
 }

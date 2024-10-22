@@ -95,7 +95,7 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
 
       if (e.response != null && e.response!.data is Map<String, dynamic>) {
         final errorData = e.response!.data as Map<String, dynamic>;
-        final errorModel = ErrorModel.fromJson(errorData);
+        final errorModel = ApiErrorResponse.fromJson(errorData);
         return errorModel.errorDescription;
       }
 

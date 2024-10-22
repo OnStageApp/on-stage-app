@@ -83,7 +83,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               await handlePermission(
                 context: context,
                 ref: ref,
-                permissionType: PermissionType.REMINDERS,
+                permissionType: PermissionType.reminders,
                 onGranted: () {
                   if (userSettingsNotifier.isAddRemindersTooltipShown ==
                       false) {
