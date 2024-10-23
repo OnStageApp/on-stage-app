@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan_feature.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
@@ -17,7 +18,7 @@ class PlanCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrent = _isPlanCurrent(ref);
+    final isCurrent = _isCurrentPlan(ref);
     return Card(
       color: context.colorScheme.onSurfaceVariant,
       margin: const EdgeInsets.all(10),
@@ -112,7 +113,7 @@ class PlanCard extends ConsumerWidget {
                     : context.colorScheme.onSecondary,
                 borderColor: context.colorScheme.primaryContainer,
                 onPressed: () {
-                  _handlePurchase(ref);
+                  if (!isCurrent) _handlePurchase(ref);
                 },
                 isEnabled: true,
                 hasShadow: false,
@@ -121,6 +122,16 @@ class PlanCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _isCurrentPlan(WidgetRef ref) {
+    final currentPlanId =
+        ref.watch(subscriptionNotifierProvider).currentSubscription?.planId;
+
+    final currentPlan = ref.watch(planServiceProvider).plans.firstWhere(
+          (plan) => plan.id == currentPlanId,
+        );
+    return currentPlan.entitlementId == plan.entitlementId;
   }
 
   Widget _buildFeatureItem(BuildContext context, PlanFeature feature) {
@@ -151,13 +162,6 @@ class PlanCard extends ConsumerWidget {
     );
   }
 
-  bool _isPlanCurrent(WidgetRef ref) {
-    final isCurrent =
-        ref.watch(subscriptionNotifierProvider).currentSubscription?.plan.id ==
-            plan.id;
-    return isCurrent;
-  }
-
   Future<void> _handlePurchase(
     WidgetRef ref,
   ) async {
@@ -167,3 +171,5 @@ class PlanCard extends ConsumerWidget {
     await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
   }
 }
+
+//TODO: Plans on annual and month are different so it will be displayed differently.. check and FIX THIS

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
@@ -16,16 +17,19 @@ class LocalPermissionChecker {
     PermissionType.addTeamMembers: (ref) {
       final currentMemberCount =
           ref.read(teamNotifierProvider).currentTeam?.membersCount ?? 0;
-      final currentSubscription =
-          ref.read(subscriptionNotifierProvider).currentSubscription;
-      return currentSubscription != null &&
-          currentMemberCount < currentSubscription.plan.maxMembers;
+      final subscriptionState = ref.read(subscriptionNotifierProvider);
+
+      final currentPlan = ref.watch(planServiceProvider).plans.firstWhere(
+            (plan) => plan.id == subscriptionState.currentSubscription?.planId,
+          );
+      return currentMemberCount < currentPlan.maxMembers;
     },
     PermissionType.reminders: (ref) {
-      final currentSubscription =
-          ref.read(subscriptionNotifierProvider).currentSubscription;
-      return currentSubscription != null &&
-          currentSubscription.plan.hasReminders;
+      final subscriptionState = ref.read(subscriptionNotifierProvider);
+      final currentPlan = ref.watch(planServiceProvider).plans.firstWhere(
+            (plan) => plan.id == subscriptionState.currentSubscription?.planId,
+          );
+      return currentPlan.hasReminders;
     },
   };
 
@@ -35,3 +39,5 @@ class LocalPermissionChecker {
     return check(ref);
   }
 }
+
+//TODO: Check if it s working, check conditions, it was modified

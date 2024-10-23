@@ -14,4 +14,7 @@ abstract class SubscriptionRepository {
 
   @GET(API.currentSubscription)
   Future<Subscription> getCurrentSubscription();
+
+  @PUT(API.currentSubscription)
+  Future<Subscription> updateSubscription(@Body() Subscription subscription);
 }

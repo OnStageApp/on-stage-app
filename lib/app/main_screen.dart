@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
+import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
@@ -67,6 +68,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref.read(currentTeamMemberNotifierProvider.notifier).initializeState(),
       ref.read(userSettingsNotifierProvider.notifier).init(),
       ref.read(subscriptionNotifierProvider.notifier).init(),
+      ref
+          .read(planServiceProvider.notifier)
+          .fetchAndSavePlans(forceRefresh: true),
     ]);
     _setRevenueCatIdIfNotExist();
   }

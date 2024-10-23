@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:logger/logger.dart'; // Make sure to add this package to your pubspec.yaml
+import 'package:logger/logger.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
+import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/subscription/application/subscription_state.dart';
 import 'package:on_stage_app/app/features/subscription/data/subscription_repository.dart';
 import 'package:on_stage_app/app/features/subscription/domain/subscription.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,6 +19,12 @@ part 'subscription_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class SubscriptionNotifier extends _$SubscriptionNotifier {
   SubscriptionRepository? _subscriptionRepository;
+  AppDatabase? _localDb;
+
+  AppDatabase get db {
+    _localDb ??= ref.read(databaseProvider);
+    return _localDb!;
+  }
 
   SubscriptionRepository get subscriptionRepository {
     _subscriptionRepository ??= SubscriptionRepository(ref.read(dioProvider));
@@ -27,39 +37,41 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   SubscriptionState build() {
     logger.d('SubscriptionNotifier: build() called');
     _subscriptionRepository = SubscriptionRepository(ref.read(dioProvider));
+    _localDb = ref.read(databaseProvider);
+
+    _listenForAuthentication();
     return const SubscriptionState();
   }
 
+  void _listenForAuthentication() {
+    ref.listen(
+      userNotifierProvider.select((state) => state.currentUser),
+      (previous, current) async {
+        if (previous?.id != current?.id) {
+          if (current != null) {
+            logger.d(
+              'User logged in, syncing subscription for user: ${current.id}',
+            );
+            await Purchases.logIn(current.id);
+          } else {
+            logger.d('User logged out, clearing subscription data');
+            state = const SubscriptionState();
+            await Purchases.logOut();
+          }
+        }
+      },
+    );
+  }
+
   Future<void> init() async {
-    logger.d('SubscriptionNotifier: init() started');
     try {
       await Purchases.setLogLevel(LogLevel.verbose);
-      logger.d('RevenueCat log level set to verbose');
-
-      PurchasesConfiguration configuration;
-      if (Platform.isAndroid) {
-        configuration = PurchasesConfiguration(
-          dotenv.get('REVENUE_CAT_ANDROID_SDK_KEY'),
-        );
-        logger.d('Using Android configuration');
-      } else {
-        configuration = PurchasesConfiguration(
-          dotenv.get('REVENUE_CAT_IOS_SDK_KEY'),
-        );
-        logger.d('Using iOS configuration');
-      }
-
-      await Purchases.configure(configuration);
-      logger.d('RevenueCat configured');
-
-      final customerInfo = await Purchases.getCustomerInfo();
-      logger.d(
-          'Initial customer info fetched: ${customerInfo.originalAppUserId}');
+      final customerInfo = await _setConfigurations();
 
       state = state.copyWith(customerInfo: customerInfo);
-      _updatePremiumStatus();
 
-      await getCurrentSubscription();
+      await getCurrentSubscription(forceUpdate: true);
+      await saveCurrentPlan();
 
       logger.d('SubscriptionNotifier initialization completed');
     } catch (e) {
@@ -73,14 +85,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     state = state.copyWith(isLoading: true);
 
     try {
-      final products = await Purchases.getProducts(['onstage_50_1m_1m0']);
+      final products = await Purchases.getProducts([packageId]);
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
       state = state.copyWith(
         customerInfo: customInfo,
         isLoading: false,
         errorMessage: null,
       );
-      _updatePremiumStatus();
     } catch (e) {
       logger.e('Failed to purchase package: $packageId, error: $e');
       state = state.copyWith(
@@ -91,68 +102,89 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     }
   }
 
-  Future<void> restorePurchases() async {
-    logger.d('Attempting to restore purchases');
-    state = state.copyWith(isLoading: true);
+  Future<void> getCurrentSubscription({
+    bool forceUpdate = false,
+  }) async {
+    logger.d('Getting current subscription');
+    if (!state.isLoading) {
+      state = state.copyWith(isLoading: true);
+    }
 
     try {
-      final customerInfo = await Purchases.restorePurchases();
-      logger.d('Purchases restored: ${customerInfo.originalAppUserId}');
+      if (!forceUpdate) {
+        final localSubscription = await db.getCurrentSubscription();
+        if (localSubscription != null) {
+          state = state.copyWith(
+            currentSubscription: localSubscription,
+            isLoading: false,
+          );
+          return;
+        }
+      }
+
+      final backendSubscription =
+          await subscriptionRepository.getCurrentSubscription();
+
+      await db.saveSubscription(backendSubscription);
       state = state.copyWith(
-        customerInfo: customerInfo,
+        currentSubscription: backendSubscription,
         isLoading: false,
-        errorMessage: null,
       );
-      _updatePremiumStatus();
+      return;
     } catch (e) {
-      logger.e('Failed to restore purchases: $e');
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: 'Failed to restore purchases: $e',
-      );
+      logger.e('Error getting current subscription $e');
+      state = state.copyWith(isLoading: false);
+      return;
     }
   }
 
-  Future<void> logout() async {
-    logger.d('Logging out user');
-    await Purchases.logOut();
-    state = state.copyWith(
-      customerInfo: null,
-      hasPremiumAccess: false,
-    );
-    logger.d('User logged out');
+  Future<void> updateSubscription(Subscription subscription) async {
+    try {
+      await subscriptionRepository.updateSubscription(subscription);
+
+      await db.saveSubscription(subscription);
+
+      state = state.copyWith(currentSubscription: subscription);
+      logger.i('Subscription updated successfully');
+    } catch (e) {
+      logger.e('Error updating subscription $e');
+      await db.saveSubscription(subscription);
+      state = state.copyWith(currentSubscription: subscription);
+      rethrow;
+    }
   }
 
-  void _updatePremiumStatus() {
-    //TODO: It will be implemented with BE
+  Future<Plan?> saveCurrentPlan() async {
+    final planId = state.currentSubscription?.planId;
+    if (planId == null) return null;
+    final currentPlan =
+        await ref.read(planServiceProvider.notifier).getPlanById(planId);
+    return currentPlan;
   }
 
-  Future<void> getCurrentSubscription() async {
-    final subscription = Subscription(
-      id: "67140628703b1840a6ace9c7",
-      teamId: "670f78a8ded8ce743fd8bf23",
-      userId: "qQnN1Zsri6XLyMSScazW0V7Yswx2",
-      plan: const Plan(
-        id: "670ff1b5e5844c1f35fd6536",
-        name: "Solo Monthly",
-        maxEvents: 10,
-        maxMembers: 1,
-        hasSongsAccess: true,
-        hasAddSong: false,
-        hasScreensSync: false,
-        hasReminders: false,
-        revenueCatProductId: "onstage_50_1m_1m0",
-        price: 49,
-        currency: "RON",
-        isYearly: false,
-      ),
-      purchaseDate: DateTime.parse("2024-10-19T19:19:04.020Z"),
-      expirationDate: DateTime.parse("2024-11-19T20:23:12.402Z"),
-      status: "CANCELLED",
-    );
-    // final currentSubscription =
-    //     await subscriptionRepository.getCurrentSubscription();
-    state = state.copyWith(currentSubscription: subscription);
-    logger.i('Current subscription set');
+  Future<CustomerInfo> _setConfigurations() async {
+    PurchasesConfiguration configuration;
+    if (Platform.isAndroid) {
+      configuration = PurchasesConfiguration(
+        dotenv.get('REVENUE_CAT_ANDROID_SDK_KEY'),
+      );
+    } else {
+      configuration = PurchasesConfiguration(
+        dotenv.get('REVENUE_CAT_IOS_SDK_KEY'),
+      );
+    }
+
+    await Purchases.configure(configuration);
+
+    final customerInfo = await Purchases.getCustomerInfo();
+    logger
+        .d('Initial customer info fetched: ${customerInfo.originalAppUserId}');
+    return customerInfo;
   }
 }
+
+//TODO: Change subscription to not have a plan, but a planId or revenueCatProductId
+// TODO: Implement all the methods to have the suscription working
+// TODO: We need a way to trigger it for update the localDB, maybe on the websocket, open a new one
+
+//TODO: Handle when data is changed, update db directly i think.. or maybe not, we need to check the data first, if we can update it or not
