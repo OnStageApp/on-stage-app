@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/plan/data/static_plans.dart';
+import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/plan/presentation/controller/plan_controller.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_card.dart';
 
@@ -15,16 +15,9 @@ class PlanCarousel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isYearlyPlan = ref.watch(planControllerProvider).isYearlyPlan;
-    final freePlan =
-        plans.firstWhere((plan) => plan.name.toLowerCase() == 'starter');
-
+    final plans = ref.watch(planServiceProvider).plans;
     final filteredPlans = [
-      freePlan,
-      ...plans.where(
-        (plan) =>
-            plan.isYearly == isYearlyPlan &&
-            plan.name.toLowerCase() != 'starter',
-      ),
+      ...plans.where((plan) => plan.isYearly == isYearlyPlan),
     ];
 
     return PageView.builder(

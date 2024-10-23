@@ -9,6 +9,7 @@ class Plan with _$Plan {
   const factory Plan({
     required String id,
     required String name,
+    required String entitlementId,
     required String revenueCatProductId,
     @Default(0) double price,
     @Default('RON') String currency,

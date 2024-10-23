@@ -70,5 +70,5 @@ class API {
 
   //subscriptions
   static const String intentSecret = 'stripe/setupIntent';
-  static const String currentSubscription = 'subscription/current';
+  static const String currentSubscription = 'subscriptions/current';
 }
