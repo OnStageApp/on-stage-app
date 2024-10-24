@@ -19,13 +19,18 @@ class CreateNewTeamButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       splashColor: context.colorScheme.surfaceBright,
-      tileColor: context.colorScheme.onSurfaceVariant,
+      tileColor: context.colorScheme.secondary,
       shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: context.colorScheme.primaryContainer,
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       leading: Icon(
         icon,
-        color: context.colorScheme.outline,
+        color: context.isDarkMode
+            ? context.colorScheme.onSurface
+            : context.colorScheme.outline,
       ),
       dense: true,
       contentPadding: const EdgeInsets.symmetric(
@@ -36,18 +41,16 @@ class CreateNewTeamButton extends StatelessWidget {
         style: context.textTheme.titleMedium,
       ),
       trailing: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 6,
-        ),
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           color: context.colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(7),
         ),
-        child: Text(
-          actionTitle,
-          style: context.textTheme.titleMedium!
-              .copyWith(color: context.colorScheme.outline),
+        child: const Icon(
+          Icons.keyboard_arrow_right_rounded,
+          size: 24,
+          color: Color(0xFF828282),
         ),
       ),
       onTap: onTap,

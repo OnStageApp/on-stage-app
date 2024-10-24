@@ -108,6 +108,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
+
         await _login(idToken);
 
         state = state.copyWith(isLoggedIn: true);
@@ -208,16 +209,20 @@ class LoginNotifier extends _$LoginNotifier {
 
   Future<void> signOut() async {
     try {
+      state = const LoginState();
+
       await FirebaseAuth.instance.signOut();
+
+      await ref.read(databaseProvider).clearDatabase();
 
       await _secureStorage.delete(key: 'token');
 
-      state = const LoginState();
       ref
         ..invalidate(userNotifierProvider)
         ..invalidate(teamNotifierProvider)
         ..invalidate(teamMembersNotifierProvider)
         ..invalidate(userSettingsNotifierProvider)
+        ..invalidate(userNotifierProvider)
         ..invalidate(databaseProvider)
         ..invalidate(currentTeamMemberNotifierProvider);
 

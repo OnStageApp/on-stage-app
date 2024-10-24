@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
-class EventTileEnhanced extends StatelessWidget {
+class EventTileEnhanced extends ConsumerWidget {
   const EventTileEnhanced({
     required this.title,
     required this.dateTime,
@@ -30,7 +31,7 @@ class EventTileEnhanced extends StatelessWidget {
   final void Function() onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       alignment: Alignment.centerLeft,
       child: TextButton(
@@ -73,7 +74,7 @@ class EventTileEnhanced extends StatelessWidget {
                   width: 150,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      context.goNamed(AppRoute.addEvent.name);
+                      context.pushNamed(AppRoute.addEvent.name);
                     },
                     icon: Assets.icons.plus.svg(),
                     label: Text(

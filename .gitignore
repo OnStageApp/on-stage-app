@@ -138,3 +138,6 @@ lib/resources/generated
 *.g.dart
 *.freezed.dart
 
+.env
+
+

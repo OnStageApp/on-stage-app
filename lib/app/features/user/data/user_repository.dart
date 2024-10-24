@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/login/domain/user_model.dart';
+import 'package:on_stage_app/app/features/login/domain/user_request.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -27,9 +28,13 @@ abstract class UserRepository {
   @GET(API.currentUser)
   Future<UserModel> getCurrentUser();
 
-  @PUT(API.user)
-  Future<UserModel> editUserById(
-    @Path('id') String id,
-    @Body() UserModel updatedUser,
+  @PUT(API.users)
+  Future<UserModel> editUser(
+    @Body() UserRequest updatedUser,
+  );
+
+  @GET(API.checkPermission)
+  Future<bool> checkPermission(
+    @Query('permission') String permission,
   );
 }

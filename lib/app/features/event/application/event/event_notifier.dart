@@ -113,7 +113,7 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: true);
     final eventToCreate = _createDraftEvent();
     final event = await eventsRepository.createEvent(eventToCreate);
-    state = state.copyWith(isLoading: false, event: event);
+    state = state.copyWith(event: event);
   }
 
   Future<void> _updateEvent(EventModel updatedEvent) async {

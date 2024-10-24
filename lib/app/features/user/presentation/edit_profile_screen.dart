@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
+import 'package:on_stage_app/app/features/login/domain/user_request.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/position_tile_widget.dart';
@@ -62,19 +63,16 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _editProfile() async {
-    final user = ref.read(userNotifierProvider).currentUser;
-
-    final updatedName = _nameController.text;
-
-    if (updatedName != _initialName) {
-      final updatedUser = user?.copyWith(name: updatedName);
-
+    final updatedUserRequest = UserRequest(
+      name: _nameController.text,
+    );
+    if (updatedUserRequest.name != _initialName) {
       await ref.read(userNotifierProvider.notifier).editUserById(
-            updatedUser!,
+            updatedUserRequest,
           );
 
       setState(() {
-        _initialName = updatedName;
+        _initialName = updatedUserRequest.name;
         _isNameChanged = false;
       });
     }

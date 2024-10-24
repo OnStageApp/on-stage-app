@@ -103,9 +103,12 @@ class UpcomingEventEnhanced extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'No upcoming events',
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: context.colorScheme.onSurface,
+                      ),
                     ),
                     SizedBox(
                       width: double.infinity,

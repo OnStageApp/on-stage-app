@@ -1,0 +1,118 @@
+{
+  "identifier" : "2C106217",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6478959874",
+    "_developerTeamID" : "8Z4872H2WM",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 750945553.70738006,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21563220",
+      "localizations" : [
+
+      ],
+      "name" : "OnStage Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6737114133",
+          "introductoryOffer" : {
+            "internalID" : "9F0C01FE",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "localizations" : [
+            {
+              "description" : "un exemplu de descriere pentru PRO",
+              "displayName" : "PRO",
+              "locale" : "ro"
+            },
+            {
+              "description" : "This is an example of description for PRO",
+              "displayName" : "Pro",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "onstage_50_1m_1m0",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly 50RON, 1-month free",
+          "subscriptionGroupID" : "21563220",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "subscriptionOffersKeyPair" : {
+    "id" : "65D45C95",
+    "privateKey" : "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgXRo567BbsGKzfi0SANsSS6DeI7uFFG/gOs9NFbZOmU6gCgYIKoZIzj0DAQehRANCAATjLPfHtvgpv6fFwXpWWabBQS4J3pccT/ZoLSnULL7er09HuXAWtdI8HnLB7jHHFirntYFS3MTU+nd/U/Q7y5yc"
+  },
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
