@@ -72,7 +72,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           .read(planServiceProvider.notifier)
           .fetchAndSavePlans(forceRefresh: true),
     ]);
-    _setRevenueCatIdIfNotExist();
   }
 
   @override
@@ -169,14 +168,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
       body: widget.navigationShell,
     );
-  }
-
-  void _setRevenueCatIdIfNotExist() {
-    final revenueCatId =
-        ref.watch(subscriptionNotifierProvider).customerInfo?.originalAppUserId;
-    ref
-        .read(userNotifierProvider.notifier)
-        .updateRevenueCatIdOnUser(revenueCatId);
   }
 
   void _listenForPermissionDeniedAndShowPaywall() {

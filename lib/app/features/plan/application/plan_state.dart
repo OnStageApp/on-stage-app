@@ -8,6 +8,6 @@ class PlanState with _$PlanState {
   const factory PlanState({
     @Default([]) List<Plan> plans,
     @Default(false) bool isLoading,
-    @Default('') String errorMessage,
+    @Default('') String error,
   }) = _PlanState;
 }

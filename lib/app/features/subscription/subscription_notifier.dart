@@ -54,7 +54,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
             );
             await Purchases.logIn(current.id);
           } else {
-            logger.d('User logged out, clearing subscription data');
+            //TODO: logout is not working we need to handle this one, is not triggered. I thing provider gets invalidated
+            logger.d('User logged out, clearing subscription for user');
             state = const SubscriptionState();
             await Purchases.logOut();
           }
@@ -92,6 +93,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         isLoading: false,
         errorMessage: null,
       );
+      logger.i('Package purchased successfully: $packageId');
     } catch (e) {
       logger.e('Failed to purchase package: $packageId, error: $e');
       state = state.copyWith(
@@ -131,8 +133,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         isLoading: false,
       );
       return;
-    } catch (e) {
-      logger.e('Error getting current subscription $e');
+    } catch (e, s) {
+      logger.e('Error getting current subscription $e $s');
       state = state.copyWith(isLoading: false);
       return;
     }

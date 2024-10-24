@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan_feature.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
@@ -11,14 +10,15 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class PlanCard extends ConsumerWidget {
   const PlanCard({
     required this.plan,
+    required this.isCurrent,
     super.key,
   });
 
   final Plan plan;
+  final bool isCurrent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrent = _isCurrentPlan(ref);
     return Card(
       color: context.colorScheme.onSurfaceVariant,
       margin: const EdgeInsets.all(10),
@@ -122,16 +122,6 @@ class PlanCard extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  bool _isCurrentPlan(WidgetRef ref) {
-    final currentPlanId =
-        ref.watch(subscriptionNotifierProvider).currentSubscription?.planId;
-
-    final currentPlan = ref.watch(planServiceProvider).plans.firstWhere(
-          (plan) => plan.id == currentPlanId,
-        );
-    return currentPlan.entitlementId == plan.entitlementId;
   }
 
   Widget _buildFeatureItem(BuildContext context, PlanFeature feature) {

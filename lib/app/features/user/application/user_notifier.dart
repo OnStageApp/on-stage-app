@@ -12,7 +12,6 @@ import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -40,20 +39,6 @@ class UserNotifier extends _$UserNotifier {
     final currentUser = await usersRepository.getCurrentUser();
     _setUserIdInAnalytics(currentUser.id, currentUser.name ?? '');
     state = state.copyWith(currentUser: currentUser, isLoading: false);
-  }
-
-  Future<void> updateRevenueCatIdOnUser(String? revenueCatId) async {
-    if (revenueCatId == null) return;
-    final user = state.currentUser;
-
-    if (user != null && user.revenueCatId.isNullEmptyOrWhitespace) {
-      unawaited(
-        editUserById(
-          UserRequest(revenueCatId: revenueCatId),
-        ),
-      );
-      logger.i('RevenueCatId: $revenueCatId, set on user');
-    }
   }
 
   Future<void> editUserById(UserRequest userRequest) async {
