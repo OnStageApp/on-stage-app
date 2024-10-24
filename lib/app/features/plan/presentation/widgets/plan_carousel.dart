@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
-import 'package:on_stage_app/app/features/plan/presentation/controller/plan_controller.dart';
+import 'package:on_stage_app/app/features/plan/application/current_plan_provider.dart';
+import 'package:on_stage_app/app/features/plan/application/filtered_plans_provider.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_card.dart';
 
 class PlanCarousel extends ConsumerWidget {
@@ -14,17 +14,18 @@ class PlanCarousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isYearlyPlan = ref.watch(planControllerProvider).isYearlyPlan;
-    final plans = ref.watch(planServiceProvider).plans;
-    final filteredPlans = [
-      ...plans.where((plan) => plan.isYearly == isYearlyPlan),
-    ];
+    final currentPlan = ref.watch(currentPlanProvider);
+
+    final filteredPlans = ref.watch(filteredPlansProvider);
 
     return PageView.builder(
       controller: pageController,
       itemCount: filteredPlans.length,
       itemBuilder: (context, index) {
-        return PlanCard(plan: filteredPlans[index]);
+        final plan = filteredPlans[index];
+        final isCurrent = currentPlan.entitlementId == plan.entitlementId &&
+            currentPlan.isYearly == plan.isYearly;
+        return PlanCard(plan: filteredPlans[index], isCurrent: isCurrent);
       },
     );
   }

@@ -108,6 +108,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
+
         await _login(idToken);
 
         state = state.copyWith(isLoggedIn: true);
