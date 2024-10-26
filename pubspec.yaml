@@ -85,6 +85,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   purchases_flutter: ^8.1.6
   purchases_ui_flutter: ^8.1.6
+  socket_io_client: ^3.0.0
 dev_dependencies:
   build_runner: ^2.4.11
   custom_lint: ^0.6.4
