@@ -51,6 +51,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app does not use the camera. This permission is required by a third-party library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Access to the photo library is requested to allow users to select or set a profile picture within the app. This permission enables users to choose images from their device's gallery, facilitating personalization and customization of their profile within our app.</string>
 	<key>NSUserNotificationUsageDescription</key>

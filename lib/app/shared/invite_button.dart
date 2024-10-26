@@ -54,7 +54,7 @@ class InviteButton extends StatelessWidget {
             text,
             style: context.textTheme.titleMedium!.copyWith(
               color: isConfirm
-                  ? context.colorScheme.onPrimary
+                  ? context.colorScheme.onSurfaceVariant
                   : context.colorScheme.onSurface,
             ),
           ),

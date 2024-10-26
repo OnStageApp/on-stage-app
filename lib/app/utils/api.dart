@@ -3,7 +3,7 @@ class API {
 
   // static const String domain = 'c5b9-79-119-41-169.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
-  static const String wsBaseUrl = 'wss://$domain/ws/websocket';
+  static const String socketUrl = 'https://$domain/';
 
   // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
