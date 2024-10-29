@@ -139,5 +139,7 @@ lib/resources/generated
 *.freezed.dart
 
 .env
+.env.*
 
 
+.env
