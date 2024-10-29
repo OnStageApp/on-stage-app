@@ -161,5 +161,3 @@ class PlanCard extends ConsumerWidget {
     await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
   }
 }
-
-//TODO: Plans on annual and month are different so it will be displayed differently.. check and FIX THIS

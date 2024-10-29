@@ -185,8 +185,5 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   }
 }
 
-//TODO: Change subscription to not have a plan, but a planId or revenueCatProductId
-// TODO: Implement all the methods to have the suscription working
 // TODO: We need a way to trigger it for update the localDB, maybe on the websocket, open a new one
-
 //TODO: Handle when data is changed, update db directly i think.. or maybe not, we need to check the data first, if we can update it or not
