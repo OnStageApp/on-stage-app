@@ -1,6 +1,7 @@
 class API {
-  // static const String domain = 'dev.on-stage.app';
-  static const String domain = 'd26d-82-78-122-192.ngrok-free.app';
+  static const String domain = 'dev.on-stage.app';
+
+  // static const String domain = 'c5b9-79-119-41-169.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
   static const String wsBaseUrl = 'wss://$domain/ws/websocket';
 

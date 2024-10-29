@@ -14,7 +14,7 @@ class _UserRepository implements UserRepository {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://d26d-82-78-122-192.ngrok-free.app/';
+    baseUrl ??= 'https://dev.on-stage.app/';
   }
 
   final Dio _dio;
