@@ -23,8 +23,7 @@ class PlanCarousel extends ConsumerWidget {
       itemCount: filteredPlans.length,
       itemBuilder: (context, index) {
         final plan = filteredPlans[index];
-        final isCurrent = currentPlan.entitlementId == plan.entitlementId &&
-            currentPlan.isYearly == plan.isYearly;
+        final isCurrent = currentPlan.entitlementId == plan.entitlementId;
         return PlanCard(plan: filteredPlans[index], isCurrent: isCurrent);
       },
     );
