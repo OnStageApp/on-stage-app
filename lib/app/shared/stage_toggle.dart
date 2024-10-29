@@ -15,6 +15,7 @@ class StageToggle extends ConsumerWidget {
     this.minHeight = 38,
     this.minWidth = double.infinity,
   });
+
   final int initialIndex;
   final List<String> labels;
   final void Function(int?) onToggle;
