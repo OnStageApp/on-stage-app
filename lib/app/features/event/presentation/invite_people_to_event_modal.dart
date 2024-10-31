@@ -141,7 +141,6 @@ class AddParticipantsModalState
   @override
   Widget build(BuildContext context) {
     _setParticipants();
-    print(_searchedParticipants.length);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
