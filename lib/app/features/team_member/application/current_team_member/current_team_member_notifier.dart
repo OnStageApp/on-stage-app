@@ -43,7 +43,7 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
 
     await ref
         .read(appDataControllerProvider.notifier)
-        .setMemberRole(newMember.role ?? TeamMemberRole.None);
+        .setMemberRole(newMember.role ?? TeamMemberRole.none);
   }
 
   Future<void> updateTeamMemberPosition(Position? position) async {

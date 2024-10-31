@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/analytics/enums/login_method.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
+import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/features/login/application/login_state.dart';
 import 'package:on_stage_app/app/features/login/data/login_repository.dart';
 import 'package:on_stage_app/app/features/login/domain/login_request_model.dart';
@@ -213,6 +214,9 @@ class LoginNotifier extends _$LoginNotifier {
 
       await FirebaseAuth.instance.signOut();
 
+      final deviceId = await ref.read(deviceServiceProvider).getDeviceId();
+      await loginRepository.logout(deviceId);
+
       await ref.read(databaseProvider).clearDatabase();
 
       await _secureStorage.delete(key: 'token');
@@ -240,6 +244,7 @@ class LoginNotifier extends _$LoginNotifier {
       LoginRequest(firebaseToken: idToken),
     );
     await _saveAuthToken(authToken as String);
+    await ref.read(deviceServiceProvider).logInDeviceAndSaveDeviceInfo();
     state = state.copyWith(isLoading: false);
   }
 

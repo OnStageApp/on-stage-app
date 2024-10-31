@@ -27,7 +27,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
   final FocusNode _emailFocus = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var _selectedRole = TeamMemberRole.None;
+  var _selectedRole = TeamMemberRole.none;
 
   @override
   void initState() {

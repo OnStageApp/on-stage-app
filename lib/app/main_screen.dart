@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
+import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
+import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
@@ -16,6 +21,7 @@ import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/permission/permission_notifier.dart';
 import 'package:on_stage_app/logger.dart';
@@ -57,9 +63,18 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> _initProviders() async {
     logger.i('Init providers');
-    ref.read(databaseProvider);
+    ref
+      ..read(databaseProvider)
+      ..read(socketIoServiceProvider.notifier);
+    unawaited(
+      ref.read(notificationNotifierProvider.notifier).getNotifications(),
+    );
+    ref.read(firebaseNotifierProvider.notifier);
 
     await Future.wait([
+      //TODO: Find a new way to verify deviceId and save it
+
+      ref.read(deviceServiceProvider).verifyDeviceId(),
       ref
           .read(teamMembersNotifierProvider.notifier)
           .fetchAndSaveTeamMemberPhotos(),
@@ -71,7 +86,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref
           .read(planServiceProvider.notifier)
           .fetchAndSavePlans(forceRefresh: true),
-    ]);
+    ]).then((_) {
+      logger.i('All providers initialized');
+    }).catchError((error, s) {
+      logger.e('Error during provider initialization: $error $s');
+    });
   }
 
   @override
