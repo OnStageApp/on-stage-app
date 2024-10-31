@@ -34,13 +34,7 @@ class _AppState extends ConsumerState<App> {
           ? onStageDarkTheme
           : onStageLightTheme,
       builder: (context, child) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            child!,
-            // const ConnectivityOverlay(),
-          ],
-        );
+        return child!;
       },
     );
   }

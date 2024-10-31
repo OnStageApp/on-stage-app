@@ -1,9 +1,9 @@
 class API {
   static const String domain = 'dev.on-stage.app';
 
-  // static const String domain = 'c5b9-79-119-41-169.ngrok-free.app';
+  // static const String domain = '1a65-79-119-41-169.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
-  static const String socketUrl = 'https://$domain/';
+  static const String socketUrl = 'wss://$domain/';
 
   // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
@@ -41,6 +41,7 @@ class API {
 
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';
+  static const String logout = 'auth/logout/{deviceId}';
 
   static const String users = 'users';
   static const String currentUser = 'users/current';
@@ -62,6 +63,7 @@ class API {
 
   static const String userSettings = 'user-settings';
 
+  //song-config
   static const String songConfigBySongId = 'song-config/{songId}';
   static const String songConfig = 'song-config';
 
@@ -72,4 +74,9 @@ class API {
   //subscriptions
   static const String intentSecret = 'stripe/setupIntent';
   static const String currentSubscription = 'subscriptions/current';
+
+  //devices
+  static const String devices = 'devices';
+  static const String deviceById = 'devices/{deviceId}';
+  static const String deviceLogin = 'devices/login';
 }

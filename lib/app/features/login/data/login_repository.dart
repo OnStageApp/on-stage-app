@@ -13,4 +13,9 @@ abstract class LoginRepository {
   Future<dynamic> login(
     @Body() LoginRequest loginRequest,
   );
+
+  @POST(API.logout)
+  Future<void> logout(
+    @Path('deviceId') String deviceId,
+  );
 }

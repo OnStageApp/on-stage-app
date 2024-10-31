@@ -31,7 +31,7 @@ class AppDataController extends _$AppDataController {
     print('role = $role');
     return const AppDataState().copyWith(
       role: role,
-      hasEditorsRight: role == TeamMemberRole.Leader,
+      hasEditorsRight: role == TeamMemberRole.leader,
     );
   }
 
@@ -43,7 +43,7 @@ class AppDataController extends _$AppDataController {
     logger.i('role = $role');
     state = state.copyWith(
       role: role,
-      hasEditorsRight: role == TeamMemberRole.Leader,
+      hasEditorsRight: role == TeamMemberRole.leader,
     );
   }
 

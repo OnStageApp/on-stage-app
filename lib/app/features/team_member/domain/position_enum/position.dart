@@ -8,6 +8,7 @@ enum Position {
   keyboard,
   other,
   acGuitar,
+  guitar,
 }
 
 extension PositionX on Position {
@@ -31,6 +32,8 @@ extension PositionX on Position {
         return 'Other';
       case Position.acGuitar:
         return 'Ac. Guitar';
+      case Position.guitar:
+        return 'Guitar';
     }
   }
 }
