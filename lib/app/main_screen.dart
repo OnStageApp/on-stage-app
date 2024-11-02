@@ -63,9 +63,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> _initProviders() async {
     logger.i('Init providers');
-    ref
-      ..read(databaseProvider)
-      ..read(socketIoServiceProvider.notifier);
+    await ref.read(databaseProvider).initDatabase();
+    ref.read(socketIoServiceProvider.notifier);
     unawaited(
       ref.read(notificationNotifierProvider.notifier).getNotifications(),
     );

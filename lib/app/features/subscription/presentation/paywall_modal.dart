@@ -59,6 +59,10 @@ class PaywallModal extends ConsumerWidget {
               text: 'Get Pro',
               isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
               backgroundColor: context.colorScheme.secondary,
+              textStyle: context.textTheme.titleLarge!.copyWith(
+                color: context.colorScheme.onPrimary,
+                fontWeight: FontWeight.w800,
+              ),
               onPressed: () async {
                 final subscriptionNotifier =
                     ref.read(subscriptionNotifierProvider.notifier);
@@ -120,7 +124,7 @@ class PaywallModal extends ConsumerWidget {
       ),
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.9,
+          heightFactor: 0.95,
           child: PaywallModal(
             permissionType: permissionType,
           ),

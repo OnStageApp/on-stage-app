@@ -31,14 +31,13 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required SongKey songKey,
     required void Function(SongKey) onKeyChanged,
-    bool isFromEvent = false,
     String title = 'Change Key',
   }) {
     showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Change Key'),
+        buildHeader: () => ModalHeader(title: title),
         headerHeight: () {
           return 64;
         },

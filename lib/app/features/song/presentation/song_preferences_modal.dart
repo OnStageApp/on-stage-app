@@ -91,7 +91,6 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
           ),
           const SizedBox(height: Insets.medium),
           const SongViewSettings(),
-          const SizedBox(height: Insets.medium),
           if (widget.isFromEvent) ...[
             const SizedBox(height: Insets.medium),
             const PreferencesVocalLead(),

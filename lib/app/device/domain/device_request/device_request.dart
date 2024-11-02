@@ -7,7 +7,7 @@ part 'device_request.g.dart';
 @freezed
 class DeviceRequest with _$DeviceRequest {
   const factory DeviceRequest({
-    required String id,
+    required String deviceId,
     PlatformType? platformType,
     String? appVersion,
     String? osVersion,

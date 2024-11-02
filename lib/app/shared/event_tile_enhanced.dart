@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
@@ -69,7 +70,8 @@ class EventTileEnhanced extends ConsumerWidget {
               const Expanded(
                 child: SizedBox(),
               ),
-              if (isEventEmpty)
+              if (isEventEmpty &&
+                  ref.watch(permissionServiceProvider).hasAccessToEdit)
                 SizedBox(
                   width: 150,
                   child: ElevatedButton.icon(

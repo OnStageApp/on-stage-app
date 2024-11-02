@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
@@ -64,18 +65,19 @@ class TeamsSection extends ConsumerWidget {
             },
           ),
         ),
-        CreateNewTeamButton(
-          icon: Icons.group,
-          title: 'Create Your Team',
-          actionTitle: 'Create',
-          onTap: () {
-            PaywallModal.show(
-              context: context,
-              ref: ref,
-              permissionType: PermissionType.addTeamMembers,
-            );
-          },
-        ),
+        if (!ref.watch(permissionServiceProvider).isLeaderOnTeam)
+          CreateNewTeamButton(
+            icon: Icons.group,
+            title: 'Create Your Own Team',
+            actionTitle: 'Create',
+            onTap: () {
+              PaywallModal.show(
+                context: context,
+                ref: ref,
+                permissionType: PermissionType.addTeamMembers,
+              );
+            },
+          ),
       ],
     );
   }
