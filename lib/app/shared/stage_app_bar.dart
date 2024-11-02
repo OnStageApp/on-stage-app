@@ -25,6 +25,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.topCenter,
       margin: EdgeInsets.symmetric(horizontal: isBackButtonVisible ? 16 : 0),
       child: AppBar(
         bottom: bottom,

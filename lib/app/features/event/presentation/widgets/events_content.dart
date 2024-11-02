@@ -74,7 +74,7 @@ class EventsContent extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
       child: EventTileEnhanced(
         isEventEmpty: event == null,
-        title: event?.name ?? 'No upcoming events',
+        title: event?.name ?? 'No upcoming event',
         locationName: event?.location ?? "You don't have any published events",
         dateTime: event?.dateTime,
         participantsProfileBytes: event?.stagerPhotos ?? [],

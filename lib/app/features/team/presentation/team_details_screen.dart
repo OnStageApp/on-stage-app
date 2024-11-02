@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
@@ -68,21 +69,23 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             const SizedBox(height: 16),
             Text('Members', style: context.textTheme.titleSmall),
             _buildParticipantsList(),
-            const SizedBox(height: 12),
-            EventActionButton(
-              onTap: () async {
-                await handlePermission(
-                  context: context,
-                  ref: ref,
-                  permissionType: PermissionType.addTeamMembers,
-                  onGranted: () {
-                    context.pushNamed(AppRoute.addTeamMember.name);
-                  },
-                );
-              },
-              text: 'Invite People',
-              icon: Icons.add,
-            ),
+            if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+              const SizedBox(height: 12),
+              EventActionButton(
+                onTap: () async {
+                  await handlePermission(
+                    context: context,
+                    ref: ref,
+                    permissionType: PermissionType.addTeamMembers,
+                    onGranted: () {
+                      context.pushNamed(AppRoute.addTeamMember.name);
+                    },
+                  );
+                },
+                text: 'Invite People',
+                icon: Icons.add,
+              ),
+            ],
             if (widget.isCreating) ...[
               const Spacer(),
               ContinueButton(

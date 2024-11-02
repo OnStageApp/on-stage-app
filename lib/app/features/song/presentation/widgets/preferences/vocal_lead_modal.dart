@@ -66,6 +66,7 @@ class VocalLeadModal extends ConsumerStatefulWidget {
   }
 }
 
+//TODO: Add FORUI in the APP and LUCIDE Icons instead of these
 class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
   final TextEditingController _searchController = TextEditingController();
   late List<Stager> _allVocals;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
@@ -43,10 +44,16 @@ class SongAppBarLeading extends ConsumerWidget {
             onPressed: () {
               ChangeKeyModal.show(
                 context: context,
+                title: ref.watch(permissionServiceProvider).hasAccessToEdit
+                    ? 'Change Key'
+                    : 'Preview Key',
                 songKey: ref.watch(songNotifierProvider).song.key!,
                 onKeyChanged: (key) async {
                   ref.read(songNotifierProvider.notifier).transpose(key);
-                  if (isFromEvent) await _updateSongOnDB(ref, key);
+                  if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
+                    if (isFromEvent) await _updateSongOnDB(ref, key);
+                    return;
+                  }
                 },
               );
             },

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -16,6 +15,7 @@ import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_mo
 import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_structure_button.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
@@ -60,7 +60,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final hasEditorRoles = ref.read(appDataControllerProvider).hasEditorsRight;
+    final hasEditorRoles = ref.watch(permissionServiceProvider).hasAccessToEdit;
     final stagers = ref.watch(eventNotifierProvider).stagers;
     logger.i('EventDetailsScreenState: _buildBody');
     final event = ref.watch(
@@ -75,7 +75,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (ref.watch(appDataControllerProvider).hasEditorsRight)
+              if (ref.watch(permissionServiceProvider).hasAccessToEdit)
                 SettingsTrailingAppBarButton(
                   onTap: () {
                     context.pushNamed(AppRoute.eventSettings.name);
@@ -89,7 +89,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton:
-            ref.watch(appDataControllerProvider).hasEditorsRight &&
+            ref.watch(permissionServiceProvider).hasAccessToEdit &&
                     event?.eventStatus == EventStatus.draft
                 ? _buildFloatingButton()
                 : null,

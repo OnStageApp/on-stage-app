@@ -11,6 +11,7 @@ class ContinueButton extends StatelessWidget {
     this.isLoading = false,
     this.backgroundColor,
     this.textColor,
+    this.textStyle,
     this.borderColor,
     super.key,
   });
@@ -22,6 +23,7 @@ class ContinueButton extends StatelessWidget {
   final bool hasShadow;
   final Color? backgroundColor;
   final Color? textColor;
+  final TextStyle? textStyle;
   final Color? borderColor;
 
   @override
@@ -79,9 +81,10 @@ class ContinueButton extends StatelessWidget {
               )
             : Text(
                 text,
-                style: context.textTheme.titleMedium!.copyWith(
-                  color: textColor ?? context.colorScheme.onPrimary,
-                ),
+                style: textStyle ??
+                    context.textTheme.titleMedium!.copyWith(
+                      color: textColor ?? context.colorScheme.onPrimary,
+                    ),
               ),
       ),
     );

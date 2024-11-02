@@ -18,6 +18,8 @@ extension SubscriptionStatusX on SubscriptionStatus {
         return SubscriptionStatus.expired;
       case 'canceled':
         return SubscriptionStatus.canceled;
+      case 'ACTIVE':
+        return SubscriptionStatus.active;
       default:
         throw ArgumentError('Invalid subscription status: $value');
     }

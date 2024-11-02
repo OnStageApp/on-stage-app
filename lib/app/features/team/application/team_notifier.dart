@@ -6,7 +6,6 @@ import 'package:on_stage_app/app/features/team/application/team_state.dart';
 import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/data/team_repository.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
-import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -40,11 +39,7 @@ class TeamNotifier extends _$TeamNotifier {
     currentTeam = currentTeam.copyWith(
       memberPhotos: first3PhotosForTeam,
     );
-    unawaited(
-      ref
-          .read(currentTeamMemberNotifierProvider.notifier)
-          .setTeamMemberRoleToSharedPrefs(),
-    );
+
     state = state.copyWith(isLoading: false, currentTeam: currentTeam);
   }
 

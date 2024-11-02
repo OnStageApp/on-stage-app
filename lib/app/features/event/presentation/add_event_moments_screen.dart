@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/moment_event_item_tile.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -58,7 +58,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   Widget build(BuildContext context) {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
     final hasEditorRights =
-        ref.watch(appDataControllerProvider).hasEditorsRight;
+        ref.watch(permissionServiceProvider).hasAccessToEdit;
 
     return Scaffold(
       appBar: const StageAppBar(
@@ -133,7 +133,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       itemCount: eventItems.length,
       onReorder: _onReorder,
       itemBuilder: (context, index) => _buildEventItemTile(eventItems[index]),
-      footer: ref.watch(appDataControllerProvider).hasEditorsRight
+      footer: ref.watch(permissionServiceProvider).hasAccessToEdit
           ? _buildAddSongsOrMomentsButton()
           : const SizedBox(height: 100),
     );
@@ -180,7 +180,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           extra: eventItems,
         );
       },
-      isAdmin: ref.watch(appDataControllerProvider).hasEditorsRight,
+      isAdmin: ref.watch(permissionServiceProvider).hasAccessToEdit,
       // trailing: eventItem.song?.id != null
       //     ? Container(
       //         height: 28,

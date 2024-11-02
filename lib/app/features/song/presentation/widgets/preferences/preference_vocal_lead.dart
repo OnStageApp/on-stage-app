@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_item_notifier/event_item_notifier.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/vocal_lead_modal.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
@@ -59,16 +58,21 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
               },
             ),
           ),
-        if (ref.watch(appDataControllerProvider).hasEditorsRight) ...[
-          const SizedBox(height: 12),
+        const SizedBox(height: 12),
+        if (ref.watch(permissionServiceProvider).hasAccessToEdit)
           EventActionButton(
             icon: Icons.add,
             onTap: () {
               VocalLeadModal.show(context: context);
             },
-            text: 'Add Lead Vocal',
+            text: 'Add Lead Vocals',
+          )
+        else if (leadVocals.isEmpty)
+          EventActionButton(
+            onTap: () {},
+            text: 'No Lead Vocals Added',
+            textColor: context.colorScheme.outline,
           ),
-        ],
       ],
     );
   }

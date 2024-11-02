@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reordable_list_item.dart';
@@ -22,7 +22,7 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   @override
   Widget build(BuildContext context) {
     final hasEditorsRight =
-        ref.watch(appDataControllerProvider).hasEditorsRight;
+        ref.watch(permissionServiceProvider).hasAccessToEdit;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(

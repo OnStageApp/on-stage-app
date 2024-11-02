@@ -49,10 +49,36 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-//open DB
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) async {
+          logger.i('Creating database tables...');
+          // This will create all tables based on your @DriftDatabase tables list
+          await m.createAll();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          logger.i('Upgrading database from $from to $to');
+          // Add future migration code here when needed
+        },
+        beforeOpen: (details) async {
+          logger.i('Opening database with version: ${details.versionNow}');
+          // Enable foreign keys
+          await customStatement('PRAGMA foreign_keys = ON');
+        },
+      );
+
+  // Modify your initDatabase method to ensure tables are created
   Future<void> initDatabase() async {
-    await customSelect('SELECT 1').get();
-    logger.i('Database initialized successfully');
+    try {
+      logger.i('Initializing database...');
+      // This will trigger the migration strategy if needed
+      await customSelect('SELECT 1').get();
+
+      logger.i('Database initialized successfully');
+    } catch (e) {
+      logger.e('Error initializing database: $e');
+      rethrow;
+    }
   }
 
   // Subscription

@@ -67,6 +67,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   Future<void> init() async {
     try {
       await Purchases.setLogLevel(LogLevel.verbose);
+
       final customerInfo = await _setConfigurations();
 
       state = state.copyWith(customerInfo: customerInfo);
@@ -137,6 +138,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       logger.e('Error getting current subscription $e $s');
       state = state.copyWith(isLoading: false);
       return;
+    } finally {
+      await saveCurrentPlan();
     }
   }
 
@@ -161,6 +164,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     if (planId == null) return null;
     final currentPlan =
         await ref.read(planServiceProvider.notifier).getPlanById(planId);
+    state = state.copyWith(currentPlan: currentPlan);
     return currentPlan;
   }
 

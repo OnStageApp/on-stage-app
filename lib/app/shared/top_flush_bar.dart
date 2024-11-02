@@ -8,6 +8,7 @@ class TopFlushBar {
     String message, {
     IconData? icon,
     bool isError = false,
+    Color? backgroundColor,
   }) {
     Flushbar(
       icon: Icon(
@@ -21,7 +22,8 @@ class TopFlushBar {
       margin: const EdgeInsets.symmetric(horizontal: 12),
       borderRadius: BorderRadius.circular(10),
       duration: const Duration(seconds: 3),
-      backgroundColor: isError ? context.colorScheme.error : Colors.green,
+      backgroundColor: backgroundColor ??
+          (isError ? context.colorScheme.error : Colors.green),
       boxShadows: [
         BoxShadow(
           color: Colors.black.withOpacity(0.2),

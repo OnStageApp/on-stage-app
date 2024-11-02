@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/add_structure_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
@@ -73,7 +73,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildFooter(BuildContext context) {
-    final hasEditRights = ref.watch(appDataControllerProvider).hasEditorsRight;
+    final hasEditRights = ref.watch(permissionServiceProvider).hasAccessToEdit;
     final hasChanges = _hasChanges();
     final buttonText = isReorderPage ? 'Save' : 'Add';
 
@@ -91,7 +91,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
 
   Widget _buildHeader(BuildContext context) {
     return ModalHeader(
-      leadingButton: ref.watch(appDataControllerProvider).hasEditorsRight
+      leadingButton: ref.watch(permissionServiceProvider).hasAccessToEdit
           ? SizedBox(
               width: 80 - 12,
               child: InkWell(

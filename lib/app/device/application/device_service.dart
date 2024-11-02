@@ -67,7 +67,8 @@ class DeviceService {
 
   Future<void> updatePushToken(String pushToken) async {
     final deviceId = await getDeviceId();
-    final deviceRequest = DeviceRequest(id: deviceId, pushToken: pushToken);
+    final deviceRequest =
+        DeviceRequest(deviceId: deviceId, pushToken: pushToken);
     unawaited(_deviceRepository.updateDevice(deviceId, deviceRequest));
   }
 
@@ -146,7 +147,7 @@ class DeviceService {
   }) async {
     try {
       final device = DeviceRequest(
-        id: deviceInfo.deviceId,
+        deviceId: deviceInfo.deviceId,
         platformType: deviceInfo.platformType,
         osVersion: deviceInfo.osVersion,
         appVersion: packageInfo.version,
@@ -169,13 +170,14 @@ class DeviceService {
     PackageInfo packageInfo,
   ) async {
     try {
+      final pushToken = await _getFcmToken();
       final device = DeviceRequest(
-        id: deviceInfo.deviceId,
+        deviceId: deviceInfo.deviceId,
         platformType: deviceInfo.platformType,
         osVersion: deviceInfo.osVersion,
         appVersion: packageInfo.version,
         buildVersion: packageInfo.buildNumber,
-        pushToken: await _getFcmToken(),
+        pushToken: pushToken,
       );
 
       await _deviceRepository.loginDevice(
@@ -209,7 +211,7 @@ class DeviceService {
       final deviceInfo = await getDeviceInfo();
 
       final device = DeviceRequest(
-        id: deviceId,
+        deviceId: deviceId,
         platformType: deviceInfo.platformType,
         osVersion: deviceInfo.osVersion,
         appVersion: packageInfo.version,
@@ -225,7 +227,14 @@ class DeviceService {
     }
   }
 
-  Future<String?> _getFcmToken() async => FirebaseMessaging.instance.getToken();
+  Future<String?> _getFcmToken() async {
+    try {
+      return await FirebaseMessaging.instance.getToken();
+    } catch (e) {
+      logger.w('Unable to get FCM token: $e');
+      return null;
+    }
+  }
 
   Future<String?> _getStoredDeviceId() async {
     final prefs = await SharedPreferences.getInstance();

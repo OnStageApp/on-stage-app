@@ -1,13 +1,15 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
-class UpcomingEventEnhanced extends StatelessWidget {
+class UpcomingEventEnhanced extends ConsumerWidget {
   const UpcomingEventEnhanced({
     required this.title,
     required this.hour,
@@ -30,7 +32,7 @@ class UpcomingEventEnhanced extends StatelessWidget {
   final void Function()? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: hasUpcomingEvent ? onTap : null,
       overlayColor: WidgetStateProperty.all(const Color(0x33FFFFFF)),
@@ -110,31 +112,32 @@ class UpcomingEventEnhanced extends StatelessWidget {
                         color: context.colorScheme.onSurface,
                       ),
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          context.goNamed(AppRoute.addEvent.name);
-                        },
-                        icon: Assets.icons.plus.svg(),
-                        label: Text(
-                          'Create Event',
-                          style: context.textTheme.titleSmall!.copyWith(
-                            color: const Color(0xFF7366FF),
+                    if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            context.goNamed(AppRoute.addEvent.name);
+                          },
+                          icon: Assets.icons.plus.svg(),
+                          label: Text(
+                            'Create Event',
+                            style: context.textTheme.titleSmall!.copyWith(
+                              color: const Color(0xFF7366FF),
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                          backgroundColor: Colors.white,
-                          shadowColor: Colors.transparent,
-                          foregroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
+                          style: ElevatedButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            backgroundColor: Colors.white,
+                            shadowColor: Colors.transparent,
+                            foregroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),

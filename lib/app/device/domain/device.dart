@@ -8,6 +8,7 @@ part 'device.g.dart';
 class Device with _$Device {
   const factory Device({
     required String id,
+    required String deviceId,
     required PlatformType platformType,
     required String appVersion,
     required String osVersion,

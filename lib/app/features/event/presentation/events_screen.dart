@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/app_data/app_data_controller.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
@@ -86,7 +86,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     return Scaffold(
       appBar: StageAppBar(
         title: 'Events',
-        trailing: ref.watch(appDataControllerProvider).hasEditorsRight
+        trailing: ref.watch(permissionServiceProvider).hasAccessToEdit
             ? _buildTrailingButton(context)
             : const SizedBox(),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -36,15 +37,16 @@ class LibrarySection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        PreferencesActionTile(
-          title: 'Request a new song',
-          trailingIcon: Icons.keyboard_arrow_right_rounded,
-          color: context.colorScheme.primary,
-          height: 54,
-          onTap: () {
-            context.pushNamed(AppRoute.addEditSong.name);
-          },
-        ),
+        if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+          PreferencesActionTile(
+            title: 'Request a new song',
+            trailingIcon: Icons.keyboard_arrow_right_rounded,
+            color: context.colorScheme.primary,
+            height: 54,
+            onTap: () {
+              context.pushNamed(AppRoute.addEditSong.name);
+            },
+          ),
       ],
     );
   }

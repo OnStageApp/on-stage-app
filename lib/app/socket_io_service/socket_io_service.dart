@@ -1,5 +1,7 @@
 import 'package:on_stage_app/app/device/application/device_service.dart';
+import 'package:on_stage_app/app/enums/socket_event_type.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
@@ -16,8 +18,6 @@ class SocketIoService extends _$SocketIoService {
   io.Socket? get socket => _socket;
 
   bool get isConnected => _socket?.connected ?? false;
-
-  static const String notificationEvent = 'NOTIFICATION';
 
   @override
   void build() {
@@ -81,7 +81,7 @@ class SocketIoService extends _$SocketIoService {
     _socket?.off('disconnect');
     _socket?.off('connect_error');
     _socket?.off('error');
-    _socket?.off(notificationEvent);
+    _socket?.off(SocketEventType.notification.name);
 
     _socket?.onConnect((_) {
       logger.i('Socket connected for user: $_currentDeviceId');
@@ -99,11 +99,25 @@ class SocketIoService extends _$SocketIoService {
       logger.e('Socket error for user $_currentDeviceId: $error');
     });
 
-    _socket?.on(notificationEvent, (data) {
+    _listenOnNotifications();
+    _listenOnSubscriptionUpdate();
+  }
+
+  void _listenOnNotifications() {
+    _socket?.on(SocketEventType.notification.name, (data) {
       logger.i('Received notification event: $data');
-      final notifier = ref.read(notificationNotifierProvider.notifier);
-      notifier.getNotifications();
-      notifier.setHasNewNotifications(true);
+      ref.read(notificationNotifierProvider.notifier)
+        ..getNotifications()
+        ..setHasNewNotifications(true);
+    });
+  }
+
+  void _listenOnSubscriptionUpdate() {
+    _socket?.on('SUBSCRIPTION', (data) async {
+      logger.i('Received subscriptionChanged event: $data');
+      await ref
+          .read(subscriptionNotifierProvider.notifier)
+          .getCurrentSubscription(forceUpdate: true);
     });
   }
 
