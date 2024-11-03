@@ -4,17 +4,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class InviteButton extends StatelessWidget {
   const InviteButton({
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     required this.isConfirm,
-    this.hasShadow = true,
+    this.backgroundColor,
+    this.textColor,
     super.key,
   });
 
   final String text;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final bool isConfirm;
-
-  final bool hasShadow;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +29,10 @@ class InviteButton extends StatelessWidget {
           ),
         ),
         backgroundColor: WidgetStateProperty.all(
-          isConfirm
-              ? context.colorScheme.onSurface
-              : context.colorScheme.surface,
+          backgroundColor ??
+              (isConfirm
+                  ? context.colorScheme.onSurface
+                  : context.colorScheme.surface),
         ),
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
           (Set<WidgetState> states) {
@@ -53,9 +55,10 @@ class InviteButton extends StatelessWidget {
           Text(
             text,
             style: context.textTheme.titleMedium!.copyWith(
-              color: isConfirm
-                  ? context.colorScheme.onSurfaceVariant
-                  : context.colorScheme.onSurface,
+              color: textColor ??
+                  (isConfirm
+                      ? context.colorScheme.onSurfaceVariant
+                      : context.colorScheme.onSurface),
             ),
           ),
         ],

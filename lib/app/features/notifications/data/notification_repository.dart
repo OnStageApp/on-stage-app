@@ -9,8 +9,17 @@ part 'notification_repository.g.dart';
 abstract class NotificationRepository {
   factory NotificationRepository(Dio dio) = _NotificationRepository;
 
-  @GET(API.wsNotifications)
+  @GET(API.notifications)
   Future<List<StageNotification>> getNotifications(
     @Query('userId') String userId,
+  );
+
+  @PUT(API.notificationsMarkAsViewed)
+  Future<void> markAsViewed();
+
+  @PUT(API.notificationById)
+  Future<void> updateNotification(
+    @Path('id') String notificationId,
+    @Body() StageNotification notification,
   );
 }

@@ -23,6 +23,9 @@ class API {
   static const String rehearsalById = 'rehearsals/{id}';
   static const String stagers = 'stagers';
   static const String stagersById = 'stagers/{id}';
+  static const String editStagerById = 'stagers/{id}';
+  static const String stagerByEventAndTeamMember =
+      'stagers/getByEventAndTeamMember';
   static const String eventItems = 'event-items';
   static const String leadVocalsByEventItemId = 'event-items/{id}/lead-vocals';
   static const String upcomingEvent = 'events/upcoming';
@@ -62,6 +65,10 @@ class API {
   static const String teamMemberPhotos = 'team-members/photos';
 
   static const String userSettings = 'user-settings';
+
+  static const String notifications = 'notifications';
+  static const String notificationsMarkAsViewed = 'notifications/markAsViewed';
+  static const String notificationById = 'notifications/{id}';
 
   //song-config
   static const String songConfigBySongId = 'song-config/{songId}';

@@ -111,7 +111,6 @@ class PaywallModal extends ConsumerWidget {
 
   static void show({
     required BuildContext context,
-    required WidgetRef ref,
     required PermissionType permissionType,
   }) {
     showModalBottomSheet<Widget>(

@@ -13,7 +13,9 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -165,6 +167,31 @@ class EventNotifier extends _$EventNotifier {
       duplicateEventRequest,
     );
     state = state.copyWith(event: newEvent, isLoading: false);
+  }
+
+  //TODO: Not tested yet, waiting for backend
+  Future<void> setStatusForStager({
+    required StagerStatusEnum participationStatus,
+    required String eventId,
+  }) async {
+    final teamMemberId =
+        ref.read(currentTeamMemberNotifierProvider).teamMember!.id;
+    final stagerId = await getStagerByEventAndTeamMember(eventId, teamMemberId);
+    final newStager = StagerRequest(
+      participationStatus: participationStatus,
+    );
+    await eventsRepository.updateStager(stagerId, newStager);
+  }
+
+  Future<String> getStagerByEventAndTeamMember(
+    String eventId,
+    String teamMemberId,
+  ) async {
+    final stager = await eventsRepository.getStagerByEventAndTeamMember(
+      eventId,
+      teamMemberId,
+    );
+    return stager.id;
   }
 
   Future<void> deleteEventAndGetAll() async {

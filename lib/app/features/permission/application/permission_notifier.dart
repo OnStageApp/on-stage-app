@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/subscription/domain/subscription.dart';
+import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
+import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 
 class PermissionService {
   PermissionService({
@@ -25,6 +28,45 @@ class PermissionService {
   bool get isNone => teamMember?.role == TeamMemberRole.none;
 
   bool get hasPaidPlan => currentPlan?.entitlementId != 'starter';
+
+  bool get hasReminders => currentPlan?.hasReminders ?? false;
+
+  bool get canAddTeamMembers =>
+      isLeaderOnTeam && hasPaidPlan && currentPlan?.maxMembers != null;
+
+  //TODO: See how to handle this case
+  bool get canAddEvents => true;
+
+  bool hasPermissions(PermissionType permissionType) {
+    switch (permissionType) {
+      case PermissionType.addEvents:
+        return canAddEvents;
+      case PermissionType.addTeamMembers:
+        return canAddTeamMembers;
+      case PermissionType.reminders:
+        return hasReminders;
+      case PermissionType.songsAccess:
+      case PermissionType.addSongs:
+      case PermissionType.screenSync:
+      case PermissionType.none:
+        return false;
+    }
+  }
+
+  Future<void> callMethodIfHasPermission({
+    required PermissionType permissionType,
+    required void Function() onGranted,
+    required BuildContext context,
+  }) async {
+    if (hasPermissions(permissionType)) {
+      onGranted();
+    } else {
+      PaywallModal.show(
+        context: context,
+        permissionType: permissionType,
+      );
+    }
+  }
 }
 
 final permissionServiceProvider = Provider<PermissionService>((ref) {

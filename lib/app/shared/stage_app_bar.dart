@@ -11,6 +11,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isBackButtonVisible = false,
     this.background,
     this.bottom,
+    this.onBackButtonPressed,
     super.key,
   });
 
@@ -19,7 +20,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBackButtonVisible;
   final Widget? trailing;
   final PreferredSize? bottom;
-
+  final void Function()? onBackButtonPressed;
   final Color? background;
 
   @override
@@ -52,7 +53,10 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget? _buildLeading(BuildContext context) {
     if (isBackButtonVisible) {
       return InkWell(
-        onTap: () => context.pop(),
+        onTap: () {
+          onBackButtonPressed?.call();
+          context.pop();
+        },
         child: Icon(
           Icons.arrow_back_ios,
           size: 22,
