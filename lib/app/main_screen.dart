@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/event/presentation/events_screen.dart'
 import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
+import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
@@ -23,7 +24,6 @@ import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart'
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/permission/permission_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -190,16 +190,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   void _listenForPermissionDeniedAndShowPaywall() {
     ref.listen<PermissionType?>(
-      permissionNotifierProvider,
+      networkPermissionProvider,
       (previous, permissionType) {
         if (permissionType != null) {
           PaywallModal.show(
             context: context,
-            ref: ref,
             permissionType: permissionType,
           );
 
-          ref.read(permissionNotifierProvider.notifier).clearPermission();
+          ref.read(networkPermissionProvider.notifier).clearPermission();
         }
       },
     );

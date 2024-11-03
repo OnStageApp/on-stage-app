@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
 import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
-import 'package:on_stage_app/app/utils/permission/permission_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 
 class PermissionInterceptor extends Interceptor {
@@ -20,7 +20,7 @@ class PermissionInterceptor extends Interceptor {
         );
 
         if (errorResponse.errorName == ErrorType.PERMISSION_DENIED) {
-          ref.read(permissionNotifierProvider.notifier).permissionDenied(
+          ref.read(networkPermissionProvider.notifier).permissionDenied(
                 errorResponse.param ?? PermissionType.none,
               );
         }

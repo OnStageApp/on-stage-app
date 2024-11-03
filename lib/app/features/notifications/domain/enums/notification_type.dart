@@ -4,6 +4,7 @@ enum NotificationType {
   TEAM_INVITATION_DECLINED,
   EVENT_INVITATION_REQUEST,
   INVITATION,
+  NEW_REHEARSAL,
 }
 
 extension NotificationTypeX on NotificationType {
@@ -19,6 +20,8 @@ extension NotificationTypeX on NotificationType {
         return 'EVENT_INVITATION_REQUEST';
       case NotificationType.INVITATION:
         return 'INVITATION';
+      case NotificationType.NEW_REHEARSAL:
+        return 'NEW_REHEARSAL';
     }
   }
 
@@ -34,6 +37,8 @@ extension NotificationTypeX on NotificationType {
         return 'Event Invitation';
       case NotificationType.INVITATION:
         return 'Invitation';
+      case NotificationType.NEW_REHEARSAL:
+        return 'New Rehearsal';
     }
   }
 }

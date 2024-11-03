@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/event/domain/models/events_response.da
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/upcoming_event/upcoming_event_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -89,5 +90,17 @@ abstract class EventsRepository {
   @DELETE(API.eventById)
   Future<void> deleteEvent(
     @Path('id') String eventId,
+  );
+
+  @PUT(API.editStagerById)
+  Future<void> updateStager(
+    @Path('id') String stagerId,
+    @Body() StagerRequest stager,
+  );
+
+  @GET(API.stagerByEventAndTeamMember)
+  Future<Stager> getStagerByEventAndTeamMember(
+    @Query('eventId') String eventId,
+    @Query('teamMemberId') String teamMemberId,
   );
 }

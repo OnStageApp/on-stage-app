@@ -31,8 +31,16 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
     final notifications = ref.watch(notificationNotifierProvider).notifications;
 
     return Scaffold(
-      appBar: const StageAppBar(
+      appBar: StageAppBar(
         isBackButtonVisible: true,
+        onBackButtonPressed: () {
+          ref
+              .read(notificationNotifierProvider.notifier)
+              .markNotificationsAsViewed();
+          ref
+              .read(notificationNotifierProvider.notifier)
+              .setHasNewNotifications(false);
+        },
         title: 'Notifications',
       ),
       body: notifications.isNotEmpty

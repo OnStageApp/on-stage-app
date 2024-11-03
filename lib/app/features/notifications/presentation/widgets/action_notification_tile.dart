@@ -1,26 +1,22 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
+import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/shared/invite_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
-class EventNotificationTile extends NotificationTile {
-  const EventNotificationTile({
-    required super.title,
+class ActionNotificationTile extends NotificationTile {
+  const ActionNotificationTile({
+    required super.notification,
     required super.onTap,
-    super.description,
-    this.dateTime,
-    super.status,
-    this.hasActions = true,
-    this.profilePicture,
+    this.onDecline,
+    this.onConfirm,
     super.key,
   });
 
-  final DateTime? dateTime;
-  final bool hasActions;
-  final Uint8List? profilePicture;
+  final void Function()? onDecline;
+  final void Function()? onConfirm;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -35,7 +31,7 @@ class EventNotificationTile extends NotificationTile {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Duminica seara',
+                    notification.type?.name ?? 'Notification',
                     style: context.textTheme.headlineMedium!
                         .copyWith(color: context.colorScheme.onSurface),
                     maxLines: 1,
@@ -46,20 +42,24 @@ class EventNotificationTile extends NotificationTile {
                 ],
               ),
             ),
-            const ParticipantsOnTile(
-              participantsLength: 3,
+            const Padding(
+              padding: EdgeInsets.only(left: 12),
+              child: ParticipantsOnTile(
+                participantsLength: 3,
+              ),
             ),
           ],
         ),
-        if (hasActions)
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Row(
-              children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: Row(
+            children: [
+              if (notification.actionStatus ==
+                  NotificationActionStatus.PENDING) ...[
                 Expanded(
                   child: InviteButton(
                     text: 'Decline',
-                    onPressed: () {},
+                    onPressed: onDecline ?? () {},
                     isConfirm: false,
                   ),
                 ),
@@ -67,13 +67,22 @@ class EventNotificationTile extends NotificationTile {
                 Expanded(
                   child: InviteButton(
                     text: 'Confirm',
-                    onPressed: () {},
+                    onPressed: onConfirm ?? () {},
                     isConfirm: true,
                   ),
                 ),
+              ] else ...[
+                Expanded(
+                  child: InviteButton(
+                    text: notification.actionStatus?.title ?? 'Declined',
+                    isConfirm: notification.actionStatus ==
+                        NotificationActionStatus.ACCEPTED,
+                  ),
+                ),
               ],
-            ),
+            ],
           ),
+        ),
       ],
     );
   }
@@ -82,7 +91,7 @@ class EventNotificationTile extends NotificationTile {
     return Row(
       children: [
         Text(
-          TimeUtils().formatOnlyTime(dateTime ?? DateTime.now()),
+          TimeUtils().formatOnlyTime(notification.dateTime ?? DateTime.now()),
           style: context.textTheme.bodyMedium!.copyWith(
             color: context.colorScheme.surfaceDim,
           ),
@@ -92,7 +101,7 @@ class EventNotificationTile extends NotificationTile {
         ),
         Text(
           TimeUtils().formatOnlyDate(
-            dateTime ?? DateTime.now(),
+            notification.dateTime ?? DateTime.now(),
           ),
           style: context.textTheme.bodyMedium!.copyWith(
             color: context.colorScheme.surfaceDim,

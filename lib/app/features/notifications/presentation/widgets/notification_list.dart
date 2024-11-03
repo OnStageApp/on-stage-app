@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_type.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
-import 'package:on_stage_app/app/features/notifications/presentation/widgets/event_notification_tile.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/action_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/photo_message_notification_tile.dart';
+import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class NotificationList extends StatelessWidget {
+class NotificationList extends ConsumerWidget {
   const NotificationList({
     required this.notifications,
     super.key,
@@ -15,7 +20,7 @@ class NotificationList extends StatelessWidget {
   final List<StageNotification> notifications;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final newNotifications = notifications
         .where((notification) => notification.status == NotificationStatus.NEW)
         .toList();
@@ -34,12 +39,14 @@ class NotificationList extends StatelessWidget {
         if (newNotifications.isNotEmpty)
           _buildNotificationSection(
             context,
+            ref,
             title: 'Unread',
             notifications: newNotifications,
           ),
         if (viewedNotifications.isNotEmpty)
           _buildNotificationSection(
             context,
+            ref,
             title: 'Older',
             notifications: viewedNotifications,
           ),
@@ -48,7 +55,8 @@ class NotificationList extends StatelessWidget {
   }
 
   Widget _buildNotificationSection(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required String title,
     required List<StageNotification> notifications,
   }) {
@@ -84,35 +92,42 @@ class NotificationList extends StatelessWidget {
           separatorBuilder: (_, __) => const SizedBox(height: 0),
           itemBuilder: (context, index) {
             final notification = notifications[index];
-            final leftTime =
-                _getLeftTime(notification.dateTime ?? DateTime.now());
 
             switch (notification.type) {
               case NotificationType.TEAM_INVITATION_REQUEST:
                 return PhotoMessageNotificationTile(
-                  title: notification.type?.title ?? '',
-                  description: notification.description,
-                  dateTime: notification.dateTime,
-                  hasActions: notification.isInvitationConfirmed ?? true,
-                  status: notification.status ?? NotificationStatus.NEW,
+                  notification: notification,
                   onTap: () {},
                 );
               case NotificationType.EVENT_INVITATION_REQUEST:
-                return EventNotificationTile(
-                  title: notification.type?.title ?? '',
-                  description: notification.description,
-                  dateTime: notification.dateTime,
-                  hasActions: notification.isInvitationConfirmed ?? true,
-                  status: notification.status ?? NotificationStatus.NEW,
+                return ActionNotificationTile(
+                  notification: notification,
                   onTap: () {},
+                  onConfirm: () {
+                    onTapAction(
+                      notification,
+                      StagerStatusEnum.CONFIRMED,
+                      NotificationActionStatus.ACCEPTED,
+                      ref,
+                    );
+                  },
+                  onDecline: () {
+                    onTapAction(
+                      notification,
+                      StagerStatusEnum.DECLINED,
+                      NotificationActionStatus.DECLINED,
+                      ref,
+                    );
+                  },
                 );
               case NotificationType.TEAM_INVITATION_ACCEPTED:
                 return PhotoMessageNotificationTile(
-                  title: notification.type?.title ?? '',
-                  description: notification.description,
-                  dateTime: notification.dateTime,
-                  hasActions: false,
-                  status: notification.status ?? NotificationStatus.NEW,
+                  notification: notification,
+                  onTap: () {},
+                );
+              case NotificationType.NEW_REHEARSAL:
+                return PhotoMessageNotificationTile(
+                  notification: notification,
                   onTap: () {},
                 );
               default:
@@ -122,6 +137,23 @@ class NotificationList extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void onTapAction(
+    StageNotification notification,
+    StagerStatusEnum status,
+    NotificationActionStatus actionStatus,
+    WidgetRef ref,
+  ) {
+    ref.read(eventNotifierProvider.notifier).setStatusForStager(
+          participationStatus: status,
+          eventId: notification.eventId ?? '',
+        );
+
+    ref.read(notificationNotifierProvider.notifier).updateNotification(
+          notification.notificationId,
+          actionStatus,
+        );
   }
 
   String _getLeftTime(DateTime dateTime) {

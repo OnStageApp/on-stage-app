@@ -73,7 +73,6 @@ class TeamsSection extends ConsumerWidget {
             onTap: () {
               PaywallModal.show(
                 context: context,
-                ref: ref,
                 permissionType: PermissionType.addTeamMembers,
               );
             },
