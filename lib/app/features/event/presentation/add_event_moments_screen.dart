@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 final hasChangesProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -29,27 +30,25 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
 }
 
 class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
-
   bool _areEventItemsLoading = false;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-     _requestEventItems();
+      _requestEventItems();
     });
     super.initState();
   }
 
   Future<void> _requestEventItems() async {
-    setState(()  {
+    setState(() {
       _areEventItemsLoading = true;
-
     });
     await ref
         .read(eventItemsNotifierProvider.notifier)
         .getEventItems(widget.eventId);
 
-    setState(()  {
+    setState(() {
       _areEventItemsLoading = false;
     });
   }
@@ -70,25 +69,32 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       body: Padding(
         padding: defaultScreenPadding,
         child: _areEventItemsLoading
-        ? _buildShimmerList()
-        : hasEditorRights
-            ? _buildReordableList(eventItemsState.eventItems)
-            : _buildStaticList(eventItemsState.eventItems),
+            ? _buildShimmerList()
+            : hasEditorRights
+                ? _buildReordableList(eventItemsState.eventItems)
+                : eventItemsState.eventItems.isNotEmpty
+                    ? _buildStaticList(eventItemsState.eventItems)
+                    : const Center(
+                        child: Text(
+                          'No items added yet',
+                        ),
+                      ),
       ),
     );
   }
+
   Widget _buildShimmerList() {
     return ListView.builder(
       itemCount: 6,
       itemBuilder: (context, index) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade200,
-          highlightColor: Colors.grey.shade100,
+          baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+          highlightColor: context.colorScheme.onSurfaceVariant,
           child: Container(
             height: 70,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(10),
             ),
           ),

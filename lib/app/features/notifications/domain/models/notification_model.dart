@@ -17,6 +17,7 @@ class StageNotification with _$StageNotification {
     String? eventId,
     String? stagerId,
     List<String>? usedIdsWithPhoto,
+    DateTime? dateTime,
   }) = _StageNotification;
 
   factory StageNotification.fromJson(Map<String, dynamic> json) =>
