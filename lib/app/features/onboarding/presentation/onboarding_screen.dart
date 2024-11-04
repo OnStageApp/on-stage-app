@@ -46,6 +46,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _goToNextPage() {
     if (_currentPage == _totalPages - 1) {
+      if(!_isFormValid()) return;
       _updateUser();
       _finishOnboarding();
       return;
@@ -73,7 +74,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             child: PageView(
               controller: _pageController,
               onPageChanged: (page) {
-                FocusScope.of(context).requestFocus(FocusNode());
                 setState(() => _currentPage = page);
               },
               children: const [
@@ -142,9 +142,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   bool _isFormValid() {
     final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
-    final currentUser = ref.watch(userNotifierProvider).currentUser;
 
-    return onboardingProvider.position != null &&
-        currentUser?.name?.trim().isNotEmpty == true;
+    // Ensure both the name and position are non-null and non-empty
+    final isNameValid = onboardingProvider.fullName != null &&
+        onboardingProvider.fullName!.isNotEmpty;
+    final isPositionValid = onboardingProvider.position != null;
+
+    return isNameValid && isPositionValid;
   }
 }

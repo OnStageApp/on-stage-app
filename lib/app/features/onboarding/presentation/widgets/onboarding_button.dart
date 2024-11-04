@@ -67,7 +67,7 @@ class OnboardingButton extends StatelessWidget {
               style: context.textTheme.titleMedium!.copyWith(
                 color: isEnabled
                     ? context.colorScheme.onSurface
-                    : context.colorScheme.outline,
+                    : context.colorScheme.onPrimary,
               ),
             ),
     );

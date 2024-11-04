@@ -51,14 +51,21 @@ class CustomTextField extends StatelessWidget {
         TextFormField(
           keyboardType: keyboardType,
           obscureText: obscureText,
-          focusNode: focusNode ?? FocusNode(),
+          focusNode: focusNode,
           enabled: enabled ?? true,
           style: context.textTheme.titleMedium!.copyWith(
             color: context.colorScheme.onSurface,
           ),
           onChanged: onChanged,
-          onEditingComplete: onTapOutside,
-          controller: controller ?? TextEditingController(),
+          onEditingComplete: () {
+            FocusScope.of(context).unfocus();
+            onTapOutside?.call();
+          },
+          controller: controller,
+          onTapOutside: (_) {
+            FocusScope.of(context).unfocus();
+            onTapOutside?.call();
+          },
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
               .copyWith(
             suffixIcon: suffixIcon,
@@ -79,7 +86,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           validator: validator ??
-              (value) {
+                  (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field cannot be empty';
                 }
