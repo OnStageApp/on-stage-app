@@ -102,6 +102,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               InkWell(
                 key: _datePickerKey,
                 onTap: () {
+                  if(!widget.enabled) return;
                   final renderBox = _datePickerKey.currentContext
                       ?.findRenderObject() as RenderBox?;
                   if (renderBox != null) {
@@ -171,6 +172,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
               InkWell(
                 key: _timePickerKey,
                 onTap: () {
+                  if(!widget.enabled) return;
                   final renderBox = _timePickerKey.currentContext
                       ?.findRenderObject() as RenderBox?;
                   if (renderBox != null) {
