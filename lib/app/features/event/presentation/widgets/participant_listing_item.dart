@@ -13,6 +13,7 @@ class ParticipantListingItem extends StatelessWidget {
     required this.onDelete,
     this.status,
     this.trailing,
+    this.canEdit = true,
     super.key,
   });
 
@@ -21,10 +22,12 @@ class ParticipantListingItem extends StatelessWidget {
   final StagerStatusEnum? status;
   final Widget? trailing;
   final VoidCallback onDelete;
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      enabled: canEdit,
       key: ValueKey(name),
       endActionPane: ActionPane(
         motion: const ScrollMotion(),

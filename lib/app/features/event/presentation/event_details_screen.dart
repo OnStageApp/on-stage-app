@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
@@ -35,7 +36,8 @@ class EventDetailsScreen extends ConsumerStatefulWidget {
   EventDetailsScreenState createState() => EventDetailsScreenState();
 }
 
-class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
+class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
+    with TickerProviderStateMixin {
   TextEditingController eventNameController = TextEditingController();
   TextEditingController eventLocationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -82,7 +84,56 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
                   },
                 )
               else
-                const SizedBox(),
+                FPopover(
+                  controller: FPopoverController(vsync: this),
+                  followerAnchor: Alignment.topCenter,
+                  targetAnchor: Alignment.bottomCenter,
+                  followerBuilder: (
+                    BuildContext context,
+                    FPopoverStyle value,
+                    Widget? child,
+                  ) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, top: 14, right: 20, bottom: 10),
+                      child: SizedBox(
+                        width: 288,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Dimensions'),
+                            const SizedBox(height: 7),
+                            Text(
+                              'Set the dimensions for the layer.',
+                            ),
+                            const SizedBox(height: 15),
+                            for (final (label, value) in [
+                              ('Width', '100%'),
+                              ('Max. Width', '300px'),
+                              ('Height', '25px'),
+                              ('Max. Height', 'none'),
+                            ]) ...[
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    label,
+                                  )),
+                                  Expanded(
+                                      flex: 2,
+                                      child: FTextField(initialValue: value)),
+                                ],
+                              ),
+                              const SizedBox(height: 7),
+                            ]
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  target: const Icon(Icons.more_vert),
+                ),
             ],
           ),
         ),
@@ -331,6 +382,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen> {
         itemCount: stagers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
+            canEdit: ref.read(permissionServiceProvider).hasAccessToEdit,
             name: stagers[index].name ?? '',
             photo: stagers[index].profilePicture,
             status: stagers[index].participationStatus,
