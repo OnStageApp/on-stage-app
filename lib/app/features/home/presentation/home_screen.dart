@@ -113,7 +113,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       userSettingsNotifierProvider
           .select((settings) => settings.isOnboardingDone!),
       (_, isOnboardingDone) {
-        if (isOnboardingDone == true) {
+        if (isOnboardingDone == false) {
           showOnboardingOverlay(context);
         }
       },
