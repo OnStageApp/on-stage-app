@@ -23,7 +23,6 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
   CurrentTeamMemberState build() {
     final dio = ref.read(dioProvider);
     _teamMemberRepository = TeamMemberRepository(dio);
-    initializeState();
     logger.i('CurrentTeamMemberNotifier initialized');
     return const CurrentTeamMemberState();
   }
