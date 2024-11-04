@@ -11,16 +11,12 @@ class StageNotification with _$StageNotification {
   const factory StageNotification({
     required String notificationId,
     required String description,
-    DateTime? dateTime,
-    String? createdAt,
-    bool? isInvitationConfirmed,
     NotificationStatus? status,
     NotificationActionStatus? actionStatus,
     NotificationType? type,
-    String? friendId,
-    String? friendPhotoUrl,
     String? eventId,
     String? stagerId,
+    List<String>? usedIdsWithPhoto,
   }) = _StageNotification;
 
   factory StageNotification.fromJson(Map<String, dynamic> json) =>

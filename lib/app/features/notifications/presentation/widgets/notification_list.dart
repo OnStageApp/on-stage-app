@@ -8,8 +8,10 @@ import 'package:on_stage_app/app/features/notifications/domain/enums/notificatio
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/action_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/photo_message_notification_tile.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class NotificationList extends ConsumerWidget {
   const NotificationList({
@@ -40,14 +42,14 @@ class NotificationList extends ConsumerWidget {
           _buildNotificationSection(
             context,
             ref,
-            title: 'Unread',
+            isUnread: true,
             notifications: newNotifications,
           ),
         if (viewedNotifications.isNotEmpty)
           _buildNotificationSection(
             context,
             ref,
-            title: 'Older',
+            isUnread: false,
             notifications: viewedNotifications,
           ),
       ],
@@ -57,7 +59,7 @@ class NotificationList extends ConsumerWidget {
   Widget _buildNotificationSection(
     BuildContext context,
     WidgetRef ref, {
-    required String title,
+    required bool isUnread,
     required List<StageNotification> notifications,
   }) {
     return Column(
@@ -65,19 +67,20 @@ class NotificationList extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Container(
-              alignment: Alignment.topRight,
-              padding: const EdgeInsets.only(right: 8),
-              child: Icon(
-                Icons.circle,
-                size: 12,
-                color: context.colorScheme.error,
+            if (isUnread)
+              Container(
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.only(right: 8),
+                child: Icon(
+                  Icons.circle,
+                  size: 12,
+                  color: context.colorScheme.error,
+                ),
               ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
-                title,
+                isUnread ? 'Unread' : 'Older',
                 style: context.textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -102,7 +105,12 @@ class NotificationList extends ConsumerWidget {
               case NotificationType.EVENT_INVITATION_REQUEST:
                 return ActionNotificationTile(
                   notification: notification,
-                  onTap: () {},
+                  onTap: () {
+                    if (notification.actionStatus ==
+                        NotificationActionStatus.ACCEPTED) {
+                      _goToEvent(notification, ref, context);
+                    }
+                  },
                   onConfirm: () {
                     onTapAction(
                       notification,
@@ -128,7 +136,9 @@ class NotificationList extends ConsumerWidget {
               case NotificationType.NEW_REHEARSAL:
                 return PhotoMessageNotificationTile(
                   notification: notification,
-                  onTap: () {},
+                  onTap: () {
+                    _goToEvent(notification, ref, context);
+                  },
                 );
               default:
                 return const SizedBox();
@@ -137,6 +147,26 @@ class NotificationList extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  void _goToEvent(
+    StageNotification notification,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
+    if (notification.eventId != null) {
+      ref
+          .read(eventNotifierProvider.notifier)
+          .getEventById(notification.eventId!);
+      context.goNamed(
+        AppRoute.eventDetails.name,
+        queryParameters: {
+          'eventId': notification.eventId,
+        },
+      );
+    } else {
+      logger.i('Event id is null');
+    }
   }
 
   void onTapAction(

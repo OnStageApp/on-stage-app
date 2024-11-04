@@ -101,15 +101,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.navigationShell.currentIndex,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: context.colorScheme.onSurfaceVariant,
+        backgroundColor: context.colorScheme.surface,
         selectedLabelStyle: context.textTheme.bodyMedium,
         unselectedLabelStyle: context.textTheme.bodyMedium,
-        selectedItemColor: context.colorScheme.primary,
+        selectedItemColor: context.colorScheme.onSurface,
         unselectedItemColor: context.colorScheme.outline,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        selectedFontSize: 1,
-        unselectedFontSize: 1,
+        showUnselectedLabels: true,
+        showSelectedLabels: true,
         elevation: 1,
         onTap: _onChangedScreen,
         items: [
@@ -117,7 +115,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_home_icon.svg',
               colorFilter: ColorFilter.mode(
-                context.colorScheme.primary,
+                context.colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
             ),
@@ -135,7 +133,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_list_music_icon.svg',
               colorFilter: ColorFilter.mode(
-                context.colorScheme.primary,
+                context.colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
             ),
@@ -152,7 +150,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_calendar_icon.svg',
               colorFilter: ColorFilter.mode(
-                context.colorScheme.primary,
+                context.colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
             ),
@@ -169,7 +167,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_profile_icon.svg',
               colorFilter: ColorFilter.mode(
-                context.colorScheme.primary,
+                context.colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
             ),
