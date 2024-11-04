@@ -118,8 +118,6 @@ class _RehearsalTileState extends State<RehearsalTile> {
                       ],
                     ),
                   ),
-                  _buildParticipantsTile(),
-                  const Divider(),
                 ],
               ),
             );
@@ -129,21 +127,6 @@ class _RehearsalTileState extends State<RehearsalTile> {
     );
   }
 
-  Widget _buildParticipantsTile() {
-    return const ParticipantsOnTile(
-      borderColor: Colors.transparent,
-      participantsProfile: [
-        'assets/images/profile1.png',
-        'assets/images/profile2.png',
-        'assets/images/profile4.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-        'assets/images/profile5.png',
-      ],
-    );
-  }
 
   Widget _buildCircle(BuildContext context) {
     return Padding(
