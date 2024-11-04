@@ -89,13 +89,13 @@ class TeamsSection extends ConsumerWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Shimmer.fromColors(
-        baseColor: context.colorScheme.surface.withOpacity(0.4),
-        highlightColor: context.colorScheme.surface,
+        baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+        highlightColor: context.colorScheme.onSurfaceVariant,
         child: Container(
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(8),
           ),
         ),

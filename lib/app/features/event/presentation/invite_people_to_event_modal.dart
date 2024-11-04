@@ -5,7 +5,6 @@ import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.d
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
@@ -293,13 +292,13 @@ class AddParticipantsModalState
         itemCount: 10,
         itemBuilder: (context, index) {
           return Shimmer.fromColors(
-            baseColor: Colors.grey.shade200,
-            highlightColor: Colors.grey.shade100,
+            baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+            highlightColor: context.colorScheme.onSurfaceVariant,
             child: Container(
               height: 48,
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: context.colorScheme.onSurfaceVariant,
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -308,5 +307,4 @@ class AddParticipantsModalState
       ),
     );
   }
-
 }

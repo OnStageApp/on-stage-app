@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SongDetailShimmerWidget extends StatelessWidget {
@@ -22,14 +23,15 @@ class SongDetailShimmerWidget extends StatelessWidget {
                 itemCount: 5,
                 itemBuilder: (context, index) {
                   return Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
+                    baseColor:
+                        context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+                    highlightColor: context.colorScheme.onSurfaceVariant,
                     child: Container(
                       margin: const EdgeInsets.only(right: 12),
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: context.colorScheme.onSurfaceVariant,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -38,18 +40,18 @@ class SongDetailShimmerWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _buildLyrics(false),
+            _buildLyrics(false, context),
             const SizedBox(height: 12),
-            _buildLyrics(true),
+            _buildLyrics(true, context),
             const SizedBox(height: 12),
-            _buildLyrics(false)
+            _buildLyrics(false, context)
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLyrics(bool isDifferent) {
+  Widget _buildLyrics(bool isDifferent, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
@@ -69,11 +71,12 @@ class SongDetailShimmerWidget extends StatelessWidget {
                       width: 110,
                       height: 38,
                       child: Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[100]!,
+                        baseColor: context.colorScheme.onSurfaceVariant
+                            .withOpacity(0.3),
+                        highlightColor: context.colorScheme.onSurfaceVariant,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: context.colorScheme.onSurfaceVariant,
                             borderRadius: BorderRadius.circular(50),
                           ),
                         ),
