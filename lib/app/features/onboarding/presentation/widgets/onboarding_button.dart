@@ -5,8 +5,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class OnboardingButton extends StatelessWidget {
   const OnboardingButton({
     required this.text,
-    required this.onPressed,
     required this.isEnabled,
+    this.onPressed,
     this.isLoading = false,
     this.backgroundColor,
     this.textColor,
@@ -14,8 +14,8 @@ class OnboardingButton extends StatelessWidget {
   });
 
   final String text;
-  final void Function() onPressed;
   final bool isEnabled;
+  final void Function()? onPressed;
   final bool isLoading;
 
   final Color? backgroundColor;
@@ -53,7 +53,7 @@ class OnboardingButton extends StatelessWidget {
           },
         ),
       ),
-      onPressed: onPressed,
+      onPressed: isEnabled ? onPressed : null,
       child: isLoading
           ? const SizedBox(
               height: 24,
