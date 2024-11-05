@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
-import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
+import 'package:on_stage_app/app/shared/data/error_model/permission_error_model.dart';
 import 'package:on_stage_app/logger.dart';
 
 class PermissionInterceptor extends Interceptor {
@@ -15,7 +15,7 @@ class PermissionInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response != null && err.response?.data != null) {
       try {
-        final errorResponse = ApiErrorResponse.fromJson(
+        final errorResponse = PermissionErrorResponse.fromJson(
           err.response!.data as Map<String, dynamic>,
         );
 

@@ -16,6 +16,7 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -202,6 +203,15 @@ class EventNotifier extends _$EventNotifier {
   Future<void> deleteEvent() async {
     state = state.copyWith(isLoading: true);
     await eventsRepository.deleteEvent(state.event!.id!);
+    state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> updateStager(StagerRequest stagerRequest) async {
+    final userId = ref.read(userNotifierProvider).currentUser!.id;
+    state = state.copyWith(isLoading: true);
+    final stager =
+        state.stagers.firstWhere((stager) => stager.userId == userId);
+    await eventsRepository.updateStager(stager.id, stagerRequest);
     state = state.copyWith(isLoading: false);
   }
 

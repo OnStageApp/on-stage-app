@@ -37,6 +37,15 @@ class LibrarySection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
+        PreferencesActionTile(
+          title: 'About',
+          trailingIcon: Icons.keyboard_arrow_right_rounded,
+          height: 54,
+          onTap: () {
+            context.goNamed(AppRoute.about.name);
+          },
+        ),
+        const SizedBox(height: 12),
         if (ref.watch(permissionServiceProvider).hasAccessToEdit)
           PreferencesActionTile(
             title: 'Request a new song',

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
+import 'package:on_stage_app/app/features/about/presentation/about_screen.dart';
+import 'package:on_stage_app/app/features/about/presentation/privacy_policy_screen.dart';
+import 'package:on_stage_app/app/features/about/presentation/terms_of_conditions_screen.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
@@ -258,6 +261,29 @@ class NavigationNotifier extends _$NavigationNotifier {
                     return const ProfileScreen();
                   },
                   routes: [
+                    GoRoute(
+                      name: AppRoute.about.name,
+                      path: 'about',
+                      builder: (context, state) {
+                        return const AboutScreen();
+                      },
+                      routes: [
+                        GoRoute(
+                          name: AppRoute.privacyPolicy.name,
+                          path: 'privacyPolicy',
+                          builder: (context, state) {
+                            return const PrivacyPolicyScreen();
+                          },
+                        ),
+                        GoRoute(
+                          name: AppRoute.termsOfUse.name,
+                          path: 'termsOfUse',
+                          builder: (context, state) {
+                            return const TermsOfUseScreen();
+                          },
+                        ),
+                      ],
+                    ),
                     GoRoute(
                       name: AppRoute.plans.name,
                       path: 'plans',

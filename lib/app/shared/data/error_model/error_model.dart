@@ -11,7 +11,6 @@ class ApiErrorResponse with _$ApiErrorResponse {
     required String? errorDescription,
     required ErrorType? errorName,
     required int? errorCode,
-    PermissionType? param,
   }) = _ApiErrorResponse;
 
   factory ApiErrorResponse.fromJson(Map<String, dynamic> json) =>

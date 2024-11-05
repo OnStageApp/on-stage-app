@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_photo/team_member_photo.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
 import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:pool/pool.dart';
@@ -91,17 +92,19 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
         return 'Failed to invite team member';
       }
     } on DioException catch (e) {
-      logger.e('Error inviting team member: $e');
+      logger.i('Error inviting team member: $e');
 
       if (e.response != null && e.response!.data is Map<String, dynamic>) {
         final errorData = e.response!.data as Map<String, dynamic>;
         final errorModel = ApiErrorResponse.fromJson(errorData);
-        return errorModel.errorDescription;
+        if (errorModel.errorName == ErrorType.RESOURCE_NOT_FOUND) {
+          return errorModel.errorName?.getDescription('User with this Email');
+        }
       }
 
       return 'An error occurred while inviting the team member';
     } catch (e) {
-      logger.e('Error inviting team member: $e');
+      logger.i('Error inviting team member: $e');
       return 'An error occurred while inviting the team member';
     }
   }

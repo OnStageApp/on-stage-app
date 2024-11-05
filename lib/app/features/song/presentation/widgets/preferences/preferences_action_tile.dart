@@ -24,11 +24,11 @@ class PreferencesActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: Container(
+      highlightColor: Theme.of(context).colorScheme.surfaceBright,
+      child: Ink(
         height: height ?? 48,
-        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           color: context.colorScheme.onSurfaceVariant,
