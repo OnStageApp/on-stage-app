@@ -16,6 +16,7 @@ class StageNotification with _$StageNotification {
     NotificationType? type,
     String? eventId,
     String? stagerId,
+    String? teamId,
     List<String>? usedIdsWithPhoto,
     DateTime? dateTime,
   }) = _StageNotification;

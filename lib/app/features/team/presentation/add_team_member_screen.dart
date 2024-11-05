@@ -107,6 +107,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                                 _emailController.text,
                                 _selectedRole,
                               );
+                          print('sadasdasdasdasdA: $errorMessage');
                           if (errorMessage.isNullEmptyOrWhitespace && mounted) {
                             context.pop();
                             return;
@@ -115,6 +116,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                             TopFlushBar.show(
                               context,
                               errorMessage ?? 'Error inviting team member',
+                              isError: true,
                             );
                           }
                         }

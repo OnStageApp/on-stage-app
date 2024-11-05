@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
@@ -12,10 +11,13 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_structure_button.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
@@ -77,63 +79,20 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (ref.watch(permissionServiceProvider).hasAccessToEdit)
-                SettingsTrailingAppBarButton(
-                  onTap: () {
+              SettingsTrailingAppBarButton(
+                onTap: () {
+                  if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
                     context.pushNamed(AppRoute.eventSettings.name);
-                  },
-                )
-              else
-                FPopover(
-                  controller: FPopoverController(vsync: this),
-                  followerAnchor: Alignment.topCenter,
-                  targetAnchor: Alignment.bottomCenter,
-                  followerBuilder: (
-                    BuildContext context,
-                    FPopoverStyle value,
-                    Widget? child,
-                  ) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 20, top: 14, right: 20, bottom: 10),
-                      child: SizedBox(
-                        width: 288,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Dimensions'),
-                            const SizedBox(height: 7),
-                            Text(
-                              'Set the dimensions for the layer.',
-                            ),
-                            const SizedBox(height: 15),
-                            for (final (label, value) in [
-                              ('Width', '100%'),
-                              ('Max. Width', '300px'),
-                              ('Height', '25px'),
-                              ('Max. Height', 'none'),
-                            ]) ...[
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    label,
-                                  )),
-                                  Expanded(
-                                      flex: 2,
-                                      child: FTextField(initialValue: value)),
-                                ],
-                              ),
-                              const SizedBox(height: 7),
-                            ]
-                          ],
-                        ),
-                      ),
+                  } else {
+                    DeclineEventInvitationModal.show(
+                      context: context,
+                      onDeclineInvitation: () {
+                        _onDeclineInvitation(context);
+                      },
                     );
-                  },
-                  target: const Icon(Icons.more_vert),
-                ),
+                  }
+                },
+              ),
             ],
           ),
         ),
@@ -251,6 +210,16 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
             ],
           ),
         ));
+  }
+
+  void _onDeclineInvitation(BuildContext context) {
+    const stagerRequest = StagerRequest(
+      participationStatus: StagerStatusEnum.DECLINED,
+    );
+    ref.read(eventNotifierProvider.notifier).updateStager(stagerRequest);
+    context
+      ..popDialog()
+      ..pop();
   }
 
   Widget _buildEnhancedEventTile(EventModel? event, List<Stager> stagers) {

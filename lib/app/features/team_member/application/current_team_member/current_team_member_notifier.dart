@@ -29,6 +29,7 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
 
   Future<void> initializeState() async {
     final teamMember = await teamMemberRepository.getCurrentTeamMember();
+
     state = state.copyWith(teamMember: teamMember);
   }
 
