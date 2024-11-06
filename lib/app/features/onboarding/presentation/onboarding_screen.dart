@@ -14,6 +14,7 @@ import 'package:on_stage_app/app/features/team_member/application/current_team_m
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 void showOnboardingOverlay(BuildContext context) {
@@ -143,9 +144,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isFormValid() {
     final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
 
-    // Ensure both the name and position are non-null and non-empty
-    final isNameValid = onboardingProvider.fullName != null &&
-        onboardingProvider.fullName!.isNotEmpty;
+    final isNameValid = onboardingProvider.fullName.isNotNullEmptyOrWhitespace;
     final isPositionValid = onboardingProvider.position != null;
 
     return isNameValid && isPositionValid;
