@@ -15,7 +15,7 @@ class MemberTileWidget extends StatelessWidget {
   final Uint8List? photo;
   final String? name;
   final String trailing;
-  final void Function() onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {

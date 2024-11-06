@@ -130,13 +130,15 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               name: teamMembers[index].name ?? 'Name',
               photo: teamMembers[index].profilePicture,
               trailing: _getTrailingText(teamMembers[index], index),
-              onTap: () {
-                TeamMemberModal.show(
-                  onSave: (model) {},
-                  context: context,
-                  teamMember: teamMembers[index],
-                );
-              },
+              onTap: ref.watch(permissionServiceProvider).hasAccessToEdit
+                  ? () {
+                      TeamMemberModal.show(
+                        onSave: (model) {},
+                        context: context,
+                        teamMember: teamMembers[index],
+                      );
+                    }
+                  : null,
             ),
           );
         },
