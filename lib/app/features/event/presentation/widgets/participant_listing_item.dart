@@ -61,15 +61,19 @@ class ParticipantListingItem extends StatelessWidget {
             ),
             const Spacer(),
             if (trailing != null) trailing!,
-            if (trailing == null && status != StagerStatusEnum.UNINVINTED)
-              _statusIcon(context, status!),
+            if (trailing == null && status != null && status != StagerStatusEnum.UNINVINTED)
+              _statusIcon(context, status),
           ],
         ),
       ),
     );
   }
 
-  Widget _statusIcon(BuildContext context, StagerStatusEnum status) {
+  Widget _statusIcon(BuildContext context, StagerStatusEnum? status) {
+    if (status == null) {
+      return const SizedBox();
+    }
+
     switch (status) {
       case StagerStatusEnum.CONFIRMED:
         return const Icon(
@@ -90,4 +94,5 @@ class ParticipantListingItem extends StatelessWidget {
         return const SizedBox();
     }
   }
+
 }
