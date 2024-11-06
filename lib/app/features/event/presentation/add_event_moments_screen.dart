@@ -162,6 +162,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   }
 
   Widget _buildEventItemTile(EventItem eventItem, {bool isStatic = false}) {
+    final hasChanges = ref.watch(hasChangesProvider);
     return EventItemTile(
       key: ValueKey(eventItem.hashCode),
       isSong: eventItem.song?.id != null,
@@ -174,7 +175,8 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
                   .removeEventItemCache(eventItem);
               ref.read(hasChangesProvider.notifier).state = true;
             },
-      onTap: () {
+      onTap:
+        hasChanges ? null : () {
         if (eventItem.song == null) return;
         final eventItems = ref.read(eventItemsNotifierProvider).songEventItems;
         ref

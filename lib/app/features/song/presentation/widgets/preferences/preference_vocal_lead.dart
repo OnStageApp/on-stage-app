@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_item_notifier/event_item_notifier.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
@@ -49,12 +51,21 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
               color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: ListView.builder(
-              shrinkWrap: true,
+            child:
+            ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
               itemCount: leadVocals.length,
               itemBuilder: (context, index) {
-                return _buildVocal(context, leadVocals[index]);
+                return ParticipantListingItem(
+                  name: leadVocals[index].name ?? '',
+                  photo: leadVocals[index].profilePicture,
+                  onDelete: () {
+                    ref
+                        .read(eventNotifierProvider.notifier)
+                        .removeStagerFromEvent(leadVocals[index].id);
+                  },
+                );
               },
             ),
           ),
