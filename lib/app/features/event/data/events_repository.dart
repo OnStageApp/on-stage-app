@@ -67,7 +67,7 @@ abstract class EventsRepository {
 
   @POST(API.stagers)
   Future<List<Stager>> addStagerToEvent(
-    @Body() CreateStagerRequest createStagerRequest,
+    @Body() CreateStagersRequest createStagerRequest,
   );
 
   @DELETE(API.stagersById)

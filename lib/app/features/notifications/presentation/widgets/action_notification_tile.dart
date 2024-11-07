@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/shared/invite_button.dart';
@@ -8,8 +9,8 @@ import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class ActionNotificationTile extends NotificationTile {
   const ActionNotificationTile({
-    required super.notification,
     required super.onTap,
+    required this.notification,
     this.onDecline,
     this.onConfirm,
     super.key,
@@ -17,6 +18,7 @@ class ActionNotificationTile extends NotificationTile {
 
   final void Function()? onDecline;
   final void Function()? onConfirm;
+  final StageNotification notification;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -31,7 +33,7 @@ class ActionNotificationTile extends NotificationTile {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    notification.type?.name ?? 'Notification',
+                    notification.title ?? 'Notification',
                     style: context.textTheme.headlineMedium!
                         .copyWith(color: context.colorScheme.onSurface),
                     maxLines: 1,
@@ -42,9 +44,11 @@ class ActionNotificationTile extends NotificationTile {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 12),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
               child: ParticipantsOnTile(
+                borderColor: context.colorScheme.secondary,
+                backgroundColor: context.colorScheme.secondary,
                 participantsLength: 3,
               ),
             ),
@@ -91,7 +95,9 @@ class ActionNotificationTile extends NotificationTile {
     return Row(
       children: [
         Text(
-          TimeUtils().formatOnlyTime(notification.dateTime ?? DateTime.now()),
+          TimeUtils().formatOnlyTime(
+            (notification.params?.date ?? DateTime.now()).toLocal(),
+          ),
           style: context.textTheme.bodyMedium!.copyWith(
             color: context.colorScheme.surfaceDim,
           ),
@@ -101,7 +107,7 @@ class ActionNotificationTile extends NotificationTile {
         ),
         Text(
           TimeUtils().formatOnlyDate(
-            notification.dateTime ?? DateTime.now(),
+            (notification.params?.date ?? DateTime.now()).toLocal(),
           ),
           style: context.textTheme.bodyMedium!.copyWith(
             color: context.colorScheme.surfaceDim,

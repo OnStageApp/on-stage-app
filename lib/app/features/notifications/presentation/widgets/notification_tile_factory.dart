@@ -1,5 +1,6 @@
 // notification_tile_factory.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_actions.dart';
@@ -45,7 +46,8 @@ class NotificationTileFactory extends ConsumerWidget {
           onTap: () {
             if (notification.actionStatus ==
                 NotificationActionStatus.ACCEPTED) {
-              notificationActions.goToEvent(notification, context);
+              notificationActions.goToEvent(
+                  notification.params?.eventId, context);
             }
           },
           onConfirm: () {
@@ -63,19 +65,66 @@ class NotificationTileFactory extends ConsumerWidget {
             );
           },
         );
+      case NotificationType.EVENT_INVITATION_ACCEPTED:
+        return PhotoMessageNotificationTile(
+          description: notification.description,
+          onTap: () {
+            notificationActions.goToEvent(
+              notification.params?.eventId,
+              context,
+            );
+          },
+        );
+      case NotificationType.EVENT_INVITATION_DECLINED:
+        return PhotoMessageNotificationTile(
+          description: notification.description,
+          onTap: () {
+            notificationActions.goToEvent(
+              notification.params?.eventId,
+              context,
+            );
+          },
+        );
       case NotificationType.TEAM_INVITATION_ACCEPTED:
         return PhotoMessageNotificationTile(
-          notification: notification,
+          description: notification.description,
+          onTap: () {},
+        );
+      case NotificationType.TEAM_INVITATION_DECLINED:
+        return PhotoMessageNotificationTile(
+          description: notification.description,
           onTap: () {},
         );
       case NotificationType.NEW_REHEARSAL:
         return PhotoMessageNotificationTile(
-          notification: notification,
+          description: notification.description,
+          icon: LucideIcons.repeat_2,
           onTap: () {
-            notificationActions.goToEvent(notification, context);
+            notificationActions.goToEvent(
+              notification.params?.eventId,
+              context,
+            );
           },
         );
-      default:
+      case NotificationType.LEAD_VOICE_ASSIGNED:
+        return PhotoMessageNotificationTile(
+          description: notification.description,
+          icon: LucideIcons.mic,
+          onTap: () {
+            notificationActions.goToEvent(
+              notification.params?.eventId,
+              context,
+            );
+          },
+        );
+
+      case NotificationType.EVENT_DELETED:
+        return PhotoMessageNotificationTile(
+          description: notification.description,
+          icon: LucideIcons.trash,
+          onTap: () {},
+        );
+      case null:
         return const SizedBox();
     }
   }

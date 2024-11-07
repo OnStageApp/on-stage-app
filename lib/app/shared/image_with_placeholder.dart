@@ -10,11 +10,17 @@ class ImageWithPlaceholder extends StatelessWidget {
     this.photo,
     this.name = '',
     this.isLargeTitle = false,
+    this.borderColor,
+    this.backgroundColor,
+    this.placeholderColor,
   });
 
   final Uint8List? photo;
   final String name;
   final bool isLargeTitle;
+  final Color? borderColor;
+  final Color? backgroundColor;
+  final Color? placeholderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +31,13 @@ class ImageWithPlaceholder extends StatelessWidget {
       width: 36,
       height: 36,
       decoration: BoxDecoration(
-        color: context.isDarkMode
-            ? context.colorScheme.secondary
-            : context.colorScheme.tertiaryContainer,
+        color: backgroundColor ??
+            (context.isDarkMode
+                ? context.colorScheme.secondary
+                : context.colorScheme.secondary),
         border: Border.all(
-          color: context.colorScheme.surfaceTint,
+          color: borderColor ?? context.colorScheme.onSurfaceVariant,
+          width: 2,
         ),
         shape: BoxShape.circle,
         image: hasValidPhoto
@@ -45,9 +53,9 @@ class ImageWithPlaceholder extends StatelessWidget {
                   title: name,
                   isLargeTitle: isLargeTitle,
                 )
-              : const Icon(
+              : Icon(
                   Icons.person,
-                  color: Colors.white,
+                  color: placeholderColor ?? Colors.white,
                 )
           : null,
     );

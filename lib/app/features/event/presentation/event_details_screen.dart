@@ -398,10 +398,13 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   }
 
   void _addStagersToEvent() {
+    ref.read(eventControllerProvider.notifier).resetAddedMembersToCache();
+    ref.read(eventControllerProvider.notifier).addMembersToCache();
+    ref.read(eventControllerProvider.notifier).resetSelectedMembersFromList();
     final addedTeamMembers = ref.read(eventControllerProvider).addedMembers;
 
-    ref.read(eventNotifierProvider.notifier).addStagerToEvent(
-          CreateStagerRequest(
+    ref.read(eventNotifierProvider.notifier).addStagersToEvent(
+          CreateStagersRequest(
             eventId: widget.eventId,
             teamMemberIds: addedTeamMembers.map((e) => e.id).toList(),
           ),

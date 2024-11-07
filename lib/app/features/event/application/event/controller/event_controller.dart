@@ -45,14 +45,18 @@ class EventController extends _$EventController {
     );
   }
 
-  void addMembers() {
+  void addMembersToCache() {
     final members = state.selectedTeamMembers;
     state = state.copyWith(
       addedMembers: [...state.addedMembers, ...members],
     );
   }
 
-  void resetSelectedMembers() {
+  void resetAddedMembersToCache() {
+    state = state.copyWith(addedMembers: []);
+  }
+
+  void resetSelectedMembersFromList() {
     state = state.copyWith(selectedTeamMembers: []);
   }
 
@@ -63,6 +67,13 @@ class EventController extends _$EventController {
   void removeRehearsal(RehearsalModel rehearsal) {
     state = state.copyWith(
       rehearsals: state.rehearsals.where((r) => r.id != rehearsal.id).toList(),
+    );
+  }
+
+  void removeMemberFromCache(String teamMemberId) {
+    state = state.copyWith(
+      addedMembers:
+          state.addedMembers.where((m) => m.id != teamMemberId).toList(),
     );
   }
 
