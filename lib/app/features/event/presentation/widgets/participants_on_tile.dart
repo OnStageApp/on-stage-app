@@ -12,6 +12,7 @@ class ParticipantsOnTile extends StatelessWidget {
     this.showOverlay = true,
     this.borderColor,
     this.backgroundColor,
+    this.textColor,
     this.participantsLength,
     this.participantsName,
     super.key,
@@ -27,6 +28,7 @@ class ParticipantsOnTile extends StatelessWidget {
   final Color? backgroundColor;
   final int? participantsLength;
   final String? participantsName;
+  final Color? textColor;
 
   int get _participantsLength => participantsLength ?? 0;
   bool get _isMoreThanMax => _participantsLength > _participantsMax;
@@ -68,6 +70,9 @@ class ParticipantsOnTile extends StatelessWidget {
                   child: ImageWithPlaceholder(
                     photo: participant['photo'] as Uint8List?,
                     name: participant['name']! as String,
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor,
+                    placeholderColor: textColor,
                   ),
                 ),
               );
@@ -86,13 +91,13 @@ class ParticipantsOnTile extends StatelessWidget {
                     color: borderColor ?? context.colorScheme.onSurfaceVariant,
                     width: 2,
                   ),
-                  color: backgroundColor ?? context.colorScheme.tertiaryContainer,
+                  color: backgroundColor ?? context.colorScheme.secondary,
                 ),
                 child: Center(
                   child: Text(
                     '+${_participantsLength - _participantsMax}',
-                    style: const TextStyle(
-                      color: Colors.black,
+                    style: TextStyle(
+                      color: textColor ?? context.colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),

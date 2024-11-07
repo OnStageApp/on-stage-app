@@ -18,49 +18,47 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(notificationNotifierProvider.notifier).getNotifications();
+      _getNotifications();
     });
   }
 
+  void _getNotifications() {
+    ref.read(notificationNotifierProvider.notifier).getNewNotifications();
+    ref.read(notificationNotifierProvider.notifier).getViewedNotifications();
+  }
+
   Future<void> _refreshNotifications() async {
-    await ref.read(notificationNotifierProvider.notifier).getNotifications();
+    _getNotifications();
   }
 
   @override
   Widget build(BuildContext context) {
-    final notifications = ref.watch(notificationNotifierProvider).notifications;
-
     return Scaffold(
-      appBar: StageAppBar(
-        isBackButtonVisible: true,
-        onBackButtonPressed: () {
-          ref
-              .read(notificationNotifierProvider.notifier)
-              .markNotificationsAsViewed();
-          ref
-              .read(notificationNotifierProvider.notifier)
-              .setHasNewNotifications(false);
-        },
-        title: 'Notifications',
-      ),
-      body: notifications.isNotEmpty
-          ? CustomScrollView(
-              slivers: [
-                CupertinoSliverRefreshControl(onRefresh: _refreshNotifications),
-                SliverPadding(
-                  padding: defaultScreenHorizontalPadding,
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => NotificationList(
-                        notifications: notifications,
-                      ),
-                      childCount: 1,
-                    ),
-                  ),
+        appBar: StageAppBar(
+          isBackButtonVisible: true,
+          onBackButtonPressed: () {
+            ref
+                .read(notificationNotifierProvider.notifier)
+                .markNotificationsAsViewed();
+            ref
+                .read(notificationNotifierProvider.notifier)
+                .setHasNewNotifications(false);
+          },
+          title: 'Notifications',
+        ),
+        body: CustomScrollView(
+          slivers: [
+            CupertinoSliverRefreshControl(onRefresh: _refreshNotifications),
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => NotificationList(),
+                  childCount: 1,
                 ),
-              ],
-            )
-          : const Center(child: Text('No notifications')),
-    );
+              ),
+            ),
+          ],
+        ));
   }
 }

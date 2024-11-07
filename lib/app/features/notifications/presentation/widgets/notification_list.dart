@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_section.dart';
 
 class NotificationList extends ConsumerWidget {
   const NotificationList({
-    required this.notifications,
     super.key,
   });
 
-  final List<StageNotification> notifications;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final newNotifications = notifications
-        .where((notification) => notification.status == NotificationStatus.NEW)
-        .toList();
-    final viewedNotifications = notifications
-        .where(
-            (notification) => notification.status == NotificationStatus.VIEWED)
-        .toList();
+    final newNotifications =
+        ref.watch(notificationNotifierProvider).newNotifications;
+
+    final viewedNotifications =
+        ref.watch(notificationNotifierProvider).viewedNotifications;
 
     if (newNotifications.isEmpty && viewedNotifications.isEmpty) {
-      return const SizedBox();
+      return const Center(child: Text('No notifications'));
     }
 
     return Column(

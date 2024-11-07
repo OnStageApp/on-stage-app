@@ -67,7 +67,7 @@ class API {
   static const String userSettings = 'user-settings';
 
   static const String notifications = 'notifications';
-  static const String notificationsMarkAsViewed = 'notifications/markAsViewed';
+  static const String notificationsMarkAsViewed = 'notifications/viewed';
   static const String notificationById = 'notifications/{id}';
 
   //song-config

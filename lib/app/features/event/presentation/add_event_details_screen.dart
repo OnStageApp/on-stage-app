@@ -253,9 +253,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             photo: addedTeamMembers[index].profilePicture ?? Uint8List(0),
             status: StagerStatusEnum.UNINVINTED,
             onDelete: () {
-              // ref
-              //     .read(eventControllerProvider.notifier)
-              //     .removeRehearsal(addedTeamMembers[index]);
+              ref
+                  .read(eventControllerProvider.notifier)
+                  .removeMemberFromCache(addedTeamMembers[index].id);
             },
           );
         },
@@ -281,7 +281,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         if (mounted) {
           InvitePeopleToEventModal.show(
             context: context,
-            onPressed: () {},
+            onPressed: () {
+              ref.read(eventControllerProvider.notifier).addMembersToCache();
+              ref
+                  .read(eventControllerProvider.notifier)
+                  .resetSelectedMembersFromList();
+            },
           );
         }
       },

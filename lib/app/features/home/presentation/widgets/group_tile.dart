@@ -51,6 +51,7 @@ class GroupTile extends ConsumerWidget {
               children: [
                 if (hasUpcomingEvent)
                   ParticipantsOnTile(
+                    borderColor: context.colorScheme.secondary,
                     backgroundColor: context.colorScheme.secondary,
                     participantsLength: ref
                             .watch(teamNotifierProvider)

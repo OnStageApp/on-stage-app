@@ -5,8 +5,9 @@ enum NotificationType {
   EVENT_INVITATION_REQUEST,
   EVENT_INVITATION_ACCEPTED,
   EVENT_INVITATION_DECLINED,
-  INVITATION,
   NEW_REHEARSAL,
+  LEAD_VOICE_ASSIGNED,
+  EVENT_DELETED,
 }
 
 extension NotificationTypeX on NotificationType {
@@ -24,10 +25,13 @@ extension NotificationTypeX on NotificationType {
         return 'EVENT_INVITATION_ACCEPTED';
       case NotificationType.EVENT_INVITATION_DECLINED:
         return 'EVENT_INVITATION_DECLINED';
-      case NotificationType.INVITATION:
-        return 'INVITATION';
+
       case NotificationType.NEW_REHEARSAL:
         return 'NEW_REHEARSAL';
+      case NotificationType.LEAD_VOICE_ASSIGNED:
+        return 'LEAD_VOICE_ASSIGNED';
+      case NotificationType.EVENT_DELETED:
+        return 'EVENT_DELETED';
     }
   }
 
@@ -45,10 +49,12 @@ extension NotificationTypeX on NotificationType {
         return 'Event Invitation Accepted';
       case NotificationType.EVENT_INVITATION_DECLINED:
         return 'Event Invitation Declined';
-      case NotificationType.INVITATION:
-        return 'Invitation';
       case NotificationType.NEW_REHEARSAL:
         return 'New Rehearsal';
+      case NotificationType.LEAD_VOICE_ASSIGNED:
+        return 'Lead Voice Assigned';
+      case NotificationType.EVENT_DELETED:
+        return 'Event Deleted';
     }
   }
 }

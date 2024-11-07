@@ -8,13 +8,20 @@ import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class PhotoMessageNotificationTile extends NotificationTile {
   const PhotoMessageNotificationTile({
-    required super.notification,
     required super.onTap,
+    this.description,
+    this.title,
     this.profilePicture,
+    this.icon,
+    this.date,
     super.key,
   });
 
   final Uint8List? profilePicture;
+  final IconData? icon;
+  final String? title;
+  final String? description;
+  final DateTime? date;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -28,16 +35,23 @@ class PhotoMessageNotificationTile extends NotificationTile {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (notification.description.isNotNullEmptyOrWhitespace) ...[
+                  if (description.isNotNullEmptyOrWhitespace) ...[
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ImageWithPlaceholder(
-                          photo: profilePicture,
-                        ),
+                        if (icon != null)
+                          Icon(
+                            icon,
+                            color: context.colorScheme.onSurface,
+                          )
+                        else
+                          ImageWithPlaceholder(
+                            photo: profilePicture,
+                          ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            notification.description,
+                            description ?? '',
                             style: context.textTheme.bodyMedium,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -50,7 +64,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
                       children: [
                         Text(
                           TimeUtils().formatOnlyTime(
-                            notification.dateTime ?? DateTime.now(),
+                            date ?? DateTime.now(),
                           ),
                           style: context.textTheme.bodyMedium!.copyWith(
                             color: context.colorScheme.surfaceDim,
@@ -60,10 +74,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
                           context.colorScheme.outline.withOpacity(0.2),
                         ),
                         Text(
-                          notification.dateTime != null
-                              ? TimeUtils()
-                                  .formatOnlyDate(notification.dateTime)
-                              : '',
+                          date != null ? TimeUtils().formatOnlyDate(date) : '',
                           style: context.textTheme.bodyMedium!.copyWith(
                             color: context.colorScheme.surfaceDim,
                           ),

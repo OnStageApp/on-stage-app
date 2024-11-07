@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
+import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -19,7 +20,7 @@ class NotificationActions {
     StageNotification notification, {
     required bool hasAccepted,
   }) {
-    final teamId = notification.teamId;
+    final teamId = notification.params?.teamId;
     if (teamId != null) {
       ref.read(teamNotifierProvider.notifier).updateTeamInvitation(
             teamId,
@@ -28,6 +29,7 @@ class NotificationActions {
 
       ref.read(notificationNotifierProvider.notifier).updateNotification(
             notification.notificationId,
+            notification.status ?? NotificationStatus.VIEWED,
             hasAccepted
                 ? NotificationActionStatus.ACCEPTED
                 : NotificationActionStatus.DECLINED,
@@ -36,10 +38,9 @@ class NotificationActions {
   }
 
   void goToEvent(
-    StageNotification notification,
+    String? eventId,
     BuildContext context,
   ) {
-    final eventId = notification.eventId;
     if (eventId != null) {
       ref.read(eventNotifierProvider.notifier).getEventById(eventId);
       context.goNamed(
@@ -56,14 +57,16 @@ class NotificationActions {
     StagerStatusEnum status,
     NotificationActionStatus actionStatus,
   ) {
-    final eventId = notification.eventId ?? '';
+    final stagerId = notification.params?.stagerId;
+    if (stagerId == null) return;
     ref.read(eventNotifierProvider.notifier).setStatusForStager(
           participationStatus: status,
-          eventId: eventId,
+          stagerId: stagerId,
         );
 
     ref.read(notificationNotifierProvider.notifier).updateNotification(
           notification.notificationId,
+          notification.status ?? NotificationStatus.VIEWED,
           actionStatus,
         );
   }

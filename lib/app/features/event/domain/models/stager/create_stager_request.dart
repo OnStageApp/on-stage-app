@@ -4,12 +4,12 @@ part 'create_stager_request.freezed.dart';
 part 'create_stager_request.g.dart';
 
 @Freezed()
-class CreateStagerRequest with _$CreateStagerRequest {
-  const factory CreateStagerRequest({
+class CreateStagersRequest with _$CreateStagersRequest {
+  const factory CreateStagersRequest({
     required List<String> teamMemberIds,
     required String eventId,
-  }) = _CreateStagerRequest;
+  }) = _CreateStagersRequest;
 
-  factory CreateStagerRequest.fromJson(Map<String, dynamic> json) =>
-      _$CreateStagerRequestFromJson(json);
+  factory CreateStagersRequest.fromJson(Map<String, dynamic> json) =>
+      _$CreateStagersRequestFromJson(json);
 }

@@ -80,8 +80,6 @@ class InvitePeopleToEventModal extends ConsumerStatefulWidget {
   }
 
   static void _onPressed(WidgetRef ref, void Function() onPressed) {
-    ref.read(eventControllerProvider.notifier).addMembers();
-    ref.read(eventControllerProvider.notifier).resetSelectedMembers();
     onPressed.call();
   }
 }

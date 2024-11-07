@@ -83,7 +83,7 @@ class DeclineEventInvitationModalState
               'Decline Invitation',
               textAlign: TextAlign.start,
               style: context.textTheme.titleMedium!.copyWith(
-                color: context.colorScheme.onSurface,
+                color: Colors.white,
               ),
             ),
           ),

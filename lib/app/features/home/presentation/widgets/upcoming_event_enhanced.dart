@@ -92,8 +92,9 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ParticipantsOnTile(
-                        backgroundColor: Colors.white,
-                        borderColor: Colors.transparent,
+                        backgroundColor: context.colorScheme.onSurface,
+                        borderColor: context.colorScheme.secondary,
+                        textColor: context.colorScheme.onSurfaceVariant,
                         participantsProfileBytes: stagerPhotos,
                         participantsLength: stagerCount,
                       ),

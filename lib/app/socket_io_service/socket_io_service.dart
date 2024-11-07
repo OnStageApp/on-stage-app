@@ -107,7 +107,7 @@ class SocketIoService extends _$SocketIoService {
     _socket?.on(SocketEventType.notification.name, (data) {
       logger.i('Received notification event: $data');
       ref.read(notificationNotifierProvider.notifier)
-        ..getNotifications()
+        ..getNewNotifications()
         ..setHasNewNotifications(true);
     });
   }

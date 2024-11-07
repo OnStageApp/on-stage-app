@@ -15,7 +15,6 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/create_stag
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
-import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -128,7 +127,8 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false);
   }
 
-  Future<void> addStagerToEvent(CreateStagerRequest createStagerRequest) async {
+  Future<void> addStagersToEvent(
+      CreateStagersRequest createStagerRequest) async {
     await eventsRepository.addStagerToEvent(createStagerRequest);
     if (state.event != null) {
       unawaited(getStagers(state.event!.id!));
@@ -173,11 +173,8 @@ class EventNotifier extends _$EventNotifier {
   //TODO: Not tested yet, waiting for backend
   Future<void> setStatusForStager({
     required StagerStatusEnum participationStatus,
-    required String eventId,
+    required String stagerId,
   }) async {
-    final teamMemberId =
-        ref.read(currentTeamMemberNotifierProvider).teamMember!.id;
-    final stagerId = await getStagerByEventAndTeamMember(eventId, teamMemberId);
     final newStager = StagerRequest(
       participationStatus: participationStatus,
     );

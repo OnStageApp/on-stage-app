@@ -99,8 +99,8 @@ class EventTileEnhanced extends ConsumerWidget {
                 )
               else
                 ParticipantsOnTile(
-                  backgroundColor: context.colorScheme.onPrimary,
-                  borderColor: Colors.transparent,
+                  backgroundColor: context.colorScheme.secondary,
+                  borderColor: context.colorScheme.secondary,
                   participantsProfileBytes: participantsProfileBytes,
                   participantsLength: participantsCount,
                   participantsName: participantsName,
