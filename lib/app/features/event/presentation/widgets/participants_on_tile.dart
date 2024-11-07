@@ -29,7 +29,6 @@ class ParticipantsOnTile extends StatelessWidget {
   final String? participantsName;
 
   int get _participantsLength => participantsLength ?? 0;
-
   bool get _isMoreThanMax => _participantsLength > _participantsMax;
 
   double get tileWidth {
@@ -39,9 +38,9 @@ class ParticipantsOnTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final participants = List.generate(
-      _participantsLength,
-      (index) => {
+    final displayedParticipants = List.generate(
+      _isMoreThanMax ? _participantsMax : _participantsLength,
+          (index) => {
         'photo': participantsProfileBytes.length > index
             ? participantsProfileBytes[index]
             : null,
@@ -56,11 +55,11 @@ class ParticipantsOnTile extends StatelessWidget {
       width: tileWidth,
       child: Stack(
         children: [
-          ...participants.asMap().entries.map((entry) {
-            final index = entry.key;
-            final participant = entry.value;
+          if (showOverlay)
+            ...displayedParticipants.asMap().entries.map((entry) {
+              final index = entry.key;
+              final participant = entry.value;
 
-            if (showOverlay) {
               return Positioned(
                 left: index * 20,
                 child: SizedBox(
@@ -72,11 +71,10 @@ class ParticipantsOnTile extends StatelessWidget {
                   ),
                 ),
               );
-            } else {
-              return const SizedBox();
-            }
-          }),
-          if (_participantsLength > _participantsMax)
+            }),
+
+          // Show overlay for additional participants if needed
+          if (_isMoreThanMax)
             Positioned(
               left: _participantsMax * (width - 10),
               child: Container(
@@ -88,8 +86,7 @@ class ParticipantsOnTile extends StatelessWidget {
                     color: borderColor ?? context.colorScheme.onSurfaceVariant,
                     width: 2,
                   ),
-                  color:
-                      backgroundColor ?? context.colorScheme.tertiaryContainer,
+                  color: backgroundColor ?? context.colorScheme.tertiaryContainer,
                 ),
                 child: Center(
                   child: Text(
