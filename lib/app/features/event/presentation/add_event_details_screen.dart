@@ -115,7 +115,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             children: [
               CustomTextField(
                 label: 'Event Name',
-                hint: 'Prayer Meeting',
+                hint: 'Sunday Service',
                 icon: Icons.church,
                 controller: _eventNameController,
                 validator: (value) {
@@ -129,7 +129,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               const SizedBox(height: Insets.medium),
               CustomTextField(
                 label: 'Event Location',
-                hint: 'Elevation Church',
+                hint: 'Charlotte, NC 28277, US',
                 icon: Icons.church,
                 controller: _eventLocationController,
                 onChanged: (value) {},

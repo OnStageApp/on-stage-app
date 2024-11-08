@@ -145,6 +145,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
                                       '',
                                   style: context.textTheme.titleSmall,
                                 ),
+                                const SizedBox(width: 8),
                                 SongKeyLabelWidget(
                                   songKey: ref
                                           .read(songsNotifierProvider)
