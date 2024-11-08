@@ -42,7 +42,7 @@ class ParticipantsOnTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final displayedParticipants = List.generate(
       _isMoreThanMax ? _participantsMax : _participantsLength,
-          (index) => {
+      (index) => {
         'photo': participantsProfileBytes.length > index
             ? participantsProfileBytes[index]
             : null,
