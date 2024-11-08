@@ -11,43 +11,53 @@ class NotificationWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      onPressed: () => {
-        context.pushNamed(
-          AppRoute.notification.name,
-        ),
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(Insets.smallNormal),
-        backgroundColor: context.colorScheme.onSurfaceVariant,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Insets.small),
-        ),
-      ),
-      icon: Stack(
-        children: [
-          Assets.icons.filledNotificationBell.svg(
-            height: 20,
-            width: 20,
+    final hasNewNotifications =
+        ref.watch(notificationNotifierProvider).hasNewNotifications;
+    return SizedBox(
+      height: 44,
+      width: 44,
+      child: IconButton(
+        onPressed: () => {
+          context.pushNamed(
+            AppRoute.notification.name,
           ),
-          if (ref.watch(notificationNotifierProvider).hasNewNotifications)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: context.colorScheme.onSurfaceVariant,
-                    width: 2,
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: hasNewNotifications
+              ? Colors.white
+              : context.colorScheme.onSurfaceVariant,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Insets.small),
+          ),
+        ),
+        icon: Stack(
+          children: [
+            Container(
+              child: Assets.icons.filledNotificationBell.svg(
+                height: 16,
+                width: 16,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+            if (hasNewNotifications)
+              Positioned(
+                top: -1,
+                right: -1,
+                child: Container(
+                  width: 9,
+                  height: 9,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

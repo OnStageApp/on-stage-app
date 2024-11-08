@@ -91,7 +91,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 ),
                 const SizedBox(height: 18),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.55,
+                  height: 480,
                   child: PlanCarousel(
                     pageController: _pageController,
                   ),

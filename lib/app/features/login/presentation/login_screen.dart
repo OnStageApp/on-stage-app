@@ -34,7 +34,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
           if (!_areCredentialsEnabled) const ImageStack(),
           SafeArea(
             child: Padding(
-              padding: defaultScreenPadding,
+              padding: const EdgeInsets.all(16),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: MediaQuery.of(context).size.height -
