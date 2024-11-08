@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
@@ -61,28 +62,36 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: Insets.medium),
-                  Text(
+                  AutoSizeText(
                     title,
                     style: context.textTheme.headlineLarge!.copyWith(
                       color: context.colorScheme.onSurface,
                     ),
-                    maxLines: 2,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Text(
-                        hour,
-                        style: context.textTheme.titleSmall!.copyWith(
-                          color: context.colorScheme.onSecondary,
+                      Flexible(
+                        child: AutoSizeText(
+                          hour,
+                          style: context.textTheme.titleSmall!.copyWith(
+                            color: context.colorScheme.onSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       _buildCircle(context),
-                      Text(
-                        date,
-                        style: context.textTheme.titleSmall!.copyWith(
-                          color: context.colorScheme.onSecondary,
+                      Flexible(
+                        child: AutoSizeText(
+                          date,
+                          style: context.textTheme.titleSmall!.copyWith(
+                            color: context.colorScheme.onSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
@@ -40,9 +41,12 @@ class SavedSongsTile extends ConsumerWidget {
                   color: context.colorScheme.onSecondaryFixed,
                 ),
                 const SizedBox(width: Insets.small),
-                Text(
-                  'Saved songs',
-                  style: context.textTheme.titleLarge,
+                Flexible(
+                  child: AutoSizeText(
+                    'Saved songs',
+                    style: context.textTheme.titleLarge,
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),

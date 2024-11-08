@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
@@ -157,7 +159,12 @@ class PlanCard extends ConsumerWidget {
   ) async {
     final subscriptionNotifier =
         ref.read(subscriptionNotifierProvider.notifier);
-
+//TODO: Implement this for Android to work
+    if (Platform.isAndroid) {
+      // await subscriptionNotifier.purchasePackage(plan.googlePlayProductId);
+    } else {
+      // await subscriptionNotifier.purchasePackage(plan.appleStoreProductId);
+    }
     await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
   }
 }

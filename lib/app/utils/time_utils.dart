@@ -29,7 +29,7 @@ class TimeUtils {
 
   String formatOnlyDate(DateTime? dateTime) {
     try {
-      return dateTime != null ? DateFormat('d MMMM').format(dateTime) : '';
+      return dateTime != null ? DateFormat('d MMM.').format(dateTime) : '';
     } catch (e) {
       return 'Invalid date';
     }

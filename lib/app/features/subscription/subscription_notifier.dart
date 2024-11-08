@@ -16,6 +16,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'subscription_notifier.g.dart';
 
+const androidSubscriptionGroup = 'onstage';
+
 @Riverpod(keepAlive: true)
 class SubscriptionNotifier extends _$SubscriptionNotifier {
   SubscriptionRepository? _subscriptionRepository;
@@ -76,8 +78,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       await saveCurrentPlan();
 
       logger.d('SubscriptionNotifier initialization completed');
-    } catch (e) {
-      logger.e('Failed to initialize RevenueCat: $e');
+    } catch (e, s) {
+      logger.e('Failed to initialize RevenueCat: $e $s');
       state =
           state.copyWith(errorMessage: 'Failed to initialize RevenueCat: $e');
     }
@@ -87,11 +89,25 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     state = state.copyWith(isLoading: true);
 
     try {
-      final products = await Purchases.getProducts(['onstage-pro-monthly']);
-      final products2 =
-          await Purchases.getProducts(['onstage:onstage-pro-monthly']);
-      print('Products: $products');
-      print('Products: $products2');
+      final List<StoreProduct> products;
+      if (Platform.isAndroid) {
+        ///This is a workaround until RevenueCat fix the issue with the subscription group
+        final productsGroup = await Purchases.getProducts(
+          [androidSubscriptionGroup],
+        );
+        products = productsGroup
+            .where(
+              (element) => element.identifier == packageId,
+            )
+            .toList();
+      } else {
+        products = await Purchases.getProducts(
+          [packageId],
+        );
+      }
+
+      logger.i('Products fetched: $products');
+
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
       state = state.copyWith(
         customerInfo: customInfo,
