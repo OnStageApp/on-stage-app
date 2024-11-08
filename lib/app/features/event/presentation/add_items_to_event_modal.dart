@@ -41,7 +41,7 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: defaultScreenPadding,
+      padding: defaultScreenPadding.copyWith(bottom: 16),
       child: Column(
         children: [
           AddItemButtonWidget(

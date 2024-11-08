@@ -14,6 +14,7 @@ class NestedScrollModal extends StatefulWidget {
     this.buildFooter,
     this.footerHeight,
   });
+
   final Color? backgroundColor;
   final WidgetCallback? buildHeader;
   final SizeCallback? headerHeight;

@@ -1,4 +1,4 @@
-package com.onstage.on_stage_app
+package com.avtech.onstage
 
 import io.flutter.embedding.android.FlutterActivity
 

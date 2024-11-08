@@ -87,7 +87,11 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     state = state.copyWith(isLoading: true);
 
     try {
-      final products = await Purchases.getProducts([packageId]);
+      final products = await Purchases.getProducts(['onstage-pro-monthly']);
+      final products2 =
+          await Purchases.getProducts(['onstage:onstage-pro-monthly']);
+      print('Products: $products');
+      print('Products: $products2');
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
       state = state.copyWith(
         customerInfo: customInfo,
@@ -179,7 +183,6 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         dotenv.get('REVENUE_CAT_IOS_SDK_KEY'),
       );
     }
-
     await Purchases.configure(configuration);
 
     final customerInfo = await Purchases.getCustomerInfo();
