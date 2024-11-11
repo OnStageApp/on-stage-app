@@ -37,7 +37,7 @@ class StageToggle extends ConsumerWidget {
         child: ToggleSwitch(
           initialLabelIndex: initialIndex,
           borderWidth: borderWidth,
-          activeFgColor: context.colorScheme.onSurfaceVariant,
+          activeFgColor: Colors.white,
           fontSize: fontSize,
           inactiveFgColor: context.colorScheme.onSurface,
           activeBgColor: [context.colorScheme.primary],

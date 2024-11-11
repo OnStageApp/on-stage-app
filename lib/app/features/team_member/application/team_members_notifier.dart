@@ -7,12 +7,15 @@ import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_state.dart';
 import 'package:on_stage_app/app/features/team_member/data/team_member_repository.dart';
 import 'package:on_stage_app/app/features/team_member/domain/create_team_member_request/create_team_member_request.dart';
+import 'package:on_stage_app/app/features/team_member/domain/edit_team_member_request/edit_team_member_request.dart';
+import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_photo/team_member_photo.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
 import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:pool/pool.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,8 +64,33 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     }
   }
 
-  Future<String?> inviteTeamMember(String email, TeamMemberRole role) async {
-    if (email.isEmpty) {
+  Future<String?> resendInvitationOnTeamMember(
+    String? teamMemberInvited,
+    TeamMemberRole? role,
+  ) async {
+    if (teamMemberInvited.isNullEmptyOrWhitespace) {
+      return 'Team member email is empty';
+    }
+
+    final createTeamMemberRequest = CreateTeamMemberRequest(
+      teamMemberInvited: teamMemberInvited,
+      newMemberRole: role,
+    );
+
+    try {
+      await teamMemberRepository.inviteTeamMember(createTeamMemberRequest);
+      return 'Invitation resent successfully';
+    } catch (e, s) {
+      logger.e('Error resending invitation on team member: $e $s');
+      return 'An error occurred while resending the invitation';
+    }
+  }
+
+  Future<String?> inviteTeamMember(
+    String email,
+    TeamMemberRole role,
+  ) async {
+    if (email.isNullEmptyOrWhitespace) {
       return 'Email is empty';
     }
 
@@ -123,16 +151,32 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     }
   }
 
-  Future<TeamMember> _getMemberWithPhoto(
-    TeamMember teamMember,
-  ) async {
-    final memberFromLocal = await ref.read(databaseProvider).getTeamMemberPhoto(
-          teamMember.userId,
-        );
+  Future<void> updateTeamMemberInvitation(
+    String teamMemberId, {
+    required InviteStatus inviteStatus,
+  }) async {
+    final teamMember = EditTeamMemberRequest(inviteStatus: inviteStatus);
+    await teamMemberRepository.updateTeamMember(teamMemberId, teamMember);
+  }
 
-    final teamMemberWithPhoto =
-        teamMember.copyWith(profilePicture: memberFromLocal?.profilePicture);
-    return teamMemberWithPhoto;
+  Future<void> updateTeamMemberRole(
+    String teamMemberId,
+    TeamMemberRole role,
+  ) async {
+    final teamMember = EditTeamMemberRequest(role: role);
+    await teamMemberRepository.updateTeamMember(teamMemberId, teamMember);
+  }
+
+  Future<void> removeTeamMember(String id) async {
+    try {
+      state = state.copyWith(
+        teamMembers:
+            state.teamMembers.where((member) => member.id != id).toList(),
+      );
+      await teamMemberRepository.deleteTeamMember(id);
+    } catch (e) {
+      logger.e('Error deleting team member: $e');
+    }
   }
 
   Future<List<TeamMemberPhoto>> _getTeamMemberPhotos() async {

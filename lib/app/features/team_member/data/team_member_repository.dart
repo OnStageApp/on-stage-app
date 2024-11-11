@@ -39,4 +39,9 @@ abstract class TeamMemberRepository {
     @Path('id') String id,
     @Body() EditTeamMemberRequest teamMember,
   );
+
+  @DELETE(API.teamMembersById)
+  Future<void> deleteTeamMember(
+    @Path('id') String id,
+  );
 }

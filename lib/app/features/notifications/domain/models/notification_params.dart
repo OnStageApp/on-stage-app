@@ -10,7 +10,7 @@ class NotificationParams with _$NotificationParams {
     String? eventId,
     String? teamId,
     String? stagerId,
-    String? teamMembmerId,
+    String? teamMemberId,
     String? eventItemId,
     List<String>? usersWithPhoto,
     DateTime? date,

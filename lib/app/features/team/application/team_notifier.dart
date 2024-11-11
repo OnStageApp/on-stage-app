@@ -48,13 +48,6 @@ class TeamNotifier extends _$TeamNotifier {
     unawaited(ref.read(teamsNotifierProvider.notifier).getTeams());
   }
 
-  Future<void> updateTeamInvitation(
-    String teamId, {
-    required bool hasAccepted,
-  }) async {
-    // teamRepository.acceptTeamInvitation(teamId);
-  }
-
   Future<List<Uint8List?>> _setPhotosFromLocalStorage(
     List<String> userIds,
   ) async {

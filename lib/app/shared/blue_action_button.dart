@@ -19,7 +19,10 @@ class EventActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Container(
+      overlayColor: WidgetStateProperty.all(
+        context.colorScheme.outline.withOpacity(0.1),
+      ),
+      child: Ink(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.colorScheme.onSurfaceVariant,

@@ -19,35 +19,36 @@ class MemberTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: onTap,
-        overlayColor: WidgetStateProperty.all(
-          context.colorScheme.outline.withOpacity(0.1),
+    return InkWell(
+      onTap: onTap,
+      overlayColor: WidgetStateProperty.all(
+        context.colorScheme.outline.withOpacity(0.1),
+      ),
+      borderRadius: BorderRadius.circular(8),
+      child: Ink(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: context.colorScheme.onSurfaceVariant,
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              ImageWithPlaceholder(
-                  photo: photo,
-                  name: name!,
-                ),
-              const SizedBox(width: 10),
-              Text(
-                name ?? 'Unknown',
-                style: context.textTheme.titleMedium,
-              ),
-              const Spacer(),
-              Text(
-                trailing,
-                style: context.textTheme.titleMedium!
-                    .copyWith(color: context.colorScheme.outline),
-              ),
-            ],
-          ),
+        child: Row(
+          children: [
+            ImageWithPlaceholder(
+              photo: photo,
+              name: name!,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              name ?? 'Unknown',
+              style: context.textTheme.titleMedium,
+            ),
+            const Spacer(),
+            Text(
+              trailing,
+              style: context.textTheme.titleMedium!
+                  .copyWith(color: context.colorScheme.outline),
+            ),
+          ],
         ),
       ),
     );

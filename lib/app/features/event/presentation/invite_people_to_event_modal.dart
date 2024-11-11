@@ -251,7 +251,7 @@ class AddParticipantsModalState
       ),
       child: participant.profilePicture != null
           ? null
-          : PlaceholderImageWidget(title: participant.name ?? 'Unknown'),
+          : PlaceholderImageWidget(name: participant.name ?? 'Unknown'),
     );
   }
 
