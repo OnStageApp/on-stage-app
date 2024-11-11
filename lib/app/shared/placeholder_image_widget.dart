@@ -4,28 +4,35 @@ import 'package:on_stage_app/app/utils/name_utils.dart';
 
 class PlaceholderImageWidget extends StatelessWidget {
   const PlaceholderImageWidget({
-    required this.title,
+    required this.name,
     this.isLargeTitle = false,
+    this.textColor,
     super.key,
   });
 
-  final String title;
+  final String name;
   final bool isLargeTitle;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: (title != null && title!.isNotEmpty)
+      child: name.isNotEmpty
           ? Text(
-              NameUtils.getInitials(title),
+              NameUtils.getInitials(name),
               textAlign: TextAlign.center,
               style: isLargeTitle
-                  ? context.textTheme.titleLarge?.copyWith(fontSize: 42)
-                  : context.textTheme.titleSmall?.copyWith(),
+                  ? context.textTheme.titleLarge?.copyWith(
+                      fontSize: 42,
+                      color: textColor ?? context.colorScheme.onSurface,
+                    )
+                  : context.textTheme.titleSmall?.copyWith(
+                      color: textColor ?? context.colorScheme.onSurface,
+                    ),
             )
           : Icon(
               Icons.person,
-              color: context.colorScheme.primaryContainer,
+              color: textColor ?? context.colorScheme.onSurface,
             ),
     );
   }

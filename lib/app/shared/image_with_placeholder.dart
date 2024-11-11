@@ -25,7 +25,6 @@ class ImageWithPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasValidPhoto = photo?.isNotNullOrEmpty ?? false;
-    final hasName = name.isNotEmpty;
 
     return Container(
       width: 36,
@@ -48,15 +47,11 @@ class ImageWithPlaceholder extends StatelessWidget {
             : null,
       ),
       child: !hasValidPhoto
-          ? hasName
-              ? PlaceholderImageWidget(
-                  title: name,
-                  isLargeTitle: isLargeTitle,
-                )
-              : Icon(
-                  Icons.person,
-                  color: placeholderColor ?? Colors.white,
-                )
+          ? PlaceholderImageWidget(
+              name: name,
+              isLargeTitle: isLargeTitle,
+              textColor: placeholderColor,
+            )
           : null,
     );
   }

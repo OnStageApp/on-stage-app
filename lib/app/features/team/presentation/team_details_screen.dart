@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_member_modal.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
@@ -67,6 +68,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             ),
             const SizedBox(height: 16),
             Text('Members', style: context.textTheme.titleSmall),
+            const SizedBox(height: 8),
             _buildParticipantsList(),
             if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
               const SizedBox(height: 12),
@@ -112,9 +114,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
     if (teamMembers.isEmpty) {
       return const SizedBox();
     }
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+    return Ink(
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
@@ -124,20 +124,25 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
         shrinkWrap: true,
         itemCount: teamMembers.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: MemberTileWidget(
-              name: teamMembers[index].name ?? 'Name',
-              photo: teamMembers[index].profilePicture,
-              trailing: _getTrailingText(teamMembers[index], index),
-              onTap: () {
-                TeamMemberModal.show(
-                  onSave: (model) {},
-                  context: context,
-                  teamMember: teamMembers[index],
-                );
-              },
-            ),
+          return MemberTileWidget(
+            name: teamMembers[index].name ?? 'Name',
+            photo: teamMembers[index].profilePicture,
+            trailing: _getTrailingText(teamMembers[index], index),
+            onTap: () {
+              final currentTeamMemberId =
+                  ref.read(currentTeamMemberNotifierProvider).teamMember?.id;
+              final isNotLeaderOnTeam =
+                  !ref.watch(permissionServiceProvider).isLeaderOnTeam;
+              if (currentTeamMemberId == teamMembers[index].id ||
+                  isNotLeaderOnTeam) {
+                return;
+              }
+              TeamMemberModal.show(
+                onSave: (model) {},
+                context: context,
+                teamMember: teamMembers[index],
+              );
+            },
           );
         },
       ),

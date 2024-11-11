@@ -151,6 +151,7 @@ class LoginNotifier extends _$LoginNotifier {
         if (idToken == null) {
           throw Exception('Failed to get ID Token');
         }
+
         await _login(idToken);
 
         _setLoginMethodForAnalytics(LoginMethod.google);
@@ -238,6 +239,8 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   Future<void> _login(String idToken) async {
+    await _secureStorage.delete(key: 'token');
+
     state = state.copyWith(isLoading: true);
 
     final authToken = await loginRepository.login(

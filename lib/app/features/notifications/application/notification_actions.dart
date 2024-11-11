@@ -6,7 +6,8 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/stager_stat
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
-import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/logger.dart';
@@ -20,11 +21,12 @@ class NotificationActions {
     StageNotification notification, {
     required bool hasAccepted,
   }) {
-    final teamId = notification.params?.teamId;
-    if (teamId != null) {
-      ref.read(teamNotifierProvider.notifier).updateTeamInvitation(
-            teamId,
-            hasAccepted: hasAccepted,
+    final teamMemberId = notification.params?.teamMemberId;
+    if (teamMemberId != null) {
+      ref.read(teamMembersNotifierProvider.notifier).updateTeamMemberInvitation(
+            teamMemberId,
+            inviteStatus:
+                hasAccepted ? InviteStatus.confirmed : InviteStatus.declined,
           );
 
       ref.read(notificationNotifierProvider.notifier).updateNotification(

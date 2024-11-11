@@ -7,7 +7,8 @@ part 'create_team_member_request.g.dart';
 @Freezed()
 class CreateTeamMemberRequest with _$CreateTeamMemberRequest {
   const factory CreateTeamMemberRequest({
-    required String? email,
+    String? email,
+    String? teamMemberInvited,
     required TeamMemberRole? newMemberRole,
   }) = _CreateTeamMemberRequest;
 
