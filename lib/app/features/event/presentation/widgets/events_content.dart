@@ -81,7 +81,6 @@ class EventsContent extends ConsumerWidget {
         participantsCount: event?.stagerPhotos.length ?? 0,
         onTap: () {
           if (event == null) {
-            context.pushNamed(AppRoute.addEvent.name);
             return;
           }
           context.pushNamed(

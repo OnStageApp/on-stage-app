@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/delete_account_button.dart';
 import 'package:on_stage_app/app/reviews/review_service.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -59,6 +60,13 @@ class AboutScreen extends ConsumerWidget {
                 context.goNamed(AppRoute.termsOfUse.name);
               },
             ),
+            const SizedBox(height: 24),
+            Text(
+              'Account',
+              style: context.textTheme.titleSmall,
+            ),
+            const SizedBox(height: 12),
+            const DeleteAccountButton(),
           ],
         ),
       ),

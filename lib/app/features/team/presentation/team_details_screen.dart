@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/edit_field_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
@@ -10,6 +11,7 @@ import 'package:on_stage_app/app/features/team_member/application/current_team_m
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
+import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
@@ -63,7 +65,21 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               placeholder: widget.team?.name ?? 'Enter Team Name',
               headline: 'Team Name',
               suffix: const SizedBox(),
-              onTap: () {},
+              onTap: () {
+                if (!ref.watch(permissionServiceProvider).hasAccessToEdit) {
+                  return;
+                }
+                EditFieldModal.show(
+                  context: context,
+                  fieldName: 'Team Name',
+                  value: widget.team?.name ?? 'Enter Team Name',
+                  onSubmitted: (value) {
+                    ref
+                        .read(teamNotifierProvider.notifier)
+                        .updateTeamName(value);
+                  },
+                );
+              },
               controller: widget.isCreating ? teamNameController : null,
             ),
             const SizedBox(height: 16),
@@ -153,6 +169,6 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
     if (member.inviteStatus == InviteStatus.pending) {
       return member.inviteStatus!.name;
     }
-    return member.role?.name ?? 'Role';
+    return member.role?.title ?? 'Role';
   }
 }

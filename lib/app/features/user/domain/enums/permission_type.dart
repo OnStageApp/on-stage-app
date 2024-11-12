@@ -27,4 +27,42 @@ extension PermissionTypeX on PermissionType {
         return 'none';
     }
   }
+
+  String get paywallDescription {
+    switch (this) {
+      case PermissionType.reminders:
+        return 'Set reminders for your events!';
+      case PermissionType.addTeamMembers:
+        return 'Add more team members!';
+      case PermissionType.addEvents:
+        return 'Add more events!';
+      case PermissionType.songsAccess:
+        return 'Access to songs!';
+      case PermissionType.addSongs:
+        return 'Add songs!';
+      case PermissionType.screenSync:
+        return 'Screen sync!';
+      case PermissionType.none:
+        return '';
+    }
+  }
+
+  String get title {
+    switch (this) {
+      case PermissionType.reminders:
+        return 'Reminders';
+      case PermissionType.addTeamMembers:
+        return 'Team Members';
+      case PermissionType.addEvents:
+        return 'Add Events';
+      case PermissionType.songsAccess:
+        return 'Songs Access';
+      case PermissionType.addSongs:
+        return 'Add Songs';
+      case PermissionType.screenSync:
+        return 'Screen Sync';
+      case PermissionType.none:
+        return '';
+    }
+  }
 }

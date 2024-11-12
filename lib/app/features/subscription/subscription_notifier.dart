@@ -86,8 +86,6 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   }
 
   Future<void> purchasePackage(String packageId) async {
-    state = state.copyWith(isLoading: true);
-
     try {
       final List<StoreProduct> products;
       if (Platform.isAndroid) {
@@ -107,8 +105,10 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       }
 
       logger.i('Products fetched: $products');
+      state = state.copyWith(isLoading: true);
 
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
+
       state = state.copyWith(
         customerInfo: customInfo,
         isLoading: false,
@@ -116,7 +116,20 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       );
       logger.i('Package purchased successfully: $packageId');
     } catch (e) {
-      logger.e('Failed to purchase package: $packageId, error: $e');
+      // Log the error with detailed info for sandbox vs production handling
+      if (e is PurchasesErrorCode &&
+          e == PurchasesErrorCode.paymentPendingError) {
+        logger.w('Payment pending for package: $packageId');
+      } else if (e is PurchasesErrorCode &&
+          e == PurchasesErrorCode.invalidReceiptError) {
+        logger
+            .e('Invalid receipt error: Ensure sandbox and production handling');
+        // Add further custom handling here if needed for sandbox receipt validation
+      } else {
+        logger.e('Failed to purchase package: $packageId, error: $e');
+      }
+
+      // Update the state with error information
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to purchase package: $e',
@@ -155,7 +168,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       );
       return;
     } catch (e, s) {
-      logger.e('Error getting current subscription $e $s');
+      // Log error and handle sandbox receipt issues if applicable
+      if (e.toString().contains('Sandbox receipt used in production')) {
+        logger.w(
+            'Sandbox receipt encountered in production, switching to sandbox environment $s');
+        // Implement specific handling here or retry logic if necessary
+      }
+      logger.e('Error getting current subscription $e');
       state = state.copyWith(isLoading: false);
       return;
     } finally {
@@ -199,7 +218,11 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         dotenv.get('REVENUE_CAT_IOS_SDK_KEY'),
       );
     }
+
     await Purchases.configure(configuration);
+
+    logger.d(
+        'Purchases configured using ${Platform.isAndroid ? "Android" : "iOS"} environment');
 
     final customerInfo = await Purchases.getCustomerInfo();
     logger

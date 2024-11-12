@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_carouse
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_duration_toggle.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void showPlanUpgrades(BuildContext context) {
   showDialog<void>(
@@ -119,28 +120,10 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                       children: [
                         TextSpan(
                           text: 'Your monthly or annual subscription '
-                              'automatically renews ',
-                          style: context.textTheme.bodySmall!.copyWith(
-                            color: context.colorScheme.outline,
-                            fontSize: 11,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'automatically renews ',
-                          style: context.textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.primary,
-                            fontSize: 11,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'for the same term unless cancelled at '
-                              'least 24 hours prior to the end of the '
-                              'current term. Cancel any time '
+                              'automatically automatically renews.'
+                              ' Cancel any time '
                               'in the App Store '
-                              'at no additional cost; your subscription '
-                              'will then cease at the end of '
-                              'the current term.',
+                              'at no additional cost.',
                           style: context.textTheme.bodySmall!.copyWith(
                             color: context.colorScheme.outline,
                             fontSize: 11,
@@ -150,11 +133,66 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                     ),
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLink('Terms of conditions', () {
+                      openUrl(
+                        'https://philosophical-stage-226575.framer.app/terms',
+                      );
+                    }),
+                    _buildCircle(),
+                    _buildLink('Privacy Policy', () {
+                      openUrl(
+                        'https://philosophical-stage-226575.framer.app/privacy',
+                      );
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 12),
               ]),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildLink(String text, void Function()? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        text,
+        style: context.textTheme.bodySmall!.copyWith(
+          color: context.colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCircle() {
+    return Container(
+      alignment: Alignment.topRight,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Icon(
+        Icons.circle,
+        size: 5,
+        color: context.colorScheme.onSurface,
+      ),
+    );
+  }
+
+  Future<void> openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // Opens in browser
+      );
+    } else {
+      throw Exception('Could not launch $url');
+    }
   }
 }

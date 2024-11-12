@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan_feature.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
@@ -21,6 +22,16 @@ class PlanCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(
+      subscriptionNotifierProvider.select((state) => state.isLoading),
+      (previous, isLoading) {
+        if (isLoading) {
+          showLoadingOverlay(context);
+        } else {
+          Navigator.of(context).pop(); // Remove loading overlay
+        }
+      },
+    );
     return Card(
       color: context.colorScheme.onSurfaceVariant,
       margin: const EdgeInsets.all(10),
@@ -88,8 +99,8 @@ class PlanCard extends ConsumerWidget {
               plan.price == 0
                   ? 'Free'
                   : plan.isYearly
-                      ? '${plan.price.toInt()} ${plan.currency}/month, billed annually'
-                      : '${plan.price.toInt()} ${plan.currency}/month',
+                      ? '${plan.price} ${plan.currency}/month, billed annually'
+                      : '${plan.price} ${plan.currency}/month',
               style: context.textTheme.headlineMedium!.copyWith(
                 color: context.colorScheme.onSecondary,
               ),
@@ -105,7 +116,6 @@ class PlanCard extends ConsumerWidget {
             const Spacer(),
             if (plan.price != 0)
               ContinueButton(
-                isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
                 text: isCurrent ? 'Current Plan ' : 'Upgrade',
                 textColor: isCurrent
                     ? context.colorScheme.onSurface
@@ -115,7 +125,7 @@ class PlanCard extends ConsumerWidget {
                     : context.colorScheme.onSecondary,
                 borderColor: context.colorScheme.primaryContainer,
                 onPressed: () {
-                  if (!isCurrent) _handlePurchase(ref);
+                  if (!isCurrent) _handlePurchase(ref, context);
                 },
                 isEnabled: true,
                 hasShadow: false,
@@ -156,6 +166,7 @@ class PlanCard extends ConsumerWidget {
 
   Future<void> _handlePurchase(
     WidgetRef ref,
+    BuildContext context,
   ) async {
     final subscriptionNotifier =
         ref.read(subscriptionNotifierProvider.notifier);
@@ -166,5 +177,26 @@ class PlanCard extends ConsumerWidget {
       // await subscriptionNotifier.purchasePackage(plan.appleStoreProductId);
     }
     await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
+    context.popDialog();
+  }
+
+  void showLoadingOverlay(BuildContext context) {
+    showDialog<void>(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false, // Prevent back button
+        child: const Center(
+          child: SizedBox(
+            height: 32,
+            width: 32,
+            child: LoadingIndicator(
+              colors: [Colors.white],
+              indicatorType: Indicator.lineSpinFadeLoader,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -37,4 +37,9 @@ abstract class UserRepository {
   Future<bool> checkPermission(
     @Query('permission') String permission,
   );
+
+  @DELETE(API.user)
+  Future<void> deleteUser(
+    @Path('id') String id,
+  );
 }
