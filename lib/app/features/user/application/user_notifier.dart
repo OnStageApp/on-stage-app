@@ -164,4 +164,9 @@ class UserNotifier extends _$UserNotifier {
           value: userName,
         );
   }
+
+  Future<void> deleteAccount() {
+    final id = state.currentUser?.id;
+    return usersRepository.deleteUser(id ?? '');
+  }
 }

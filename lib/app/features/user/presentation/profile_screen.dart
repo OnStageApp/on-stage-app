@@ -83,7 +83,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const AppSettings(),
                   const SizedBox(height: 24),
                   const LibrarySection(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   const SignOutButton(),
                   const SizedBox(height: 24),
                 ],

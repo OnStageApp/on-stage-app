@@ -5,7 +5,9 @@ import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/team/application/team_state.dart';
 import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/data/team_repository.dart';
+import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -41,6 +43,18 @@ class TeamNotifier extends _$TeamNotifier {
     );
 
     state = state.copyWith(isLoading: false, currentTeam: currentTeam);
+  }
+
+  Future<void> updateTeamName(String name) async {
+    final teamId =
+        ref.read(currentTeamMemberNotifierProvider).teamMember?.teamId;
+    if (teamId == null) return;
+
+    final teamRequest = TeamRequest(name: name, membersCount: null);
+    final Team updatedTeam =
+        await teamRepository.updateTeam(teamId, teamRequest);
+    final currentTeam = state.currentTeam!.copyWith(name: updatedTeam.name);
+    state = state.copyWith(currentTeam: currentTeam);
   }
 
   Future<void> createTeam(TeamRequest team) async {

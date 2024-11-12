@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/name_utils.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class PlaceholderImageWidget extends StatelessWidget {
   const PlaceholderImageWidget({
@@ -17,9 +18,9 @@ class PlaceholderImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: name.isNotEmpty
+      child: name.isNotNullEmptyOrWhitespace
           ? Text(
-              NameUtils.getInitials(name),
+              NameUtils.getInitials(name) ?? '',
               textAlign: TextAlign.center,
               style: isLargeTitle
                   ? context.textTheme.titleLarge?.copyWith(

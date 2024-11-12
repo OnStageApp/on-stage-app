@@ -75,7 +75,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     await Future.wait([
       //TODO: Find a new way to verify deviceId and save it
-
       ref.read(deviceServiceProvider).verifyDeviceId(),
       ref
           .read(teamMembersNotifierProvider.notifier)

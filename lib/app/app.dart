@@ -29,6 +29,7 @@ class _AppState extends ConsumerState<App> {
     final userSettings = ref.watch(userSettingsNotifierProvider);
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: userSettings.isDarkMode ?? false
           ? onStageDarkTheme
