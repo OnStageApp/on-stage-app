@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/title_widget.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/controller/onboarding_fifth_controller.dart';
 import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
@@ -71,26 +70,26 @@ class _OnboardingFifthStepState extends ConsumerState<OnboardingFifthStep> {
             ),
           ),
           const SizedBox(height: Insets.medium),
-          Padding(
-            padding: defaultScreenHorizontalPadding,
-            child: CustomTextField(
-              label: 'Full Name',
-              hint: '',
-              icon: Icons.church,
-              controller: nameController,
-              onChanged: (value) {
-                ref
-                    .read(onboardingFifthControllerProvider.notifier)
-                    .updateName(fullName: nameController.text);
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an event name';
-                }
-                return null;
-              },
-            ),
-          ),
+          // Padding(
+          //   padding: defaultScreenHorizontalPadding,
+          //   child: CustomTextField(
+          //     label: 'Full Name',
+          //     hint: '',
+          //     icon: Icons.church,
+          //     controller: nameController,
+          //     onChanged: (value) {
+          //       ref
+          //           .read(onboardingFifthControllerProvider.notifier)
+          //           .updateName(fullName: nameController.text);
+          //     },
+          //     validator: (value) {
+          //       if (value == null || value.isEmpty) {
+          //         return 'Please enter an event name';
+          //       }
+          //       return null;
+          //     },
+          //   ),
+          // ),
           const SizedBox(height: Insets.medium),
           const Spacer(),
           const Padding(

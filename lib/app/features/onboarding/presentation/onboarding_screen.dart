@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/login/domain/user_request.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_background.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/controller/onboarding_fifth_controller.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_fifth_step.dart';
@@ -11,10 +10,8 @@ import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_sec
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_third_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/widgets/onboarding_button.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 void showOnboardingOverlay(BuildContext context) {
@@ -47,7 +44,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _goToNextPage() {
     if (_currentPage == _totalPages - 1) {
-      if(!_isFormValid()) return;
+      if (!_isFormValid()) return;
       _updateUser();
       _finishOnboarding();
       return;
@@ -128,11 +125,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _updateUser() {
-    final updatedUserRequest = UserRequest(
-      name: ref.read(onboardingFifthControllerProvider).fullName,
-    );
+    // final updatedUserRequest = UserRequest(
+    //   name: ref.read(onboardingFifthControllerProvider).fullName,
+    // );
 
-    ref.read(userNotifierProvider.notifier).editUserById(updatedUserRequest);
+    // ref.read(userNotifierProvider.notifier).editUserById(updatedUserRequest);
 
     ref
         .read(currentTeamMemberNotifierProvider.notifier)
@@ -144,9 +141,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isFormValid() {
     final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
 
-    final isNameValid = onboardingProvider.fullName.isNotNullEmptyOrWhitespace;
+    // final isNameValid = onboardingProvider.fullName.isNotNullEmptyOrWhitespace;
     final isPositionValid = onboardingProvider.position != null;
 
-    return isNameValid && isPositionValid;
+    // return isNameValid && isPositionValid;
+    return isPositionValid;
   }
 }

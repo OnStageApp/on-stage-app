@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/app_settings.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/delete_account_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/library_section.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/profile_header.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_button.dart';
@@ -84,7 +85,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   const SizedBox(height: 24),
                   const LibrarySection(),
                   const SizedBox(height: 12),
+                  Text(
+                    'Account',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 12),
                   const SignOutButton(),
+                  const SizedBox(height: 12),
+                  const DeleteAccountButton(),
                   const SizedBox(height: 24),
                 ],
               ),

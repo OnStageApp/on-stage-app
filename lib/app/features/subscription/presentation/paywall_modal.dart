@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/title_widget.dart';
@@ -9,6 +10,7 @@ import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaywallModal extends ConsumerStatefulWidget {
   const PaywallModal({
@@ -143,44 +145,137 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
                 isEnabled: true,
               ),
             ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 12),
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Auto-renews for ',
+                    text: '1-month free trial, then ',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: context.colorScheme.outline,
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                   ),
                   TextSpan(
                     text: isLoading
-                        ? '...'
+                        ? 'Loading'
                         : (upgradePlan != null
-                            ? '${upgradePlan!.price} ${upgradePlan!.currency}/month'
+                            ? '${upgradePlan!.price} ${upgradePlan!.currency}/month '
                             : 'N/A'),
                     style: context.textTheme.bodySmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: context.colorScheme.onSurface,
-                      fontSize: 11,
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' until canceled.',
-                    style: context.textTheme.bodySmall!.copyWith(
-                      color: context.colorScheme.outline,
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          const Divider(height: 32),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Your monthly or annual subscription '
+                        'automatically automatically renews.'
+                        ' Cancel any time '
+                        'in the App Store '
+                        'at no additional cost.',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 11,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'By continuing, you agree to our ',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 11,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'terms. ',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.primary,
+                      fontSize: 11,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        openUrl(
+                          'https://philosophical-stage-226575.framer.app/terms',
+                        );
+                      },
+                  ),
+                  TextSpan(
+                    text: 'See the ',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 11,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'privacy policy.',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.primary,
+                      fontSize: 11,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        openUrl(
+                          'https://philosophical-stage-226575.framer.app/privacy',
+                        );
+                      },
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Future<void> openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // Opens in browser
+      );
+    } else {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  Widget _buildLink(String text, void Function()? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        text,
+        style: context.textTheme.bodySmall!.copyWith(
+          color: context.colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCircle() {
+    return Container(
+      alignment: Alignment.topRight,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Icon(
+        Icons.circle,
+        size: 5,
+        color: context.colorScheme.onSurface,
       ),
     );
   }
