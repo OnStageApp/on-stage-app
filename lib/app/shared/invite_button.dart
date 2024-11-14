@@ -28,6 +28,9 @@ class InviteButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
         backgroundColor: WidgetStateProperty.all(
           backgroundColor ??
               (isConfirm
@@ -47,10 +50,6 @@ class InviteButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // if (!isConfirm)
-          //   Assets.icons.close.svg()
-          // else
-          //   Assets.icons.confirm.svg(),
           const SizedBox(width: 6),
           Text(
             text,

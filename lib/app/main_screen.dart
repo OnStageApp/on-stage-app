@@ -66,11 +66,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     await ref.read(databaseProvider).initDatabase();
     ref.read(socketIoServiceProvider.notifier);
     unawaited(
-      ref.read(notificationNotifierProvider.notifier).getNewNotifications(),
+      ref.read(notificationNotifierProvider.notifier).getNotifications(),
     );
-    unawaited(
-      ref.read(notificationNotifierProvider.notifier).getViewedNotifications(),
-    );
+
     ref.read(firebaseNotifierProvider.notifier);
 
     await Future.wait([

@@ -116,8 +116,9 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
 
         return null;
       } else {
-        logger.e('Failed to invite team member. API returned null.');
-        return 'Failed to invite team member';
+        logger.i('Failed to invite team member. API returned null.');
+        return 'User with this email not found. '
+            'We have sent an email to the user to download the app.';
       }
     } on DioException catch (e) {
       logger.i('Error inviting team member: $e');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
+import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
@@ -32,12 +33,18 @@ class ActionNotificationTile extends NotificationTile {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    notification.title ?? 'Notification',
-                    style: context.textTheme.headlineMedium!
-                        .copyWith(color: context.colorScheme.onSurface),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      if (notification.status == NotificationStatus.NEW)
+                        _buildCircle(context.colorScheme.error),
+                      Text(
+                        notification.title ?? 'Notification',
+                        style: context.textTheme.headlineMedium!
+                            .copyWith(color: context.colorScheme.onSurface),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 6),
                   _buildDateTime(context),
@@ -47,7 +54,8 @@ class ActionNotificationTile extends NotificationTile {
             Padding(
               padding: const EdgeInsets.only(left: 12),
               child: ParticipantsOnTile(
-                borderColor: context.colorScheme.secondary,
+                borderColor: context.colorScheme.onSurfaceVariant,
+                textColor: context.colorScheme.onSurface,
                 backgroundColor: context.colorScheme.secondary,
                 participantsLength: 3,
               ),
@@ -123,7 +131,7 @@ class ActionNotificationTile extends NotificationTile {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Icon(
         Icons.circle,
-        size: 8,
+        size: 12,
         color: backgroundColor,
       ),
     );

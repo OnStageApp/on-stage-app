@@ -112,6 +112,8 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                             return;
                           }
                           if (mounted) {
+                            context.pop();
+
                             TopFlushBar.show(
                               context,
                               errorMessage ?? 'Error inviting team member',

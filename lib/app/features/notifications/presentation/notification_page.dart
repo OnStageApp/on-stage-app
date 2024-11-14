@@ -23,8 +23,7 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
   }
 
   void _getNotifications() {
-    ref.read(notificationNotifierProvider.notifier).getNewNotifications();
-    ref.read(notificationNotifierProvider.notifier).getViewedNotifications();
+    ref.read(notificationNotifierProvider.notifier).getNotifications();
   }
 
   Future<void> _refreshNotifications() async {
@@ -34,31 +33,32 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: StageAppBar(
-          isBackButtonVisible: true,
-          onBackButtonPressed: () {
-            ref
-                .read(notificationNotifierProvider.notifier)
-                .markNotificationsAsViewed();
-            ref
-                .read(notificationNotifierProvider.notifier)
-                .setHasNewNotifications(false);
-          },
-          title: 'Notifications',
-        ),
-        body: CustomScrollView(
-          slivers: [
-            CupertinoSliverRefreshControl(onRefresh: _refreshNotifications),
-            SliverPadding(
-              padding: defaultScreenHorizontalPadding,
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => NotificationList(),
-                  childCount: 1,
-                ),
+      appBar: StageAppBar(
+        isBackButtonVisible: true,
+        onBackButtonPressed: () {
+          ref
+              .read(notificationNotifierProvider.notifier)
+              .markNotificationsAsViewed();
+          ref
+              .read(notificationNotifierProvider.notifier)
+              .setHasNewNotifications(false);
+        },
+        title: 'Notifications',
+      ),
+      body: CustomScrollView(
+        slivers: [
+          CupertinoSliverRefreshControl(onRefresh: _refreshNotifications),
+          SliverPadding(
+            padding: defaultScreenHorizontalPadding,
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => const NotificationList(),
+                childCount: 1,
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

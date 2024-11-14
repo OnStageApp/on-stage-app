@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class SongTile extends ConsumerStatefulWidget {
   const SongTile({
@@ -46,6 +47,19 @@ class _SongTileState extends ConsumerState<SongTile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (widget.song.teamId.isNotNullEmptyOrWhitespace)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Text("Team's Song"),
+                      ),
                     Text(
                       widget.song.title ?? '',
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(

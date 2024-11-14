@@ -1,10 +1,4 @@
-enum InviteStatus {
-  confirmed,
-  pending,
-  declined,
-}
-
-//extension name
+enum InviteStatus { confirmed, pending, declined, inactive }
 
 extension InviteStatusExtension on InviteStatus {
   String get name {
@@ -15,6 +9,8 @@ extension InviteStatusExtension on InviteStatus {
         return 'Pending Invitation';
       case InviteStatus.declined:
         return 'Declined';
+      case InviteStatus.inactive:
+        return 'Inactive';
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -9,6 +10,7 @@ import 'package:on_stage_app/app/utils/time_utils.dart';
 class PhotoMessageNotificationTile extends NotificationTile {
   const PhotoMessageNotificationTile({
     required super.onTap,
+    required this.status,
     this.description,
     this.title,
     this.profilePicture,
@@ -22,6 +24,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
   final String? title;
   final String? description;
   final DateTime? date;
+  final NotificationStatus status;
 
   @override
   Widget buildContent(BuildContext context) {
@@ -96,7 +99,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Icon(
         Icons.circle,
-        size: 8,
+        size: 12,
         color: backgroundColor,
       ),
     );
