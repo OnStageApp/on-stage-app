@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/app_settings.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/delete_account_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/library_section.dart';
@@ -8,6 +10,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/profile_head
 import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/song_view_settings.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/team_section.dart';
+import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart'; // Import the package
@@ -62,39 +65,50 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
       ],
       child: Scaffold(
         backgroundColor: context.colorScheme.surface,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  Text('Profile', style: context.textTheme.headlineLarge),
-                  const SizedBox(height: 32),
-                  const ProfileHeader(),
-                  const SizedBox(height: 24),
-                  Focus(
-                    focusNode: _songViewSettingsFocusNode,
-                    child: const SongViewSettings(),
-                  ),
-                  const SizedBox(height: 24),
-                  const TeamsSection(),
-                  const SizedBox(height: 24),
-                  const AppSettings(),
-                  const SizedBox(height: 24),
-                  const LibrarySection(),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Account',
-                    style: context.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 12),
-                  const SignOutButton(),
-                  const SizedBox(height: 12),
-                  const DeleteAccountButton(),
-                  const SizedBox(height: 24),
-                ],
+        appBar: const StageAppBar(
+          title: 'Profile',
+        ),
+        body: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await ref
+                .read(subscriptionNotifierProvider.notifier)
+                .getCurrentSubscription(forceUpdate: true);
+            await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
+            await ref.read(currentTeamMemberNotifierProvider.notifier).initializeState();
+
+          },
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    const ProfileHeader(),
+                    const SizedBox(height: 24),
+                    Focus(
+                      focusNode: _songViewSettingsFocusNode,
+                      child: const SongViewSettings(),
+                    ),
+                    const SizedBox(height: 24),
+                    const TeamsSection(),
+                    const SizedBox(height: 24),
+                    const AppSettings(),
+                    const SizedBox(height: 24),
+                    const LibrarySection(),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Account',
+                      style: context.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 12),
+                    const SignOutButton(),
+                    const SizedBox(height: 12),
+                    const DeleteAccountButton(),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
           ),
