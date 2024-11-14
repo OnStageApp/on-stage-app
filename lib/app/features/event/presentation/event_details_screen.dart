@@ -19,6 +19,7 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/event_struc
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
@@ -338,7 +339,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
 
   Widget _buildParticipantsList() {
     final stagers = ref.read(eventNotifierProvider).stagers;
-
+    final currentUserId = ref.read(userNotifierProvider).currentUser?.id;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
@@ -351,7 +352,8 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         itemCount: stagers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            canEdit: ref.read(permissionServiceProvider).hasAccessToEdit,
+            canEdit: ref.read(permissionServiceProvider).hasAccessToEdit &&
+                stagers[index].userId != currentUserId,
             name: stagers[index].name ?? '',
             photo: stagers[index].profilePicture,
             status: stagers[index].participationStatus,

@@ -141,6 +141,9 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
                       ref.read(subscriptionNotifierProvider.notifier);
                   await subscriptionNotifier
                       .purchasePackage(upgradePlan!.revenueCatProductId);
+                  if (mounted) {
+                    context.popDialog();
+                  }
                 },
                 isEnabled: true,
               ),
@@ -153,7 +156,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '1-month free trial, then ',
+                    text: '1-month free, auto-renews for ',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: context.colorScheme.outline,
                       fontSize: 12,
@@ -171,6 +174,13 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
                       fontSize: 12,
                     ),
                   ),
+                  TextSpan(
+                    text: 'unitl canceled.',
+                    style: context.textTheme.bodySmall!.copyWith(
+                      color: context.colorScheme.outline,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -183,11 +193,11 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Your monthly or annual subscription '
+                    text: 'Your monthly '
                         'automatically automatically renews.'
                         ' Cancel any time '
                         'in the App Store '
-                        'at no additional cost.',
+                        'at no additional cost. ',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: context.colorScheme.outline,
                       fontSize: 11,
@@ -252,32 +262,6 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
     } else {
       throw Exception('Could not launch $url');
     }
-  }
-
-  Widget _buildLink(String text, void Function()? onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Text(
-        text,
-        style: context.textTheme.bodySmall!.copyWith(
-          color: context.colorScheme.onSurface,
-          fontWeight: FontWeight.bold,
-          fontSize: 13,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCircle() {
-    return Container(
-      alignment: Alignment.topRight,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Icon(
-        Icons.circle,
-        size: 5,
-        color: context.colorScheme.onSurface,
-      ),
-    );
   }
 
   Future<Plan> getUpgradePlan(WidgetRef ref, Plan currentPlan) async {

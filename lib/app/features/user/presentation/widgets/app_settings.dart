@@ -76,7 +76,7 @@ class AppSettingsState extends ConsumerState<AppSettings> {
               style: context.textTheme.titleMedium,
             ),
             trailing: Text(
-              ref.watch(currentPlanProvider).name,
+              ref.watch(currentPlanProvider).name.split(' ')[0].toUpperCase(),
               style: context.textTheme.titleMedium!
                   .copyWith(color: context.colorScheme.outline),
             ),

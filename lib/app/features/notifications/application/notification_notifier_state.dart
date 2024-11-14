@@ -6,10 +6,8 @@ part 'notification_notifier_state.freezed.dart';
 @freezed
 class NotificationNotifierState with _$NotificationNotifierState {
   const factory NotificationNotifierState({
-    @Default([]) List<StageNotification> viewedNotifications,
-    @Default([]) List<StageNotification> newNotifications,
+    @Default([]) List<StageNotification> notifications,
     @Default(false) bool hasNewNotifications,
-    @Default(false) bool hasMoreViewedNotifications,
-    @Default(false) bool hasMoreNewNotifications,
+    @Default(false) bool hasMoreNotifications,
   }) = _NotificationNotifierState;
 }

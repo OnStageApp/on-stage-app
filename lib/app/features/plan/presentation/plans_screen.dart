@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,45 +112,90 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 24),
                 Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Your monthly or annual subscription '
-                              'automatically automatically renews.'
+                          text: 'Your monthly subscription '
+                              'automatically renews.'
                               ' Cancel any time '
                               'in the App Store '
-                              'at no additional cost.',
+                              'at no additional cost. ',
                           style: context.textTheme.bodySmall!.copyWith(
                             color: context.colorScheme.outline,
                             fontSize: 11,
                           ),
                         ),
+                        TextSpan(
+                          text: 'By continuing, you agree to our ',
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: context.colorScheme.outline,
+                            fontSize: 11,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'terms. ',
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: context.colorScheme.primary,
+                            fontSize: 11,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              openUrl(
+                                'https://philosophical-stage-226575.framer.app/terms',
+                              );
+                            },
+                        ),
+                        TextSpan(
+                          text: 'See the ',
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: context.colorScheme.outline,
+                            fontSize: 11,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'privacy policy.',
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: context.colorScheme.primary,
+                            fontSize: 11,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              openUrl(
+                                'https://philosophical-stage-226575.framer.app/privacy',
+                              );
+                            },
+                        ),
                       ],
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLink('Terms of conditions', () {
-                      openUrl(
-                        'https://philosophical-stage-226575.framer.app/terms',
-                      );
-                    }),
-                    _buildCircle(),
-                    _buildLink('Privacy Policy', () {
-                      openUrl(
-                        'https://philosophical-stage-226575.framer.app/privacy',
-                      );
-                    }),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                // Padding(
+                //   padding: const EdgeInsets.all(12),
+                //   child: RichText(
+                //     textAlign: TextAlign.center,
+                //     text: TextSpan(
+                //       children: [
+                //         TextSpan(
+                //           text: 'Your monthly or annual subscription '
+                //               'automatically automatically renews.'
+                //               ' Cancel any time '
+                //               'in the App Store '
+                //               'at no additional cost.',
+                //           style: context.textTheme.bodySmall!.copyWith(
+                //             color: context.colorScheme.outline,
+                //             fontSize: 11,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(height: 12),
               ]),
             ),
           ),

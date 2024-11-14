@@ -66,7 +66,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               headline: 'Team Name',
               suffix: const SizedBox(),
               onTap: () {
-                if (!ref.watch(permissionServiceProvider).hasAccessToEdit) {
+                if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
                   return;
                 }
                 EditFieldModal.show(
@@ -86,7 +86,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             Text('Members', style: context.textTheme.titleSmall),
             const SizedBox(height: 8),
             _buildParticipantsList(),
-            if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+            if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
               const SizedBox(height: 12),
               EventActionButton(
                 onTap: () {
@@ -126,7 +126,15 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final teamMembers = ref.watch(teamMembersNotifierProvider).teamMembers;
+    final teamMembers = ref
+        .watch(teamMembersNotifierProvider)
+        .teamMembers
+        .where(
+          (member) =>
+              member.inviteStatus == InviteStatus.pending ||
+              member.inviteStatus == InviteStatus.confirmed,
+        )
+        .toList();
     if (teamMembers.isEmpty) {
       return const SizedBox();
     }

@@ -29,7 +29,7 @@ class UserInfo extends ConsumerWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            ref.watch(currentPlanProvider).name,
+            ref.watch(currentPlanProvider).name.split(' ')[0].toUpperCase(),
             style: context.textTheme.bodyMedium!.copyWith(
               color: context.colorScheme.outline,
             ),

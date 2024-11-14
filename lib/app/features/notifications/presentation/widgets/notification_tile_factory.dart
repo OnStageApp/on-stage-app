@@ -4,6 +4,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_actions.dart';
+import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_type.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/action_notification_tile.dart';
@@ -13,8 +14,8 @@ import 'package:on_stage_app/app/shared/data/enums/notification_action_status.da
 class NotificationTileFactory extends ConsumerWidget {
   const NotificationTileFactory({
     required this.notification,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final StageNotification notification;
 
@@ -47,7 +48,9 @@ class NotificationTileFactory extends ConsumerWidget {
             if (notification.actionStatus ==
                 NotificationActionStatus.ACCEPTED) {
               notificationActions.goToEvent(
-                  notification.params?.eventId, context);
+                notification.params?.eventId,
+                context,
+              );
             }
           },
           onConfirm: () {
@@ -67,6 +70,7 @@ class NotificationTileFactory extends ConsumerWidget {
         );
       case NotificationType.EVENT_INVITATION_ACCEPTED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           onTap: () {
             notificationActions.goToEvent(
@@ -77,6 +81,7 @@ class NotificationTileFactory extends ConsumerWidget {
         );
       case NotificationType.EVENT_INVITATION_DECLINED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           onTap: () {
             notificationActions.goToEvent(
@@ -87,16 +92,19 @@ class NotificationTileFactory extends ConsumerWidget {
         );
       case NotificationType.TEAM_INVITATION_ACCEPTED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           onTap: () {},
         );
       case NotificationType.TEAM_INVITATION_DECLINED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           onTap: () {},
         );
       case NotificationType.NEW_REHEARSAL:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           icon: LucideIcons.repeat_2,
           onTap: () {
@@ -108,6 +116,7 @@ class NotificationTileFactory extends ConsumerWidget {
         );
       case NotificationType.LEAD_VOICE_ASSIGNED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           icon: LucideIcons.mic,
           onTap: () {
@@ -120,8 +129,16 @@ class NotificationTileFactory extends ConsumerWidget {
 
       case NotificationType.EVENT_DELETED:
         return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           icon: LucideIcons.trash,
+          onTap: () {},
+        );
+      case NotificationType.TEAM_MEMBER_REMOVED:
+        return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
+          description: notification.description,
+          icon: LucideIcons.user_minus,
           onTap: () {},
         );
       case null:

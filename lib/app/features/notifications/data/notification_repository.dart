@@ -13,7 +13,7 @@ abstract class NotificationRepository {
 
   @GET(API.notifications)
   Future<NotificationPagination> getNotifications(
-    @Body() NotificationFilter status,
+    @Body() NotificationFilter? status,
   );
 
   @PUT(API.notificationsMarkAsViewed)

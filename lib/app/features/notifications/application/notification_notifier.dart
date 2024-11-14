@@ -2,7 +2,6 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/notifications/data/notification_repository.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_filter.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_pagination.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
@@ -27,38 +26,25 @@ class NotificationNotifier extends _$NotificationNotifier {
     return const NotificationNotifierState();
   }
 
-  Future<NotificationPagination> _getNotifications({
-    NotificationStatus? status,
-  }) async {
+  Future<NotificationPagination> _getNotifications() async {
     try {
       final userId = ref.read(userNotifierProvider).currentUser?.id;
       if (userId == null) return const NotificationPagination();
 
       return notificationRepository
-          .getNotifications(NotificationFilter(status: status));
+          .getNotifications(const NotificationFilter());
     } catch (e, s) {
       logger.e('Error getting notifications: $e $s');
       return const NotificationPagination();
     }
   }
 
-  Future<void> getViewedNotifications() async {
-    final viewedNotifications =
-        await _getNotifications(status: NotificationStatus.VIEWED);
-    state = state.copyWith(
-      viewedNotifications: viewedNotifications.notifications,
-      hasMoreViewedNotifications: viewedNotifications.hasMore ?? false,
-    );
-  }
-
-  Future<void> getNewNotifications() async {
-    final newNotifications = await _getNotifications(
-      status: NotificationStatus.NEW,
-    );
+  Future<void> getNotifications() async {
+    final newNotifications = await _getNotifications();
 
     state = state.copyWith(
-      newNotifications: newNotifications.notifications,
-      hasMoreNewNotifications: newNotifications.hasMore ?? false,
+      notifications: newNotifications.notifications,
+      hasMoreNotifications: newNotifications.hasMore ?? false,
     );
   }
 
@@ -76,44 +62,23 @@ class NotificationNotifier extends _$NotificationNotifier {
     NotificationActionStatus actionStatus,
   ) async {
     try {
-      final updatedNotification = StageNotification(
-        notificationId: notificationId,
-        status: status,
-        actionStatus: actionStatus,
+      state = state.copyWith(
+        notifications: state.notifications.map((notification) {
+          return notification.notificationId == notificationId
+              ? notification.copyWith(
+                  status: status, actionStatus: actionStatus)
+              : notification;
+        }).toList(),
       );
-      _updateNotificationLocally(status, notificationId, updatedNotification);
+
       await notificationRepository.updateNotification(
         notificationId,
-        updatedNotification,
+        state.notifications.firstWhere(
+          (notification) => notification.notificationId == notificationId,
+        ),
       );
     } catch (e, s) {
       logger.e('Error updating notification: $e $s');
-    }
-  }
-
-  void _updateNotificationLocally(
-    NotificationStatus status,
-    String notificationId,
-    StageNotification updatedNotification,
-  ) {
-    if (status == NotificationStatus.VIEWED) {
-      state = state.copyWith(
-        viewedNotifications: state.viewedNotifications
-            .map(
-              (n) =>
-                  n.notificationId == notificationId ? updatedNotification : n,
-            )
-            .toList(),
-      );
-    } else {
-      state = state.copyWith(
-        newNotifications: state.newNotifications
-            .map(
-              (n) =>
-                  n.notificationId == notificationId ? updatedNotification : n,
-            )
-            .toList(),
-      );
     }
   }
 
