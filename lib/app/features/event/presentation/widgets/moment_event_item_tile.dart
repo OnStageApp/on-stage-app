@@ -5,6 +5,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class EventItemTile extends StatefulWidget {
   const EventItemTile({
     required this.name,
+    required this.artist,
+    required this.songKey,
     required this.isSong,
     required this.isAdmin,
     this.onTap,
@@ -14,6 +16,8 @@ class EventItemTile extends StatefulWidget {
   });
 
   final String name;
+  final String artist;
+  final String songKey;
   final bool isSong;
   final void Function()? onTap;
   final void Function()? onDelete;
@@ -95,7 +99,7 @@ class _EventItemTileState extends State<EventItemTile> {
                           Row(
                             children: [
                               Text(
-                                'BBSO',
+                                widget.artist,
                                 style: context.textTheme.bodyMedium!.copyWith(
                                   color: context.colorScheme.outline,
                                 ),
@@ -111,7 +115,7 @@ class _EventItemTileState extends State<EventItemTile> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  'C# major',
+                                  widget.songKey,
                                   style: context.textTheme.bodyMedium!.copyWith(
                                     color: context.colorScheme.outline,
                                   ),

@@ -51,11 +51,10 @@ class FirebaseNotifier extends _$FirebaseNotifier {
       iOS: iosSettings,
     );
 
-    await _localNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (response) =>
-          _handleNotificationResponse(response.payload),
-    );
+    await _localNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: (response) {
+      _handleNotificationResponse(response.payload);
+    });
 
     // Disable automatic notification display by Firebase Messaging
     await FirebaseMessaging.instance
@@ -84,15 +83,13 @@ class FirebaseNotifier extends _$FirebaseNotifier {
 
   /// Configures message handlers for foreground and background messages.
   void _configureMessageHandlers() {
-    FirebaseMessaging.onMessageOpenedApp.listen(
-      (message) =>
-          _handleNotificationResponse(message.data['screen'] as String?),
-    );
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      _handleNotificationResponse(message.data['screen'] as String?);
+    });
   }
 
   /// Handles notification response when the notification is tapped.
   void _handleNotificationResponse(String? screenName) {
-    logger.i('Handling notification response: $screenName');
     if (screenName != null) {
       _pendingRoute = screenName;
       _processNavigation();

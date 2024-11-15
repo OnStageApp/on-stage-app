@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/event_tile.dart';
@@ -17,6 +18,7 @@ class SearchResultsList extends StatelessWidget {
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) => EventTile(
+            isDraft: events[index].eventStatus == EventStatus.draft,
             onTap: () => context.pushNamed(
               AppRoute.eventDetails.name,
               queryParameters: {'eventId': events[index].id},

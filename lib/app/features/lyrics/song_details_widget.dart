@@ -162,9 +162,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           _processTextAndSetSections();
         }
       })
-      ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.selectedSectionIndex != next.selectedSectionIndex &&
-            next.selectedSectionIndex != StructureItem.none) {
+      ..listen(
+          songNotifierProvider.select((state) => state.selectedStructureIndex),
+          (previous, next) {
+        if (next != -1) {
           logger.i('scrolling to index');
           _scrollToIndex();
         }
@@ -190,29 +191,21 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   }
 
   Future<void> _scrollToIndex() async {
-    final item = ref.read(songNotifierProvider).selectedSectionIndex;
-    if (item == null) return;
-    final structures = ref
-        .read(songNotifierProvider)
-        .sections
-        .map((e) => e.structure)
-        .toList();
-
-    final indexToScrollTo = structures.indexWhere((element) => element == item);
-    if (indexToScrollTo == -1) return;
+    final indexToScroll = ref.read(songNotifierProvider).selectedStructureIndex;
+    if (indexToScroll == null) return;
 
     if (_itemScrollController.isAttached) {
       await _itemScrollController.scrollTo(
-        index: indexToScrollTo,
+        index: indexToScroll,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
-    ref.read(songNotifierProvider.notifier).selectSection(StructureItem.none);
   }
 
   Widget _buildLines(int index, BuildContext context) {
     final sections = ref.watch(songNotifierProvider).sections;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -227,15 +220,16 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                height: 24,
+                width: 24,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: context.colorScheme.onSurfaceVariant,
                 ),
                 child: Text(
                   sections[index].structure.shortName,
-                  style: context.textTheme.labelMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
+                  style: context.textTheme.labelSmall,
                 ),
               ),
               const SizedBox(width: 12),

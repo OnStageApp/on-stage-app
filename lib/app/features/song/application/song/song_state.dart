@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
-import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 
 class SongState extends Equatable {
@@ -10,7 +9,7 @@ class SongState extends Equatable {
     this.sections = const [],
     this.isLoading = false,
     this.document,
-    this.selectedSectionIndex,
+    this.selectedStructureIndex,
     this.processingSong = false,
     this.originalSongSections = const [],
   });
@@ -21,7 +20,7 @@ class SongState extends Equatable {
   final SongModelV2 song;
   final List<Section> sections;
   final List<Section> originalSongSections;
-  final StructureItem? selectedSectionIndex;
+  final int? selectedStructureIndex;
   final bool processingSong;
 
   @override
@@ -36,14 +35,15 @@ class SongState extends Equatable {
     List<Section>? sections,
     SongModelV2? song,
     Content? document,
-    StructureItem? selectedStructureItem,
+    int? selectedStructureItem,
     List<Section>? originalSongSections,
   }) {
     return SongState(
       song: song ?? this.song,
       sections: sections ?? this.sections,
       isLoading: isLoading ?? this.isLoading,
-      selectedSectionIndex: selectedStructureItem ?? this.selectedSectionIndex,
+      selectedStructureIndex:
+          selectedStructureItem ?? this.selectedStructureIndex,
       document: document ?? this.document,
       processingSong: processingSong ?? this.processingSong,
       originalSongSections: originalSongSections ?? this.originalSongSections,

@@ -170,7 +170,8 @@ class SongNotifier extends _$SongNotifier {
     );
   }
 
-  void selectSection(StructureItem item) {
+  void selectSection(int item) {
+    state = state.copyWith(selectedStructureItem: -1);
     state = state.copyWith(selectedStructureItem: item);
   }
 
