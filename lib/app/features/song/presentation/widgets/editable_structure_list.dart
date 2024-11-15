@@ -26,49 +26,55 @@ class EditableStructureList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         itemCount: structures.length,
         itemBuilder: (context, index) {
-          final structureItem = structures[index];
           if (index > 0 && structures[index] == structures[index - 1]) {
             return const SizedBox.shrink();
           }
-          final item = structures[index];
-          int xTimes = 1;
-          while (index + xTimes < structures.length &&
-              structures[index + xTimes] == item) {
-            xTimes++;
-          }
+          final xTimes = _calculateXTimes(structures, index);
           return AnimatedTile(
-            key: ValueKey('${structureItem.shortName}_${structureItem.index}'),
-            structureItem: structureItem,
+            key: ValueKey('${structures[index].shortName}_'
+                '${structures[index].index}'),
+            structureItem: structures[index],
+            index: index,
             xTimes: xTimes,
             onTap: () {
-              ref
-                  .read(songNotifierProvider.notifier)
-                  .selectSection(structureItem);
-              logger.i('selected ${structureItem.name}');
+              ref.read(songNotifierProvider.notifier).selectSection(index);
+              logger.i('selected ${structures[index].name}');
             },
           );
         },
       ),
     );
   }
+
+  int _calculateXTimes(List<StructureItem> structures, int index) {
+    var xTimes = 1;
+    while (index + xTimes < structures.length &&
+        structures[index + xTimes] == structures[index]) {
+      xTimes++;
+    }
+    return xTimes;
+  }
 }
 
-class AnimatedTile extends StatefulWidget {
+class AnimatedTile extends ConsumerStatefulWidget {
   const AnimatedTile({
     required this.structureItem,
     required this.xTimes,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    required this.index,
+    super.key,
+  });
+
   final StructureItem structureItem;
   final int xTimes;
   final VoidCallback onTap;
+  final int index;
 
   @override
   _AnimatedTileState createState() => _AnimatedTileState();
 }
 
-class _AnimatedTileState extends State<AnimatedTile>
+class _AnimatedTileState extends ConsumerState<AnimatedTile>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
@@ -150,7 +156,12 @@ class _AnimatedTileState extends State<AnimatedTile>
                     decoration: BoxDecoration(
                       color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
-                        color: _borderColorAnimation.value!,
+                        color: ref
+                                    .watch(songNotifierProvider)
+                                    .selectedStructureIndex ==
+                                widget.index
+                            ? Colors.white
+                            : _borderColorAnimation.value!,
                         width: 3,
                       ),
                       shape: BoxShape.circle,

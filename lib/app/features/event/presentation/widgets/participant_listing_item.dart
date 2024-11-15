@@ -61,7 +61,9 @@ class ParticipantListingItem extends StatelessWidget {
             ),
             const Spacer(),
             if (trailing != null) trailing!,
-            if (trailing == null && status != null && status != StagerStatusEnum.UNINVINTED)
+            if (trailing == null &&
+                status != null &&
+                status != StagerStatusEnum.UNINVINTED)
               _statusIcon(context, status),
           ],
         ),
@@ -94,5 +96,4 @@ class ParticipantListingItem extends StatelessWidget {
         return const SizedBox();
     }
   }
-
 }

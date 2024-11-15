@@ -67,7 +67,7 @@ class SongDetailsWithPagesScreenState
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(52),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 12),
             child: EditableStructureList(),
           ),
         ),

@@ -66,19 +66,20 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
-      body: Padding(
-        padding: defaultScreenPadding,
-        child: _areEventItemsLoading
-            ? _buildShimmerList()
-            : hasEditorRights
-                ? _buildReordableList(eventItemsState.eventItems)
-                : eventItemsState.eventItems.isNotEmpty
-                    ? _buildStaticList(eventItemsState.eventItems)
-                    : const Center(
-                        child: Text(
-                          'No items added yet',
+      body: RefreshIndicator.adaptive(
+        onRefresh: _requestEventItems,
+        child: Padding(
+          padding: defaultScreenPadding,
+          child: _areEventItemsLoading
+              ? _buildShimmerList()
+              : hasEditorRights
+                  ? _buildReordableList(eventItemsState.eventItems)
+                  : eventItemsState.eventItems.isNotEmpty
+                      ? _buildStaticList(eventItemsState.eventItems)
+                      : const Center(
+                          child: Text('No items added yet'),
                         ),
-                      ),
+        ),
       ),
     );
   }
@@ -167,6 +168,8 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       key: ValueKey(eventItem.hashCode),
       isSong: eventItem.song?.id != null,
       name: eventItem.name ?? '',
+      artist: eventItem.song?.artist?.name ?? '',
+      songKey: eventItem.song?.key?.name ?? '',
       onDelete: isStatic
           ? null
           : () {
@@ -175,19 +178,21 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
                   .removeEventItemCache(eventItem);
               ref.read(hasChangesProvider.notifier).state = true;
             },
-      onTap:
-        hasChanges ? null : () {
-        if (eventItem.song == null) return;
-        final eventItems = ref.read(eventItemsNotifierProvider).songEventItems;
-        ref
-            .read(eventItemsNotifierProvider.notifier)
-            .setCurrentIndex(eventItems.indexOf(eventItem));
+      onTap: hasChanges
+          ? null
+          : () {
+              if (eventItem.song == null) return;
+              final eventItems =
+                  ref.read(eventItemsNotifierProvider).songEventItems;
+              ref
+                  .read(eventItemsNotifierProvider.notifier)
+                  .setCurrentIndex(eventItems.indexOf(eventItem));
 
-        context.pushNamed(
-          AppRoute.songDetailsWithPages.name,
-          extra: eventItems,
-        );
-      },
+              context.pushNamed(
+                AppRoute.songDetailsWithPages.name,
+                extra: eventItems,
+              );
+            },
       isAdmin: ref.watch(permissionServiceProvider).hasAccessToEdit,
       // trailing: eventItem.song?.id != null
       //     ? Container(

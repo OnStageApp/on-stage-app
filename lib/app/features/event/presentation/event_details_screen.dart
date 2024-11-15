@@ -28,7 +28,6 @@ import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/logger.dart';
 
 class EventDetailsScreen extends ConsumerStatefulWidget {
   const EventDetailsScreen(this.eventId, {super.key});
@@ -67,7 +66,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   Widget build(BuildContext context) {
     final hasEditorRoles = ref.watch(permissionServiceProvider).hasAccessToEdit;
     final stagers = ref.watch(eventNotifierProvider).stagers;
-    logger.i('EventDetailsScreenState: _buildBody');
     final event = ref.watch(
       eventNotifierProvider.select((state) => state.event),
     );
