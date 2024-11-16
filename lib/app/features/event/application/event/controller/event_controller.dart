@@ -27,8 +27,8 @@ class EventController extends _$EventController {
     state = state.copyWith(eventLocation: location);
   }
 
-  void setDateTime(String dateTimeString) {
-    final dateTime = DateTime.parse(dateTimeString);
+  void setDateTime(DateTime? dateTime) {
+    if (dateTime == null) return;
     state = state.copyWith(dateTime: dateTime);
   }
 

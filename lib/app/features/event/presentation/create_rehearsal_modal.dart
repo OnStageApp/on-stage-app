@@ -10,7 +10,6 @@ import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class CreateRehearsalModal extends ConsumerStatefulWidget {
   const CreateRehearsalModal({
@@ -60,9 +59,10 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
   final TextEditingController _rehearsalNameController =
       TextEditingController();
   final FocusNode _rehearsalNameFocus = FocusNode();
-  String? _dateTimeString;
+  DateTime? _selectedDateTime;
 
   final _formKey = GlobalKey<FormState>();
+  String? _dateTimeError;
 
   @override
   void initState() {
@@ -111,8 +111,9 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
             DateTimeTextFieldWidget(
               enabled: widget.enabled,
               initialDateTime: widget.rehearsal?.dateTime,
+              dateErrorText: _dateTimeError,
               onDateTimeChanged: (dateTime) {
-                _dateTimeString = dateTime;
+                _selectedDateTime = dateTime;
               },
             ),
             const SizedBox(height: 32),
@@ -132,19 +133,24 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
   }
 
   void _createRehearsal() {
-    if (!_formKey.currentState!.validate()) {
+    setState(() {
+      _dateTimeError = null;
+    });
+    if (_isDateTimeInvalid()) {
+      setState(() {
+        _dateTimeError = 'Please select a valid date and time';
+      });
+    }
+    if (!_formKey.currentState!.validate() || _dateTimeError != null) {
       return;
     }
 
     FocusScope.of(context).unfocus();
 
-    final dateTime = widget.rehearsal?.dateTime ??
-        TimeUtils().parseDateTime(_dateTimeString ?? '');
-
     final rehearsal = RehearsalModel(
       id: widget.rehearsal?.id,
       name: _rehearsalNameController.text,
-      dateTime: dateTime,
+      dateTime: _selectedDateTime,
       eventId:
           widget.rehearsal?.id ?? ref.read(eventNotifierProvider).event?.id!,
       location: '',
@@ -153,5 +159,10 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
     widget.onRehearsalCreated?.call(rehearsal);
     ref.read(eventControllerProvider.notifier).addRehearsal(rehearsal);
     context.popDialog();
+  }
+
+  bool _isDateTimeInvalid() {
+    return _selectedDateTime == null ||
+        _selectedDateTime!.isBefore(DateTime.now());
   }
 }
