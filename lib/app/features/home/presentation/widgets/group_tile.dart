@@ -21,10 +21,8 @@ class GroupTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        final currentTeam = ref.read(teamNotifierProvider).currentTeam;
         context.pushNamed(
           AppRoute.teamDetails.name,
-          extra: currentTeam,
         );
       },
       child: Ink(

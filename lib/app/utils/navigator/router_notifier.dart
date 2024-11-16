@@ -22,7 +22,6 @@ import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.d
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_details_with_pages_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
-import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
@@ -312,7 +311,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.teamDetails.name,
                       path: 'teamDetails',
                       builder: (context, state) {
-                        final team = state.extra as Team?;
                         final isCreating = bool.tryParse(
                               state.uri.queryParameters['isCreating']
                                   .toString(),
@@ -323,7 +321,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                             .logScreenView(AppRoute.teamDetails.name);
                         return TeamDetailsScreen(
                           isCreating: isCreating,
-                          team: team,
                         );
                       },
                       routes: [
