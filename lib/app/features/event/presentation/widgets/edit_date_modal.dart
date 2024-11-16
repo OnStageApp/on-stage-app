@@ -12,7 +12,6 @@ import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class DuplicateEventModal extends ConsumerStatefulWidget {
   const DuplicateEventModal({
@@ -47,7 +46,7 @@ class DuplicateEventModal extends ConsumerStatefulWidget {
 
 class EditDateModalState extends ConsumerState<DuplicateEventModal> {
   final FocusNode _focusNode = FocusNode();
-  String? _dateTimeString;
+  DateTime? _selectedDateTime;
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
@@ -90,7 +89,7 @@ class EditDateModalState extends ConsumerState<DuplicateEventModal> {
             const SizedBox(height: 24),
             DateTimeTextFieldWidget(
               onDateTimeChanged: (dateTime) {
-                _dateTimeString = dateTime;
+                _selectedDateTime = dateTime;
               },
             ),
             const SizedBox(height: 24),
@@ -126,12 +125,10 @@ class EditDateModalState extends ConsumerState<DuplicateEventModal> {
 
     FocusScope.of(context).unfocus();
 
-    final dateTime = TimeUtils().parseDateTime(_dateTimeString ?? '');
-
-    if (dateTime != null) {
+    if (_selectedDateTime != null) {
       await ref
           .read(eventNotifierProvider.notifier)
-          .duplicateEvent(dateTime, _nameController!.text);
+          .duplicateEvent(_selectedDateTime!, _nameController.text);
     }
 
     context

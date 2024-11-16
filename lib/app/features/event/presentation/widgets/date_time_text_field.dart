@@ -12,12 +12,14 @@ class DateTimeTextFieldWidget extends StatefulWidget {
     this.initialDateTime,
     this.focusNode,
     this.enabled = true,
+    this.dateErrorText,
   });
 
-  final void Function(String?) onDateTimeChanged;
+  final void Function(DateTime?) onDateTimeChanged;
   final DateTime? initialDateTime;
   final FocusNode? focusNode;
   final bool enabled;
+  final String? dateErrorText;
 
   @override
   State<DateTimeTextFieldWidget> createState() =>
@@ -64,9 +66,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
         _selectedTime!.minute,
       );
 
-      final formattedDateTime =
-          DateFormat("yyyy-MM-dd'T'HH:mm:ss.ms").format(combinedDateTime);
-      widget.onDateTimeChanged(formattedDateTime);
+      widget.onDateTimeChanged(combinedDateTime);
     }
   }
 
@@ -90,149 +90,166 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Date', style: context.textTheme.titleSmall),
-              const SizedBox(height: 12),
-              InkWell(
-                key: _datePickerKey,
-                onTap: () {
-                  if(!widget.enabled) return;
-                  final renderBox = _datePickerKey.currentContext
-                      ?.findRenderObject() as RenderBox?;
-                  if (renderBox != null) {
-                    showCupertinoCalendarPicker(
-                      context,
-                      widgetRenderBox: renderBox,
-                      minimumDateTime: _minimumDateTime,
-                      maximumDateTime: _maximumDateTime,
-                      initialDateTime: _selectedDate ?? _now,
-                      onDateTimeChanged: _onDateChanged,
-                      minuteInterval: 10,
-                      mainColor: context.colorScheme.primary,
-                    );
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(width: 16),
-                      Text(
-                        _selectedDate != null
-                            ? _formatDate(_selectedDate!)
-                            : 'Select Date',
-                        style: context.textTheme.titleMedium!.copyWith(
-                          color: _selectedDate != null
-                              ? context.colorScheme.onSurface
-                              : context.colorScheme.onSurface.withOpacity(0.5),
-                        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Date', style: context.textTheme.titleSmall),
+                  const SizedBox(height: 12),
+                  InkWell(
+                    key: _datePickerKey,
+                    onTap: () {
+                      if (!widget.enabled) return;
+                      final renderBox = _datePickerKey.currentContext
+                          ?.findRenderObject() as RenderBox?;
+                      if (renderBox != null) {
+                        showCupertinoCalendarPicker(
+                          context,
+                          widgetRenderBox: renderBox,
+                          minimumDateTime: _minimumDateTime,
+                          maximumDateTime: _maximumDateTime,
+                          initialDateTime: _selectedDate ?? _now,
+                          onDateTimeChanged: _onDateChanged,
+                          minuteInterval: 10,
+                          mainColor: context.colorScheme.primary,
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.onSurfaceVariant,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const Spacer(),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 8,
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.calendar_today,
-                          color: context.colorScheme.outline,
-                          size: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Time', style: context.textTheme.titleSmall),
-              const SizedBox(height: 12),
-              InkWell(
-                key: _timePickerKey,
-                onTap: () {
-                  if(!widget.enabled) return;
-                  final renderBox = _timePickerKey.currentContext
-                      ?.findRenderObject() as RenderBox?;
-                  if (renderBox != null) {
-                    showCupertinoTimePicker(
-                      context,
-                      widgetRenderBox: renderBox,
-                      initialTime: _selectedTime ??
-                          TimeOfDay.fromDateTime(
-                            TimeUtils().approximateToNearestInterval(
-                              DateTime.now(),
-                              UtilConstants.minuteInterval,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(width: 16),
+                          Text(
+                            _selectedDate != null
+                                ? _formatDate(_selectedDate!)
+                                : 'Select Date',
+                            style: context.textTheme.titleMedium!.copyWith(
+                              color: _selectedDate != null
+                                  ? context.colorScheme.onSurface
+                                  : context.colorScheme.onSurface
+                                      .withOpacity(0.5),
                             ),
                           ),
-                      onTimeChanged: _onTimeChanged,
-                      minuteInterval: 5,
-                    );
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.onSurfaceVariant,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(width: 16),
-                      Text(
-                        _selectedTime?.format(context) ?? 'Select hour',
-                        style: context.textTheme.titleMedium!.copyWith(
-                          color: _selectedTime != null
-                              ? context.colorScheme.onSurface
-                              : context.colorScheme.onSurface.withOpacity(0.5),
-                        ),
+                          const Spacer(),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 8,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.surface,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.calendar_today,
+                              color: context.colorScheme.outline,
+                              size: 15,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 8,
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.access_time,
-                          color: context.colorScheme.outline,
-                          size: 15,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Time', style: context.textTheme.titleSmall),
+                  const SizedBox(height: 12),
+                  InkWell(
+                    key: _timePickerKey,
+                    onTap: () {
+                      if (!widget.enabled) return;
+                      final renderBox = _timePickerKey.currentContext
+                          ?.findRenderObject() as RenderBox?;
+                      if (renderBox != null) {
+                        showCupertinoTimePicker(
+                          context,
+                          widgetRenderBox: renderBox,
+                          initialTime: _selectedTime ??
+                              TimeOfDay.fromDateTime(
+                                TimeUtils().approximateToNearestInterval(
+                                  DateTime.now(),
+                                  UtilConstants.minuteInterval,
+                                ),
+                              ),
+                          onTimeChanged: _onTimeChanged,
+                          minuteInterval: 5,
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.onSurfaceVariant,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(width: 16),
+                          Text(
+                            _selectedTime?.format(context) ?? 'Select hour',
+                            style: context.textTheme.titleMedium!.copyWith(
+                              color: _selectedTime != null
+                                  ? context.colorScheme.onSurface
+                                  : context.colorScheme.onSurface
+                                      .withOpacity(0.5),
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 8,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.surface,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.access_time,
+                              color: context.colorScheme.outline,
+                              size: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+        if (widget.dateErrorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 16),
+            child: Text(
+              widget.dateErrorText!,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.error,
+              ),
+            ),
+          ),
       ],
     );
   }

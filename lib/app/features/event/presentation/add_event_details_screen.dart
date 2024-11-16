@@ -1,15 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/participants_list_widget.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
@@ -36,8 +33,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   final _eventNameController = TextEditingController();
   final _eventLocationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? _dateTimeString;
+  DateTime? _selectedDateTime;
   var _reminders = <int>[];
+  String? _dateTimeError;
 
   @override
   void initState() {
@@ -52,8 +50,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
           text: 'Create Draft Event',
-          onPressed: () async {
-            await _createDraftEvent(context);
+          onPressed: () {
+            _createDraftEvent(context);
           },
           isEnabled: true,
         ),
@@ -64,22 +62,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         trailing: SettingsTrailingAppBarButton(
           iconPath: 'assets/icons/bell.svg',
           onTap: () async {
-            await ref.read(permissionServiceProvider).callMethodIfHasPermission(
-                  context: context,
-                  permissionType: PermissionType.reminders,
-                  onGranted: () {
-                    SetReminderModal.show(
-                      cacheReminders: _reminders,
-                      context: context,
-                      ref: ref,
-                      onSaved: (List<int> reminders) {
-                        setState(() {
-                          _reminders = reminders;
-                        });
-                      },
-                    );
-                  },
-                );
+            await _editReminders(context);
           },
         ),
       ),
@@ -115,9 +98,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               DateTimeTextFieldWidget(
                 onDateTimeChanged: (dateTime) {
                   setState(() {
-                    _dateTimeString = dateTime;
+                    _selectedDateTime = dateTime;
                   });
                 },
+                dateErrorText: _dateTimeError,
               ),
               const SizedBox(height: Insets.medium),
               Text(
@@ -129,7 +113,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                   .addedMembers
                   .isNotEmpty) ...[
                 const SizedBox(height: Insets.smallNormal),
-                _buildParticipantsList(),
+                const ParticipantsList(),
               ],
               const SizedBox(height: Insets.smallNormal),
               _buildInvitePeopleButton(),
@@ -164,7 +148,17 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   Future<void> _createDraftEvent(BuildContext context) async {
     _setFieldsOnController();
 
-    if (_formKey.currentState!.validate()) {
+    if (_isDateTimeInvalid()) {
+      setState(() {
+        _dateTimeError = 'Please choose a valid date and time';
+      });
+    } else {
+      setState(() {
+        _dateTimeError = null;
+      });
+    }
+
+    if (_isFormValid()) {
       await ref.read(eventNotifierProvider.notifier).createEvent();
 
       final eventId = ref.watch(eventNotifierProvider).event?.id;
@@ -186,7 +180,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         );
       }
     } else {
-      logger.e('error');
+      logger.i('Form is not valid');
     }
   }
 
@@ -197,38 +191,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     ref
         .read(eventControllerProvider.notifier)
         .setEventName(_eventNameController.text);
-    ref
-        .read(eventControllerProvider.notifier)
-        .setDateTime(_dateTimeString ?? '');
-  }
-
-  Widget _buildParticipantsList() {
-    final addedTeamMembers = ref.watch(eventControllerProvider).addedMembers;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: addedTeamMembers.length,
-        itemBuilder: (context, index) {
-          return ParticipantListingItem(
-            name: '${addedTeamMembers[index].name}',
-            photo: addedTeamMembers[index].profilePicture ?? Uint8List(0),
-            status: StagerStatusEnum.UNINVINTED,
-            onDelete: () {
-              ref
-                  .read(eventControllerProvider.notifier)
-                  .removeMemberFromCache(addedTeamMembers[index].id);
-            },
-          );
-        },
-      ),
-    );
+    ref.read(eventControllerProvider.notifier).setDateTime(_selectedDateTime);
   }
 
   Widget _buildCreateRehearsalButton() {
@@ -261,5 +224,32 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       text: 'Invite People',
       icon: Icons.add,
     );
+  }
+
+  bool _isDateTimeInvalid() {
+    return _selectedDateTime == null ||
+        _selectedDateTime!.isBefore(DateTime.now());
+  }
+
+  bool _isFormValid() =>
+      _formKey.currentState!.validate() && _dateTimeError == null;
+
+  Future<void> _editReminders(BuildContext context) async {
+    await ref.read(permissionServiceProvider).callMethodIfHasPermission(
+          context: context,
+          permissionType: PermissionType.reminders,
+          onGranted: () {
+            SetReminderModal.show(
+              cacheReminders: _reminders,
+              context: context,
+              ref: ref,
+              onSaved: (List<int> reminders) {
+                setState(() {
+                  _reminders = reminders;
+                });
+              },
+            );
+          },
+        );
   }
 }
