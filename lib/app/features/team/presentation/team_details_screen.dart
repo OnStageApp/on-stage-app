@@ -4,7 +4,6 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/custom_sett
 import 'package:on_stage_app/app/features/event/presentation/widgets/edit_field_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
-import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_member_modal.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
@@ -23,12 +22,10 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class TeamDetailsScreen extends ConsumerStatefulWidget {
   const TeamDetailsScreen({
     this.isCreating = false,
-    this.team,
     super.key,
   });
 
   final bool isCreating;
-  final Team? team;
 
   @override
   TeamDetailsScreenState createState() => TeamDetailsScreenState();
@@ -62,7 +59,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             const SizedBox(height: 16),
             CustomSettingTile(
               backgroundColor: context.colorScheme.onSurfaceVariant,
-              placeholder: widget.team?.name ?? 'Enter Team Name',
+              placeholder: ref.watch(teamNotifierProvider).currentTeam?.name ??
+                  'Enter Team Name',
               headline: 'Team Name',
               suffix: const SizedBox(),
               onTap: () {
@@ -72,7 +70,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 EditFieldModal.show(
                   context: context,
                   fieldName: 'Team Name',
-                  value: widget.team?.name ?? 'Enter Team Name',
+                  value: ref.watch(teamNotifierProvider).currentTeam?.name ??
+                      'Enter Team Name',
                   onSubmitted: (value) {
                     ref
                         .read(teamNotifierProvider.notifier)

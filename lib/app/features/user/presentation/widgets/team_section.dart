@@ -61,7 +61,6 @@ class TeamsSection extends ConsumerWidget {
             onTap: () {
               context.pushNamed(
                 AppRoute.teamDetails.name,
-                extra: currentTeam,
               );
             },
           ),
