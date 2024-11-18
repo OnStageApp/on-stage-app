@@ -39,6 +39,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       child: _sections.isEmpty
           ? _buildEmptySections()
           : ListView.builder(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               itemCount: _sections.length + 1,
               itemBuilder: (context, index) {
                 if (index == _sections.length) {
@@ -66,6 +67,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   void _listenForTabsChange() {
     ref.listen<int>(tabIndexProvider, (previousIndex, newIndex) {
       if (previousIndex == 0 && newIndex == 1) {
+        //dismiss keyboard
+        FocusScope.of(context).unfocus();
         _updateSong();
       }
     });
@@ -102,20 +105,22 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
 
   Widget _buildSongContentView(
     BuildContext context,
-    SectionData section,
+    SectionData sectionData,
     int index,
   ) {
     return SongContentView(
-      color: section.rawSection.structureItem!.color,
-      shortName: section.rawSection.structureItem!.shortName,
-      name: section.rawSection.structureItem!.name,
+      color: sectionData.rawSection.structureItem!.color,
+      shortName: sectionData.rawSection.structureItem!.shortName,
+      name: sectionData.rawSection.structureItem!.name,
       onDelete: () {
         setState(() {
+          final controller = _sections[index].controller;
           _sections.removeAt(index);
+          controller.dispose(); // Dispose the controller when removing section
         });
         _updateSong();
       },
-      controller: section.controller,
+      controller: sectionData.controller,
     );
   }
 
@@ -126,6 +131,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     );
 
     if (addedStructureItem != null) {
+      final controller = CustomTextEditingController(text: '');
       setState(() {
         _sections.add(
           SectionData(
@@ -133,6 +139,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
               structureItem: addedStructureItem,
               content: '',
             ),
+            controller: controller,
           ),
         );
       });
@@ -143,15 +150,46 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   void _updateSectionsFromSong() {
     final song = ref.watch(songNotifierProvider).song;
     final rawSections = song.rawSections ?? [];
+
+    if (_sections.isEmpty) {
+      // Initialize sections when empty
+      setState(() {
+        _sections = rawSections
+            .map(
+              (rawSection) => SectionData(
+                rawSection: rawSection,
+                controller:
+                    CustomTextEditingController(text: rawSection.content),
+              ),
+            )
+            .toList();
+      });
+      return;
+    }
+
+    // Create a map of existing controllers
+    final existingControllers = {
+      for (var section in _sections)
+        section.rawSection.structureItem: section.controller
+    };
+
+    // Reuse existing controllers when possible
     setState(() {
-      _sections = rawSections
-          .map(
-            (rawSection) => SectionData(
-              rawSection: rawSection,
-              controller: CustomTextEditingController(text: rawSection.content),
-            ),
-          )
-          .toList();
+      _sections = rawSections.map((rawSection) {
+        final existingController =
+            existingControllers[rawSection.structureItem];
+        if (existingController != null) {
+          return SectionData(
+            rawSection: rawSection,
+            controller: existingController,
+          );
+        } else {
+          return SectionData(
+            rawSection: rawSection,
+            controller: CustomTextEditingController(text: rawSection.content),
+          );
+        }
+      }).toList();
     });
   }
 
