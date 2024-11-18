@@ -90,11 +90,9 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
           const SongLibraryToggle(),
           const SizedBox(height: Insets.medium),
           TempoRangeSlider(
-            startValue: 60,
-            endValue: 80,
-            onChanged: (start, end) {
-              print('Start: $start, End: $end');
-            },
+            startValue: 30,
+            endValue: 120,
+            onChanged: (start, end) {},
           ),
           const SizedBox(height: Insets.medium),
         ],

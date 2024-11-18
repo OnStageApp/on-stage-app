@@ -68,6 +68,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           title: 'Profile',
         ),
         body: RefreshIndicator.adaptive(
+          displacement: 0,
           onRefresh: () async {
             await ref
                 .read(subscriptionNotifierProvider.notifier)

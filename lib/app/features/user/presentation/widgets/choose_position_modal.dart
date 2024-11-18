@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -77,7 +77,7 @@ class ChoosePositionModalState extends ConsumerState<ChoosePositionModal> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _selectedPosition =
-            ref.read(currentTeamMemberNotifierProvider).teamMember?.position ??
+            ref.read(userNotifierProvider).currentUser?.position ??
                 Position.values.first;
       });
     });

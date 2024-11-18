@@ -47,7 +47,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(bottom: 80),
+                        margin: const EdgeInsets.only(bottom: 160),
                         child: EventActionButton(
                           onTap: _addNewSection,
                           text: 'Add New Section',

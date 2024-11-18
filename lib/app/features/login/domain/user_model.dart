@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -10,6 +11,7 @@ part 'user_model.g.dart';
 class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
+    required Position? position,
     String? email,
     String? photoUrl,
     String? name,

@@ -114,7 +114,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_home_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.onSurface,
                 BlendMode.srcIn,
@@ -122,7 +122,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_home_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.outline,
                 BlendMode.srcIn,
@@ -134,7 +134,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_list_music_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.onSurface,
                 BlendMode.srcIn,
@@ -142,7 +142,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_list_music_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.outline,
                 BlendMode.srcIn,
@@ -153,7 +153,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_calendar_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.onSurface,
                 BlendMode.srcIn,
@@ -161,7 +161,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_calendar_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.outline,
                 BlendMode.srcIn,
@@ -172,7 +172,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_profile_icon.svg',
-              height: 20,
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.onSurface,
                 BlendMode.srcIn,
@@ -180,6 +180,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_profile_icon.svg',
+              height: 21,
               colorFilter: ColorFilter.mode(
                 context.colorScheme.outline,
                 BlendMode.srcIn,

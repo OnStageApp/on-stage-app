@@ -15,17 +15,16 @@ class PermissionInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response != null && err.response?.data != null) {
       try {
-        final errorResponse = PermissionErrorResponse.fromJson(
-          err.response!.data as Map<String, dynamic>,
-        );
+        final errorData = err.response!.data as Map<String, dynamic>;
 
-        if (errorResponse.errorName == ErrorType.PERMISSION_DENIED) {
+        if (errorData['errorName'] == ErrorType.PERMISSION_DENIED.name) {
+          final errorResponse = PermissionErrorResponse.fromJson(errorData);
           ref.read(networkPermissionProvider.notifier).permissionDenied(
                 errorResponse.param ?? PermissionType.none,
               );
         }
       } catch (e) {
-        logger.e('Failed to parse API error response: $e');
+        logger.e('Failed to parse permission denied error: $e');
       }
     }
 
