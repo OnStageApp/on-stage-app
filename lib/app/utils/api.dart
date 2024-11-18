@@ -28,6 +28,8 @@ class API {
       'stagers/getByEventAndTeamMember';
   static const String eventItems = 'event-items';
   static const String leadVocalsByEventItemId = 'event-items/{id}/lead-vocals';
+  static const String leadVocalsByEventItemIdAndStagerId =
+      'event-items/{id}/lead-vocals/{stagerId}';
   static const String upcomingEvent = 'events/upcoming';
 
   static const String artists = 'artists';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/filter_tempo_range.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
@@ -70,24 +71,32 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: defaultScreenPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          PreferenceArtist(),
-          SizedBox(height: Insets.medium),
-          Row(
+          const PreferenceArtist(),
+          const SizedBox(height: Insets.medium),
+          const Row(
             children: [
               PreferenceGenre(),
               SizedBox(width: Insets.medium),
               PreferenceTheme(),
             ],
           ),
-          SizedBox(height: Insets.medium),
-          SongLibraryToggle(),
-          SizedBox(height: Insets.medium),
+          const SizedBox(height: Insets.medium),
+          const SongLibraryToggle(),
+          const SizedBox(height: Insets.medium),
+          TempoRangeSlider(
+            startValue: 60,
+            endValue: 80,
+            onChanged: (start, end) {
+              print('Start: $start, End: $end');
+            },
+          ),
+          const SizedBox(height: Insets.medium),
         ],
       ),
     );

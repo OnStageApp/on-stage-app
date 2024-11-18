@@ -46,8 +46,9 @@ class VocalLeadModal extends ConsumerStatefulWidget {
                         ref.read(eventItemsNotifierProvider);
                     final eventItemId = eventItemsNotifier
                         .eventItems[eventItemsNotifier.currentIndex].id;
-                    final cachedVocals =
-                        ref.read(eventItemNotifierProvider).leadVocalsCacheList;
+                    final cachedVocals = ref
+                        .read(eventItemNotifierProvider)
+                        .selectedLeadVocalStagers;
                     ref
                         .read(eventItemNotifierProvider.notifier)
                         .updateLeadVocals(eventItemId!, cachedVocals);
@@ -66,7 +67,6 @@ class VocalLeadModal extends ConsumerStatefulWidget {
   }
 }
 
-//TODO: Add FORUI in the APP and LUCIDE Icons instead of these
 class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
   final TextEditingController _searchController = TextEditingController();
   late List<Stager> _allVocals;
@@ -79,7 +79,7 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
   void initState() {
     super.initState();
     final stagers = ref.read(eventNotifierProvider).stagers;
-    final leadVocals = ref.read(eventItemNotifierProvider).leadVocals;
+    final leadVocals = ref.read(eventItemNotifierProvider).leadVocalStagers;
     _allVocals = stagers;
     _searchedVocals = List.from(_allVocals);
     _addedVocals = List.from(leadVocals);
@@ -195,7 +195,7 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
     final notifier = ref.read(eventItemNotifierProvider.notifier);
     setState(() {
       if (isChecked) {
-        notifier.removeFromLeadVocalsCache(stager);
+        notifier.unselectLeadVocals(stager);
         _addedVocals.removeWhere((vocal) => vocal.id == stager.id);
       } else {
         if (_addedVocals.length >= _maxParticipants) {
@@ -205,33 +205,10 @@ class VocalLeadModalState extends ConsumerState<VocalLeadModal> {
             isError: true,
           );
         } else {
-          notifier.addToLeadVocalsCache(stager);
+          notifier.selectLeadVocals(stager);
           _addedVocals.add(stager);
         }
       }
     });
-  }
-
-  Widget _buildAvatar(Stager stager) {
-    final initial =
-        (stager.name?.isNotEmpty ?? false) ? stager.name![0].toUpperCase() : '';
-    return Container(
-      width: 30,
-      height: 30,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: Colors.green,
-          width: 3,
-        ),
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        initial,
-        textAlign: TextAlign.center,
-        style: context.textTheme.titleSmall,
-      ),
-    );
   }
 }

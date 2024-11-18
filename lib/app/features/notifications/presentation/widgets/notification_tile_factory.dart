@@ -141,6 +141,13 @@ class NotificationTileFactory extends ConsumerWidget {
           icon: LucideIcons.user_minus,
           onTap: () {},
         );
+      case NotificationType.LEAD_VOICE_REMOVED:
+        return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
+          description: notification.description,
+          icon: LucideIcons.mic_off,
+          onTap: () {},
+        );
       case null:
         return const SizedBox();
     }

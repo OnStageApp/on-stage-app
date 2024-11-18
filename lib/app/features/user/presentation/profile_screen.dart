@@ -4,7 +4,6 @@ import 'package:on_stage_app/app/features/subscription/subscription_notifier.dar
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/app_settings.dart';
-import 'package:on_stage_app/app/features/user/presentation/widgets/delete_account_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/library_section.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/profile_header.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_button.dart';
@@ -74,8 +73,9 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                 .read(subscriptionNotifierProvider.notifier)
                 .getCurrentSubscription(forceUpdate: true);
             await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
-            await ref.read(currentTeamMemberNotifierProvider.notifier).initializeState();
-
+            await ref
+                .read(currentTeamMemberNotifierProvider.notifier)
+                .initializeState();
           },
           child: SafeArea(
             child: SingleChildScrollView(
@@ -104,8 +104,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     const SizedBox(height: 12),
                     const SignOutButton(),
-                    const SizedBox(height: 12),
-                    const DeleteAccountButton(),
                     const SizedBox(height: 24),
                   ],
                 ),

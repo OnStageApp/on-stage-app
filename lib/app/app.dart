@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
+import 'package:upgrader/upgrader.dart';
 
 class App extends ConsumerStatefulWidget {
   const App({super.key});
@@ -35,7 +36,13 @@ class _AppState extends ConsumerState<App> {
           ? onStageDarkTheme
           : onStageLightTheme,
       builder: (context, child) {
-        return child!;
+        return UpgradeAlert(
+          navigatorKey: router.routerDelegate.navigatorKey,
+          showIgnore: false,
+          showLater: false,
+          showReleaseNotes: false,
+          child: child ?? const Text('child'),
+        );
       },
     );
   }

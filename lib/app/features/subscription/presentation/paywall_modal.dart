@@ -193,9 +193,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Your monthly '
-                        'automatically automatically renews.'
-                        ' Cancel any time '
+                    text: 'Cancel any time '
                         'in the App Store '
                         'at no additional cost. ',
                     style: context.textTheme.bodySmall!.copyWith(

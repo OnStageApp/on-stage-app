@@ -91,9 +91,36 @@ class ChordProcessor extends _$ChordProcessor {
         )
         .toList();
 
+    // Then compress consecutive duplicate sections
+    final compressedSections = <Section>[];
+
+    if (modifiedDocumentContent.isNotEmpty) {
+      var currentSection = modifiedDocumentContent[0];
+      var count = 1;
+
+      for (var i = 1; i < modifiedDocumentContent.length; i++) {
+        if (modifiedDocumentContent[i] == currentSection) {
+          count++;
+        } else {
+          compressedSections.add(
+            Section(currentSection.lines, currentSection.structure,
+                count: count),
+          );
+          currentSection = modifiedDocumentContent[i];
+          count = 1;
+        }
+      }
+
+      // Add the last section
+      compressedSections.add(
+        Section(currentSection.lines, currentSection.structure, count: count),
+      );
+    }
+
+    print('Compressed Sections: ${compressedSections.first.count}');
     state = state.copyWith(
       content: Content(
-        sections: modifiedDocumentContent,
+        sections: compressedSections,
         originalSections: originalSections,
       ),
     );

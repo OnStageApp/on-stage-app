@@ -7,7 +7,7 @@ part 'event_item_state.freezed.dart';
 class EventItemState with _$EventItemState {
   const factory EventItemState({
     @Default(false) bool isLoading,
-    @Default([]) List<Stager> leadVocals,
-    @Default([]) List<Stager> leadVocalsCacheList,
+    @Default([]) List<Stager> leadVocalStagers,
+    @Default([]) List<Stager> selectedLeadVocalStagers,
   }) = _EventItemState;
 }

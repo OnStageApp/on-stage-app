@@ -34,7 +34,12 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
 
   @override
   Widget build(BuildContext context) {
-    final leadVocals = ref.watch(eventItemNotifierProvider).leadVocals;
+    final leadVocalStagers =
+        ref.watch(eventItemNotifierProvider).leadVocalStagers;
+    final eventItemId = ref
+        .watch(eventItemsNotifierProvider)
+        .eventItems[ref.read(eventItemsNotifierProvider).currentIndex]
+        .id;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,7 +47,7 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
           'Lead Vocals',
           style: context.textTheme.titleSmall,
         ),
-        if (leadVocals.isNotNullOrEmpty)
+        if (leadVocalStagers.isNotNullOrEmpty)
           Container(
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -53,12 +58,20 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
             child: ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: leadVocals.length,
+              itemCount: leadVocalStagers.length,
               itemBuilder: (context, index) {
                 return ParticipantListingItem(
-                  name: leadVocals[index].name ?? '',
-                  photo: leadVocals[index].profilePicture,
-                  onDelete: () {},
+                  name: leadVocalStagers[index].name ?? '',
+                  photo: leadVocalStagers[index].profilePicture,
+                  onDelete: () {
+                    if (eventItemId == null) return;
+                    ref
+                        .read(eventItemNotifierProvider.notifier)
+                        .removeLeadVocal(
+                          eventItemId,
+                          leadVocalStagers[index].id,
+                        );
+                  },
                 );
               },
             ),
@@ -72,7 +85,7 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
             },
             text: 'Add Lead Vocals',
           )
-        else if (leadVocals.isEmpty)
+        else if (leadVocalStagers.isEmpty)
           EventActionButton(
             onTap: () {},
             text: 'No Lead Vocals Added',

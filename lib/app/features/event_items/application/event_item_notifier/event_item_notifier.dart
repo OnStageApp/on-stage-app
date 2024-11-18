@@ -27,42 +27,56 @@ class EventItemNotifier extends _$EventItemNotifier {
   }
 
   Future<void> getLeadVocals(String eventItemId) async {
-    var leadVocals = await eventItemsRepository.getLeadVocals(eventItemId);
-    leadVocals = await Future.wait(
-      leadVocals.map(_getStagerWithPhoto),
+    var leadVocalStagers =
+        await eventItemsRepository.getLeadVocals(eventItemId);
+    leadVocalStagers = await Future.wait(
+      leadVocalStagers.map(_getStagerWithPhoto),
     );
     state = state.copyWith(
-      leadVocals: leadVocals,
-      leadVocalsCacheList: leadVocals,
+      leadVocalStagers: leadVocalStagers,
+      selectedLeadVocalStagers: leadVocalStagers,
     );
   }
 
   Future<void> updateLeadVocals(
     String eventItemId,
-    List<Stager> leadVocals,
+    List<Stager> leadVocalStagers,
   ) async {
     state = state.copyWith(
-      leadVocals: leadVocals,
-      leadVocalsCacheList: leadVocals,
+      leadVocalStagers: leadVocalStagers,
+      selectedLeadVocalStagers: leadVocalStagers,
     );
-    final leadVocalIds = leadVocals.map((e) => e.id).toList();
-    unawaited(eventItemsRepository.updateLeadVocals(eventItemId, leadVocalIds));
+    final stagerIds = leadVocalStagers.map((e) => e.id).toList();
+    unawaited(eventItemsRepository.updateLeadVocals(eventItemId, stagerIds));
   }
 
-  void addToLeadVocalsCache(Stager stager) {
-    final updatedCache = List<Stager>.from(state.leadVocalsCacheList)
+  Future<void> removeLeadVocal(
+    String eventItemId,
+    String stagerId,
+  ) async {
+    final updatedLeadVocals = List<Stager>.from(state.leadVocalStagers)
+      ..removeWhere((s) => s.id == stagerId);
+    state = state.copyWith(
+      leadVocalStagers: updatedLeadVocals,
+      selectedLeadVocalStagers: updatedLeadVocals,
+    );
+    unawaited(eventItemsRepository.deleteLeadVocals(eventItemId, stagerId));
+  }
+
+  void selectLeadVocals(Stager stager) {
+    final updatedCache = List<Stager>.from(state.selectedLeadVocalStagers)
       ..add(stager);
-    state = state.copyWith(leadVocalsCacheList: updatedCache);
+    state = state.copyWith(selectedLeadVocalStagers: updatedCache);
   }
 
-  void removeFromLeadVocalsCache(Stager stager) {
-    final updatedCache = List<Stager>.from(state.leadVocalsCacheList)
+  void unselectLeadVocals(Stager stager) {
+    final updatedCache = List<Stager>.from(state.selectedLeadVocalStagers)
       ..removeWhere((s) => s.id == stager.id);
-    state = state.copyWith(leadVocalsCacheList: updatedCache);
+    state = state.copyWith(selectedLeadVocalStagers: updatedCache);
   }
 
-  List<Stager> getLeadVocalsCache() {
-    return state.leadVocalsCacheList;
+  List<Stager> getSelectedLeadVocals() {
+    return state.selectedLeadVocalStagers;
   }
 
   Future<Stager> _getStagerWithPhoto(

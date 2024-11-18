@@ -166,10 +166,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         return;
       }
 
-      await ref.read(reminderNotifierProvider.notifier).createReminders(
-            _reminders,
-            ref.watch(eventNotifierProvider).event!.id!,
-          );
+      if (_reminders.isNotEmpty) {
+        await ref.read(reminderNotifierProvider.notifier).createReminders(
+              _reminders,
+              ref.watch(eventNotifierProvider).event!.id!,
+            );
+      }
 
       if (mounted) {
         context.pushReplacementNamed(
