@@ -9,7 +9,7 @@ import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_for
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_second_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_third_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/widgets/onboarding_button.dart';
-import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -125,26 +125,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _updateUser() {
-    // final updatedUserRequest = UserRequest(
-    //   name: ref.read(onboardingFifthControllerProvider).fullName,
-    // );
-
-    // ref.read(userNotifierProvider.notifier).editUserById(updatedUserRequest);
-
-    ref
-        .read(currentTeamMemberNotifierProvider.notifier)
-        .updateTeamMemberPosition(
+    ref.read(userNotifierProvider.notifier).updatePositionOnUser(
           ref.watch(onboardingFifthControllerProvider).position,
         );
   }
 
   bool _isFormValid() {
     final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
-
-    // final isNameValid = onboardingProvider.fullName.isNotNullEmptyOrWhitespace;
     final isPositionValid = onboardingProvider.position != null;
 
-    // return isNameValid && isPositionValid;
     return isPositionValid;
   }
 }

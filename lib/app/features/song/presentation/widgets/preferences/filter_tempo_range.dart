@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TempoRangeSlider extends StatefulWidget {
-  final double startValue;
-  final double endValue;
-  final Function(double start, double end)? onChanged;
-
   const TempoRangeSlider({
-    super.key,
     required this.startValue,
     required this.endValue,
+    super.key,
     this.onChanged,
   });
+
+  final double startValue;
+  final double endValue;
+  final void Function(double start, double end)? onChanged;
 
   @override
   State<TempoRangeSlider> createState() => _TempoRangeSliderState();
@@ -20,7 +20,7 @@ class TempoRangeSlider extends StatefulWidget {
 class _TempoRangeSliderState extends State<TempoRangeSlider> {
   static const double minValue = 30;
   static const double maxValue = 120;
-  static const double minRange = 30;
+  static const double minRange = 40;
 
   double _startValue = 60;
   double _endValue = 80;

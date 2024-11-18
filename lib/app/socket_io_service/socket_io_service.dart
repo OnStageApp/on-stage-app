@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/enums/socket_event_type.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
@@ -115,9 +118,16 @@ class SocketIoService extends _$SocketIoService {
   void _listenOnSubscriptionUpdate() {
     _socket?.on('SUBSCRIPTION', (data) async {
       logger.i('Received subscriptionChanged event: $data');
-      await ref
-          .read(subscriptionNotifierProvider.notifier)
-          .getCurrentSubscription(forceUpdate: true);
+      unawaited(
+        Future.wait(
+          [
+            ref
+                .read(subscriptionNotifierProvider.notifier)
+                .getCurrentSubscription(forceUpdate: true),
+            ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
+          ],
+        ),
+      );
     });
   }
 

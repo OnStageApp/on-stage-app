@@ -6,10 +6,10 @@ import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/login/domain/user_request.dart';
+import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
-import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -114,9 +114,15 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  Future<void> checkPermissions(PermissionType permission) async {
-    final hasPermissions =
-        await usersRepository.checkPermission(permission.name);
+  Future<void> updatePositionOnUser(Position? position) async {
+    final userId = state.currentUser?.id;
+
+    if (userId == null || position == null) return;
+    state = state.copyWith(
+      currentUser: state.currentUser?.copyWith(position: position),
+    );
+    final request = UserRequest(position: position);
+    unawaited(usersRepository.editUser(request));
   }
 
   Future<Uint8List?> _getPhotoBytes(bool forceUpdate) async {

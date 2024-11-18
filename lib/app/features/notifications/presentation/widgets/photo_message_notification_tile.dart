@@ -29,7 +29,6 @@ class PhotoMessageNotificationTile extends NotificationTile {
   @override
   Widget buildContent(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 3),
         Row(
@@ -40,12 +39,14 @@ class PhotoMessageNotificationTile extends NotificationTile {
                 children: [
                   if (description.isNotNullEmptyOrWhitespace) ...[
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (icon != null)
-                          Icon(
-                            icon,
-                            color: context.colorScheme.onSurface,
+                          SizedBox(
+                            width: 38,
+                            child: Icon(
+                              icon,
+                              color: context.colorScheme.onSurface,
+                            ),
                           )
                         else
                           ImageWithPlaceholder(

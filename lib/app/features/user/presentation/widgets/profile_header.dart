@@ -27,7 +27,7 @@ class ProfileHeader extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  '${user?.name}',
+                  user?.name ?? 'user',
                   style: context.textTheme.headlineMedium,
                 ),
                 const Spacer(),
