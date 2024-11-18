@@ -32,6 +32,12 @@ abstract class EventItemsRepository {
   @PUT(API.leadVocalsByEventItemId)
   Future<void> updateLeadVocals(
     @Path('id') String id,
-    @Body() List<String> leadVocalIds,
+    @Body() List<String> stagerIds,
+  );
+
+  @DELETE(API.leadVocalsByEventItemIdAndStagerId)
+  Future<void> deleteLeadVocals(
+    @Path('id') String id,
+    @Path('stagerId') String stagerId,
   );
 }

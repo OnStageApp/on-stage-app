@@ -209,40 +209,62 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(60),
-            color: Color(sections[index].structure.color),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                color: Color(sections[index].structure.color),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 24,
+                    width: 24,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                    child: Text(
+                      sections[index].structure.shortName,
+                      style: context.textTheme.labelSmall,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    sections[index].structure.name,
+                    style: context.textTheme.labelLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: context.colorScheme.shadow,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+              ),
+            ),
+            if (sections[index].count > 1) ...[
+              const SizedBox(width: 6),
               Container(
-                height: 24,
-                width: 24,
-                alignment: Alignment.center,
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: context.colorScheme.onSurfaceVariant,
+                  color: Color(sections[index].structure.color),
                 ),
                 child: Text(
-                  sections[index].structure.shortName,
-                  style: context.textTheme.labelSmall,
+                  'x${sections[index].count}',
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.shadow,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                sections[index].structure.name,
-                style: context.textTheme.labelLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.shadow,
-                ),
-              ),
-              const SizedBox(width: 12),
             ],
-          ),
+          ],
         ),
         ListView.separated(
           shrinkWrap: true,
@@ -336,10 +358,11 @@ class TextRender extends CustomPainter {
 }
 
 class Section {
-  Section(this.lines, this.structure);
+  Section(this.lines, this.structure, {this.count = 1});
 
   final List<SongLines> lines;
   final StructureItem structure;
+  final int count;
 
   @override
   bool operator ==(Object other) =>

@@ -9,6 +9,7 @@ enum NotificationType {
   LEAD_VOICE_ASSIGNED,
   EVENT_DELETED,
   TEAM_MEMBER_REMOVED,
+  LEAD_VOICE_REMOVED,
 }
 
 extension NotificationTypeX on NotificationType {
@@ -35,6 +36,8 @@ extension NotificationTypeX on NotificationType {
         return 'EVENT_DELETED';
       case NotificationType.TEAM_MEMBER_REMOVED:
         return 'TEAM_MEMBER_REMOVED';
+      case NotificationType.LEAD_VOICE_REMOVED:
+        return 'LEAD_VOICE_REMOVED';
     }
   }
 
@@ -60,6 +63,8 @@ extension NotificationTypeX on NotificationType {
         return 'Event Deleted';
       case NotificationType.TEAM_MEMBER_REMOVED:
         return 'Team Member Removed';
+      case NotificationType.LEAD_VOICE_REMOVED:
+        return 'Lead Voice Removed';
     }
   }
 }

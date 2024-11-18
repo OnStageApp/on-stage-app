@@ -76,6 +76,20 @@ android {
 
     }
 
+    flavorDimensions "environment"
+    productFlavors {
+        development {
+            dimension "environment"
+            applicationId "com.avtech.onstage"
+            versionNameSuffix "-development"
+        }
+        production {
+            dimension "environment"
+            applicationId "com.avtech.onstage"
+            versionNameSuffix "--production"
+        }
+    }
+
     signingConfigs {
         if (System.getenv("ANDROID_KEYSTORE_PATH")) {
             release {

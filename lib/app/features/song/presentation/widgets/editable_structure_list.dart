@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -12,47 +13,32 @@ class EditableStructureList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var structures = <StructureItem>[];
+    var sections = <Section>[];
 
-    structures = ref
-        .watch(songNotifierProvider)
-        .sections
-        .map((e) => e.structure)
-        .toList();
+    sections = ref.watch(songNotifierProvider).sections;
 
     return SizedBox(
       height: 36,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: structures.length,
+        itemCount: sections.length,
         itemBuilder: (context, index) {
-          if (index > 0 && structures[index] == structures[index - 1]) {
-            return const SizedBox.shrink();
-          }
-          final xTimes = _calculateXTimes(structures, index);
+          final structure = sections[index].structure;
+          final count = sections[index].count;
           return AnimatedTile(
-            key: ValueKey('${structures[index].shortName}_'
-                '${structures[index].index}'),
-            structureItem: structures[index],
+            key: ValueKey('${structure.shortName}_'
+                '${structure.index}'),
+            structureItem: structure,
             index: index,
-            xTimes: xTimes,
+            xTimes: count,
             onTap: () {
               ref.read(songNotifierProvider.notifier).selectSection(index);
-              logger.i('selected ${structures[index].name}');
+              logger.i('selected ${structure.name}');
             },
           );
         },
       ),
     );
-  }
-
-  int _calculateXTimes(List<StructureItem> structures, int index) {
-    var xTimes = 1;
-    while (index + xTimes < structures.length &&
-        structures[index + xTimes] == structures[index]) {
-      xTimes++;
-    }
-    return xTimes;
   }
 }
 
