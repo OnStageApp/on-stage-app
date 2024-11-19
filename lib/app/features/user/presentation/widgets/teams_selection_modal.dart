@@ -141,8 +141,8 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         await ref
                             .read(teamsNotifierProvider.notifier)
                             .setCurrentTeam(
-                          _teams.elementAt(index).id,
-                        );
+                              _teams.elementAt(index).id,
+                            );
 
                         await ref
                             .read(teamNotifierProvider.notifier)
@@ -150,7 +150,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                         ref.read(eventsNotifierProvider.notifier).resetState();
                         ref
                             .read(navigationNotifierProvider.notifier)
-                            .resetRouter();
+                            .resetRouterAndState();
                       },
                     ),
                   );
@@ -164,6 +164,5 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
 
   bool _isItemChecked(int index) =>
       ref.watch(teamsNotifierProvider).currentTeamId ==
-          _teams.elementAt(index).id;
+      _teams.elementAt(index).id;
 }
-

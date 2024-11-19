@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/subscription/subscription_notifier.dar
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/utils/api.dart';
+import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -84,7 +85,7 @@ class SocketIoService extends _$SocketIoService {
     _socket?.off('disconnect');
     _socket?.off('connect_error');
     _socket?.off('error');
-    _socket?.off(SocketEventType.notification.name);
+    _socket?.off(SocketEventType.NOTIFICATION.name);
 
     _socket?.onConnect((_) {
       logger.i('Socket connected for user: $_currentDeviceId');
@@ -107,7 +108,7 @@ class SocketIoService extends _$SocketIoService {
   }
 
   void _listenOnNotifications() {
-    _socket?.on(SocketEventType.notification.name, (data) {
+    _socket?.on(SocketEventType.NOTIFICATION.name, (data) {
       logger.i('Received notification event: $data');
       ref.read(notificationNotifierProvider.notifier)
         ..getNotifications()
@@ -116,8 +117,8 @@ class SocketIoService extends _$SocketIoService {
   }
 
   void _listenOnSubscriptionUpdate() {
-    _socket?.on('SUBSCRIPTION', (data) async {
-      logger.i('Received subscriptionChanged event: $data');
+    _socket?.on(SocketEventType.SUBSCRIPTION.name, (data) async {
+      logger.i('Received SUBSCRIPTION event: $data');
       unawaited(
         Future.wait(
           [
@@ -128,6 +129,11 @@ class SocketIoService extends _$SocketIoService {
           ],
         ),
       );
+    });
+
+    _socket?.on(SocketEventType.TEAM_CHANGED.name, (data) async {
+      logger.i('Received TEAM_CHANGED event: $data');
+      ref.read(navigationNotifierProvider.notifier).resetRouterAndState();
     });
   }
 
