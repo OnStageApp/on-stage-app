@@ -64,7 +64,7 @@ class NavigationNotifier extends _$NavigationNotifier {
     _profileShellKey = GlobalKey<NavigatorState>();
   }
 
-  void resetRouter() {
+  void resetRouterAndState() {
     _resetNavigatorKeys();
     state = _createRouter();
   }

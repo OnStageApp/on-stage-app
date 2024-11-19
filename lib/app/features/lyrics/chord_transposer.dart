@@ -11,8 +11,10 @@ class ChordTransposer {
         break;
       case SongViewMode.american:
         cycle = americanNotes;
+        break;
       case SongViewMode.numeric:
         cycle = romanNumerals;
+        break;
     }
   }
 
@@ -20,6 +22,26 @@ class ChordTransposer {
   late List<String> cycle;
   int transpose;
   String key;
+
+  static const Map<String, int> noteToSemitone = {
+    'C': 0,
+    'C#': 1,
+    'Db': 1,
+    'D': 2,
+    'D#': 3,
+    'Eb': 3,
+    'E': 4,
+    'F': 5,
+    'F#': 6,
+    'Gb': 6,
+    'G': 7,
+    'G#': 8,
+    'Ab': 8,
+    'A': 9,
+    'A#': 10,
+    'Bb': 10,
+    'B': 11,
+  };
 
   static const List<String> americanNotes = [
     'C',
@@ -33,17 +55,22 @@ class ChordTransposer {
     'G#',
     'A',
     'A#',
-    'B'
+    'B',
+    'Db',
+    'Eb',
+    'Gb',
+    'Ab',
+    'Bb',
   ];
 
   static const List<String> romanNumerals = [
     'I',
-    'II',
-    'III',
+    'ii',
+    'iii',
     'IV',
     'V',
-    'VI',
-    'VII'
+    'vi',
+    'vii°'
   ];
 
   String transposeChord(String chord) {
@@ -96,111 +123,101 @@ class ChordTransposer {
   }
 
   String _toNumeric(String chord, String key) {
-    // Match the chord root and its suffix
-    final match = RegExp(r'^([A-G]#?)(.*)$').firstMatch(chord);
+    final match = RegExp(r'^([A-G])([#b]?)(m|maj|min|dim|aug)?([#b]?)(.*)$')
+        .firstMatch(chord);
     if (match == null) return chord;
 
-    final root = match.group(1)!; // The root note (e.g., G, A#)
-    final suffix = match.group(2)!; // The rest of the chord (e.g., m7, sus4)
+    String root = match.group(1)!;
+    String accidental = match.group(2) ?? '';
+    String quality = match.group(3) ?? '';
+    String accidental2 = match.group(4) ?? '';
+    String suffix = match.group(5) ?? '';
 
-    // Extract the key root and mode (major or minor)
-    final keyMatch =
-        RegExp(r'^([A-G]#?)\s+(Major|minor)$', caseSensitive: false)
-            .firstMatch(key);
+    if (accidental2.isNotEmpty) {
+      if (accidental.isNotEmpty) {
+        // Both accidentals present, possibly an invalid chord
+        return chord; // Or handle as needed
+      } else {
+        accidental = accidental2;
+      }
+    }
+
+    root += accidental;
+    suffix = quality + suffix;
+
+    final keyMatch = RegExp(r'^([A-G][#b]?)(\s|$)').firstMatch(key);
     if (keyMatch == null) return chord;
 
     final keyRoot = keyMatch.group(1)!;
-    final keyMode = keyMatch.group(2)!.toLowerCase();
 
-    // Define the American note system
-    final americanNotes = [
-      'C',
-      'C#',
-      'D',
-      'D#',
-      'E',
-      'F',
-      'F#',
-      'G',
-      'G#',
-      'A',
-      'A#',
-      'B'
+    // Semitone mapping
+    final Map<String, int> noteSemitoneMap = {
+      'C': 0,
+      'C#': 1,
+      'Db': 1,
+      'D': 2,
+      'D#': 3,
+      'Eb': 3,
+      'E': 4,
+      'F': 5,
+      'F#': 6,
+      'Gb': 6,
+      'G': 7,
+      'G#': 8,
+      'Ab': 8,
+      'A': 9,
+      'A#': 10,
+      'Bb': 10,
+      'B': 11
+    };
+
+    final keySemitone = noteSemitoneMap[keyRoot];
+    final chordSemitone = noteSemitoneMap[root];
+
+    if (keySemitone == null || chordSemitone == null) return chord;
+
+    var interval = (chordSemitone - keySemitone + 12) % 12;
+
+    // Extended scale steps and Roman numerals
+    final scaleSteps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    final romanNumerals = [
+      'I',
+      '♭II',
+      'II',
+      '♭III',
+      'III',
+      'IV',
+      '♯IV/♭V',
+      'V',
+      '♭VI',
+      'VI',
+      '♭VII',
+      'VII'
     ];
-    final keyIndex = americanNotes.indexOf(keyRoot);
-    final chordIndex = americanNotes.indexOf(root);
 
-    // If the chord root is not found in the cycle, return the chord unchanged
-    if (chordIndex == -1) return chord;
+    var degreeIndex = scaleSteps.indexOf(interval);
+    if (degreeIndex == -1) return chord;
 
-    // Calculate the relative degree of the chord based on the key
-    var numericValue = (chordIndex - keyIndex + 12) % 12;
+    var romanNumeral = romanNumerals[degreeIndex];
 
-    // Define Roman numerals with accidentals for chromatic chords
-    final chromaticRomanNumerals = {
-      0: 'I',
-      1: 'bII',
-      2: 'II',
-      3: 'bIII',
-      4: 'III',
-      5: 'IV',
-      6: '#IV',
-      7: 'V',
-      8: 'bVI',
-      9: 'VI',
-      10: 'bVII',
-      11: 'VII'
-    };
+    bool isMinorChord = quality.startsWith('m') || quality.startsWith('min');
 
-    // Determine if the chord is minor
-    bool isMinorChord = suffix.contains('m');
-
-    // Get the Roman numeral for the scale degree, with accidentals if needed
-    var romanNumeral = chromaticRomanNumerals[numericValue] ?? chord;
-
-    // Define expected major/minor scale degrees for a major key
-    final majorKeyStructure = {
-      0: 'maj',
-      2: 'min',
-      4: 'min',
-      5: 'maj',
-      7: 'maj',
-      9: 'min',
-      11: 'dim'
-    };
-    final minorKeyStructure = {
-      0: 'min',
-      2: 'dim',
-      3: 'maj',
-      5: 'min',
-      7: 'min',
-      8: 'maj',
-      10: 'maj'
-    };
-
-    // Determine the expected chord quality (maj/min) based on the key
-    final expectedQuality = keyMode == 'major'
-        ? majorKeyStructure[numericValue]
-        : minorKeyStructure[numericValue];
-
-    // Adjust the Roman numeral notation to reflect actual and expected qualities
-    if (expectedQuality == 'min' && !isMinorChord) {
-      romanNumeral += 'Maj'; // Out-of-key major chord where minor is expected
-    } else if (expectedQuality == 'maj' && isMinorChord) {
-      romanNumeral += 'min'; // Out-of-key minor chord where major is expected
-    } else if (isMinorChord) {
-      romanNumeral = romanNumeral.toLowerCase(); // Standard lowercase for minor
+    // Adjust case based on chord quality
+    if (isMinorChord) {
+      romanNumeral = romanNumeral.toLowerCase();
+    } else {
+      romanNumeral = romanNumeral.toUpperCase();
     }
 
-    // Convert chord suffix (e.g., 'maj', 'dim') based on notation preferences
     return romanNumeral + _convertSuffix(suffix);
   }
 
-// Helper function to convert chord suffixes like "maj", "m7", "dim", "aug"
   String _convertSuffix(String suffix) {
+    if (suffix.isEmpty) return '';
     suffix = suffix.replaceAll('maj', 'Δ');
-    suffix = suffix.replaceAll('m', '');
-    suffix = suffix.replaceAll('sus', 'sus');
+    suffix = suffix.replaceAll('min', 'm');
+    suffix =
+        suffix.replaceAll('m', ''); // Minor is indicated by lowercase numeral
     suffix = suffix.replaceAll('aug', '+');
     suffix = suffix.replaceAll('dim', '°');
     return suffix;
