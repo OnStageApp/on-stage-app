@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -43,7 +43,7 @@ class GenreModal extends ConsumerStatefulWidget {
 }
 
 class GenreModalState extends ConsumerState<GenreModal> {
-  final List<GenreFilterEnum> _allGenres = GenresDummy.genres;
+  final List<GenreEnum> _allGenres = GenresDummy.genres;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
     );
   }
 
-  Widget _buildTile(GenreFilterEnum genre) {
+  Widget _buildTile(GenreEnum genre) {
     return InkWell(
       onTap: () {
         ref.read(searchNotifierProvider.notifier).setGenreFilter(
@@ -102,13 +102,10 @@ class GenreModalState extends ConsumerState<GenreModal> {
                 ),
                 shape: BoxShape.circle,
               ),
-              child: Text(
-                genre.name.substring(0, 1),
-                textAlign: TextAlign.center,
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.colorScheme.onSurface
-                )
-              ),
+              child: Text(genre.name.substring(0, 1),
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.titleSmall!
+                      .copyWith(color: context.colorScheme.onSurface)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 12),
@@ -123,6 +120,6 @@ class GenreModalState extends ConsumerState<GenreModal> {
     );
   }
 
-  bool _isItemSelected(GenreFilterEnum genre) =>
+  bool _isItemSelected(GenreEnum genre) =>
       ref.watch(searchNotifierProvider).genreFilter == genre;
 }

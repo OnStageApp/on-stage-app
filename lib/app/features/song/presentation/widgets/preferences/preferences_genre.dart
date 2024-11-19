@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/genres_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -16,9 +16,9 @@ class PreferenceGenre extends ConsumerStatefulWidget {
 }
 
 class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
-  late GenreFilterEnum selectedGenre;
+  late GenreEnum selectedGenre;
 
-  final List<GenreFilterEnum> genres = GenresDummy.genres;
+  final List<GenreEnum> genres = GenresDummy.genres;
 
   @override
   void initState() {

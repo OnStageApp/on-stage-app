@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -139,8 +141,14 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
                 onPressed: () async {
                   final subscriptionNotifier =
                       ref.read(subscriptionNotifierProvider.notifier);
-                  await subscriptionNotifier
-                      .purchasePackage(upgradePlan!.revenueCatProductId);
+                  if (Platform.isIOS) {
+                    await subscriptionNotifier
+                        .purchasePackage(upgradePlan!.appleProductId);
+                  } else {
+                    await subscriptionNotifier
+                        .purchasePackage(upgradePlan!.googleProductId);
+                  }
+
                   if (mounted) {
                     context.popDialog();
                   }

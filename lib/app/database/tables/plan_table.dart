@@ -9,7 +9,9 @@ class PlanTable extends Table {
 
   TextColumn get entitlementId => text()();
 
-  TextColumn get revenueCatProductId => text()();
+  TextColumn get appleProductId => text()();
+
+  TextColumn get googleProductId => text()();
 
   RealColumn get price => real()();
 
@@ -39,7 +41,8 @@ extension PlanTableDataX on PlanTableData {
       id: id,
       name: name,
       entitlementId: entitlementId,
-      revenueCatProductId: revenueCatProductId,
+      appleProductId: appleProductId,
+      googleProductId: googleProductId,
       price: price,
       currency: currency,
       isYearly: isYearly,
@@ -59,7 +62,8 @@ extension PlanX on Plan {
       id: id,
       name: name,
       entitlementId: entitlementId,
-      revenueCatProductId: revenueCatProductId,
+      appleProductId: appleProductId,
+      googleProductId: googleProductId,
       price: price,
       currency: currency,
       isYearly: isYearly,

@@ -8,7 +8,9 @@ import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart'
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -35,6 +37,8 @@ class AddSongFirstStepDetailsState
   Artist? _selectedArtist;
   String? _keyError;
   String? _artistError;
+  String? _themeError;
+  String? _genreError;
 
   @override
   void initState() {
@@ -119,29 +123,13 @@ class AddSongFirstStepDetailsState
               ),
               const SizedBox(height: Insets.medium),
               ..._buildKeyTile(context),
-              if (_keyError != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 4),
-                  child: Text(
-                    _keyError!,
-                    style: context.textTheme.bodySmall!.copyWith(
-                      color: context.colorScheme.error,
-                    ),
-                  ),
-                ),
               const SizedBox(height: Insets.medium),
               ..._buildArtistTile(context),
-              if (_artistError != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 4),
-                  child: Text(
-                    _artistError!,
-                    style: context.textTheme.bodySmall!.copyWith(
-                      color: context.colorScheme.error,
-                    ),
-                  ),
-                ),
               const SizedBox(height: Insets.medium),
+              ..._buildGenreTile(context),
+              const SizedBox(height: Insets.medium),
+              ..._buildThemeTile(context),
+              const SizedBox(height: 120),
             ],
           ),
         ),
@@ -175,6 +163,74 @@ class AddSongFirstStepDetailsState
           );
         },
       ),
+      if (_keyError != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 4),
+          child: Text(
+            _keyError!,
+            style: context.textTheme.bodySmall!.copyWith(
+              color: context.colorScheme.error,
+            ),
+          ),
+        ),
+    ];
+  }
+
+  List<Widget> _buildThemeTile(BuildContext context) {
+    return [
+      Text(
+        'Theme',
+        style: context.textTheme.titleSmall!.copyWith(
+          color: context.colorScheme.onSurface,
+        ),
+      ),
+      const SizedBox(height: Insets.small),
+      PreferencesActionTile(
+        title: 'Choose one or more themes',
+        trailingIcon: Icons.keyboard_arrow_down_rounded,
+        onTap: () {
+          ThemeModal.show(context: context);
+        },
+      ),
+      if (_themeError != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 4),
+          child: Text(
+            _themeError!,
+            style: context.textTheme.bodySmall!.copyWith(
+              color: context.colorScheme.error,
+            ),
+          ),
+        ),
+    ];
+  }
+
+  List<Widget> _buildGenreTile(BuildContext context) {
+    return [
+      Text(
+        'Genre',
+        style: context.textTheme.titleSmall!.copyWith(
+          color: context.colorScheme.onSurface,
+        ),
+      ),
+      const SizedBox(height: Insets.small),
+      PreferencesActionTile(
+        title: 'Choose genre',
+        trailingIcon: Icons.keyboard_arrow_down_rounded,
+        onTap: () {
+          GenreModal.show(context: context);
+        },
+      ),
+      if (_genreError != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 4),
+          child: Text(
+            _genreError!,
+            style: context.textTheme.bodySmall!.copyWith(
+              color: context.colorScheme.error,
+            ),
+          ),
+        ),
     ];
   }
 
@@ -202,6 +258,16 @@ class AddSongFirstStepDetailsState
           );
         },
       ),
+      if (_artistError != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 16, top: 4),
+          child: Text(
+            _artistError!,
+            style: context.textTheme.bodySmall!.copyWith(
+              color: context.colorScheme.error,
+            ),
+          ),
+        ),
     ];
   }
 

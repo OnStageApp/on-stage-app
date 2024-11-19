@@ -11,9 +11,14 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ArtistModal extends ConsumerStatefulWidget {
-  const ArtistModal(this.onArtistSelected, {super.key});
+  const ArtistModal(
+    this.onArtistSelected, {
+    this.showAddArtistButton = true,
+    super.key,
+  });
 
   final void Function(Artist) onArtistSelected;
+  final bool showAddArtistButton;
 
   @override
   ArtistModalState createState() => ArtistModalState();
@@ -21,6 +26,7 @@ class ArtistModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required void Function(Artist) onArtistSelected,
+    bool showAddArtistButton = true,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -42,7 +48,10 @@ class ArtistModal extends ConsumerStatefulWidget {
         footerHeight: () {
           return 64;
         },
-        buildContent: () => ArtistModal(onArtistSelected),
+        buildContent: () => ArtistModal(
+          onArtistSelected,
+          showAddArtistButton: showAddArtistButton,
+        ),
       ),
     );
   }
@@ -83,18 +92,22 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
               _artists.length + 1,
               (index) {
                 if (_artists.length == index) {
-                  return EventActionButton(
-                    text: 'Add Artist',
-                    icon: Icons.add,
-                    onTap: () async {
-                      await AddArtistModal.show(
-                        context: context,
-                      );
-                      await ref
-                          .read(artistsNotifierProvider.notifier)
-                          .getArtists();
-                    },
-                  );
+                  if (widget.showAddArtistButton) {
+                    return EventActionButton(
+                      text: 'Add Artist',
+                      icon: Icons.add,
+                      onTap: () async {
+                        await AddArtistModal.show(
+                          context: context,
+                        );
+                        await ref
+                            .read(artistsNotifierProvider.notifier)
+                            .getArtists();
+                      },
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -128,5 +141,3 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
       ref.watch(searchNotifierProvider).artistFilter ==
       _artists.elementAt(index);
 }
-
-

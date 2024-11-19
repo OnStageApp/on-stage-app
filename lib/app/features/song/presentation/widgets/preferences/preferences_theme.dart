@@ -16,9 +16,9 @@ class PreferenceTheme extends ConsumerStatefulWidget {
 }
 
 class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
-  late ThemeFilterEnum selectedTheme;
+  late ThemeEnum selectedTheme;
 
-  final List<ThemeFilterEnum> themes = ThemesDummy.themes;
+  final List<ThemeEnum> themes = ThemesDummy.themes;
 
   @override
   void initState() {

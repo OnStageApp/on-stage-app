@@ -177,13 +177,11 @@ class PlanCard extends ConsumerWidget {
   ) async {
     final subscriptionNotifier =
         ref.read(subscriptionNotifierProvider.notifier);
-//TODO: Implement this for Android to work
     if (Platform.isAndroid) {
-      // await subscriptionNotifier.purchasePackage(plan.googlePlayProductId);
+      await subscriptionNotifier.purchasePackage(plan.googleProductId);
     } else {
-      // await subscriptionNotifier.purchasePackage(plan.appleStoreProductId);
+      await subscriptionNotifier.purchasePackage(plan.appleProductId);
     }
-    await subscriptionNotifier.purchasePackage(plan.revenueCatProductId);
     context.popDialog();
   }
 

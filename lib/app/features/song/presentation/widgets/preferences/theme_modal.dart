@@ -43,7 +43,7 @@ class ThemeModal extends ConsumerStatefulWidget {
 }
 
 class ThemeModalState extends ConsumerState<ThemeModal> {
-  final List<ThemeFilterEnum> _allThemes = ThemesDummy.themes;
+  final List<ThemeEnum> _allThemes = ThemesDummy.themes;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
     );
   }
 
-  InkWell _buildTile(ThemeFilterEnum theme) {
+  InkWell _buildTile(ThemeEnum theme) {
     return InkWell(
       onTap: () {
         ref.read(searchNotifierProvider.notifier).setThemeFilter(
@@ -125,6 +125,6 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
     );
   }
 
-  bool _isItemSelected(ThemeFilterEnum theme) =>
+  bool _isItemSelected(ThemeEnum theme) =>
       ref.watch(searchNotifierProvider).themeFilter == theme;
 }
