@@ -11,10 +11,8 @@ class ChordTransposer {
         break;
       case SongViewMode.american:
         cycle = americanNotes;
-        break;
       case SongViewMode.numeric:
         cycle = romanNumerals;
-        break;
     }
   }
 
@@ -70,19 +68,29 @@ class ChordTransposer {
     'IV',
     'V',
     'vi',
-    'vii°'
+    'vii°',
   ];
 
   String transposeChord(String chord) {
     if (transpose == 0 && chordNotation != SongViewMode.numeric) {
-      return chord;
+      if (chordNotation == SongViewMode.american) {
+        return _convertAccidentals(chord);
+      } else {
+        return chord;
+      }
     }
     final outChord = <String>[];
 
     for (final partChord in chord.split('/')) {
       outChord.add(_processChord(partChord));
     }
-    return outChord.join('/');
+    var result = outChord.join('/');
+
+    if (chordNotation == SongViewMode.american) {
+      result = _convertAccidentals(result);
+    }
+
+    return result;
   }
 
   String _processChord(String chord) {
@@ -104,10 +112,15 @@ class ChordTransposer {
     final newInd = (index + transpose + cycle.length) % cycle.length;
     final newChord = cycle[newInd];
 
-    return newChord + otherPartChord;
+    if (chordNotation == SongViewMode.american) {
+      return _convertAccidentals(newChord + otherPartChord);
+    } else {
+      return newChord + otherPartChord;
+    }
   }
 
-  String _handleFlatOrSharp(String chord, String simpleChord) {
+  String _handleFlatOrSharp(String chord, String simpleChordParam) {
+    var simpleChord = simpleChordParam;
     if (chord.startsWith('#', simpleChord.length)) {
       simpleChord += '#';
     }
@@ -127,11 +140,11 @@ class ChordTransposer {
         .firstMatch(chord);
     if (match == null) return chord;
 
-    String root = match.group(1)!;
-    String accidental = match.group(2) ?? '';
-    String quality = match.group(3) ?? '';
-    String accidental2 = match.group(4) ?? '';
-    String suffix = match.group(5) ?? '';
+    var root = match.group(1)!;
+    var accidental = match.group(2) ?? '';
+    final quality = match.group(3) ?? '';
+    final accidental2 = match.group(4) ?? '';
+    var suffix = match.group(5) ?? '';
 
     if (accidental2.isNotEmpty) {
       if (accidental.isNotEmpty) {
@@ -151,7 +164,7 @@ class ChordTransposer {
     final keyRoot = keyMatch.group(1)!;
 
     // Semitone mapping
-    final Map<String, int> noteSemitoneMap = {
+    final noteSemitoneMap = <String, int>{
       'C': 0,
       'C#': 1,
       'Db': 1,
@@ -168,7 +181,7 @@ class ChordTransposer {
       'A': 9,
       'A#': 10,
       'Bb': 10,
-      'B': 11
+      'B': 11,
     };
 
     final keySemitone = noteSemitoneMap[keyRoot];
@@ -176,7 +189,7 @@ class ChordTransposer {
 
     if (keySemitone == null || chordSemitone == null) return chord;
 
-    var interval = (chordSemitone - keySemitone + 12) % 12;
+    final interval = (chordSemitone - keySemitone + 12) % 12;
 
     // Extended scale steps and Roman numerals
     final scaleSteps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -192,15 +205,15 @@ class ChordTransposer {
       '♭VI',
       'VI',
       '♭VII',
-      'VII'
+      'VII',
     ];
 
-    var degreeIndex = scaleSteps.indexOf(interval);
+    final degreeIndex = scaleSteps.indexOf(interval);
     if (degreeIndex == -1) return chord;
 
     var romanNumeral = romanNumerals[degreeIndex];
 
-    bool isMinorChord = quality.startsWith('m') || quality.startsWith('min');
+    final isMinorChord = quality.startsWith('m') || quality.startsWith('min');
 
     // Adjust case based on chord quality
     if (isMinorChord) {
@@ -212,7 +225,8 @@ class ChordTransposer {
     return romanNumeral + _convertSuffix(suffix);
   }
 
-  String _convertSuffix(String suffix) {
+  String _convertSuffix(String suffixChord) {
+    var suffix = suffixChord;
     if (suffix.isEmpty) return '';
     suffix = suffix.replaceAll('maj', 'Δ');
     suffix = suffix.replaceAll('min', 'm');
@@ -221,5 +235,20 @@ class ChordTransposer {
     suffix = suffix.replaceAll('aug', '+');
     suffix = suffix.replaceAll('dim', '°');
     return suffix;
+  }
+
+  String _convertAccidentals(String chord) {
+    return chord
+        .replaceAllMapped(
+          RegExp('([A-G])([#b])'),
+          (Match m) {
+            final note = m.group(1)!;
+            final accidental = m.group(2)!;
+            final symbol = accidental == '#' ? '♯' : '♭';
+            return note + symbol;
+          },
+        )
+        .replaceAll('b', '♭')
+        .replaceAll('#', '♯');
   }
 }
