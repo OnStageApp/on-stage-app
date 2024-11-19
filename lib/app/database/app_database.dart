@@ -146,8 +146,8 @@ class AppDatabase extends _$AppDatabase {
     try {
       final results = await select(planTable).get();
       return results.map((plan) => plan.toPlan()).toList();
-    } catch (e) {
-      logger.e('Error getting all plans from local storage', e);
+    } catch (e, s) {
+      logger.e('Error getting all plans from local storage', e, s);
       return [];
     }
   }

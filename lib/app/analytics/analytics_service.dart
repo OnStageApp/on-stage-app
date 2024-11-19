@@ -1,10 +1,12 @@
 // analytics_service.dart
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/services.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'analytics_service.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AnalyticsService extends _$AnalyticsService {
   FirebaseAnalytics? _analytics;
 
@@ -16,6 +18,13 @@ class AnalyticsService extends _$AnalyticsService {
   @override
   void build() {
     _analytics = FirebaseAnalytics.instance;
+    if (appFlavor == 'production') {
+      logger.i('Analytics enabled');
+      _analytics?.setAnalyticsCollectionEnabled(true);
+    } else {
+      logger.i('Analytics disabled');
+      _analytics?.setAnalyticsCollectionEnabled(false);
+    }
     return;
   }
 
@@ -51,7 +60,6 @@ class AnalyticsService extends _$AnalyticsService {
   }
 
   Future<void> logScreenView(String screenName) {
-    print('Logging screen view: $screenName');
     return analytics.logScreenView(screenName: screenName);
   }
 

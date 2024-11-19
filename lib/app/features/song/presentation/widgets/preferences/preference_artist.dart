@@ -43,6 +43,7 @@ class PreferenceArtistState extends ConsumerState<PreferenceArtist> {
           onTap: () {
             ArtistModal.show(
               context: context,
+              showAddArtistButton: false,
               onArtistSelected: (artist) {
                 ref
                     .read(searchNotifierProvider.notifier)

@@ -1,6 +1,6 @@
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
@@ -27,7 +27,7 @@ class SearchNotifier extends _$SearchNotifier {
     state = const SearchState(isFocused: false, text: '');
   }
 
-  void setGenreFilter(GenreFilterEnum? searchFilter) {
+  void setGenreFilter(GenreEnum? searchFilter) {
     state = state.copyWith(genreFilter: searchFilter);
   }
 
@@ -35,7 +35,7 @@ class SearchNotifier extends _$SearchNotifier {
     state = state.copyWith(artistFilter: selectedArtist);
   }
 
-  void setThemeFilter(ThemeFilterEnum? searchFilter) {
+  void setThemeFilter(ThemeEnum? searchFilter) {
     state = state.copyWith(themeFilter: searchFilter);
   }
 
