@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/login/domain/auth_response.dart';
 import 'package:on_stage_app/app/features/login/domain/login_request_model.dart';
+import 'package:on_stage_app/app/features/login/domain/refresh_token_model.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -22,6 +23,6 @@ abstract class LoginRepository {
 
   @POST(API.refreshToken)
   Future<AuthResponse> refreshToken(
-    @Body() String refreshToken,
+    @Body() RefreshTokenModel refreshToken,
   );
 }
