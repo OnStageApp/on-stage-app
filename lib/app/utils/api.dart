@@ -1,7 +1,7 @@
 class API {
-  static const String domain = 'dev.on-stage.app';
+  // static const String domain = 'dev.on-stage.app';
 
-  // static const String domain = '16f6-79-119-41-169.ngrok-free.app';
+  static const String domain = '0e2f-79-119-41-169.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
   static const String socketUrl = 'wss://$domain/';
 
@@ -46,6 +46,7 @@ class API {
 
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';
+  static const String refreshToken = 'auth/refresh-token';
   static const String logout = 'auth/logout/{deviceId}';
 
   static const String users = 'users';
