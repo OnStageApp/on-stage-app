@@ -9,15 +9,8 @@ import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class SavedSongsTile extends ConsumerWidget {
   const SavedSongsTile({
-    required this.title,
-    required this.hour,
-    required this.location,
     super.key,
   });
-
-  final String title;
-  final String hour;
-  final String location;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

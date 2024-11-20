@@ -42,7 +42,16 @@ class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
                 'All Genres',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {
-              GenreModal.show(context: context);
+              GenreModal.show(
+                context: context,
+                onSelected: (genre) {
+                  if (genre == null) return;
+                  ref
+                      .read(searchNotifierProvider.notifier)
+                      .setGenreFilter(genre);
+                  context.popDialog();
+                },
+              );
             },
           ),
         ],

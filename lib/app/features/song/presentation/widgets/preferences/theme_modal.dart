@@ -8,13 +8,19 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ThemeModal extends ConsumerStatefulWidget {
-  const ThemeModal({super.key});
+  const ThemeModal({
+    super.key,
+    this.onSelected,
+  });
+
+  final void Function(ThemeEnum?)? onSelected;
 
   @override
   ThemeModalState createState() => ThemeModalState();
 
   static void show({
     required BuildContext context,
+    required void Function(ThemeEnum?)? onSelected,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -30,13 +36,9 @@ class ThemeModal extends ConsumerStatefulWidget {
         buildHeader: () => const ModalHeader(
           title: 'Select a Theme',
         ),
-        headerHeight: () {
-          return 64;
-        },
-        footerHeight: () {
-          return 64;
-        },
-        buildContent: ThemeModal.new,
+        headerHeight: () => 64,
+        footerHeight: () => 64,
+        buildContent: () => ThemeModal(onSelected: onSelected),
       ),
     );
   }
@@ -69,9 +71,8 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
   InkWell _buildTile(ThemeEnum theme) {
     return InkWell(
       onTap: () {
-        ref.read(searchNotifierProvider.notifier).setThemeFilter(
-              _isItemSelected(theme) ? null : theme,
-            );
+        final newTheme = _isItemSelected(theme) ? null : theme;
+        widget.onSelected?.call(newTheme);
       },
       child: Container(
         height: 48,
@@ -93,9 +94,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
               width: 30,
               height: 30,
               alignment: Alignment.center,
-              key: ValueKey(
-                theme.hashCode.toString(),
-              ),
+              key: ValueKey(theme.hashCode.toString()),
               decoration: BoxDecoration(
                 color: context.colorScheme.onSurfaceVariant,
                 border: Border.all(

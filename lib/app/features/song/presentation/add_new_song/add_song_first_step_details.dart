@@ -189,7 +189,13 @@ class AddSongFirstStepDetailsState
         title: 'Choose one or more themes',
         trailingIcon: Icons.keyboard_arrow_down_rounded,
         onTap: () {
-          ThemeModal.show(context: context);
+          ThemeModal.show(
+            context: context,
+            onSelected: (theme) {
+              logger.i('Theme selected: $theme');
+              context.popDialog();
+            },
+          );
         },
       ),
       if (_themeError != null)
@@ -218,7 +224,10 @@ class AddSongFirstStepDetailsState
         title: 'Choose genre',
         trailingIcon: Icons.keyboard_arrow_down_rounded,
         onTap: () {
-          GenreModal.show(context: context);
+          GenreModal.show(
+            context: context,
+            onSelected: (genre) {},
+          );
         },
       ),
       if (_genreError != null)

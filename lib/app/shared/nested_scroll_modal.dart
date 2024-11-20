@@ -37,11 +37,11 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
   @override
   Widget build(BuildContext context) {
     final header = widget.buildHeader?.call();
-    final headerSize = widget.headerHeight?.call();
+    final headerHeight = widget.headerHeight?.call();
     final footer = widget.buildFooter?.call();
     final footerSize = widget.footerHeight?.call();
 
-    final hasHeader = header != null && headerSize != null;
+    final hasHeader = header != null && headerHeight != null;
     final hasFooter = footer != null && footerSize != null;
     final itemsCount = 1 + (hasHeader ? 1 : 0) + (hasFooter ? 1 : 0);
 
@@ -68,7 +68,7 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
                   if (hasHeader && index == 0) {
                     return Container(
                       color: Colors.transparent,
-                      height: headerSize,
+                      height: headerHeight,
                     );
                   }
 
@@ -87,6 +87,8 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
         ),
         if (hasHeader)
           Positioned(
+            left: 0,
+            right: 0,
             top: 0,
             child: header,
           ),
