@@ -93,5 +93,3 @@ class TokenInterceptor extends Interceptor {
     return response;
   }
 }
-
-//TODO: Handle sign out if refreshtoken fails
