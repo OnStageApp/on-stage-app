@@ -70,54 +70,54 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         ),
         title: '',
       ),
-      body: CustomScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: () async {
-              await ref.read(songsNotifierProvider.notifier).getSongs();
-            },
-          ),
-          SliverPadding(
-            padding: defaultScreenHorizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: Insets.small),
-                  Hero(
-                    tag: 'searchBar',
-                    child: StageSearchBar(
-                      focusNode: FocusNode(),
-                      controller: _searchController,
-                      showFilter: true,
-                      onClosed: () {
-                        if (context.canPop()) {
-                          context.pop();
-                        }
-                        _searchController.clear();
-                      },
-                      onChanged: (value) {
-                        final songFilter = searchState.toSongFilter();
-                        ref
-                            .read(searchNotifierProvider.notifier)
-                            .setText(value);
-                        ref.read(songsNotifierProvider.notifier).getSongs(
-                              songFilter: songFilter.copyWith(
-                                search: value,
-                              ),
-                            );
-                      },
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await ref.read(songsNotifierProvider.notifier).getSongs();
+        },
+        child: CustomScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: Insets.small),
+                    Hero(
+                      tag: 'searchBar',
+                      child: StageSearchBar(
+                        focusNode: FocusNode(),
+                        controller: _searchController,
+                        showFilter: true,
+                        onClosed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          }
+                          _searchController.clear();
+                        },
+                        onChanged: (value) {
+                          final songFilter = searchState.toSongFilter();
+                          ref
+                              .read(searchNotifierProvider.notifier)
+                              .setText(value);
+                          ref.read(songsNotifierProvider.notifier).getSongs(
+                                songFilter: songFilter.copyWith(
+                                  search: value,
+                                ),
+                              );
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: Insets.large),
-                ],
+                    const SizedBox(height: Insets.large),
+                  ],
+                ),
               ),
             ),
-          ),
-          const SongsListView(),
-        ],
+            const SongsListView(),
+          ],
+        ),
       ),
     );
   }

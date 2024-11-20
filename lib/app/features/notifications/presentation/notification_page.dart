@@ -45,19 +45,21 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
         },
         title: 'Notifications',
       ),
-      body: CustomScrollView(
-        slivers: [
-          CupertinoSliverRefreshControl(onRefresh: _refreshNotifications),
-          SliverPadding(
-            padding: defaultScreenHorizontalPadding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => const NotificationList(),
-                childCount: 1,
+      body: RefreshIndicator.adaptive(
+        onRefresh: _refreshNotifications,
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => const NotificationList(),
+                  childCount: 1,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
