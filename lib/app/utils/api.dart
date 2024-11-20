@@ -1,5 +1,6 @@
 class API {
   static const String domain = 'dev.on-stage.app';
+  static const String prodDomain = 'on-stage.app/api';
 
   // static const String domain = '0e2f-79-119-41-169.ngrok-free.app';
   static const String baseUrl = 'https://$domain/';
