@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/analytics/enums/login_method.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/features/login/application/login_state.dart';
+import 'package:on_stage_app/app/features/login/application/token_manager.dart';
 import 'package:on_stage_app/app/features/login/data/login_repository.dart';
 import 'package:on_stage_app/app/features/login/domain/login_request_model.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -25,7 +26,13 @@ part 'login_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class LoginNotifier extends _$LoginNotifier {
   LoginRepository? _loginRepository;
+  late final TokenManager _tokenManager;
+
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+
+  LoginNotifier() {
+    _tokenManager = TokenManager(const FlutterSecureStorage());
+  }
 
   LoginRepository get loginRepository {
     _loginRepository ??= LoginRepository(ref.read(dioProvider));
@@ -219,8 +226,9 @@ class LoginNotifier extends _$LoginNotifier {
       await loginRepository.logout(deviceId);
 
       await ref.read(databaseProvider).clearDatabase();
+      await _tokenManager.clearTokens();
 
-      await _secureStorage.delete(key: 'token');
+      // await _secureStorage.delete(key: 'token');
 
       ref
         ..invalidate(userNotifierProvider)
@@ -239,14 +247,18 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   Future<void> _login(String idToken) async {
-    await _secureStorage.delete(key: 'token');
-
+    await _tokenManager.clearTokens();
     state = state.copyWith(isLoading: true);
 
-    final authToken = await loginRepository.login(
+    final authResponse = await loginRepository.login(
       LoginRequest(firebaseToken: idToken),
     );
-    await _saveAuthToken(authToken as String);
+
+    await _tokenManager.saveTokens(
+      accessToken: authResponse.accessToken,
+      refreshToken: authResponse.refreshToken,
+    );
+
     await ref.read(deviceServiceProvider).logInDeviceAndSaveDeviceInfo();
     state = state.copyWith(isLoading: false);
   }
