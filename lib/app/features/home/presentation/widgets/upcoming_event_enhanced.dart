@@ -114,6 +114,7 @@ class UpcomingEventEnhanced extends ConsumerWidget {
             : Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'No upcoming events',

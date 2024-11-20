@@ -8,13 +8,19 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class GenreModal extends ConsumerStatefulWidget {
-  const GenreModal({super.key});
+  const GenreModal({
+    super.key,
+    this.onSelected,
+  });
+
+  final void Function(GenreEnum?)? onSelected;
 
   @override
   GenreModalState createState() => GenreModalState();
 
   static void show({
     required BuildContext context,
+    required void Function(GenreEnum?)? onSelected,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -36,7 +42,9 @@ class GenreModal extends ConsumerStatefulWidget {
         footerHeight: () {
           return 64;
         },
-        buildContent: GenreModal.new,
+        buildContent: () {
+          return GenreModal(onSelected: onSelected);
+        },
       ),
     );
   }
@@ -69,9 +77,8 @@ class GenreModalState extends ConsumerState<GenreModal> {
   Widget _buildTile(GenreEnum genre) {
     return InkWell(
       onTap: () {
-        ref.read(searchNotifierProvider.notifier).setGenreFilter(
-              _isItemSelected(genre) ? null : genre,
-            );
+        final newGenre = _isItemSelected(genre) ? null : genre;
+        widget.onSelected?.call(newGenre);
       },
       child: Container(
         height: 48,
@@ -102,10 +109,12 @@ class GenreModalState extends ConsumerState<GenreModal> {
                 ),
                 shape: BoxShape.circle,
               ),
-              child: Text(genre.name.substring(0, 1),
-                  textAlign: TextAlign.center,
-                  style: context.textTheme.titleSmall!
-                      .copyWith(color: context.colorScheme.onSurface)),
+              child: Text(
+                genre.name.substring(0, 1),
+                textAlign: TextAlign.center,
+                style: context.textTheme.titleSmall!
+                    .copyWith(color: context.colorScheme.onSurface),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 12),

@@ -6,7 +6,7 @@ class ModalHeader extends StatelessWidget {
   const ModalHeader({
     required this.title,
     this.leadingButton = const SizedBox(
-      width: 80 - 12,
+      width: 80,
     ),
     super.key,
   });
@@ -21,8 +21,8 @@ class ModalHeader extends StatelessWidget {
         color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
-      width: MediaQuery.of(context).size.width,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
@@ -36,7 +36,7 @@ class ModalHeader extends StatelessWidget {
           ),
           const SizedBox(height: Insets.normal),
           Padding(
-            padding: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

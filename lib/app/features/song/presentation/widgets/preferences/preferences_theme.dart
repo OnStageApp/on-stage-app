@@ -42,7 +42,16 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
                 'All Themes',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {
-              ThemeModal.show(context: context);
+              ThemeModal.show(
+                context: context,
+                onSelected: (theme) {
+                  if (theme == null) return;
+                  ref
+                      .read(searchNotifierProvider.notifier)
+                      .setThemeFilter(theme);
+                  context.popDialog();
+                },
+              );
             },
           ),
         ],

@@ -122,56 +122,57 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
     final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
-    return Row(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width / 2,
-          height: 240,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 8),
-            child: UpcomingEventEnhanced(
-              onTap: () => context.pushNamed(
-                AppRoute.eventDetails.name,
-                queryParameters: {'eventId': upcomingEvent!.id},
+    final screenWidth = MediaQuery.of(context).size.width;
+    final leftColumnWidth =
+        context.isLargeScreen ? (screenWidth / 2 - 80) : (screenWidth / 2);
+
+    return SizedBox(
+      height: 240,
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 8),
+              child: UpcomingEventEnhanced(
+                onTap: () => context.pushNamed(
+                  AppRoute.eventDetails.name,
+                  queryParameters: {'eventId': upcomingEvent!.id},
+                ),
+                title: upcomingEvent?.name ?? 'Loading...',
+                hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
+                date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
+                stagerPhotos: upcomingEvent?.stagerPhotos ?? [],
+                stagerCount: upcomingEvent?.stagerCount ?? 0,
+                hasUpcomingEvent: upcomingEvent != null,
               ),
-              title: upcomingEvent?.name ?? 'Loading...',
-              hour: TimeUtils().formatOnlyTime(upcomingEvent?.dateTime),
-              date: TimeUtils().formatOnlyDate(upcomingEvent?.dateTime),
-              stagerPhotos: upcomingEvent?.stagerPhotos ?? [],
-              stagerCount: upcomingEvent?.stagerCount ?? 0,
-              hasUpcomingEvent: upcomingEvent != null,
             ),
           ),
-        ),
-        Column(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 112,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, right: 16),
-                child: GroupTile(
-                  title: 'Team',
-                  hasUpcomingEvent: hasUpcomingEvent,
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 16),
+                  child: SizedBox(
+                    height: 112,
+                    child: GroupTile(
+                      title: 'Team',
+                      hasUpcomingEvent: hasUpcomingEvent,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 112,
-              child: const Padding(
-                padding: EdgeInsets.only(left: 8, right: 16),
-                child: SavedSongsTile(
-                  title: 'Duminică seara',
-                  hour: '18:00',
-                  location: 'Sala El-Shaddai',
+                const SizedBox(height: 16),
+                const Padding(
+                  padding: EdgeInsets.only(left: 8, right: 16),
+                  child: SizedBox(
+                    height: 112,
+                    child: SavedSongsTile(),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

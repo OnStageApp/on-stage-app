@@ -98,99 +98,181 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: widget.navigationShell.currentIndex,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: context.colorScheme.surface,
-        selectedLabelStyle: context.textTheme.bodyMedium,
-        unselectedLabelStyle: context.textTheme.bodyMedium,
-        selectedItemColor: context.colorScheme.onSurface,
-        unselectedItemColor: context.colorScheme.outline,
-        showUnselectedLabels: true,
-        showSelectedLabels: true,
-        elevation: 1,
-        onTap: _onChangedScreen,
-        items: [
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/icons/nav_home_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onSurface,
-                BlendMode.srcIn,
-              ),
+      bottomNavigationBar: context.isLargeScreen
+          ? null
+          : BottomNavigationBar(
+              currentIndex: widget.navigationShell.currentIndex,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: context.colorScheme.surface,
+              selectedLabelStyle: context.textTheme.bodyMedium,
+              unselectedLabelStyle: context.textTheme.bodyMedium,
+              selectedItemColor: context.colorScheme.onSurface,
+              unselectedItemColor: context.colorScheme.outline,
+              showUnselectedLabels: true,
+              showSelectedLabels: true,
+              elevation: 1,
+              onTap: _onChangedScreen,
+              items: [
+                BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/icons/nav_home_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/icons/nav_home_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: 'Home',
+                  backgroundColor: Colors.white,
+                ),
+                BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/icons/nav_list_music_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/icons/nav_list_music_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: 'Songs',
+                ),
+                BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/icons/nav_calendar_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/icons/nav_calendar_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: 'Events',
+                ),
+                BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/icons/nav_profile_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.onSurface,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/icons/nav_profile_icon.svg',
+                    height: 21,
+                    colorFilter: ColorFilter.mode(
+                      context.colorScheme.outline,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  label: 'Profile',
+                ),
+              ],
             ),
-            icon: SvgPicture.asset(
-              'assets/icons/nav_home_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.outline,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: 'Home',
-            backgroundColor: Colors.white,
+      body: context.isLargeScreen
+          ? Row(
+              children: [
+                _buildNavigationRail(context),
+                Expanded(
+                  child: widget.navigationShell,
+                ),
+              ],
+            )
+          : widget.navigationShell,
+    );
+  }
+
+  Widget _buildNavigationRail(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32),
+          child: SvgPicture.asset(
+            'assets/icons/onstage_icon_blue.svg',
+            height: 40,
           ),
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/icons/nav_list_music_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onSurface,
-                BlendMode.srcIn,
-              ),
+        ),
+        Expanded(
+          child: NavigationRail(
+            groupAlignment: 0,
+            selectedIndex: widget.navigationShell.currentIndex,
+            onDestinationSelected: _onChangedScreen,
+            backgroundColor: context.colorScheme.surface,
+            selectedLabelTextStyle: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurface,
             ),
-            icon: SvgPicture.asset(
-              'assets/icons/nav_list_music_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.outline,
-                BlendMode.srcIn,
-              ),
+            unselectedLabelTextStyle: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.outline,
             ),
-            label: 'Songs',
+            selectedIconTheme: IconThemeData(
+              color: context.colorScheme.onSurface,
+            ),
+            unselectedIconTheme: IconThemeData(
+              color: context.colorScheme.outline,
+            ),
+            labelType: NavigationRailLabelType.all,
+            useIndicator: false,
+            indicatorColor: context.colorScheme.primary,
+            destinations: _navigationItems.map((item) {
+              final isSelected = _navigationItems.indexOf(item) ==
+                  widget.navigationShell.currentIndex;
+              return NavigationRailDestination(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                icon: SvgPicture.asset(
+                  item.iconPath,
+                  height: 21,
+                  colorFilter: ColorFilter.mode(
+                    isSelected
+                        ? context.colorScheme.onSurface
+                        : context.colorScheme.outline,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                label: Text(item.label),
+              );
+            }).toList(),
           ),
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/icons/nav_calendar_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onSurface,
-                BlendMode.srcIn,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.logout,
+                  color: context.colorScheme.error,
+                ),
+                onPressed: () {},
               ),
-            ),
-            icon: SvgPicture.asset(
-              'assets/icons/nav_calendar_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.outline,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: 'Events',
+              const Text('Log Out'),
+            ],
           ),
-          BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              'assets/icons/nav_profile_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.onSurface,
-                BlendMode.srcIn,
-              ),
-            ),
-            icon: SvgPicture.asset(
-              'assets/icons/nav_profile_icon.svg',
-              height: 21,
-              colorFilter: ColorFilter.mode(
-                context.colorScheme.outline,
-                BlendMode.srcIn,
-              ),
-            ),
-            label: 'Profile',
-          ),
-        ],
-      ),
-      body: widget.navigationShell,
+        ),
+      ],
     );
   }
 
@@ -209,4 +291,33 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       },
     );
   }
+}
+
+final List<_NavigationItem> _navigationItems = [
+  _NavigationItem(
+    label: 'Home',
+    iconPath: 'assets/icons/nav_home_icon.svg',
+  ),
+  _NavigationItem(
+    label: 'Songs',
+    iconPath: 'assets/icons/nav_list_music_icon.svg',
+  ),
+  _NavigationItem(
+    label: 'Events',
+    iconPath: 'assets/icons/nav_calendar_icon.svg',
+  ),
+  _NavigationItem(
+    label: 'Profile',
+    iconPath: 'assets/icons/nav_profile_icon.svg',
+  ),
+];
+
+class _NavigationItem {
+  _NavigationItem({
+    required this.label,
+    required this.iconPath,
+  });
+
+  final String label;
+  final String iconPath;
 }

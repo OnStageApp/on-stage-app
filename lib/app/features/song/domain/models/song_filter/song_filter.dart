@@ -9,6 +9,7 @@ class SongFilter with _$SongFilter {
     String? artistId,
     String? search,
     String? genres,
+    // String? themes,
     // KeysEnum key,
     bool? includeOnlyTeamSongs,
   }) = _SongFilter;
