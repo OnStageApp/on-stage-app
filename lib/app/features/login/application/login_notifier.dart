@@ -262,13 +262,4 @@ class LoginNotifier extends _$LoginNotifier {
     await ref.read(deviceServiceProvider).logInDeviceAndSaveDeviceInfo();
     state = state.copyWith(isLoading: false);
   }
-
-  Future<void> _saveAuthToken(String authToken) async {
-    try {
-      await _secureStorage.write(key: 'token', value: authToken);
-      logger.i('Auth token saved successfully');
-    } catch (e) {
-      logger.e('Failed to save auth token: $e');
-    }
-  }
 }
