@@ -36,72 +36,72 @@ class SavedSongsScreenState extends ConsumerState<SavedSongsScreen> {
         isBackButtonVisible: true,
         title: '',
       ),
-      body: CustomScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          CupertinoSliverRefreshControl(
-            onRefresh: () async {
-              await ref.read(songsNotifierProvider.notifier).getSavedSongs();
-            },
-          ),
-          SliverPadding(
-            padding: defaultScreenHorizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${songsState.savedSongs.length} ',
-                          style: context.textTheme.headlineLarge?.copyWith(
-                            color: context.colorScheme.surfaceDim,
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await ref.read(songsNotifierProvider.notifier).getSavedSongs();
+        },
+        child: CustomScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${songsState.savedSongs.length} ',
+                            style: context.textTheme.headlineLarge?.copyWith(
+                              color: context.colorScheme.surfaceDim,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: 'Saved Songs',
-                          style: context.textTheme.headlineLarge!.copyWith(
-                            color: context.colorScheme.onSurface,
+                          TextSpan(
+                            text: 'Saved Songs',
+                            style: context.textTheme.headlineLarge!.copyWith(
+                              color: context.colorScheme.onSurface,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: Insets.normal),
-                  StageSearchBar(
-                    focusNode: FocusNode(),
-                    controller: _searchController,
-                    onClosed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      }
-                      _searchController.clear();
-                    },
-                    onChanged: (value) {},
-                  ),
-                  const SizedBox(height: Insets.large),
-                ],
+                    const SizedBox(height: Insets.normal),
+                    StageSearchBar(
+                      focusNode: FocusNode(),
+                      controller: _searchController,
+                      onClosed: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        }
+                        _searchController.clear();
+                      },
+                      onChanged: (value) {},
+                    ),
+                    const SizedBox(height: Insets.large),
+                  ],
+                ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: defaultScreenHorizontalPadding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final song = songsState.savedSongs[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: SongTile(song: song),
-                  );
-                },
-                childCount: songsState.savedSongs.length,
+            SliverPadding(
+              padding: defaultScreenHorizontalPadding,
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final song = songsState.savedSongs[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: SongTile(song: song),
+                    );
+                  },
+                  childCount: songsState.savedSongs.length,
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

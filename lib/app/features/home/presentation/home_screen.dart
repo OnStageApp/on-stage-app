@@ -52,18 +52,16 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           child: NotificationWidget(),
         ),
       ),
-      body: SafeArea(
+      body: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await Future.wait([
+              ref.read(songsNotifierProvider.notifier).getSongs(),
+              ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+            ]);
+          },
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            CupertinoSliverRefreshControl(
-              onRefresh: () async {
-                await Future.wait([
-                  ref.read(songsNotifierProvider.notifier).getSongs(),
-                  ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
-                ]);
-              },
-            ),
             SliverToBoxAdapter(
               child: Column(
                 children: [
