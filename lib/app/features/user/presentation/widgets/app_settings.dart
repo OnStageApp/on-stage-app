@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/plan/application/current_plan_provider
 import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/shared/notification_permission_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
@@ -16,14 +17,38 @@ class AppSettings extends ConsumerStatefulWidget {
   AppSettingsState createState() => AppSettingsState();
 }
 
-class AppSettingsState extends ConsumerState<AppSettings> {
+class AppSettingsState extends ConsumerState<AppSettings> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkNotificationPermissions();
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkNotificationPermissions();
+    }
+  }
+
+
+  Future<void> _checkNotificationPermissions() async {
+    // Trigger the permission check in the provider
+    await ref.read(notificationPermissionProvider.notifier).checkNotificationPermissions();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final notificationPermission = ref.watch(notificationPermissionProvider);
+    final userSettings = ref.watch(userSettingsNotifierProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -46,13 +71,36 @@ class AppSettingsState extends ConsumerState<AppSettings> {
         CustomSwitchListTile(
           title: 'Notifications',
           icon: Icons.notifications,
-          value:
-              ref.watch(userSettingsNotifierProvider).isNotificationsEnabled ??
-                  true,
-          onSwitch: (value) {
-            ref
-                .read(userSettingsNotifierProvider.notifier)
-                .setNotification(isActive: value);
+          value: notificationPermission && (userSettings.isNotificationsEnabled ?? true),
+          onSwitch: (value) async {
+            await ref.read(userSettingsNotifierProvider.notifier).setNotification(isActive: value);
+            if (value) {
+              final permissionGranted = await ref
+                  .read(notificationPermissionProvider.notifier)
+                  .requestNotificationPermission();
+
+              await ref.read(notificationPermissionProvider.notifier).checkNotificationPermissions();
+
+              if (!permissionGranted) {
+                ref.read(userSettingsNotifierProvider.notifier).setNotification(isActive: false);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text(
+                      'Please enable notification permissions in settings.',
+                    ),
+                    action: SnackBarAction(
+                      label: 'Open Settings',
+                      onPressed: () {
+                        ref
+                            .read(notificationPermissionProvider.notifier)
+                            .openAppSettingsFunction();
+                      },
+                    ),
+                  ),
+                );
+              }
+            }
           },
         ),
         if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[

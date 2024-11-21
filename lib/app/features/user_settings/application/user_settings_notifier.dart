@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart
 import 'package:on_stage_app/app/features/user_settings/data/user_settings_repository.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/shared/notification_permission_service.dart';
 import 'package:on_stage_app/app/utils/shared_prefs/shared_prefs_provider.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -37,6 +38,10 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
 
   @override
   UserSettings build() {
+    ref.listen<bool>(notificationPermissionProvider, (prev, next) {
+      setNotification(isActive: next);
+    });
+
     return const UserSettings();
   }
 
