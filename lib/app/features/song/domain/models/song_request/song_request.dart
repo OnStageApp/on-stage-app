@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
@@ -16,6 +18,8 @@ class SongRequest with _$SongRequest {
     int? tempo,
     SongKey? originalKey,
     String? artistId,
+    ThemeEnum? theme,
+    GenreEnum? genre,
   }) = _SongRequest;
 
   factory SongRequest.fromJson(Map<String, dynamic> json) =>

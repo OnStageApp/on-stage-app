@@ -96,7 +96,7 @@ class SocketIoService extends _$SocketIoService {
     });
 
     _socket?.onConnectError((error) {
-      logger.e('Connect error for user $_currentDeviceId: $error');
+      logger.i('Connect error for user $_currentDeviceId: $error');
     });
 
     _socket?.onError((error) {

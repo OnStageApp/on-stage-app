@@ -23,8 +23,6 @@ class PlanTable extends Table {
 
   IntColumn get maxMembers => integer()();
 
-  BoolColumn get hasSongsAccess => boolean()();
-
   BoolColumn get hasAddSong => boolean()();
 
   BoolColumn get hasScreensSync => boolean()();
@@ -48,7 +46,6 @@ extension PlanTableDataX on PlanTableData {
       isYearly: isYearly,
       maxEvents: maxEvents,
       maxMembers: maxMembers,
-      hasSongsAccess: hasSongsAccess,
       hasAddSong: hasAddSong,
       hasScreensSync: hasScreensSync,
       hasReminders: hasReminders,
@@ -69,7 +66,6 @@ extension PlanX on Plan {
       isYearly: isYearly,
       maxEvents: maxEvents,
       maxMembers: maxMembers,
-      hasSongsAccess: hasSongsAccess,
       hasAddSong: hasAddSong,
       hasScreensSync: hasScreensSync,
       hasReminders: hasReminders,

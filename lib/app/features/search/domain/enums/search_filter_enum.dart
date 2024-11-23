@@ -1,6 +1,6 @@
 enum SearchFilterEnum {
   all,
-  bpm,
+  tempo,
   genre,
   theme,
   artist,
@@ -12,7 +12,7 @@ extension SearchFilterEnumExtension on SearchFilterEnum {
     switch (this) {
       case SearchFilterEnum.all:
         return 'All';
-      case SearchFilterEnum.bpm:
+      case SearchFilterEnum.tempo:
         return 'BPM';
       case SearchFilterEnum.genre:
         return 'Genre';

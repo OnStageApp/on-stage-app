@@ -65,8 +65,8 @@ class EventsNotifier extends _$EventsNotifier {
         final newEvent = event.copyWith(stagerPhotos: photos);
         state = state.copyWith(upcomingEvent: newEvent);
       }
-    } on DioException catch (e) {
-      logger.e('Error getting upcoming event (DioException): $e');
+    } on DioException catch (e, s) {
+      logger.e('Error getting upcoming event (DioException): $e $s');
     } catch (e) {
       logger.e('Error getting upcoming event: $e');
     }

@@ -170,7 +170,6 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(event: newEvent, isLoading: false);
   }
 
-  //TODO: Not tested yet, waiting for backend
   Future<void> setStatusForStager({
     required StagerStatusEnum participationStatus,
     required String stagerId,

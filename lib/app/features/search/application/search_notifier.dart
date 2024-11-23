@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tempo_filter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_notifier.g.dart';
@@ -43,11 +44,18 @@ class SearchNotifier extends _$SearchNotifier {
     state = state.copyWith(teamFilter: teamFilter);
   }
 
+  void setTempoFilter(int? min, int? max) {
+    state = state.copyWith(
+      tempoFilter: TempoFilter(min: min, max: max),
+    );
+  }
+
   void resetAllFilters() {
     state = state.copyWith(
       genreFilter: null,
       artistFilter: null,
       themeFilter: null,
+      tempoFilter: null,
       teamFilter: null,
     );
   }
@@ -63,9 +71,9 @@ class SearchNotifier extends _$SearchNotifier {
         state = state.copyWith(themeFilter: null);
       case SearchFilterEnum.team:
         state = state.copyWith(teamFilter: null);
-
+      case SearchFilterEnum.tempo:
+        state = state.copyWith(tempoFilter: null);
       case SearchFilterEnum.all:
-      case SearchFilterEnum.bpm:
     }
   }
 
@@ -75,7 +83,7 @@ class SearchNotifier extends _$SearchNotifier {
       filters.add(
         SearchFilter(
           type: SearchFilterEnum.genre,
-          value: state.genreFilter!.value,
+          value: state.genreFilter!.title,
         ),
       );
     }
@@ -91,7 +99,7 @@ class SearchNotifier extends _$SearchNotifier {
       filters.add(
         SearchFilter(
           type: SearchFilterEnum.theme,
-          value: state.themeFilter!.value,
+          value: state.themeFilter!.title,
         ),
       );
     }
@@ -100,6 +108,41 @@ class SearchNotifier extends _$SearchNotifier {
         SearchFilter(
           type: SearchFilterEnum.team,
           value: state.teamFilter! ? 'Team Songs' : 'All Songs',
+        ),
+      );
+    }
+
+    if (state.tempoFilter != null) {
+      final minValue = state.tempoFilter!.min;
+      final maxValue = state.tempoFilter!.max;
+
+      if (minValue == null && maxValue == null) {
+        return filters;
+      }
+
+      if (minValue == null) {
+        filters.add(
+          SearchFilter(
+            type: SearchFilterEnum.tempo,
+            value: 'Up to $maxValue',
+          ),
+        );
+        return filters;
+      }
+      if (maxValue == null) {
+        filters.add(
+          SearchFilter(
+            type: SearchFilterEnum.tempo,
+            value: 'From $minValue',
+          ),
+        );
+        return filters;
+      }
+
+      filters.add(
+        SearchFilter(
+          type: SearchFilterEnum.tempo,
+          value: '${state.tempoFilter!.min} - ${state.tempoFilter!.max}',
         ),
       );
     }

@@ -107,7 +107,7 @@ class PlanCard extends ConsumerWidget {
             ),
             if (plan.isYearly)
               Text(
-                '${(plan.price / 12).toStringAsFixed(2)} RON/ month',
+                '${(plan.price / 12).toStringAsFixed(2)} RON/month',
                 style: context.textTheme.titleSmall!.copyWith(
                   color: context.colorScheme.outline,
                 ),

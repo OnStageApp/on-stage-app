@@ -13,7 +13,6 @@ class CustomTextField extends StatelessWidget {
     this.enabled,
     this.onChanged,
     this.validator,
-    this.onTapOutside,
     this.focusNode,
     this.borderColor,
     this.obscureText = false,
@@ -27,7 +26,6 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final bool? enabled;
   final void Function(String)? onChanged;
-  final void Function()? onTapOutside;
   final String? Function(String?)? validator;
   final FocusNode? focusNode;
   final Color? borderColor;
@@ -57,15 +55,7 @@ class CustomTextField extends StatelessWidget {
             color: context.colorScheme.onSurface,
           ),
           onChanged: onChanged,
-          onEditingComplete: () {
-            FocusScope.of(context).unfocus();
-            onTapOutside?.call();
-          },
           controller: controller,
-          onTapOutside: (_) {
-            FocusScope.of(context).unfocus();
-            onTapOutside?.call();
-          },
           decoration: WidgetUtils.getDecorations(context, icon, hintText: hint)
               .copyWith(
             suffixIcon: suffixIcon,
@@ -86,7 +76,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           validator: validator ??
-                  (value) {
+              (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field cannot be empty';
                 }

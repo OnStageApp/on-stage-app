@@ -117,7 +117,6 @@ class ChordProcessor extends _$ChordProcessor {
       );
     }
 
-    print('Compressed Sections: ${compressedSections.first.count}');
     state = state.copyWith(
       content: Content(
         sections: compressedSections,

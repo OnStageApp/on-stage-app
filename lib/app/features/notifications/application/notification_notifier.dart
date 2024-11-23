@@ -1,8 +1,6 @@
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier_state.dart';
 import 'package:on_stage_app/app/features/notifications/data/notification_repository.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_filter.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_pagination.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
@@ -10,6 +8,9 @@ import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notification_notifier.g.dart';
+
+const offset = 0;
+const limit = 5;
 
 @Riverpod(keepAlive: true)
 class NotificationNotifier extends _$NotificationNotifier {
@@ -26,26 +27,34 @@ class NotificationNotifier extends _$NotificationNotifier {
     return const NotificationNotifierState();
   }
 
-  Future<NotificationPagination> _getNotifications() async {
-    try {
-      final userId = ref.read(userNotifierProvider).currentUser?.id;
-      if (userId == null) return const NotificationPagination();
-
-      return notificationRepository
-          .getNotifications(const NotificationFilter());
-    } catch (e, s) {
-      logger.e('Error getting notifications: $e $s');
-      return const NotificationPagination();
-    }
+  Future<void> getNotifications() async {
+    await _fetchNotifications(offset: 0, append: false);
   }
 
-  Future<void> getNotifications() async {
-    final newNotifications = await _getNotifications();
+  Future<void> loadMoreNotifications() async {
+    await _fetchNotifications(offset: state.notifications.length, append: true);
+  }
 
-    state = state.copyWith(
-      notifications: newNotifications.notifications,
-      hasMoreNotifications: newNotifications.hasMore ?? false,
-    );
+  Future<void> _fetchNotifications({
+    required int offset,
+    required bool append,
+  }) async {
+    try {
+      final userId = ref.read(userNotifierProvider).currentUser?.id;
+      if (userId == null) return;
+
+      final newNotifications =
+          await notificationRepository.getNotifications(offset, limit);
+
+      state = state.copyWith(
+        notifications: append
+            ? state.notifications + newNotifications.notifications
+            : newNotifications.notifications,
+        hasMoreNotifications: newNotifications.hasMore ?? false,
+      );
+    } catch (e, s) {
+      logger.e('Error fetching notifications: $e $s');
+    }
   }
 
   Future<void> markNotificationsAsViewed() async {

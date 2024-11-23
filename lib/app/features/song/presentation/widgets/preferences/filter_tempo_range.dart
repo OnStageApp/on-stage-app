@@ -9,21 +9,21 @@ class TempoRangeSlider extends StatefulWidget {
     this.onChanged,
   });
 
-  final double startValue;
-  final double endValue;
-  final void Function(double start, double end)? onChanged;
+  final int startValue;
+  final int endValue;
+  final void Function(int start, int end)? onChanged;
 
   @override
   State<TempoRangeSlider> createState() => _TempoRangeSliderState();
 }
 
 class _TempoRangeSliderState extends State<TempoRangeSlider> {
-  static const double minValue = 30;
-  static const double maxValue = 120;
-  static const double minRange = 40;
+  static const int minValue = 30;
+  static const int maxValue = 120;
+  static const int minRange = 40;
 
-  double _startValue = 60;
-  double _endValue = 80;
+  int _startValue = 60;
+  int _endValue = 80;
 
   @override
   void initState() {
@@ -33,8 +33,8 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
   }
 
   void _updateValues(double dx, BoxConstraints constraints, bool isStart) {
-    final double fullWidth = constraints.maxWidth;
-    final double valueRange = maxValue - minValue;
+    final fullWidth = constraints.maxWidth;
+    const int valueRange = maxValue - minValue;
 
     // Calculate relative position based on drag side
     if (isStart) {
@@ -44,7 +44,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
       // Snap to steps of 10
       newValue = (newValue / 10).round() * 10;
       setState(() {
-        _startValue = newValue.clamp(minValue, _endValue - minRange);
+        _startValue = newValue.clamp(minValue, _endValue - minRange).toInt();
       });
     } else {
       // For end handle
@@ -53,7 +53,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
       // Snap to steps of 10
       newValue = (newValue / 10).round() * 10;
       setState(() {
-        _endValue = newValue.clamp(_startValue + minRange, maxValue);
+        _endValue = newValue.clamp(_startValue + minRange, maxValue).toInt();
       });
     }
 
@@ -146,7 +146,10 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                     bottom: 0,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color:
+                            (_startValue == minValue && _endValue == maxValue)
+                                ? context.colorScheme.outline
+                                : Colors.blue,
                         borderRadius: BorderRadius.circular(28),
                       ),
                       child: Row(
@@ -163,9 +166,12 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                             },
                             child: Container(
                               width: 32,
-                              decoration: const BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.only(
+                              decoration: BoxDecoration(
+                                color: (_startValue == minValue &&
+                                        _endValue == maxValue)
+                                    ? context.colorScheme.outline
+                                    : Colors.blue,
+                                borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(8),
                                   bottomLeft: Radius.circular(8),
                                 ),
@@ -182,7 +188,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                               ),
                               child: Center(
                                 child: Text(
-                                  '${_startValue.round()} - ${_endValue.round()}',
+                                  '${_startValue.round()} - ${_endValue == maxValue ? '${maxValue}+' : _endValue.round()}',
                                   style: context.textTheme.titleMedium,
                                 ),
                               ),
@@ -199,8 +205,11 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                             },
                             child: Container(
                               width: 32,
-                              decoration: const BoxDecoration(
-                                color: Colors.blue,
+                              decoration: BoxDecoration(
+                                color: (_startValue == minValue &&
+                                        _endValue == maxValue)
+                                    ? context.colorScheme.outline
+                                    : Colors.blue,
                                 borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(8),
                                   bottomRight: Radius.circular(8),

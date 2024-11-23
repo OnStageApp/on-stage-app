@@ -148,7 +148,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
     try {
       if (!forceUpdate) {
-        final localSubscription = await db.getCurrentSubscription();
+        final localSubscription =
+            await ref.read(databaseProvider).getCurrentSubscription();
         if (localSubscription != null) {
           state = state.copyWith(
             currentSubscription: localSubscription,
@@ -161,7 +162,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       final backendSubscription =
           await subscriptionRepository.getCurrentSubscription();
 
-      await db.saveSubscription(backendSubscription);
+      await ref.read(databaseProvider).saveSubscription(backendSubscription);
       state = state.copyWith(
         currentSubscription: backendSubscription,
         isLoading: false,
@@ -186,13 +187,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     try {
       await subscriptionRepository.updateSubscription(subscription);
 
-      await db.saveSubscription(subscription);
+      await ref.read(databaseProvider).saveSubscription(subscription);
 
       state = state.copyWith(currentSubscription: subscription);
       logger.i('Subscription updated successfully');
     } catch (e) {
       logger.e('Error updating subscription $e');
-      await db.saveSubscription(subscription);
+      await ref.read(databaseProvider).saveSubscription(subscription);
       state = state.copyWith(currentSubscription: subscription);
       rethrow;
     }
@@ -230,6 +231,3 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     return customerInfo;
   }
 }
-
-// TODO: We need a way to trigger it for update the localDB, maybe on the websocket, open a new one
-//TODO: Handle when data is changed, update db directly i think.. or maybe not, we need to check the data first, if we can update it or not

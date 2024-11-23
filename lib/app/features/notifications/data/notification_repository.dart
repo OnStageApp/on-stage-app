@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:on_stage_app/app/features/notifications/domain/models/notification_filter.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_pagination.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -13,7 +12,8 @@ abstract class NotificationRepository {
 
   @GET(API.notifications)
   Future<NotificationPagination> getNotifications(
-    @Body() NotificationFilter? status,
+    @Query('filter') int offset,
+    @Query('limit') int limit,
   );
 
   @PUT(API.notificationsMarkAsViewed)

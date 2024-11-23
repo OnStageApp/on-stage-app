@@ -20,7 +20,7 @@ enum GenreEnum {
 }
 
 extension GenreEnumX on GenreEnum {
-  String get value {
+  String get title {
     switch (this) {
       case GenreEnum.jazz:
         return 'Jazz';

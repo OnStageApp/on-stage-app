@@ -48,7 +48,7 @@ class API {
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';
   static const String refreshToken = 'auth/refresh-token';
-  static const String logout = 'auth/logout/{deviceId}';
+  static const String logout = 'auth/logout';
 
   static const String users = 'users';
   static const String currentUser = 'users/current';
@@ -90,4 +90,6 @@ class API {
   static const String devices = 'devices';
   static const String deviceById = 'devices/{deviceId}';
   static const String deviceLogin = 'devices/login';
+
+  static const String plans = 'plans';
 }

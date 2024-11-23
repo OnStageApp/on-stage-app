@@ -1,5 +1,4 @@
 enum PermissionType {
-  songsAccess,
   addSong,
   screenSync,
   reminders,
@@ -11,8 +10,6 @@ enum PermissionType {
 extension PermissionTypeX on PermissionType {
   String get name {
     switch (this) {
-      case PermissionType.songsAccess:
-        return 'songsAccess';
       case PermissionType.addSong:
         return 'addSong';
       case PermissionType.screenSync:
@@ -36,14 +33,12 @@ extension PermissionTypeX on PermissionType {
         return 'Add more team members!';
       case PermissionType.addEvents:
         return 'Add more events!';
-      case PermissionType.songsAccess:
-        return 'Access to songs!';
       case PermissionType.addSong:
         return 'Add song!';
       case PermissionType.screenSync:
         return 'Screen sync!';
       case PermissionType.none:
-        return '';
+        return 'Get Pro Features!';
     }
   }
 
@@ -55,14 +50,12 @@ extension PermissionTypeX on PermissionType {
         return 'Team Members';
       case PermissionType.addEvents:
         return 'Add Events';
-      case PermissionType.songsAccess:
-        return 'Songs Access';
       case PermissionType.addSong:
         return 'Add Songs';
       case PermissionType.screenSync:
         return 'Screen Sync';
       case PermissionType.none:
-        return '';
+        return 'Upgrade to Pro';
     }
   }
 }
