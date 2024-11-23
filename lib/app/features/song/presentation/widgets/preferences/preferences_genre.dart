@@ -38,7 +38,7 @@ class PreferenceGenreState extends ConsumerState<PreferenceGenre> {
           ),
           const SizedBox(height: Insets.small),
           PreferencesActionTile(
-            title: ref.watch(searchNotifierProvider).genreFilter?.value ??
+            title: ref.watch(searchNotifierProvider).genreFilter?.title ??
                 'All Genres',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             onTap: () {

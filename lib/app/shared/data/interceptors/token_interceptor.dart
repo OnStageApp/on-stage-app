@@ -5,9 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/token_manager.dart';
-import 'package:on_stage_app/app/features/login/data/login_repository.dart';
 import 'package:on_stage_app/app/features/login/domain/auth_response.dart';
-import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:synchronized/synchronized.dart';
@@ -21,9 +19,6 @@ class TokenInterceptor extends Interceptor {
   final Ref _ref;
   final TokenManager _tokenManager;
   final _refreshTokenLock = Lock();
-
-  LoginRepository get _loginRepository =>
-      LoginRepository(_ref.read(dioProvider));
 
   @override
   Future<void> onRequest(

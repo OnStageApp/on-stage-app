@@ -123,6 +123,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
+                    splashColor: context.colorScheme.surfaceBright,
                     onTap: () {
                       widget.onArtistSelected(_artists.elementAt(index));
                       context.popDialog();

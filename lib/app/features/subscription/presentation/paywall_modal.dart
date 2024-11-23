@@ -271,8 +271,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
   }
 
   Future<Plan> getUpgradePlan(WidgetRef ref, Plan currentPlan) async {
-    final allPlans =
-        await ref.read(planServiceProvider.notifier).fetchAndSavePlans();
+    final allPlans = ref.watch(planServiceProvider).plans;
 
     if (currentPlan.entitlementId == 'starter') {
       return allPlans.firstWhere(

@@ -45,7 +45,6 @@ class PermissionService {
         return canAddTeamMembers;
       case PermissionType.reminders:
         return hasReminders;
-      case PermissionType.songsAccess:
       case PermissionType.addSong:
       case PermissionType.screenSync:
       case PermissionType.none:

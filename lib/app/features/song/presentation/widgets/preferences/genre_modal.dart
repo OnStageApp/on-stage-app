@@ -9,18 +9,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class GenreModal extends ConsumerStatefulWidget {
   const GenreModal({
+    required this.onSelected,
     super.key,
-    this.onSelected,
   });
 
-  final void Function(GenreEnum?)? onSelected;
+  final void Function(GenreEnum?) onSelected;
 
   @override
   GenreModalState createState() => GenreModalState();
 
   static void show({
     required BuildContext context,
-    required void Function(GenreEnum?)? onSelected,
+    required void Function(GenreEnum?) onSelected,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -75,55 +75,59 @@ class GenreModalState extends ConsumerState<GenreModal> {
   }
 
   Widget _buildTile(GenreEnum genre) {
-    return InkWell(
-      onTap: () {
-        final newGenre = _isItemSelected(genre) ? null : genre;
-        widget.onSelected?.call(newGenre);
-      },
-      child: Container(
-        height: 48,
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: _isItemSelected(genre)
-                ? context.colorScheme.primary
-                : context.colorScheme.onSurfaceVariant,
-            width: 1.6,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () {
+          final newGenre = _isItemSelected(genre) ? null : genre;
+          widget.onSelected(newGenre);
+        },
+        overlayColor:
+            WidgetStateProperty.all(context.colorScheme.surfaceBright),
+        child: Ink(
+          height: 48,
+          decoration: BoxDecoration(
+            color: context.colorScheme.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: _isItemSelected(genre)
+                  ? context.colorScheme.primary
+                  : context.colorScheme.onSurfaceVariant,
+              width: 1.6,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 12),
-            Container(
-              width: 30,
-              height: 30,
-              alignment: Alignment.center,
-              key: ValueKey(genre.hashCode.toString()),
-              decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant,
-                border: Border.all(
-                  color: context.colorScheme.primary,
-                  width: 3,
+          child: Row(
+            children: [
+              const SizedBox(width: 12),
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                key: ValueKey(genre.hashCode.toString()),
+                decoration: BoxDecoration(
+                  color: context.colorScheme.onSurfaceVariant,
+                  border: Border.all(
+                    color: context.colorScheme.primary,
+                    width: 3,
+                  ),
+                  shape: BoxShape.circle,
                 ),
-                shape: BoxShape.circle,
+                child: Text(
+                  genre.name.substring(0, 1),
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.titleSmall!
+                      .copyWith(color: context.colorScheme.onSurface),
+                ),
               ),
-              child: Text(
-                genre.name.substring(0, 1),
-                textAlign: TextAlign.center,
-                style: context.textTheme.titleSmall!
-                    .copyWith(color: context.colorScheme.onSurface),
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(
+                  genre.name,
+                  style: context.textTheme.titleSmall,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                genre.name,
-                style: context.textTheme.titleSmall,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

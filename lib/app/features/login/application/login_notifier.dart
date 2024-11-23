@@ -226,9 +226,8 @@ class LoginNotifier extends _$LoginNotifier {
       await loginRepository.logout(deviceId);
 
       await ref.read(databaseProvider).clearDatabase();
+      await ref.read(databaseProvider).closeDatabase();
       await _tokenManager.clearTokens();
-
-      // await _secureStorage.delete(key: 'token');
 
       ref
         ..invalidate(userNotifierProvider)

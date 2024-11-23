@@ -220,16 +220,13 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
   }
 
   Color _getFilterIconColor() {
-    return _isFilteringActive
-        ? context.colorScheme.onSurfaceVariant
-        : context.colorScheme.onSurface;
+    return _isFilteringActive ? Colors.white : context.colorScheme.onSurface;
   }
 
   TextStyle _getFilterTextStyle() {
     return Theme.of(context).textTheme.titleMedium!.copyWith(
-          color: _isFilteringActive
-              ? context.colorScheme.onSurfaceVariant
-              : context.colorScheme.onSurface,
+          color:
+              _isFilteringActive ? Colors.white : context.colorScheme.onSurface,
         );
   }
 

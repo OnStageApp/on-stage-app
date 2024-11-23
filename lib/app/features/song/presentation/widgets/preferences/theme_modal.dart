@@ -9,18 +9,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ThemeModal extends ConsumerStatefulWidget {
   const ThemeModal({
+    required this.onSelected,
     super.key,
-    this.onSelected,
   });
 
-  final void Function(ThemeEnum?)? onSelected;
+  final void Function(ThemeEnum?) onSelected;
 
   @override
   ThemeModalState createState() => ThemeModalState();
 
   static void show({
     required BuildContext context,
-    required void Function(ThemeEnum?)? onSelected,
+    required void Function(ThemeEnum?) onSelected,
   }) {
     showModalBottomSheet<Widget>(
       enableDrag: false,
@@ -68,57 +68,61 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
     );
   }
 
-  InkWell _buildTile(ThemeEnum theme) {
-    return InkWell(
-      onTap: () {
-        final newTheme = _isItemSelected(theme) ? null : theme;
-        widget.onSelected?.call(newTheme);
-      },
-      child: Container(
-        height: 48,
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: _isItemSelected(theme)
-                ? context.colorScheme.primary
-                : context.colorScheme.onSurfaceVariant,
-            width: 1.6,
+  Widget _buildTile(ThemeEnum theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () {
+          final newTheme = _isItemSelected(theme) ? null : theme;
+          widget.onSelected(newTheme);
+        },
+        overlayColor:
+            WidgetStateProperty.all(context.colorScheme.surfaceBright),
+        child: Ink(
+          height: 48,
+          decoration: BoxDecoration(
+            color: context.colorScheme.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: _isItemSelected(theme)
+                  ? context.colorScheme.primary
+                  : context.colorScheme.onSurfaceVariant,
+              width: 1.6,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 12),
-            Container(
-              width: 30,
-              height: 30,
-              alignment: Alignment.center,
-              key: ValueKey(theme.hashCode.toString()),
-              decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant,
-                border: Border.all(
-                  color: Colors.green,
-                  width: 3,
+          child: Row(
+            children: [
+              const SizedBox(width: 12),
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                key: ValueKey(theme.hashCode.toString()),
+                decoration: BoxDecoration(
+                  color: context.colorScheme.onSurfaceVariant,
+                  border: Border.all(
+                    color: Colors.green,
+                    width: 3,
+                  ),
+                  shape: BoxShape.circle,
                 ),
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                theme.name.substring(0, 1),
-                textAlign: TextAlign.center,
-                style: context.textTheme.titleSmall!.copyWith(
-                  color: context.colorScheme.onSurface,
+                child: Text(
+                  theme.name.substring(0, 1),
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                theme.name,
-                style: context.textTheme.titleSmall,
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(
+                  theme.name,
+                  style: context.textTheme.titleSmall,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

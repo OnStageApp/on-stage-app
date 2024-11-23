@@ -3,13 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
+import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/preference_selector.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -25,27 +27,44 @@ class AddSongFirstStepDetails extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AddSongFirstStepDetails> createState() =>
-      AddSongFirstStepDetailsState();
+      _AddSongFirstStepDetailsState();
 }
 
-class AddSongFirstStepDetailsState
+class _AddSongFirstStepDetailsState
     extends ConsumerState<AddSongFirstStepDetails> {
   final _songNameController = TextEditingController();
   final _bpmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  SongKey _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
+  final _tempoFocusNode = FocusNode();
+  final _nameFocusNode = FocusNode();
+
+  SongKey? _selectedKey;
   Artist? _selectedArtist;
-  String? _keyError;
-  String? _artistError;
-  String? _themeError;
-  String? _genreError;
+  ThemeEnum? _selectedTheme;
+  GenreEnum? _selectedGenre;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _initSong();
-    });
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initSong();
+    });
+
+    _songNameController.addListener(_onFieldChanged);
+    _bpmController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _songNameController.removeListener(_onFieldChanged);
+    _bpmController.removeListener(_onFieldChanged);
+    _songNameController.dispose();
+    _bpmController.dispose();
+    super.dispose();
   }
 
   Future<void> _initSong() async {
@@ -53,17 +72,23 @@ class AddSongFirstStepDetailsState
     if (widget.songId != null) {
       await ref.read(songNotifierProvider.notifier).init(widget.songId!);
       _prefillValuesIfEditing();
+    } else {
+      _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
     }
   }
 
   void _prefillValuesIfEditing() {
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.read(songNotifierProvider).song;
     if (song.id != null) {
       _songNameController.text = song.title ?? '';
       _bpmController.text = song.tempo.toString();
       _selectedKey =
           song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
       _selectedArtist = song.artist;
+      _selectedTheme = song.theme;
+      _selectedGenre = song.genre;
+    } else {
+      _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
     }
   }
 
@@ -75,10 +100,8 @@ class AddSongFirstStepDetailsState
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
           text: 'Continue',
-          onPressed: () async {
-            _addSongDetails(context);
-          },
-          isEnabled: true,
+          onPressed: _addSongDetails,
+          isEnabled: _isFormValid(),
         ),
       ),
       appBar: const StageAppBar(
@@ -95,40 +118,91 @@ class AddSongFirstStepDetailsState
               CustomTextField(
                 label: 'Song Name',
                 hint: 'Enter Song Name',
-                icon: Icons.church,
+                icon: Icons.music_note,
                 keyboardType: TextInputType.text,
                 controller: _songNameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a song name';
-                  }
-                  return null;
-                },
-                onChanged: (value) {},
               ),
               const SizedBox(height: Insets.medium),
               CustomTextField(
                 label: 'Tempo (bpm)',
                 hint: 'Enter Tempo',
                 keyboardType: TextInputType.number,
-                icon: Icons.church,
+                icon: Icons.speed,
                 controller: _bpmController,
-                onChanged: (value) {},
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter tempo';
-                  }
-                  return null;
+              ),
+              const SizedBox(height: Insets.medium),
+              PreferenceSelector<SongKey>(
+                label: 'Key',
+                placeholder: 'Select Key',
+                selectedValue: _selectedKey,
+                displayValue: (key) => key?.name ?? '',
+                onTap: () {
+                  ChangeKeyModal.show(
+                    context: context,
+                    title: 'Select Key',
+                    songKey: _selectedKey ??
+                        const SongKey(chord: ChordsWithoutSharp.C),
+                    onKeyChanged: (key) {
+                      setState(() {
+                        _selectedKey = key;
+                      });
+                    },
+                  );
                 },
               ),
               const SizedBox(height: Insets.medium),
-              ..._buildKeyTile(context),
+              PreferenceSelector<Artist>(
+                label: 'Artist',
+                placeholder: 'Choose Artist',
+                selectedValue: _selectedArtist,
+                displayValue: (artist) => artist?.name ?? '',
+                onTap: () {
+                  ArtistModal.show(
+                    context: context,
+                    onArtistSelected: (artist) {
+                      setState(() {
+                        _selectedArtist = artist;
+                      });
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: Insets.medium),
-              ..._buildArtistTile(context),
+              PreferenceSelector<GenreEnum>(
+                label: 'Genre',
+                placeholder: 'Choose genre',
+                selectedValue: _selectedGenre,
+                displayValue: (genre) => genre?.title ?? '',
+                onTap: () {
+                  GenreModal.show(
+                    context: context,
+                    onSelected: (genre) {
+                      setState(() {
+                        _selectedGenre = genre;
+                      });
+                      context.popDialog();
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: Insets.medium),
-              ..._buildGenreTile(context),
-              const SizedBox(height: Insets.medium),
-              ..._buildThemeTile(context),
+              PreferenceSelector<ThemeEnum>(
+                label: 'Theme',
+                placeholder: 'Choose one or more themes',
+                selectedValue: _selectedTheme,
+                displayValue: (theme) => theme?.title ?? '',
+                onTap: () {
+                  ThemeModal.show(
+                    context: context,
+                    onSelected: (theme) {
+                      setState(() {
+                        _selectedTheme = theme;
+                      });
+                      context.popDialog();
+                    },
+                  );
+                },
+              ),
               const SizedBox(height: 120),
             ],
           ),
@@ -137,155 +211,8 @@ class AddSongFirstStepDetailsState
     );
   }
 
-  List<Widget> _buildKeyTile(BuildContext context) {
-    return [
-      Text(
-        'Key',
-        style: context.textTheme.titleSmall!.copyWith(
-          color: context.colorScheme.onSurface,
-        ),
-      ),
-      const SizedBox(height: Insets.small),
-      PreferencesActionTile(
-        title: _selectedKey.name,
-        trailingIcon: Icons.keyboard_arrow_down_rounded,
-        onTap: () {
-          ChangeKeyModal.show(
-            context: context,
-            title: 'Select Key',
-            songKey: const SongKey(chord: ChordsWithoutSharp.C),
-            onKeyChanged: (key) {
-              setState(() {
-                _selectedKey = key;
-                _keyError = null;
-              });
-            },
-          );
-        },
-      ),
-      if (_keyError != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 4),
-          child: Text(
-            _keyError!,
-            style: context.textTheme.bodySmall!.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-        ),
-    ];
-  }
-
-  List<Widget> _buildThemeTile(BuildContext context) {
-    return [
-      Text(
-        'Theme',
-        style: context.textTheme.titleSmall!.copyWith(
-          color: context.colorScheme.onSurface,
-        ),
-      ),
-      const SizedBox(height: Insets.small),
-      PreferencesActionTile(
-        title: 'Choose one or more themes',
-        trailingIcon: Icons.keyboard_arrow_down_rounded,
-        onTap: () {
-          ThemeModal.show(
-            context: context,
-            onSelected: (theme) {
-              logger.i('Theme selected: $theme');
-              context.popDialog();
-            },
-          );
-        },
-      ),
-      if (_themeError != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 4),
-          child: Text(
-            _themeError!,
-            style: context.textTheme.bodySmall!.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-        ),
-    ];
-  }
-
-  List<Widget> _buildGenreTile(BuildContext context) {
-    return [
-      Text(
-        'Genre',
-        style: context.textTheme.titleSmall!.copyWith(
-          color: context.colorScheme.onSurface,
-        ),
-      ),
-      const SizedBox(height: Insets.small),
-      PreferencesActionTile(
-        title: 'Choose genre',
-        trailingIcon: Icons.keyboard_arrow_down_rounded,
-        onTap: () {
-          GenreModal.show(
-            context: context,
-            onSelected: (genre) {},
-          );
-        },
-      ),
-      if (_genreError != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 4),
-          child: Text(
-            _genreError!,
-            style: context.textTheme.bodySmall!.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-        ),
-    ];
-  }
-
-  List<Widget> _buildArtistTile(BuildContext context) {
-    return [
-      Text(
-        'Artist',
-        style: context.textTheme.titleSmall!.copyWith(
-          color: context.colorScheme.onSurface,
-        ),
-      ),
-      const SizedBox(height: Insets.small),
-      PreferencesActionTile(
-        title: _selectedArtist?.name ?? 'Choose Artist',
-        trailingIcon: Icons.keyboard_arrow_down_rounded,
-        onTap: () {
-          ArtistModal.show(
-            context: context,
-            onArtistSelected: (artist) {
-              setState(() {
-                _selectedArtist = artist;
-                _artistError = null;
-              });
-            },
-          );
-        },
-      ),
-      if (_artistError != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 16, top: 4),
-          child: Text(
-            _artistError!,
-            style: context.textTheme.bodySmall!.copyWith(
-              color: context.colorScheme.error,
-            ),
-          ),
-        ),
-    ];
-  }
-
-  void _addSongDetails(BuildContext context) {
-    setState(() {
-      _artistError = _selectedArtist == null ? 'Please select an artist' : null;
-    });
-
-    if (_formKey.currentState!.validate() && _selectedArtist != null) {
+  void _addSongDetails() {
+    if (_formKey.currentState?.validate() ?? false) {
       _setFieldsOnController();
       context.pushNamed(AppRoute.editSongContent.name);
     } else {
@@ -301,7 +228,19 @@ class AddSongFirstStepDetailsState
             originalKey: _selectedKey,
             key: _selectedKey,
             artist: _selectedArtist,
+            theme: _selectedTheme,
+            genre: _selectedGenre,
           ),
         );
+  }
+
+  bool _isFormValid() {
+    return _songNameController.text.isNotEmpty &&
+        _bpmController.text.isNotEmpty &&
+        int.tryParse(_bpmController.text) != null &&
+        _selectedKey != null &&
+        _selectedArtist != null &&
+        _selectedGenre != null &&
+        _selectedTheme != null;
   }
 }

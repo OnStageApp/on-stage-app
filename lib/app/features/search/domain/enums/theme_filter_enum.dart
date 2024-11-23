@@ -22,7 +22,7 @@ enum ThemeEnum {
 }
 
 extension ThemeEnumX on ThemeEnum {
-  String get value {
+  String get title {
     switch (this) {
       case ThemeEnum.others:
         return 'Others';

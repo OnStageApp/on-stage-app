@@ -19,7 +19,14 @@ part 'app_database.g.dart';
 
 // Database provider
 final databaseProvider = Provider<AppDatabase>((ref) {
-  return AppDatabase.instance;
+  final database = AppDatabase();
+
+  // Ensure the database is closed when the provider is disposed
+  ref.onDispose(() {
+    database.close();
+  });
+
+  return database;
 });
 
 LazyDatabase _openConnection() {
@@ -40,11 +47,7 @@ LazyDatabase _openConnection() {
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase._() : super(_openConnection());
-
-  static final AppDatabase _instance = AppDatabase._();
-
-  static AppDatabase get instance => _instance;
+  AppDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
@@ -71,7 +74,8 @@ class AppDatabase extends _$AppDatabase {
   Future<void> initDatabase() async {
     try {
       logger.i('Initializing database...');
-      // This will trigger the migration strategy if needed
+
+      // Trigger the migration strategy if needed
       await customSelect('SELECT 1').get();
 
       logger.i('Database initialized successfully');
@@ -272,7 +276,13 @@ class AppDatabase extends _$AppDatabase {
         .go();
   }
 
-  Future<void> deleteDatabase() async {
+  Future<void> deleteDatabase(Ref ref) async {
+    // Get the current database instance
+    final database = ref.read(databaseProvider);
+
+    // Close the existing connection
+    await database.close();
+
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'app_database.sqlite'));
 
@@ -282,16 +292,33 @@ class AppDatabase extends _$AppDatabase {
     } else {
       logger.w('Database file does not exist');
     }
+
+    // Invalidate the provider to create a new AppDatabase instance
+    ref.invalidate(databaseProvider);
+
+    // Initialize the new database
+    final newDatabase = ref.read(databaseProvider);
+    await newDatabase.initDatabase();
   }
 
   Future<void> clearDatabase() async {
     try {
       await transaction(() async {
-        // Clear all tables
-        await delete(planTable).go();
-        await delete(subscriptionTable).go();
-        await delete(profilePictureTable).go();
-        await delete(profilePictureXlTable).go();
+        logger.i('Clearing all tables from the database...');
+
+        // Check if tables exist and delete rows only if they do
+        if (await tableExists('plan_table')) {
+          await delete(planTable).go();
+        }
+        if (await tableExists('subscription_table')) {
+          await delete(subscriptionTable).go();
+        }
+        if (await tableExists('profile_picture_table')) {
+          await delete(profilePictureTable).go();
+        }
+        if (await tableExists('profile_picture_xl_table')) {
+          await delete(profilePictureXlTable).go();
+        }
 
         logger.i('All tables cleared successfully');
       });
@@ -299,5 +326,17 @@ class AppDatabase extends _$AppDatabase {
       logger.e('Error clearing database: $e');
       rethrow;
     }
+  }
+
+  Future<void> closeDatabase() async {
+    await close();
+    logger.i('Database connection closed');
+  }
+
+  Future<bool> tableExists(String tableName) async {
+    final result = await customSelect(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='$tableName';",
+    ).getSingleOrNull();
+    return result != null;
   }
 }

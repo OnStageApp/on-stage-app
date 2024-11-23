@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -53,12 +52,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       body: RefreshIndicator.adaptive(
-          onRefresh: () async {
-            await Future.wait([
-              ref.read(songsNotifierProvider.notifier).getSongs(),
-              ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
-            ]);
-          },
+        onRefresh: () async {
+          await Future.wait([
+            ref.read(songsNotifierProvider.notifier).getSongs(),
+            ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+          ]);
+        },
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -120,9 +119,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
     final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final leftColumnWidth =
-        context.isLargeScreen ? (screenWidth / 2 - 80) : (screenWidth / 2);
 
     return SizedBox(
       height: 240,

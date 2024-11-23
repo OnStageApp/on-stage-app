@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/song/application/song/song_notifier.da
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
@@ -94,11 +95,13 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           chordStyle: _chordStyle,
           widgetPadding: widget.widgetPadding,
           scaleFactor: widget.scaleFactor,
-          updateSongKey: ref.watch(songNotifierProvider).song.key!,
+          updateSongKey:
+              ref.watch(songNotifierProvider).song.key ?? const SongKey(),
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
               SongViewMode.american,
-          originalSongKey: ref.watch(songNotifierProvider).song.originalKey!,
+          originalSongKey: ref.watch(songNotifierProvider).song.originalKey ??
+              const SongKey(),
         );
   }
 

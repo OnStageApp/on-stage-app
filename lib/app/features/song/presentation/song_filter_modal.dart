@@ -90,9 +90,17 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
           const SongLibraryToggle(),
           const SizedBox(height: Insets.medium),
           TempoRangeSlider(
-            startValue: 30,
-            endValue: 120,
-            onChanged: (start, end) {},
+            startValue:
+                ref.watch(searchNotifierProvider).tempoFilter?.min ?? 30,
+            endValue: ref.watch(searchNotifierProvider).tempoFilter?.max ?? 120,
+            onChanged: (min, max) {
+              final minValue = min == 30 ? null : min;
+              final maxValue = max == 120 ? null : max;
+
+              ref
+                  .read(searchNotifierProvider.notifier)
+                  .setTempoFilter(minValue, maxValue);
+            },
           ),
           const SizedBox(height: Insets.medium),
         ],

@@ -20,6 +20,7 @@ class GroupTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
+      overlayColor: WidgetStateProperty.all(const Color(0x33FFFFFF)),
       onTap: () {
         context.pushNamed(
           AppRoute.teamDetails.name,

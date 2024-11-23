@@ -27,6 +27,7 @@ class PreferencesActionTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       highlightColor: Theme.of(context).colorScheme.surfaceBright,
+      overlayColor: WidgetStateProperty.all(context.colorScheme.surfaceBright),
       child: Ink(
         height: height ?? 48,
         padding: const EdgeInsets.symmetric(horizontal: 12),

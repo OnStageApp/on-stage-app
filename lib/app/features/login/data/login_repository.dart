@@ -18,7 +18,7 @@ abstract class LoginRepository {
 
   @POST(API.logout)
   Future<void> logout(
-    @Path('deviceId') String deviceId,
+    @Body() String deviceId,
   );
 
   @POST(API.refreshToken)

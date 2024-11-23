@@ -26,8 +26,8 @@ class EventsContent extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildEnhancedEventTile(event, context),
-          const SectionTitle(title: 'Upcoming Events'),
           if (!upcomingIsEmpty) ...[
+            const SectionTitle(title: 'Upcoming Events'),
             EventsList(
               events: upcomingEventsResponse.events,
               hasMore: upcomingEventsResponse.hasMore,
@@ -35,12 +35,13 @@ class EventsContent extends ConsumerWidget {
                   .read(eventsNotifierProvider.notifier)
                   .loadMoreUpcomingEvents(),
             ),
-          ] else ...[
+          ] else if (pastIsEmpty) ...[
+            const SectionTitle(title: 'Events'),
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Text(
-                "You don't have any upcoming events yet.",
+                "You don't have any events yet.",
                 style: context.textTheme.bodyMedium!.copyWith(
                   color: context.colorScheme.outline,
                 ),
