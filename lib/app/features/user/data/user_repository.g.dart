@@ -104,7 +104,7 @@ class _UserRepository implements UserRepository {
     )
         .compose(
           _dio.options,
-          'users/photo',
+          'users/photo/currentUser',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -125,20 +125,19 @@ class _UserRepository implements UserRepository {
   }
 
   @override
-  Future<List<int>> getUserPhotoFromS3(String path) async {
+  Future<String> getPhotoByUserId(String userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<int>>(Options(
+    final _options = _setStreamType<String>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
-      responseType: ResponseType.bytes,
     )
         .compose(
           _dio.options,
-          '${path}',
+          'users/photo/${userId}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -147,10 +146,10 @@ class _UserRepository implements UserRepository {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<int> _value;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
     try {
-      _value = _result.data!.cast<int>();
+      _value = _result.data!;
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

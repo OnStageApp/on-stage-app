@@ -25,9 +25,10 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-        minHeight: MediaQuery.of(context).size.height * 0.7,
-        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+        maxWidth: context.isLargeScreen
+            ? context.screenSize.width * 0.5
+            : double.infinity,
       ),
       context: context,
       builder: (context) => const ChooseStructureToAddModal(),
@@ -55,7 +56,7 @@ class ChooseStructureToAddModalState
       return;
     }
     _structureItems = StructureItem.values
-        .where((item) => !usedStructures!.contains(item))
+        .where((item) => !usedStructures.contains(item))
         .toList();
   }
 

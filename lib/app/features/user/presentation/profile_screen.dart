@@ -63,7 +63,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: context.colorScheme.surface,
         appBar: const StageAppBar(
           title: 'Profile',
         ),

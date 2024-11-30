@@ -30,7 +30,10 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
       margin: EdgeInsets.symmetric(horizontal: isBackButtonVisible ? 16 : 0),
       child: AppBar(
         bottom: bottom,
-        backgroundColor: background ?? context.colorScheme.surface,
+        backgroundColor: background ??
+            (context.isLargeScreen
+                ? context.colorScheme.surfaceContainerHigh
+                : context.colorScheme.surface),
         leading: _buildLeading(context),
         leadingWidth: 20,
         centerTitle: false,

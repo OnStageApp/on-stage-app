@@ -8,7 +8,6 @@ import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
@@ -48,9 +47,7 @@ class AddSongSecondStepContentState
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _buildFloatingActionButton(context),
-      backgroundColor: context.colorScheme.surface,
       appBar: StageAppBar(
-        background: context.colorScheme.surface,
         isBackButtonVisible: true,
         title: songTitle,
       ),

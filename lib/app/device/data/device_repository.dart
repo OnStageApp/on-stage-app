@@ -1,6 +1,5 @@
 // lib/app/features/device/data/device_repository.dart
 import 'package:dio/dio.dart';
-import 'package:on_stage_app/app/device/domain/device.dart';
 import 'package:on_stage_app/app/device/domain/device_request/device_request.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -16,7 +15,7 @@ abstract class DeviceRepository {
 
   @PUT(API.deviceById)
   Future<void> updateDevice(
-    @Path('deviceId') String deviceId,
-    @Body() DeviceRequest device,
+    @Path('id') String id,
+    @Body() DeviceRequest deviceDTO,
   );
 }

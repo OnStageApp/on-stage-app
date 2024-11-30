@@ -61,7 +61,7 @@ class EventsNotifier extends _$EventsNotifier {
         state = state.copyWith(upcomingEvent: event);
       } else {
         final photos =
-            await _setPhotosFromLocalStorage(event.userIdsWithPhoto!);
+            await _setPhotosFromLocalStorage(event.userIdsWithPhoto ?? []);
         final newEvent = event.copyWith(stagerPhotos: photos);
         state = state.copyWith(upcomingEvent: newEvent);
       }

@@ -5,7 +5,6 @@ import 'package:on_stage_app/app/features/song/application/song/song_notifier.da
 import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar_leading.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class SongDetailScreen extends ConsumerStatefulWidget {
@@ -38,9 +37,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
       appBar: StageAppBar(
-        background: context.colorScheme.surface,
         isBackButtonVisible: true,
         title: ref.watch(songNotifierProvider).song.title ?? '',
         trailing: const SongAppBarLeading(),

@@ -21,9 +21,8 @@ abstract class UserRepository {
   @GET(API.userPhoto)
   Future<String> getUserPhotoUrl();
 
-  @GET('{path}')
-  @DioResponseType(ResponseType.bytes)
-  Future<List<int>> getUserPhotoFromS3(@Path('path') String path);
+  @GET(API.photoByUserId)
+  Future<String> getPhotoByUserId(@Path('userId') String userId);
 
   @GET(API.currentUser)
   Future<UserModel> getCurrentUser();

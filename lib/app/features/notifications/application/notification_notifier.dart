@@ -1,24 +1,37 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:on_stage_app/app/database/app_database.dart';
+import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier_state.dart';
 import 'package:on_stage_app/app/features/notifications/data/notification_repository.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
+import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notification_notifier.g.dart';
 
 const offset = 0;
-const limit = 5;
+const limit = 30;
 
 @Riverpod(keepAlive: true)
 class NotificationNotifier extends _$NotificationNotifier {
   NotificationRepository? _notificationRepository;
+  UserRepository? _usersRepository;
 
   NotificationRepository get notificationRepository {
     _notificationRepository ??= NotificationRepository(ref.read(dioProvider));
     return _notificationRepository!;
+  }
+
+  UserRepository get usersRepository {
+    _usersRepository ??= UserRepository(ref.read(dioProvider));
+    return _usersRepository!;
   }
 
   @override
@@ -46,10 +59,27 @@ class NotificationNotifier extends _$NotificationNotifier {
       final newNotifications =
           await notificationRepository.getNotifications(offset, limit);
 
+      final notificationsWithPhotos = await Future.wait(
+        newNotifications.notifications.map((notification) async {
+          if (notification.params == null) return notification;
+          if (notification.params!.usersWithPhoto.isNullOrEmpty) {
+            return notification;
+          }
+          final photos = <Uint8List>[];
+          for (final userId in notification.params!.usersWithPhoto!) {
+            final photo = await _getPhotoBytes(userId);
+            if (photo != null) {
+              photos.add(photo);
+            }
+          }
+
+          return notification = notification.copyWith(profilePictures: photos);
+        }),
+      );
       state = state.copyWith(
         notifications: append
-            ? state.notifications + newNotifications.notifications
-            : newNotifications.notifications,
+            ? state.notifications + notificationsWithPhotos
+            : notificationsWithPhotos,
         hasMoreNotifications: newNotifications.hasMore ?? false,
       );
     } catch (e, s) {
@@ -93,5 +123,36 @@ class NotificationNotifier extends _$NotificationNotifier {
 
   void setHasNewNotifications(bool hasNewNotifications) {
     state = state.copyWith(hasNewNotifications: hasNewNotifications);
+  }
+
+  Future<Uint8List?> _getPhotoBytes(String userId) async {
+    final localPhoto = await _getPhotoFromLocalStorage(userId);
+    if (localPhoto != null) {
+      logger.i('Loaded user photo from local storage ${DateTime.now()}');
+      return localPhoto;
+    }
+
+    final photoUrl = await usersRepository.getPhotoByUserId(userId);
+
+    if (photoUrl.isEmpty) {
+      logger.i('Photo URL is empty');
+      return null;
+    }
+
+    final photoBytes = await ref
+        .read(amazonS3NotifierProvider.notifier)
+        .getPhotoFromAWS(photoUrl);
+    unawaited(_savePhotoToLocalStorage(userId, photoBytes!));
+    return photoBytes;
+  }
+
+  Future<Uint8List?> _getPhotoFromLocalStorage(String userId) async {
+    final photo =
+        await ref.read(databaseProvider).getUserProfilePicture(userId);
+    return photo;
+  }
+
+  Future<void> _savePhotoToLocalStorage(String userId, Uint8List photo) async {
+    await ref.read(databaseProvider).updateUserProfilePicture(userId, photo);
   }
 }

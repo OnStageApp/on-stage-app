@@ -33,7 +33,9 @@ class ContinueButton extends StatelessWidget {
         boxShadow: hasShadow
             ? [
                 BoxShadow(
-                  color: context.colorScheme.surface,
+                  color: context.isLargeScreen
+                      ? context.colorScheme.surfaceContainerHigh
+                      : context.colorScheme.surface,
                   blurRadius: 30,
                   spreadRadius: 35,
                   offset: const Offset(0, 24),

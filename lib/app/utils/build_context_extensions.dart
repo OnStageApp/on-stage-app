@@ -25,5 +25,5 @@ extension ObjectExt<T> on T? {
 }
 
 extension ScreenExtension on BuildContext {
-  bool get isLargeScreen => MediaQuery.of(this).size.width > 1000;
+  bool get isLargeScreen => MediaQuery.of(this).size.width > 600;
 }

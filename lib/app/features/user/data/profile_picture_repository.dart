@@ -49,7 +49,7 @@ class ProfilePictureRepository {
       });
 
       final response = await _dio.post(
-        API.userPhoto,
+        API.photo,
         data: formData,
         options: Options(
           headers: {

@@ -53,8 +53,11 @@ class API {
   static const String users = 'users';
   static const String currentUser = 'users/current';
   static const String user = 'users/{id}';
-  static const String userPhoto = 'users/photo';
+  static const String userPhoto = 'users/photo/currentUser';
   static const String checkPermission = 'users/check-permission';
+
+  static const String photoByUserId = 'users/photo/{userId}';
+  static const String photo = 'users/photo';
 
   static const String teams = 'teams';
   static const String teamById = 'teams/{id}';
@@ -88,7 +91,7 @@ class API {
 
   //devices
   static const String devices = 'devices';
-  static const String deviceById = 'devices/{deviceId}';
+  static const String deviceById = 'devices/{id}';
   static const String deviceLogin = 'devices/login';
 
   static const String plans = 'plans';
