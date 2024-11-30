@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -22,6 +21,7 @@ import 'package:on_stage_app/app/features/permission/application/permission_noti
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
+import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/event_tile_enhanced.dart';
 import 'package:on_stage_app/app/shared/rehearsal_tile.dart';
 import 'package:on_stage_app/app/shared/settings_trailing_app_bar_button.dart';
@@ -265,16 +265,9 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   }
 
   Widget _buildPublishButton(BuildContext context, StateSetter setState) {
-    return TextButton(
-      key: const ValueKey('publish'),
-      style: ButtonStyle(
-        minimumSize: WidgetStateProperty.all(const Size(double.infinity, 54)),
-        shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-        backgroundColor: WidgetStateProperty.all(context.colorScheme.primary),
-      ),
+    return ContinueButton(
       onPressed: _isPublishButtonLoading
-          ? null
+          ? () {}
           : () async {
               setState(() {
                 _isPublishButtonLoading = true;
@@ -286,20 +279,9 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
               });
               _updateEventsAfterPublishing();
             },
-      child: _isPublishButtonLoading
-          ? const SizedBox(
-              height: 24,
-              child: LoadingIndicator(
-                colors: [Colors.white],
-                indicatorType: Indicator.lineSpinFadeLoader,
-              ),
-            )
-          : Text(
-              'Publish Event',
-              style: context.textTheme.titleMedium!.copyWith(
-                color: context.colorScheme.onPrimary,
-              ),
-            ),
+      isLoading: _isPublishButtonLoading,
+      text: 'Publish Event',
+      isEnabled: true,
     );
   }
 

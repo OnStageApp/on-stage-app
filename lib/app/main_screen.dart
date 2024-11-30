@@ -22,6 +22,7 @@ import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/shared/custom_side_navigation.dart';
 import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
@@ -45,6 +46,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     const EventsScreen(),
     const ProfileScreen(),
   ];
+
+  bool _isNavigationExpanded = false;
 
   void _onChangedScreen(int index) {
     widget.navigationShell.goBranch(
@@ -72,7 +75,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ref.read(firebaseNotifierProvider.notifier);
 
     await Future.wait([
-      //TODO: Find a new way to verify deviceId and save it
       ref.read(deviceServiceProvider).verifyDeviceId(),
       ref
           .read(teamMembersNotifierProvider.notifier)
@@ -194,10 +196,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             ),
       body: context.isLargeScreen
           ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildNavigationRail(context),
                 Expanded(
-                  child: widget.navigationShell,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 32, bottom: 32, right: 23),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 132),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                        color: context.colorScheme.surfaceContainerHigh,
+                      ),
+                      child: widget.navigationShell,
+                    ),
+                  ),
                 ),
               ],
             )
@@ -206,73 +222,19 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Widget _buildNavigationRail(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 32),
-          child: SvgPicture.asset(
-            'assets/icons/onstage_icon_blue.svg',
-            height: 40,
-          ),
-        ),
-        Expanded(
-          child: NavigationRail(
-            groupAlignment: 0,
-            selectedIndex: widget.navigationShell.currentIndex,
-            onDestinationSelected: _onChangedScreen,
-            backgroundColor: context.colorScheme.surface,
-            selectedLabelTextStyle: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
-            unselectedLabelTextStyle: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.outline,
-            ),
-            selectedIconTheme: IconThemeData(
-              color: context.colorScheme.onSurface,
-            ),
-            unselectedIconTheme: IconThemeData(
-              color: context.colorScheme.outline,
-            ),
-            labelType: NavigationRailLabelType.all,
-            useIndicator: false,
-            indicatorColor: context.colorScheme.primary,
-            destinations: _navigationItems.map((item) {
-              final isSelected = _navigationItems.indexOf(item) ==
-                  widget.navigationShell.currentIndex;
-              return NavigationRailDestination(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                icon: SvgPicture.asset(
-                  item.iconPath,
-                  height: 21,
-                  colorFilter: ColorFilter.mode(
-                    isSelected
-                        ? context.colorScheme.onSurface
-                        : context.colorScheme.outline,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                label: Text(item.label),
-              );
-            }).toList(),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.logout,
-                  color: context.colorScheme.error,
-                ),
-                onPressed: () {},
-              ),
-              const Text('Log Out'),
-            ],
-          ),
-        ),
-      ],
+    return CustomSideNavigation(
+      selectedIndex: widget.navigationShell.currentIndex,
+      onDestinationSelected: _onChangedScreen,
+      isExpanded: _isNavigationExpanded,
+      items: _navigationItems,
+      onExpandToggle: () {
+        setState(() {
+          _isNavigationExpanded = !_isNavigationExpanded;
+        });
+      },
+      onLogout: () {
+        // Implement logout logic here
+      },
     );
   }
 
@@ -293,27 +255,27 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 }
 
-final List<_NavigationItem> _navigationItems = [
-  _NavigationItem(
+final List<NavigationItem> _navigationItems = [
+  NavigationItem(
     label: 'Home',
     iconPath: 'assets/icons/nav_home_icon.svg',
   ),
-  _NavigationItem(
+  NavigationItem(
     label: 'Songs',
     iconPath: 'assets/icons/nav_list_music_icon.svg',
   ),
-  _NavigationItem(
+  NavigationItem(
     label: 'Events',
     iconPath: 'assets/icons/nav_calendar_icon.svg',
   ),
-  _NavigationItem(
+  NavigationItem(
     label: 'Profile',
     iconPath: 'assets/icons/nav_profile_icon.svg',
   ),
 ];
 
-class _NavigationItem {
-  _NavigationItem({
+class NavigationItem {
+  NavigationItem({
     required this.label,
     required this.iconPath,
   });

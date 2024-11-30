@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
+import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
+import 'package:on_stage_app/app/features/login/application/token_manager.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/app_launcher_checker.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:upgrader/upgrader.dart';
 
 class App extends ConsumerStatefulWidget {
@@ -18,10 +23,22 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _logoutUserOnReinstall();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       unawaited(ref.read(analyticsServiceProvider.notifier).logAppOpen());
     });
     super.initState();
+  }
+
+  Future<void> _logoutUserOnReinstall() async {
+    final accessToken =
+        await TokenManager(const FlutterSecureStorage()).getAccessToken();
+    final isFirstLaunch = await AppLaunchChecker.isFirstLaunch();
+    if (isFirstLaunch && accessToken != null) {
+      logger.i('First launch and user is logged in. Signing out');
+      await ref.read(loginNotifierProvider.notifier).signOut();
+      return;
+    }
   }
 
   @override
@@ -33,8 +50,8 @@ class _AppState extends ConsumerState<App> {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: userSettings.isDarkMode ?? false
-          ? onStageDarkTheme
-          : onStageLightTheme,
+          ? getOnStageDarkTheme(context)
+          : getOnStageLightTheme(context),
       builder: (context, child) {
         return UpgradeAlert(
           navigatorKey: router.routerDelegate.navigatorKey,

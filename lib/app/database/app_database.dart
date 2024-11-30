@@ -163,8 +163,8 @@ class AppDatabase extends _$AppDatabase {
           .getSingleOrNull();
 
       return result?.toPlan();
-    } catch (e) {
-      logger.e('Error getting plan by ID from local storage', e);
+    } catch (e, s) {
+      logger.e('Error getting plan by ID from local storage $s', e);
       return null;
     }
   }

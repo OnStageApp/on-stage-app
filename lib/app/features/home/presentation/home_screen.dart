@@ -44,9 +44,12 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     final songs = ref.watch(songsNotifierProvider).filteredSongs;
 
     return Scaffold(
-      appBar: const StageAppBar(
+      appBar: StageAppBar(
+        background: context.isLargeScreen
+            ? context.colorScheme.surfaceContainerHigh
+            : context.colorScheme.surface,
         title: 'Dashboard',
-        trailing: Padding(
+        trailing: const Padding(
           padding: EdgeInsets.only(right: 16),
           child: NotificationWidget(),
         ),
@@ -108,7 +111,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void _listenToOnboardingStatus() {
     ref.listen<bool>(
       userSettingsNotifierProvider
-          .select((settings) => settings.isOnboardingDone!),
+          .select((settings) => settings.isOnboardingDone ?? true),
       (_, isOnboardingDone) {
         if (isOnboardingDone == false) {
           showOnboardingOverlay(context);

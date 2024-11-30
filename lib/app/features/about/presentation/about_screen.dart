@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/delete_account_button.dart';
-import 'package:on_stage_app/app/reviews/review_service.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -34,7 +33,8 @@ class AboutScreen extends ConsumerWidget {
               trailingIcon: Icons.keyboard_arrow_right_rounded,
               height: 54,
               onTap: () {
-                ref.read(reviewServiceProvider).requestReview();
+                //TOOD: See if it's working on ipad
+                // ref.read(reviewServiceProvider).requestReview();
               },
             ),
             const SizedBox(height: 12),

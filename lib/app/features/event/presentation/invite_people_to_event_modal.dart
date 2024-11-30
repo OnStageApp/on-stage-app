@@ -30,50 +30,52 @@ class InvitePeopleToEventModal extends ConsumerStatefulWidget {
     void Function()? onPressed,
   }) {
     showModalBottomSheet<Widget>(
+      useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height,
+        minHeight: MediaQuery.of(context).size.height * 0.85,
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+        maxWidth: context.isLargeScreen
+            ? context.screenSize.width * 0.5
+            : double.infinity,
       ),
       context: context,
-      builder: (context) => Container(
-        margin: const EdgeInsets.only(top: 24),
-        child: NestedScrollModal(
-          buildFooter: () => SizedBox(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                16,
-                16,
-                32,
-              ),
-              child: Consumer(
-                builder: (context, ref, _) {
-                  return ContinueButton(
-                    text: 'Invite People to Event',
-                    onPressed: () {
-                      _onPressed(ref, onPressed ?? () {});
-                      context.popDialog();
-                    },
-                    isEnabled: ref
-                        .watch(eventControllerProvider)
-                        .selectedTeamMembers
-                        .isNotEmpty,
-                  );
-                },
-              ),
+      builder: (context) => NestedScrollModal(
+        buildFooter: () => SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              16,
+              16,
+              32,
+            ),
+            child: Consumer(
+              builder: (context, ref, _) {
+                return ContinueButton(
+                  text: 'Invite People to Event',
+                  onPressed: () {
+                    _onPressed(ref, onPressed ?? () {});
+                    context.popDialog();
+                  },
+                  isEnabled: ref
+                      .watch(eventControllerProvider)
+                      .selectedTeamMembers
+                      .isNotEmpty,
+                );
+              },
             ),
           ),
-          buildHeader: () => const ModalHeader(title: 'Add People'),
-          headerHeight: () {
-            return 64;
-          },
-          footerHeight: () {
-            return 64;
-          },
-          buildContent: () => InvitePeopleToEventModal(
-            eventId: eventId,
-          ),
+        ),
+        buildHeader: () => const ModalHeader(title: 'Add People'),
+        headerHeight: () {
+          return 64;
+        },
+        footerHeight: () {
+          return 64;
+        },
+        buildContent: () => InvitePeopleToEventModal(
+          eventId: eventId,
         ),
       ),
     );
@@ -287,7 +289,7 @@ class AddParticipantsModalState
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: 10,
+        itemCount: 6,
         itemBuilder: (context, index) {
           return Shimmer.fromColors(
             baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),

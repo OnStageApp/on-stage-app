@@ -1,11 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/dialog_helper.dart';
 
 class RemoveMemberWidget extends ConsumerWidget {
   const RemoveMemberWidget({
@@ -43,56 +41,15 @@ class RemoveMemberWidget extends ConsumerWidget {
   }
 
   void _onTap(BuildContext context, WidgetRef ref) {
-    if (Platform.isAndroid) {
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: _buildTitle(),
-            content: _buildContent(),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  _removeMember(ref, context);
-                },
-                child: const Text('Remove'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showCupertinoDialog<void>(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: _buildTitle(),
-            content: _buildContent(),
-            actions: [
-              CupertinoDialogAction(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              CupertinoDialogAction(
-                onPressed: () {
-                  _removeMember(ref, context);
-                },
-                isDestructiveAction: true,
-                child: const Text('Remove'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    DialogHelper.showPlatformDialog(
+      context: context,
+      title: _buildTitle(),
+      content: _buildContent(),
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      isDestructive: true,
+      onConfirm: () => _removeMember(ref, context),
+    );
   }
 
   Text _buildTitle() => const Text('Remove member');

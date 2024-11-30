@@ -30,8 +30,11 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surface,
       constraints: BoxConstraints(
-        minHeight: 400,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.4,
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+        maxWidth: context.isLargeScreen
+            ? context.screenSize.width * 0.5
+            : double.infinity,
       ),
       context: context,
       builder: (context) => SafeArea(

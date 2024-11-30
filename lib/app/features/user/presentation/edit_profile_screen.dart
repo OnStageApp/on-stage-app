@@ -87,17 +87,16 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       floatingActionButton: Padding(
         padding: defaultScreenHorizontalPadding,
         child: ContinueButton(
-          text: 'Edit Profile',
+          text: 'Edit Profileee',
           onPressed: _isNameChanged ? _editProfile : () {},
           isEnabled: _isNameChanged,
+          hasShadow: false,
         ),
       ),
-      appBar: StageAppBar(
+      appBar: const StageAppBar(
         title: 'Edit Profile',
         isBackButtonVisible: true,
-        background: context.colorScheme.surface,
       ),
-      backgroundColor: context.colorScheme.surface,
       body: SafeArea(
         child: CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 export 'extensions.dart';
 
-final onStageLightTheme = ThemeData.from(
-  useMaterial3: true,
-  colorScheme: lightColorScheme,
-  textTheme: _onStageTextTheme,
-).copyWith(
-  cardTheme: const CardTheme(),
-  splashColor: Colors.transparent,
-  highlightColor: Colors.transparent,
-  hoverColor: Colors.transparent,
-);
+ThemeData getOnStageLightTheme(BuildContext context) {
+  return ThemeData.from(
+    useMaterial3: true,
+    colorScheme: lightColorScheme,
+    textTheme: _onStageTextTheme,
+  ).copyWith(
+    cardTheme: const CardTheme(),
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    hoverColor: Colors.transparent,
+    scaffoldBackgroundColor: context.isLargeScreen
+        ? lightColorScheme.surfaceContainerHigh
+        : lightColorScheme.surface,
+  );
+}
 
-final onStageDarkTheme = ThemeData.from(
-  useMaterial3: true,
-  colorScheme: darkColorScheme,
-  textTheme: _onStageTextTheme,
-).copyWith(
-  cardTheme: const CardTheme(),
-  splashColor: Colors.transparent,
-  highlightColor: Colors.transparent,
-  hoverColor: Colors.transparent,
-);
+ThemeData getOnStageDarkTheme(BuildContext context) {
+  return ThemeData.from(
+    useMaterial3: true,
+    colorScheme: darkColorScheme,
+    textTheme: _onStageTextTheme,
+  ).copyWith(
+    cardTheme: const CardTheme(),
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    hoverColor: Colors.transparent,
+    scaffoldBackgroundColor: context.isLargeScreen
+        ? darkColorScheme.surfaceContainerHigh
+        : darkColorScheme.surface,
+  );
+}
 
 final TextTheme _onStageTextTheme = TextTheme(
   displayLarge: GoogleFonts.dmSans(
@@ -178,7 +189,7 @@ const darkColorScheme = ColorScheme(
   surfaceContainerHighest: Color(0xFF48454E),
   surfaceDim: Color(0xFF8E9199),
   surfaceContainer: Color(0xFFB6B6B7),
-  surfaceContainerHigh: Color(0xFF43474E),
+  surfaceContainerHigh: Color(0xFF1E2022),
   surfaceBright: Color(0xFF282A2D),
   onSurfaceVariant: Color(0xFF333537),
   outline: Color(0xFF8E9199),

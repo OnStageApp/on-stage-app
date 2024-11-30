@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/user_settings/data/user_settings_repository.dart';
@@ -42,6 +44,10 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     if (state.id != null) return;
     logger.i('Initializing userSettings provider state');
     await _loadLocalSettings();
+
+    if (state.isDarkMode != null) {
+      _updateSystemOverlay(state.isDarkMode!);
+    }
   }
 
   Future<void> resetState() async {
@@ -90,6 +96,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       );
 
       _saveSettingsToPrefs(userSettings);
+      _updateSystemOverlay(isDarkMode);
     } catch (e) {
       logger.e('Error toggling dark mode: $e');
     }
@@ -228,5 +235,19 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         settings.isAddRemindersTooltipShown!,
       );
     }
+  }
+
+  void _updateSystemOverlay(bool isDarkMode) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: !isDarkMode ? Brightness.light : Brightness.dark,
+        statusBarIconBrightness:
+            !isDarkMode ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor: !isDarkMode ? Colors.black : Colors.white,
+        systemNavigationBarIconBrightness:
+            !isDarkMode ? Brightness.light : Brightness.dark,
+      ),
+    );
   }
 }
