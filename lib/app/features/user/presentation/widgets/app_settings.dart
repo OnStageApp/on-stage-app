@@ -6,7 +6,10 @@ import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/notification_permission_service.dart';
+import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/dialog_helper.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
   const AppSettings({
@@ -17,7 +20,8 @@ class AppSettings extends ConsumerStatefulWidget {
   AppSettingsState createState() => AppSettingsState();
 }
 
-class AppSettingsState extends ConsumerState<AppSettings> with WidgetsBindingObserver {
+class AppSettingsState extends ConsumerState<AppSettings>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -38,12 +42,12 @@ class AppSettingsState extends ConsumerState<AppSettings> with WidgetsBindingObs
     }
   }
 
-
   Future<void> _checkNotificationPermissions() async {
     // Trigger the permission check in the provider
-    await ref.read(notificationPermissionProvider.notifier).checkNotificationPermissions();
+    await ref
+        .read(notificationPermissionProvider.notifier)
+        .checkNotificationPermissions();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,38 +75,34 @@ class AppSettingsState extends ConsumerState<AppSettings> with WidgetsBindingObs
         CustomSwitchListTile(
           title: 'Notifications',
           icon: Icons.notifications,
-          value: notificationPermission && (userSettings.isNotificationsEnabled ?? true),
+          value: notificationPermission &&
+              (userSettings.isNotificationsEnabled ?? true),
           onSwitch: (value) async {
-            await ref.read(userSettingsNotifierProvider.notifier).setNotification(isActive: value);
+            await ref
+                .read(userSettingsNotifierProvider.notifier)
+                .setNotification(isActive: value);
+
             if (value) {
-              final permissionGranted = await ref
-                  .read(notificationPermissionProvider.notifier)
-                  .requestNotificationPermission();
-
-              await ref.read(notificationPermissionProvider.notifier).checkNotificationPermissions();
-
-              if (!permissionGranted) {
-                ref.read(userSettingsNotifierProvider.notifier).setNotification(isActive: false);
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text(
-                      'Please enable notification permissions in settings.',
-                    ),
-                    action: SnackBarAction(
-                      label: 'Open Settings',
-                      onPressed: () {
-                        ref
-                            .read(notificationPermissionProvider.notifier)
-                            .openAppSettingsFunction();
-                      },
-                    ),
-                  ),
+              final status = await Permission.notification.status;
+              if (!status.isGranted) {
+                await requestPermission(
+                  permission: Permission.notification,
+                  context: context,
+                  onSettingsOpen: () => openSettings(context),
                 );
+              }
+
+              final updatedStatus = await Permission.notification.status;
+              if (!updatedStatus.isGranted) {
+                // If permission is not granted after requesting, disable notifications.
+                await ref
+                    .read(userSettingsNotifierProvider.notifier)
+                    .setNotification(isActive: false);
               }
             }
           },
         ),
+
         if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
           const SizedBox(height: 12),
           ListTile(

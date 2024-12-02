@@ -7,9 +7,10 @@ import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart
 import 'package:on_stage_app/app/features/user_settings/data/user_settings_repository.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
-import 'package:on_stage_app/app/shared/notification_permission_service.dart';
+import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/utils/shared_prefs/shared_prefs_provider.dart';
 import 'package:on_stage_app/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,9 +39,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
 
   @override
   UserSettings build() {
-    ref.listen<bool>(notificationPermissionProvider, (prev, next) {
-      setNotification(isActive: next);
-    });
+
 
     return const UserSettings();
   }
@@ -53,6 +52,30 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     if (state.isDarkMode != null) {
       _updateSystemOverlay(state.isDarkMode!);
     }
+  }
+
+  Future<bool> checkNotificationPermissions() async {
+    final status = await Permission.notification.status;
+    return status.isGranted;
+  }
+
+  Future<bool> requestNotificationPermission(BuildContext context) async {
+    final status = await Permission.notification.status;
+
+    if (!status.isGranted) {
+      await requestPermission(
+        permission: Permission.notification,
+        context: context,
+        onSettingsOpen: () => openSettings(context),
+      );
+    }
+
+    final updatedStatus = await Permission.notification.status;
+    final isGranted = updatedStatus.isGranted;
+
+    await setNotification(isActive: isGranted);
+
+    return isGranted;
   }
 
   Future<void> resetState() async {
