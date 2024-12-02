@@ -28,13 +28,6 @@ class NotificationPermissionService extends StateNotifier<bool> {
     return state;
   }
 
-  Future<void> openAppSettingsFunction() async {
-    if (Platform.isAndroid) {
-      await openAppSettings();
-    } else if (Platform.isIOS) {
-      await launchUrl(Uri.parse('app-settings:'));
-    }
-  }
 }
 
 
