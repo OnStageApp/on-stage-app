@@ -17,6 +17,7 @@ import 'package:on_stage_app/app/features/team_member/application/team_members_n
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -35,7 +36,7 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   LoginRepository get loginRepository {
-    _loginRepository ??= LoginRepository(ref.read(dioProvider));
+    _loginRepository ??= LoginRepository(ref.watch(dioProvider));
     return _loginRepository!;
   }
 
@@ -216,6 +217,18 @@ class LoginNotifier extends _$LoginNotifier {
     }
   }
 
+  Future<void> signOutAndSwitchEnv(AppEnvironment env) async {
+    await signOut();
+    await EnvironmentManager.setEnvironment(
+      env: env,
+      onChange: () async {
+        // Refresh or reinitialize services after environment change
+        ref.refresh(dioProvider);
+      },
+    );
+    logger.i('Switched to $env environment');
+  }
+
   Future<void> signOut() async {
     try {
       state = const LoginState();
@@ -236,6 +249,7 @@ class LoginNotifier extends _$LoginNotifier {
         ..invalidate(userSettingsNotifierProvider)
         ..invalidate(userNotifierProvider)
         ..invalidate(databaseProvider)
+        ..invalidate(dioProvider)
         ..invalidate(currentTeamMemberNotifierProvider);
 
       logger.i('User signed out successfully');

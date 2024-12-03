@@ -73,7 +73,8 @@ class SongAppBarLeading extends ConsumerWidget {
           onTap: () {
             SongPreferencesModal.show(
               context: context,
-              tonality: ref.watch(songNotifierProvider).song.key!,
+              tonality:
+                  ref.watch(songNotifierProvider).song.key ?? const SongKey(),
               isFromEvent: isFromEvent,
             );
           },

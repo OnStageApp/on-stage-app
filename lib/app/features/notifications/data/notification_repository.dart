@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'notification_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class NotificationRepository {
   factory NotificationRepository(Dio dio) = _NotificationRepository;
 

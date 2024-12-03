@@ -249,6 +249,6 @@ class DeviceService {
 
 @Riverpod(keepAlive: true)
 DeviceService deviceService(DeviceServiceRef ref) {
-  final deviceRepository = DeviceRepository(ref.read(dioProvider));
+  final deviceRepository = DeviceRepository(ref.watch(dioProvider));
   return DeviceService(deviceRepository);
 }

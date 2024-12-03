@@ -29,7 +29,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   }
 
   SubscriptionRepository get subscriptionRepository {
-    _subscriptionRepository ??= SubscriptionRepository(ref.read(dioProvider));
+    _subscriptionRepository ??= SubscriptionRepository(ref.watch(dioProvider));
     return _subscriptionRepository!;
   }
 
@@ -38,7 +38,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   @override
   SubscriptionState build() {
     logger.d('SubscriptionNotifier: build() called');
-    _subscriptionRepository = SubscriptionRepository(ref.read(dioProvider));
+    _subscriptionRepository = SubscriptionRepository(ref.watch(dioProvider));
     _localDb = ref.read(databaseProvider);
 
     _listenForAuthentication();
@@ -116,7 +116,6 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       );
       logger.i('Package purchased successfully: $packageId');
     } catch (e) {
-      // Log the error with detailed info for sandbox vs production handling
       if (e is PurchasesErrorCode &&
           e == PurchasesErrorCode.paymentPendingError) {
         logger.w('Payment pending for package: $packageId');
@@ -124,12 +123,10 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
           e == PurchasesErrorCode.invalidReceiptError) {
         logger
             .e('Invalid receipt error: Ensure sandbox and production handling');
-        // Add further custom handling here if needed for sandbox receipt validation
       } else {
         logger.e('Failed to purchase package: $packageId, error: $e');
       }
 
-      // Update the state with error information
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to purchase package: $e',
@@ -167,19 +164,16 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         currentSubscription: backendSubscription,
         isLoading: false,
       );
+      await saveCurrentPlan();
       return;
     } catch (e, s) {
-      // Log error and handle sandbox receipt issues if applicable
       if (e.toString().contains('Sandbox receipt used in production')) {
         logger.w(
             'Sandbox receipt encountered in production, switching to sandbox environment $s');
-        // Implement specific handling here or retry logic if necessary
       }
       logger.e('Error getting current subscription $e');
       state = state.copyWith(isLoading: false);
       return;
-    } finally {
-      await saveCurrentPlan();
     }
   }
 
@@ -190,6 +184,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       await ref.read(databaseProvider).saveSubscription(subscription);
 
       state = state.copyWith(currentSubscription: subscription);
+      await saveCurrentPlan();
       logger.i('Subscription updated successfully');
     } catch (e) {
       logger.e('Error updating subscription $e');

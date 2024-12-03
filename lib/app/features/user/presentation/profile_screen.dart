@@ -12,6 +12,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/team_section
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/env_switcher_widget.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart'; // Import the package
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -23,7 +24,6 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   final FocusNode _songViewSettingsFocusNode = FocusNode();
-  final OnboardingState _onboardingState = OnboardingState();
   final GlobalKey<OnboardingState> onboardingKey = GlobalKey<OnboardingState>();
 
   @override
@@ -98,9 +98,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                     const SizedBox(height: 24),
                     const LibrarySection(),
                     const SizedBox(height: 12),
-                    Text(
-                      'Account',
-                      style: context.textTheme.titleSmall,
+                    EnvSwitcher(
+                      child: Text(
+                        'Account',
+                        style: context.textTheme.titleSmall,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     const SignOutButton(),

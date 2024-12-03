@@ -16,13 +16,13 @@ class TeamNotifier extends _$TeamNotifier {
   TeamRepository? _teamRepository;
 
   TeamRepository get teamRepository {
-    _teamRepository ??= TeamRepository(ref.read(dioProvider));
+    _teamRepository ??= TeamRepository(ref.watch(dioProvider));
     return _teamRepository!;
   }
 
   @override
   TeamState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
 
     _teamRepository = TeamRepository(dio);
 

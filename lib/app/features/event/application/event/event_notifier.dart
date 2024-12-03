@@ -28,7 +28,7 @@ class EventNotifier extends _$EventNotifier {
   EventsRepository? _eventsRepository;
 
   EventsRepository get eventsRepository {
-    _eventsRepository ??= EventsRepository(ref.read(dioProvider));
+    _eventsRepository ??= EventsRepository(ref.watch(dioProvider));
     return _eventsRepository!;
   }
 

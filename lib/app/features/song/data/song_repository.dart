@@ -8,7 +8,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'song_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class SongRepository {
   factory SongRepository(Dio dio) = _SongRepository;
 

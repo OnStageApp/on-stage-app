@@ -61,13 +61,13 @@ class _OnboardingForthStepState extends State<OnboardingForthStep>
       children: [
         const SizedBox(height: Insets.large),
         Expanded(
-          child: Center(
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: FractionallySizedBox(
-                  widthFactor: 0.9,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: FractionallySizedBox(
+                widthFactor: 0.9,
+                child: Center(
                   child: Stack(
                     children: [
                       AspectRatio(

@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'device_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class DeviceRepository {
   factory DeviceRepository(Dio dio) = _DeviceRepository;
 

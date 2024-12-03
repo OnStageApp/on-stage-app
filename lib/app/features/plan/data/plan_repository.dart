@@ -5,7 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'plan_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class PlanRepository {
   factory PlanRepository(Dio dio) = _PlanRepository;
 

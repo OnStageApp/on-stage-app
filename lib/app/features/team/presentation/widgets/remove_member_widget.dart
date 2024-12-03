@@ -68,8 +68,6 @@ class RemoveMemberWidget extends ConsumerWidget {
 
     ref.read(teamNotifierProvider.notifier).getCurrentTeam();
 
-    context
-      ..popDialog()
-      ..popDialog();
+    context.popDialog();
   }
 }

@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
+import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
@@ -97,9 +98,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     _listenForPermissionDeniedAndShowPaywall();
-
+    final horizontalPadding = context.screenSize.width > 1200 ? 132.0 : 23.0;
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.isLargeScreen && !context.isDarkMode
+          ? context.colorScheme.onSurfaceVariant
+          : context.colorScheme.surface,
       bottomNavigationBar: context.isLargeScreen
           ? null
           : BottomNavigationBar(
@@ -204,7 +207,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     padding:
                         const EdgeInsets.only(top: 32, bottom: 32, right: 23),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 132),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: horizontalPadding),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(
                           Radius.circular(20),
@@ -232,8 +236,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           _isNavigationExpanded = !_isNavigationExpanded;
         });
       },
-      onLogout: () {
-        // Implement logout logic here
+      onSignOut: () {
+        ref.read(loginNotifierProvider.notifier).signOut();
       },
     );
   }

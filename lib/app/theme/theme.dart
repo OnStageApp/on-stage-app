@@ -14,9 +14,7 @@ ThemeData getOnStageLightTheme(BuildContext context) {
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     hoverColor: Colors.transparent,
-    scaffoldBackgroundColor: context.isLargeScreen
-        ? lightColorScheme.surfaceContainerHigh
-        : lightColorScheme.surface,
+    scaffoldBackgroundColor: lightColorScheme.surface,
   );
 }
 
@@ -85,7 +83,7 @@ final TextTheme _onStageTextTheme = TextTheme(
     fontSize: 14,
     height: 20.0 / 14.0,
     letterSpacing: 0.1,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   ),
   labelLarge: GoogleFonts.dmSans(
     fontSize: 16,

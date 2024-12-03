@@ -6,9 +6,11 @@ class ChordTransposer {
     required this.key,
     this.transpose = 0,
   }) {
+    cycle = americanNotes;
+
     switch (chordNotation) {
       case SongViewMode.lyrics:
-        break;
+        cycle = americanNotes;
       case SongViewMode.american:
         cycle = americanNotes;
       case SongViewMode.numeric:

@@ -13,13 +13,13 @@ class CurrentTeamMemberNotifier extends _$CurrentTeamMemberNotifier {
   TeamMemberRepository? _teamMemberRepository;
 
   TeamMemberRepository get teamMemberRepository {
-    _teamMemberRepository ??= TeamMemberRepository(ref.read(dioProvider));
+    _teamMemberRepository ??= TeamMemberRepository(ref.watch(dioProvider));
     return _teamMemberRepository!;
   }
 
   @override
   CurrentTeamMemberState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _teamMemberRepository = TeamMemberRepository(dio);
     logger.i('CurrentTeamMemberNotifier initialized');
     return const CurrentTeamMemberState();

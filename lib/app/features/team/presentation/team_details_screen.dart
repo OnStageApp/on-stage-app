@@ -89,7 +89,9 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               const SizedBox(height: 12),
               EventActionButton(
                 onTap: () {
-                  ref.read(permissionServiceProvider).callMethodIfHasPermission(
+                  ref
+                      .watch(permissionServiceProvider)
+                      .callMethodIfHasPermission(
                         context: context,
                         permissionType: PermissionType.addTeamMembers,
                         onGranted: () {

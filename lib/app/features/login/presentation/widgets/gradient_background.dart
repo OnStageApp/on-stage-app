@@ -10,7 +10,7 @@ class GradientBackground extends StatelessWidget {
       child: Opacity(
         opacity: 0.2,
         child: Container(
-          height: 800,
+          height: 1200,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,

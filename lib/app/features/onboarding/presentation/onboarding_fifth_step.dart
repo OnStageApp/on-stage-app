@@ -70,26 +70,6 @@ class _OnboardingFifthStepState extends ConsumerState<OnboardingFifthStep> {
             ),
           ),
           const SizedBox(height: Insets.medium),
-          // Padding(
-          //   padding: defaultScreenHorizontalPadding,
-          //   child: CustomTextField(
-          //     label: 'Full Name',
-          //     hint: '',
-          //     icon: Icons.church,
-          //     controller: nameController,
-          //     onChanged: (value) {
-          //       ref
-          //           .read(onboardingFifthControllerProvider.notifier)
-          //           .updateName(fullName: nameController.text);
-          //     },
-          //     validator: (value) {
-          //       if (value == null || value.isEmpty) {
-          //         return 'Please enter an event name';
-          //       }
-          //       return null;
-          //     },
-          //   ),
-          // ),
           const SizedBox(height: Insets.medium),
           const Spacer(),
           const Padding(

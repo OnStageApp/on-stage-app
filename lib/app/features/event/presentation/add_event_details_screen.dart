@@ -237,7 +237,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       _formKey.currentState!.validate() && _dateTimeError == null;
 
   Future<void> _editReminders(BuildContext context) async {
-    await ref.read(permissionServiceProvider).callMethodIfHasPermission(
+    await ref.watch(permissionServiceProvider).callMethodIfHasPermission(
           context: context,
           permissionType: PermissionType.reminders,
           onGranted: () {

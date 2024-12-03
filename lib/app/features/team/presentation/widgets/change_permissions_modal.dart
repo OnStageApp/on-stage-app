@@ -42,7 +42,7 @@ class ChangePermissionsModal extends ConsumerWidget {
     return showModalBottomSheet<TeamMemberRole>(
       useRootNavigator: true,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => SafeArea(
         child: NestedScrollModal(

@@ -30,13 +30,13 @@ class TeamMemberModal extends ConsumerStatefulWidget {
 
   static void show({
     required BuildContext context,
-    void Function(RehearsalModel)? onSave,
     required TeamMember teamMember,
+    void Function(RehearsalModel)? onSave,
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => SafeArea(
         child: NestedScrollModal(

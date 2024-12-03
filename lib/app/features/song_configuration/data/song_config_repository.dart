@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'song_config_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class SongConfigRepository {
   factory SongConfigRepository(Dio dio) = _SongConfigRepository;
 

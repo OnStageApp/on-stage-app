@@ -7,7 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'login_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class LoginRepository {
   factory LoginRepository(Dio dio) = _LoginRepository;
 

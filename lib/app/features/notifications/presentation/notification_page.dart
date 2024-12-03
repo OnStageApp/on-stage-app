@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
@@ -41,7 +40,7 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
               .markNotificationsAsViewed();
           ref
               .read(notificationNotifierProvider.notifier)
-              .setHasNewNotifications(false);
+              .setHasNewNotifications(hasNewNotifications: false);
         },
         title: 'Notifications',
       ),

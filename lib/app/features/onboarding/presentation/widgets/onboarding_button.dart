@@ -26,7 +26,10 @@ class OnboardingButton extends StatelessWidget {
     return TextButton(
       style: ButtonStyle(
         minimumSize: WidgetStateProperty.all(
-          const Size(double.infinity, 54),
+          const Size(500, 54),
+        ),
+        maximumSize: WidgetStateProperty.all(
+          const Size(1000, 54),
         ),
         splashFactory: InkRipple.splashFactory,
         elevation: WidgetStateProperty.all(4),

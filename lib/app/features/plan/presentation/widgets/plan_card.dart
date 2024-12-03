@@ -99,7 +99,7 @@ class PlanCard extends ConsumerWidget {
               plan.price == 0
                   ? 'Free'
                   : plan.isYearly
-                      ? '${plan.price} ${plan.currency}/year'
+                      ? '${(plan.price / 12).toStringAsFixed(2)} RON/month'
                       : '${plan.price} ${plan.currency}/month',
               style: context.textTheme.headlineMedium!.copyWith(
                 color: context.colorScheme.onSecondary,
@@ -107,7 +107,7 @@ class PlanCard extends ConsumerWidget {
             ),
             if (plan.isYearly)
               Text(
-                '${(plan.price / 12).toStringAsFixed(2)} RON/month',
+                '${plan.price} ${plan.currency}/year',
                 style: context.textTheme.titleSmall!.copyWith(
                   color: context.colorScheme.outline,
                 ),

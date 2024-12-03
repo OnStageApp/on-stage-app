@@ -40,7 +40,7 @@ class AddPhotoModal extends StatelessWidget {
   }
 
   static Future<File?> show({required BuildContext context}) async {
-    return await showModalBottomSheet<File>(
+    return showModalBottomSheet<File>(
       backgroundColor: context.colorScheme.surface,
       context: context,
       builder: (context) => NestedScrollModal(

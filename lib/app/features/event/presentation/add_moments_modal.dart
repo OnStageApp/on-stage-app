@@ -25,7 +25,7 @@ class AddMomentsModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Add moments'),

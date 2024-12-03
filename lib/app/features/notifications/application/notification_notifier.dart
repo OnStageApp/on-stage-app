@@ -25,12 +25,12 @@ class NotificationNotifier extends _$NotificationNotifier {
   UserRepository? _usersRepository;
 
   NotificationRepository get notificationRepository {
-    _notificationRepository ??= NotificationRepository(ref.read(dioProvider));
+    _notificationRepository ??= NotificationRepository(ref.watch(dioProvider));
     return _notificationRepository!;
   }
 
   UserRepository get usersRepository {
-    _usersRepository ??= UserRepository(ref.read(dioProvider));
+    _usersRepository ??= UserRepository(ref.watch(dioProvider));
     return _usersRepository!;
   }
 
@@ -42,6 +42,7 @@ class NotificationNotifier extends _$NotificationNotifier {
 
   Future<void> getNotifications() async {
     await _fetchNotifications(offset: 0, append: false);
+    _checkIfHaveNewNotifications();
   }
 
   Future<void> loadMoreNotifications() async {
@@ -121,7 +122,7 @@ class NotificationNotifier extends _$NotificationNotifier {
     }
   }
 
-  void setHasNewNotifications(bool hasNewNotifications) {
+  void setHasNewNotifications({required bool hasNewNotifications}) {
     state = state.copyWith(hasNewNotifications: hasNewNotifications);
   }
 
@@ -154,5 +155,16 @@ class NotificationNotifier extends _$NotificationNotifier {
 
   Future<void> _savePhotoToLocalStorage(String userId, Uint8List photo) async {
     await ref.read(databaseProvider).updateUserProfilePicture(userId, photo);
+  }
+
+  void _checkIfHaveNewNotifications() {
+    final hasNewNotifications = state.notifications
+        .where((element) => element.status == NotificationStatus.NEW)
+        .isNotEmpty;
+    if (hasNewNotifications) {
+      setHasNewNotifications(hasNewNotifications: true);
+    } else {
+      setHasNewNotifications(hasNewNotifications: false);
+    }
   }
 }

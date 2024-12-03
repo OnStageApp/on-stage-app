@@ -23,7 +23,7 @@ class EventsNotifier extends _$EventsNotifier {
 
   @override
   EventsState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _eventsRepository = EventsRepository(dio);
     return const EventsState();
   }

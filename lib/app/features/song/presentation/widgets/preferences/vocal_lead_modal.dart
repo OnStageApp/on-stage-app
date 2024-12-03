@@ -24,7 +24,7 @@ class VocalLeadModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.85,
         maxWidth: context.isLargeScreen
@@ -39,7 +39,7 @@ class VocalLeadModal extends ConsumerStatefulWidget {
           return Consumer(
             builder: (context, ref, _) {
               return Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 32),
                 child: ContinueButton(
                   text: 'Save',
                   onPressed: () {

@@ -24,7 +24,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   static const String _textSizeKey = 'textSize';
 
   UserSettingsRepository get userSettingsRepository {
-    _userSettingsRepository ??= UserSettingsRepository(ref.read(dioProvider));
+    _userSettingsRepository ??= UserSettingsRepository(ref.watch(dioProvider));
     return _userSettingsRepository!;
   }
 
@@ -244,7 +244,8 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         statusBarBrightness: !isDarkMode ? Brightness.light : Brightness.dark,
         statusBarIconBrightness:
             !isDarkMode ? Brightness.light : Brightness.dark,
-        systemNavigationBarColor: !isDarkMode ? Colors.black : Colors.white,
+        systemNavigationBarColor:
+            isDarkMode ? const Color(0xFF1A1C1E) : Colors.white,
         systemNavigationBarIconBrightness:
             !isDarkMode ? Brightness.light : Brightness.dark,
       ),

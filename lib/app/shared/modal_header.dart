@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -6,7 +7,7 @@ class ModalHeader extends StatelessWidget {
   const ModalHeader({
     required this.title,
     this.leadingButton = const SizedBox(
-      width: 80,
+      width: 80 - 12,
     ),
     super.key,
   });
@@ -18,7 +19,7 @@ class ModalHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surface,
+        color: context.colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -36,7 +37,7 @@ class ModalHeader extends StatelessWidget {
           ),
           const SizedBox(height: Insets.normal),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.only(left: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -58,7 +59,6 @@ class ModalHeader extends StatelessWidget {
                       child: Container(
                         width: 30,
                         height: 30,
-                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -67,8 +67,8 @@ class ModalHeader extends StatelessWidget {
                           ),
                         ),
                         child: Icon(
-                          Icons.close,
-                          size: 16,
+                          LucideIcons.x,
+                          size: 18,
                           color: context.colorScheme.outline,
                         ),
                       ),

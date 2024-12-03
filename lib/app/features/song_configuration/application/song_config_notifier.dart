@@ -11,7 +11,7 @@ class SongConfigurationNotifier extends _$SongConfigurationNotifier {
   SongConfigRepository? _songConfigRepository;
 
   SongConfigRepository get songConfigRepository {
-    _songConfigRepository ??= SongConfigRepository(ref.read(dioProvider));
+    _songConfigRepository ??= SongConfigRepository(ref.watch(dioProvider));
     return _songConfigRepository!;
   }
 

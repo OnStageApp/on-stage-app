@@ -23,14 +23,14 @@ class SongFilterModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
       context: context,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       builder: (context) => FractionallySizedBox(
         child: NestedScrollModal(
           buildHeader: () => ModalHeader(
             title: 'Advanced Filter',
             leadingButton: Container(
-              width: 68,
-              padding: const EdgeInsets.only(left: 8),
+              width: 80 - 6,
+              padding: const EdgeInsets.only(left: 6),
               child: Consumer(
                 builder: (context, ref, _) {
                   return InkWell(

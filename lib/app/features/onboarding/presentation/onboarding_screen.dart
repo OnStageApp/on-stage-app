@@ -9,9 +9,8 @@ import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_for
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_second_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_third_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/widgets/onboarding_button.dart';
-import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
+import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
-import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -49,11 +48,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!_isFormValid()) return;
       _updateUser();
       _finishOnboarding();
-      //TODO: This will be replaced by a general PaywallModal
-      PaywallModal.show(
-        context: context,
-        permissionType: PermissionType.none,
-      );
+      showPlanUpgrades(context);
       return;
     }
 
@@ -75,7 +70,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         children: [
           const GradientBackground(),
           Padding(
-            padding: const EdgeInsets.only(bottom: 160),
+            padding: context.isLargeScreen
+                ? const EdgeInsets.only(
+                    left: 160,
+                    right: 160,
+                    bottom: 160,
+                  )
+                : const EdgeInsets.only(bottom: 160),
             child: PageView(
               controller: _pageController,
               onPageChanged: (page) {

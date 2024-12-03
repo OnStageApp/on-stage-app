@@ -5,7 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'subscription_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class SubscriptionRepository {
   factory SubscriptionRepository(Dio dio) = _SubscriptionRepository;
 

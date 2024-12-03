@@ -32,7 +32,7 @@ class CreateNewTeamModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => SafeArea(
         child: NestedScrollModal(
