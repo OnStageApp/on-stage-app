@@ -17,34 +17,32 @@ class EventActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      overlayColor: WidgetStateProperty.all(
-        context.colorScheme.outline.withOpacity(0.1),
-      ),
-      child: Ink(
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
+        backgroundColor: context.colorScheme.onSurfaceVariant,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
-          children: [
-            if (icon != null)
-              Icon(
-                icon,
-                color: Colors.blue,
-                size: 20,
-              ),
-            const SizedBox(width: 4),
-            Text(
-              text,
-              style: context.textTheme.titleMedium!.copyWith(
-                color: textColor ?? context.colorScheme.primary,
-              ),
+        foregroundColor: context.colorScheme.outline.withOpacity(0.1),
+      ),
+      child: Row(
+        children: [
+          if (icon != null)
+            Icon(
+              icon,
+              color: Colors.blue,
+              size: 20,
             ),
-          ],
-        ),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: context.textTheme.titleMedium!.copyWith(
+              color: textColor ?? context.colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -122,7 +122,7 @@ class AddParticipantsModalState
     } else {
       _searchedParticipants = ref
           .watch(teamMembersNotifierProvider)
-          .teamMembers
+          .uninvitedTeamMembers
           .where(
             (member) => !ref
                 .watch(eventControllerProvider)
