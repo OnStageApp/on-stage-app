@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
@@ -105,7 +106,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
             const SizedBox(height: Insets.smallNormal),
             PreferencesActionTile(
               leadingWidget: Icon(
-                Icons.queue_music,
+                LucideIcons.list_music,
                 color: context.colorScheme.outline,
               ),
               title: 'Lyrics And Chords',

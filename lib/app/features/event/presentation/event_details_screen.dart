@@ -318,32 +318,32 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   }
 
   Widget _buildParticipantsList() {
-    final stagers = ref.read(eventNotifierProvider).stagers;
-    final currentUserId = ref.read(userNotifierProvider).currentUser?.id;
+    final stagers = ref.watch(eventNotifierProvider).stagers;
+    final currentUserId = ref.watch(userNotifierProvider).currentUser?.id;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: stagers.length,
-        itemBuilder: (context, index) {
-          return ParticipantListingItem(
-            canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
-                stagers[index].userId != currentUserId,
-            name: stagers[index].name ?? '',
-            photo: stagers[index].profilePicture,
-            status: stagers[index].participationStatus,
-            onDelete: () {
-              ref
-                  .read(eventNotifierProvider.notifier)
-                  .removeStagerFromEvent(stagers[index].id);
-            },
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ...stagers.map(
+            (stager) => ParticipantListingItem(
+              canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
+                  stager.userId != currentUserId,
+              name: stager.name ?? '',
+              photo: stager.profilePicture,
+              status: stager.participationStatus,
+              onDelete: () {
+                ref
+                    .read(eventNotifierProvider.notifier)
+                    .removeStagerFromEvent(stager.id);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
