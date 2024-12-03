@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/login/application/token_manager.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/app_launcher_checker.dart';
+import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:upgrader/upgrader.dart';
@@ -47,7 +48,7 @@ class _AppState extends ConsumerState<App> {
     final userSettings = ref.watch(userSettingsNotifierProvider);
 
     return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: !EnvironmentManager.isProduction,
       routerConfig: router,
       theme: userSettings.isDarkMode ?? false
           ? getOnStageDarkTheme(context)

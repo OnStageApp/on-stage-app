@@ -23,7 +23,7 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
     return showModalBottomSheet<StructureItem>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
         maxWidth: context.isLargeScreen

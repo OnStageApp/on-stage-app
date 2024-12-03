@@ -22,7 +22,7 @@ class UserNotifier extends _$UserNotifier {
   UserRepository? _usersRepository;
 
   UserRepository get usersRepository {
-    _usersRepository ??= UserRepository(ref.read(dioProvider));
+    _usersRepository ??= UserRepository(ref.watch(dioProvider));
     return _usersRepository!;
   }
 
@@ -71,7 +71,7 @@ class UserNotifier extends _$UserNotifier {
   }
 
   Future<void> uploadPhoto(File image) async {
-    final profilePictureRepo = ProfilePictureRepository(ref.read(dioProvider));
+    final profilePictureRepo = ProfilePictureRepository(ref.watch(dioProvider));
     try {
       await profilePictureRepo.updateUserImage(image);
       await saveAndGetUserPhoto(forceUpdate: true);

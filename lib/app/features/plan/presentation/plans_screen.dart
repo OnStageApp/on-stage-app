@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/presentation/controller/plan_controller.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_carousel.dart';
@@ -16,7 +15,6 @@ void showPlanUpgrades(BuildContext context) {
     useSafeArea: false,
     builder: (_) => const PlansScreen(),
   );
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
 }
 
 class PlansScreen extends ConsumerStatefulWidget {
@@ -27,8 +25,12 @@ class PlansScreen extends ConsumerStatefulWidget {
 }
 
 class _PlansScreenState extends ConsumerState<PlansScreen> {
-  final PageController _pageController = PageController(
+  final PageController _smallScreenPageController = PageController(
     viewportFraction: 0.8,
+    initialPage: 2,
+  );
+  final PageController _largeScreenPageController = PageController(
+    viewportFraction: 0.5,
     initialPage: 2,
   );
 
@@ -52,7 +54,6 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
@@ -95,13 +96,17 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 SizedBox(
                   height: 490,
                   child: PlanCarousel(
-                    pageController: _pageController,
+                    pageController: context.isLargeScreen
+                        ? _largeScreenPageController
+                        : _smallScreenPageController,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Center(
                   child: SmoothPageIndicator(
-                    controller: _pageController,
+                    controller: context.isLargeScreen
+                        ? _largeScreenPageController
+                        : _smallScreenPageController,
                     count: 4,
                     effect: WormEffect(
                       dotColor: context.colorScheme.primaryContainer,

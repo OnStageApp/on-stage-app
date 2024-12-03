@@ -28,7 +28,7 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.4,
         maxHeight: MediaQuery.of(context).size.height * 0.85,

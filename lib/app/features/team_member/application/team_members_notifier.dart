@@ -27,7 +27,7 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
   TeamMemberRepository? _teamMemberRepository;
 
   TeamMemberRepository get teamMemberRepository {
-    _teamMemberRepository ??= TeamMemberRepository(ref.read(dioProvider));
+    _teamMemberRepository ??= TeamMemberRepository(ref.watch(dioProvider));
     return _teamMemberRepository!;
   }
 
@@ -47,11 +47,11 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     state = state.copyWith(teamMembers: teamMembersWithPhoto);
   }
 
-  Future<void> getUninvitedTeamMembers(String eventId) async {
+  Future<void> getUninvitedTeamMembers({String? eventId}) async {
     state = state.copyWith(isLoading: true);
     try {
       final members =
-          await teamMemberRepository.getUninvitedTeamMembers(eventId);
+          await teamMemberRepository.getUninvitedTeamMembers(eventId: eventId);
       final uninvitedMembersWithPhoto = await Future.wait(
         members.map(_getMemberWithPhotoFromLocalStorage),
       );

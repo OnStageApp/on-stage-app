@@ -16,7 +16,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'events_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class EventsRepository {
   factory EventsRepository(Dio dio) = _EventsRepository;
 

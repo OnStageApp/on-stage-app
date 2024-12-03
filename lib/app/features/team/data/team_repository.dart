@@ -7,7 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'team_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class TeamRepository {
   factory TeamRepository(Dio dio) = _TeamRepository;
 

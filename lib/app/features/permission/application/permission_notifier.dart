@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/subscription/domain/subscription.dart'
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
@@ -14,11 +15,13 @@ class PermissionService {
     required this.teamMember,
     required this.currentSubscription,
     required this.currentPlan,
+    required this.membersCount,
   });
 
   final TeamMember? teamMember;
   final Subscription? currentSubscription;
   final Plan? currentPlan;
+  final int membersCount;
 
   bool get isLeaderOnTeam => teamMember?.role == TeamMemberRole.leader;
 
@@ -31,10 +34,13 @@ class PermissionService {
 
   bool get hasReminders => currentPlan?.hasReminders ?? false;
 
-  bool get canAddTeamMembers =>
-      isLeaderOnTeam && hasPaidPlan && currentPlan?.maxMembers != null;
+  bool get canAddTeamMembers {
+    if (!isLeaderOnTeam && !hasPaidPlan && currentPlan?.maxMembers == null) {
+      return false;
+    }
+    return currentPlan!.maxMembers > membersCount;
+  }
 
-  //TODO: See how to handle this case
   bool get canAddEvents => true;
 
   bool hasPermissions(PermissionType permissionType) {
@@ -73,10 +79,13 @@ final permissionServiceProvider = Provider<PermissionService>((ref) {
   final currentSubscription =
       ref.watch(subscriptionNotifierProvider).currentSubscription;
   final currentPlan = ref.watch(subscriptionNotifierProvider).currentPlan;
+  final membersCount =
+      ref.watch(teamMembersNotifierProvider).teamMembers.length;
 
   return PermissionService(
     teamMember: teamMember,
     currentSubscription: currentSubscription,
     currentPlan: currentPlan,
+    membersCount: membersCount,
   );
 });

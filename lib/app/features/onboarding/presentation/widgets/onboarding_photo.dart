@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class OnboardingPhoto extends StatefulWidget {
   const OnboardingPhoto({required this.imagePath, Key? key}) : super(key: key);
@@ -62,7 +63,7 @@ class _OnboardingPhotoState extends State<OnboardingPhoto>
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: FractionallySizedBox(
-              widthFactor: 0.9,
+              widthFactor: context.isLargeScreen ? 0.5 : 0.9,
               child: AspectRatio(
                 aspectRatio: 3 / 4,
                 child: Image.asset(

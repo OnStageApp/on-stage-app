@@ -17,7 +17,7 @@ class SongsNotifier extends _$SongsNotifier {
 
   @override
   SongsState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _songRepository = SongRepository(dio);
     return const SongsState();
   }

@@ -32,7 +32,7 @@ class InvitePeopleToEventModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       useRootNavigator: true,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.85,
         maxHeight: MediaQuery.of(context).size.height * 0.85,
@@ -105,15 +105,11 @@ class AddParticipantsModalState
     setState(() {
       _areParticipantsLoading = true;
     });
-    if (widget.eventId != null) {
-      await ref
-          .read(teamMembersNotifierProvider.notifier)
-          .getUninvitedTeamMembers(widget.eventId!);
-    } else {
-      await ref
-          .read(teamMembersNotifierProvider.notifier)
-          .getTeamMembers(includeCurrentUser: false);
-    }
+
+    await ref
+        .read(teamMembersNotifierProvider.notifier)
+        .getUninvitedTeamMembers(eventId: widget.eventId);
+
     setState(() {
       _areParticipantsLoading = false;
     });

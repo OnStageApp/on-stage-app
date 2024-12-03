@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'reminder_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class ReminderRepository {
   factory ReminderRepository(Dio dio) = _ReminderRepository;
 

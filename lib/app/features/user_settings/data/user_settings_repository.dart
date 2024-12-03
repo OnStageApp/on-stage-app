@@ -5,7 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'user_settings_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class UserSettingsRepository {
   factory UserSettingsRepository(Dio dio) = _UserSettingsRepository;
 

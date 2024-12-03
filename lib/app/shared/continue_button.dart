@@ -37,7 +37,7 @@ class ContinueButton extends StatelessWidget {
                       ? context.colorScheme.surfaceContainerHigh
                       : context.colorScheme.surface,
                   blurRadius: 30,
-                  spreadRadius: 35,
+                  spreadRadius: 20,
                   offset: const Offset(0, 24),
                 ),
               ]

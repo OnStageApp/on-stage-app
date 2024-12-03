@@ -21,7 +21,7 @@ class SongNotifier extends _$SongNotifier {
   SongRepository? _songRepository;
 
   SongRepository get songRepository {
-    _songRepository ??= SongRepository(ref.read(dioProvider));
+    _songRepository ??= SongRepository(ref.watch(dioProvider));
     return _songRepository!;
   }
 
@@ -29,7 +29,7 @@ class SongNotifier extends _$SongNotifier {
 
   @override
   SongState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _songRepository = SongRepository(dio);
     return const SongState();
   }

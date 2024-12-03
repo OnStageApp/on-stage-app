@@ -24,7 +24,7 @@ class AddItemsToEventModal extends ConsumerStatefulWidget {
   }) async {
     await showModalBottomSheet<Widget>(
       useRootNavigator: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => NestedScrollModal(
         buildContent: () {

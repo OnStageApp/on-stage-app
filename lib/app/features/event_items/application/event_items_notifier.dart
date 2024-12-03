@@ -17,13 +17,13 @@ class EventItemsNotifier extends _$EventItemsNotifier {
   EventItemsRepository? _eventItemsRepository;
 
   EventItemsRepository get eventItemsRepository {
-    _eventItemsRepository ??= EventItemsRepository(ref.read(dioProvider));
+    _eventItemsRepository ??= EventItemsRepository(ref.watch(dioProvider));
     return _eventItemsRepository!;
   }
 
   @override
   EventItemsState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _eventItemsRepository = EventItemsRepository(dio);
     print('Event Items Notifier rebuild');
     return const EventItemsState();

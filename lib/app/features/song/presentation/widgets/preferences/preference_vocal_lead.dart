@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_item_notifier/event_item_notifier.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/vocal_lead_modal.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
-import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 
@@ -92,23 +90,6 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
             textColor: context.colorScheme.outline,
           ),
       ],
-    );
-  }
-
-  Widget _buildVocal(BuildContext context, Stager leadVocal) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      alignment: Alignment.center,
-      child: Row(
-        children: [
-          ImageWithPlaceholder(
-            photo: leadVocal.profilePicture,
-            name: leadVocal.name ?? '',
-          ),
-          const SizedBox(width: 10),
-          Text(leadVocal.name ?? 'None', style: context.textTheme.titleMedium),
-        ],
-      ),
     );
   }
 }

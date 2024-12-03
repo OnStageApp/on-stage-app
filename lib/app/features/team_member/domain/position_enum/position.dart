@@ -2,13 +2,18 @@ enum Position {
   leadVoice,
   altoVoice,
   tenorVoice,
+  sopranoVoice,
   backingVoice,
-  bass,
   drums,
   keyboard,
-  other,
+  piano,
+  synth,
   acGuitar,
-  guitar,
+  elGuitar,
+  bassGuitar,
+  violin,
+  cello,
+  other,
 }
 
 extension PositionX on Position {
@@ -17,12 +22,14 @@ extension PositionX on Position {
       case Position.leadVoice:
         return 'Lead Voice';
       case Position.altoVoice:
-        return 'Alto Voice';
+        return 'Alto';
       case Position.tenorVoice:
-        return 'Tenor Voice';
+        return 'Tenor';
+      case Position.sopranoVoice:
+        return 'Soprano';
       case Position.backingVoice:
-        return 'Backing Voice';
-      case Position.bass:
+        return 'Backing Vox';
+      case Position.bassGuitar:
         return 'Bass Guitar';
       case Position.drums:
         return 'Drums';
@@ -32,8 +39,16 @@ extension PositionX on Position {
         return 'Other';
       case Position.acGuitar:
         return 'Ac. Guitar';
-      case Position.guitar:
-        return 'Guitar';
+      case Position.elGuitar:
+        return 'El. Guitar';
+      case Position.piano:
+        return 'Piano';
+      case Position.synth:
+        return 'Synth';
+      case Position.violin:
+        return 'Violin';
+      case Position.cello:
+        return 'Cello';
     }
   }
 }

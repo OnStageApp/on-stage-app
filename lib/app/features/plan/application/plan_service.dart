@@ -15,7 +15,7 @@ class PlanService extends _$PlanService {
   PlanRepository? _planRepository;
 
   PlanRepository get plansRepo {
-    _planRepository ??= PlanRepository(ref.read(dioProvider));
+    _planRepository ??= PlanRepository(ref.watch(dioProvider));
     return _planRepository!;
   }
 

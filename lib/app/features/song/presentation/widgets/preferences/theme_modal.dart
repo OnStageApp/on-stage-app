@@ -25,7 +25,7 @@ class ThemeModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
         minHeight: MediaQuery.of(context).size.height * 0.85,

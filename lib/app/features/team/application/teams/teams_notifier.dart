@@ -11,7 +11,7 @@ class TeamsNotifier extends _$TeamsNotifier {
 
   @override
   TeamsState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _teamRepository = TeamRepository(dio);
     return const TeamsState();
   }
@@ -25,7 +25,6 @@ class TeamsNotifier extends _$TeamsNotifier {
       currentTeamId: teamsWithCurrentTeamId.currentTeamId,
     );
   }
-
 
   Future<void> setCurrentTeam(String teamId) async {
     state = state.copyWith(

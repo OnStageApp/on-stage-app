@@ -8,7 +8,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'team_member_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class TeamMemberRepository {
   factory TeamMemberRepository(Dio dio) = _TeamMemberRepository;
 
@@ -21,8 +21,8 @@ abstract class TeamMemberRepository {
   Future<TeamMember> getCurrentTeamMember();
 
   @GET(API.uninvitedTeamMembers)
-  Future<List<TeamMember>> getUninvitedTeamMembers(
-    @Query('eventId') String eventId, {
+  Future<List<TeamMember>> getUninvitedTeamMembers({
+    @Query('eventId') String? eventId,
     @Query('includeCurrentUser') bool includeCurrentUser = false,
   });
 

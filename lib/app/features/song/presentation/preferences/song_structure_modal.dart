@@ -28,7 +28,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
       enableDrag: false,
       isScrollControlled: true,
       useRootNavigator: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.85,
         maxWidth: context.isLargeScreen

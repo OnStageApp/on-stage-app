@@ -54,13 +54,13 @@ class PreferencesActionTile extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surface,
+                  color: const Color(0xFF43474E),
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: Icon(
                   trailingIcon,
                   size: 24,
-                  color: const Color(0xFF828282),
+                  color: const Color(0xFF8E9199),
                 ),
               ),
           ],

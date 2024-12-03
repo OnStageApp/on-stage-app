@@ -23,20 +23,20 @@ class AboutScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            Text(
-              'Connect with us',
-              style: context.textTheme.titleSmall,
-            ),
-            const SizedBox(height: 12),
-            PreferencesActionTile(
-              title: 'Rate us on the App Store',
-              trailingIcon: Icons.keyboard_arrow_right_rounded,
-              height: 54,
-              onTap: () {
-                //TOOD: See if it's working on ipad
-                // ref.read(reviewServiceProvider).requestReview();
-              },
-            ),
+            // Text(
+            //   'Connect with us',
+            //   style: context.textTheme.titleSmall,
+            // ),
+            // const SizedBox(height: 12),
+            // PreferencesActionTile(
+            //   title: 'Rate us on the App Store',
+            //   trailingIcon: Icons.keyboard_arrow_right_rounded,
+            //   height: 54,
+            //   onTap: () {
+            //     //TOOD: See if it's working on ipad
+            //     // ref.read(reviewServiceProvider).requestReview();
+            //   },
+            // ),
             const SizedBox(height: 12),
             Text(
               'Legal',

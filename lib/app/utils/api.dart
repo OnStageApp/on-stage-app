@@ -1,12 +1,33 @@
+import 'package:on_stage_app/app/utils/environment_manager.dart';
+
 class API {
-  static const String domain = 'dev.on-stage.app';
+  // static const String devDomain = 'dev.on-stage.app';
+  // static const String socketDevDomain = 'dev.on-stage.app';
+  //
+  // static const String prodDomain = 'on-stage.app/api';
+  // static const String socketProdDomain = 'on-stage.app';
+  //
+  // // static const String domain = '0e2f-79-119-41-169.ngrok-free.app';
+  // static const String baseUrl = 'https://$prodDomain/';
+  // static const String socketUrl = 'wss://$socketProdDomain/';
+  //
+  // // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
+
+  static const String devDomain = 'dev.on-stage.app';
+  static const String socketDevDomain = 'dev.on-stage.app';
+
   static const String prodDomain = 'on-stage.app/api';
+  static const String socketProdDomain = 'on-stage.app';
 
-  // static const String domain = '0e2f-79-119-41-169.ngrok-free.app';
-  static const String baseUrl = 'https://$domain/';
-  static const String socketUrl = 'wss://$domain/';
+  static String get baseUrl =>
+      EnvironmentManager.currentEnvironment == AppEnvironment.development
+          ? 'https://$devDomain/'
+          : 'https://$prodDomain/';
 
-  // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
+  static String get socketUrl =>
+      EnvironmentManager.currentEnvironment == AppEnvironment.development
+          ? 'wss://$socketDevDomain/'
+          : 'wss://$socketProdDomain/';
 
   static Future<Map<String, String>> getHeaders() async {
     final headers = {

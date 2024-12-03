@@ -101,7 +101,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
   }
 
   void _showSetReminderModal(BuildContext context, EventModel? event) {
-    ref.read(permissionServiceProvider).callMethodIfHasPermission(
+    ref.watch(permissionServiceProvider).callMethodIfHasPermission(
           context: context,
           permissionType: PermissionType.reminders,
           onGranted: () {

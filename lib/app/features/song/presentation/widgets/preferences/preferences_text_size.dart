@@ -75,7 +75,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
           'A',
           style: context.textTheme.titleMedium!.copyWith(
             color: ref.watch(userSettingsNotifierProvider).textSize == textSize
-                ? context.colorScheme.onSurfaceVariant
+                ? Colors.white
                 : context.colorScheme.onSurface,
             fontSize: textSize.size,
           ),

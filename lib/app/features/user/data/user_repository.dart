@@ -6,7 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'user_repository.g.dart';
 
-@RestApi(baseUrl: API.baseUrl)
+@RestApi()
 abstract class UserRepository {
   factory UserRepository(Dio dio) = _UserRepository;
 

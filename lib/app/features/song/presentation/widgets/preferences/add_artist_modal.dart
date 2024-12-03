@@ -19,7 +19,7 @@ class AddArtistModal extends ConsumerStatefulWidget {
   }) async {
     return showModalBottomSheet<Widget>(
       enableDrag: false,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
       ),

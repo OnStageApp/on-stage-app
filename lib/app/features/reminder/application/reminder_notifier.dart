@@ -12,7 +12,7 @@ class ReminderNotifier extends _$ReminderNotifier {
 
   @override
   ReminderState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _reminderRepository = ReminderRepository(dio);
     return const ReminderState();
   }

@@ -11,7 +11,7 @@ class CustomSideNavigation extends StatelessWidget {
     required this.isExpanded,
     required this.items,
     required this.onExpandToggle,
-    required this.onLogout,
+    required this.onSignOut,
     super.key,
   });
 
@@ -20,7 +20,7 @@ class CustomSideNavigation extends StatelessWidget {
   final bool isExpanded;
   final List<NavigationItem> items;
   final VoidCallback onExpandToggle;
-  final VoidCallback onLogout;
+  final VoidCallback onSignOut;
 
   @override
   Widget build(BuildContext context) {
@@ -212,10 +212,10 @@ class CustomSideNavigation extends StatelessWidget {
         Icons.logout,
         color: context.colorScheme.error,
       ),
-      onPressed: onLogout,
+      onPressed: onSignOut,
     );
 
-    const logoutLabel = Text('Log Out');
+    const logoutLabel = Text('Sign Out');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 32),

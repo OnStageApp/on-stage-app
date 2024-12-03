@@ -11,7 +11,7 @@ class ArtistsNotifier extends _$ArtistsNotifier {
 
   @override
   ArtistsState build() {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     _artistRepository = ArtistRepository(dio);
     return const ArtistsState();
   }

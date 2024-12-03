@@ -64,7 +64,7 @@ class SocketIoService extends _$SocketIoService {
             .setQuery({
               'deviceId': deviceId,
             })
-            .setReconnectionAttempts(25)
+            .setReconnectionAttempts(30)
             .build(),
       );
 
@@ -110,9 +110,7 @@ class SocketIoService extends _$SocketIoService {
   void _listenOnNotifications() {
     _socket?.on(SocketEventType.NOTIFICATION.name, (data) {
       logger.i('Received notification event: $data');
-      ref.read(notificationNotifierProvider.notifier)
-        ..getNotifications()
-        ..setHasNewNotifications(true);
+      ref.read(notificationNotifierProvider.notifier).getNotifications();
     });
   }
 

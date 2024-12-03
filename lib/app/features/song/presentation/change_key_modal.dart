@@ -34,7 +34,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     String title = 'Change Key',
   }) {
     showModalBottomSheet<Widget>(
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => ModalHeader(title: title),

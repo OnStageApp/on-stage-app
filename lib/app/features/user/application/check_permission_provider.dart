@@ -8,7 +8,7 @@ part 'check_permission_provider.g.dart';
 class CheckPermission extends _$CheckPermission {
   @override
   Future<bool> build(String permission) async {
-    final dio = ref.read(dioProvider);
+    final dio = ref.watch(dioProvider);
     final userRepository = UserRepository(dio);
     return userRepository.checkPermission(permission);
   }

@@ -38,7 +38,7 @@ class SetReminderModal extends ConsumerStatefulWidget {
         minHeight: MediaQuery.of(context).size.height * 0.7,
         maxWidth: MediaQuery.of(context).size.width,
       ),
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Alert Options'),

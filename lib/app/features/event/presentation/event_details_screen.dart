@@ -332,7 +332,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         itemCount: stagers.length,
         itemBuilder: (context, index) {
           return ParticipantListingItem(
-            canEdit: ref.read(permissionServiceProvider).hasAccessToEdit &&
+            canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
                 stagers[index].userId != currentUserId,
             name: stagers[index].name ?? '',
             photo: stagers[index].profilePicture,

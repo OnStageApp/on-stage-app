@@ -19,7 +19,7 @@ class SongViewModeModal extends ConsumerStatefulWidget {
     required BuildContext context,
   }) {
     showModalBottomSheet<Widget>(
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Song View'),

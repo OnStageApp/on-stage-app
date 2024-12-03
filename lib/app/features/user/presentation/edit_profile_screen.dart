@@ -87,7 +87,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       floatingActionButton: Padding(
         padding: defaultScreenHorizontalPadding,
         child: ContinueButton(
-          text: 'Edit Profileee',
+          text: 'Edit Profile',
           onPressed: _isNameChanged ? _editProfile : () {},
           isEnabled: _isNameChanged,
           hasShadow: false,

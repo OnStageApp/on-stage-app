@@ -35,7 +35,8 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
-      backgroundColor: context.colorScheme.surface,
+      useRootNavigator: true,
+      backgroundColor: context.colorScheme.surfaceContainerHigh,
       context: context,
       builder: (context) => FractionallySizedBox(
         child: NestedScrollModal(
@@ -92,6 +93,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
             const SizedBox(height: Insets.medium),
           ],
           if (widget.isFromEvent || isSongAddedByCurrentTeam) ...[
+            const SizedBox(height: Insets.medium),
             const PreferencesSongStructure(),
           ],
           if (isSongAddedByCurrentTeam) ...[
