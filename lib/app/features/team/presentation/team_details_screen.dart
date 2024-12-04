@@ -51,76 +51,79 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
         title: widget.isCreating ? 'Create New Team' : 'Team Details',
         isBackButtonVisible: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            CustomSettingTile(
-              backgroundColor: context.colorScheme.onSurfaceVariant,
-              placeholder: ref.watch(teamNotifierProvider).currentTeam?.name ??
-                  'Enter Team Name',
-              headline: 'Team Name',
-              suffix: const SizedBox(),
-              onTap: () {
-                if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
-                  return;
-                }
-                EditFieldModal.show(
-                  context: context,
-                  fieldName: 'Team Name',
-                  value: ref.watch(teamNotifierProvider).currentTeam?.name ??
-                      'Enter Team Name',
-                  onSubmitted: (value) {
-                    ref
-                        .read(teamNotifierProvider.notifier)
-                        .updateTeamName(value);
-                  },
-                );
-              },
-              controller: widget.isCreating ? teamNameController : null,
-            ),
-            const SizedBox(height: 16),
-            Text('Members', style: context.textTheme.titleSmall),
-            const SizedBox(height: 8),
-            _buildParticipantsList(),
-            if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
-              const SizedBox(height: 12),
-              EventActionButton(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              CustomSettingTile(
+                backgroundColor: context.colorScheme.onSurfaceVariant,
+                placeholder:
+                    ref.watch(teamNotifierProvider).currentTeam?.name ??
+                        'Enter Team Name',
+                headline: 'Team Name',
+                suffix: const SizedBox(),
                 onTap: () {
-                  ref
-                      .watch(permissionServiceProvider)
-                      .callMethodIfHasPermission(
-                        context: context,
-                        permissionType: PermissionType.addTeamMembers,
-                        onGranted: () {
-                          context.pushNamed(AppRoute.addTeamMember.name);
-                        },
-                      );
+                  if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
+                    return;
+                  }
+                  EditFieldModal.show(
+                    context: context,
+                    fieldName: 'Team Name',
+                    value: ref.watch(teamNotifierProvider).currentTeam?.name ??
+                        'Enter Team Name',
+                    onSubmitted: (value) {
+                      ref
+                          .read(teamNotifierProvider.notifier)
+                          .updateTeamName(value);
+                    },
+                  );
                 },
-                text: 'Invite People',
-                icon: Icons.add,
+                controller: widget.isCreating ? teamNameController : null,
               ),
+              const SizedBox(height: 16),
+              Text('Members', style: context.textTheme.titleSmall),
+              const SizedBox(height: 8),
+              _buildParticipantsList(),
+              if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
+                const SizedBox(height: 12),
+                EventActionButton(
+                  onTap: () {
+                    ref
+                        .watch(permissionServiceProvider)
+                        .callMethodIfHasPermission(
+                          context: context,
+                          permissionType: PermissionType.addTeamMembers,
+                          onGranted: () {
+                            context.pushNamed(AppRoute.addTeamMember.name);
+                          },
+                        );
+                  },
+                  text: 'Invite People',
+                  icon: Icons.add,
+                ),
+              ],
+              if (widget.isCreating) ...[
+                const Spacer(),
+                ContinueButton(
+                  text: 'Create',
+                  onPressed: () {
+                    ref.read(teamNotifierProvider.notifier).createTeam(
+                          TeamRequest(
+                            name: teamNameController.text,
+                            membersCount: 1,
+                          ),
+                        );
+                    context.pop();
+                  },
+                  isEnabled: true,
+                ),
+                const SizedBox(height: 24),
+              ],
             ],
-            if (widget.isCreating) ...[
-              const Spacer(),
-              ContinueButton(
-                text: 'Create',
-                onPressed: () {
-                  ref.read(teamNotifierProvider.notifier).createTeam(
-                        TeamRequest(
-                          name: teamNameController.text,
-                          membersCount: 1,
-                        ),
-                      );
-                  context.pop();
-                },
-                isEnabled: true,
-              ),
-              const SizedBox(height: 24),
-            ],
-          ],
+          ),
         ),
       ),
     );
