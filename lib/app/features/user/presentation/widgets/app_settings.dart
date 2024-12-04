@@ -5,10 +5,7 @@ import 'package:on_stage_app/app/features/plan/application/current_plan_provider
 import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
-import 'package:on_stage_app/app/shared/notification_permission_service.dart';
-import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/dialog_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
@@ -26,7 +23,7 @@ class AppSettingsState extends ConsumerState<AppSettings>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _checkNotificationPermissions();
+    _checkAndUpdateNotificationStatus();
   }
 
   @override
@@ -38,20 +35,31 @@ class AppSettingsState extends ConsumerState<AppSettings>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _checkNotificationPermissions();
+      _checkAndUpdateNotificationStatus();
     }
   }
 
-  Future<void> _checkNotificationPermissions() async {
-    // Trigger the permission check in the provider
-    await ref
-        .read(notificationPermissionProvider.notifier)
-        .checkNotificationPermissions();
+  Future<void> _checkAndUpdateNotificationStatus() async {
+    final status = await Permission.notification.status;
+    final currentNotificationSetting =
+        ref.read(userSettingsNotifierProvider).isNotificationsEnabled ?? false;
+
+    if (status.isGranted && !currentNotificationSetting) {
+      await ref
+          .read(userSettingsNotifierProvider.notifier)
+          .setNotification(isActive: true);
+    }
+
+    else if (!status.isGranted && currentNotificationSetting) {
+      await ref
+          .read(userSettingsNotifierProvider.notifier)
+          .setNotification(isActive: false);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
-    final notificationPermission = ref.watch(notificationPermissionProvider);
     final userSettings = ref.watch(userSettingsNotifierProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,31 +83,19 @@ class AppSettingsState extends ConsumerState<AppSettings>
         CustomSwitchListTile(
           title: 'Notifications',
           icon: Icons.notifications,
-          value: notificationPermission &&
-              (userSettings.isNotificationsEnabled ?? true),
+          value: userSettings.isNotificationsEnabled ?? false,
           onSwitch: (value) async {
+            if (value) {
+              final permissionGranted = await ref
+                  .read(userSettingsNotifierProvider.notifier)
+                  .requestNotificationPermission(context);
+
+              if (!permissionGranted) return;
+            }
+
             await ref
                 .read(userSettingsNotifierProvider.notifier)
                 .setNotification(isActive: value);
-
-            if (value) {
-              final status = await Permission.notification.status;
-              if (!status.isGranted) {
-                await requestPermission(
-                  permission: Permission.notification,
-                  context: context,
-                  onSettingsOpen: () => openSettings(context),
-                );
-              }
-
-              final updatedStatus = await Permission.notification.status;
-              if (!updatedStatus.isGranted) {
-                // If permission is not granted after requesting, disable notifications.
-                await ref
-                    .read(userSettingsNotifierProvider.notifier)
-                    .setNotification(isActive: false);
-              }
-            }
           },
         ),
 
