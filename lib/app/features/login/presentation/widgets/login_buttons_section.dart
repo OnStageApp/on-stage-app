@@ -17,6 +17,7 @@ class LoginButtonsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // LoginButton(
         //   text: 'Sign up with Email',
@@ -31,40 +32,41 @@ class LoginButtonsSection extends ConsumerWidget {
         // ),
         const SizedBox(height: 8),
         if (Platform.isIOS) ...[
-          LoginButton(
-            text: 'Continue with Apple',
+          Center(
+            child: LoginButton(
+              text: 'Continue with Apple',
+              onPressed: () async {
+                final notifier = ref.read(loginNotifierProvider.notifier);
+                final analytics = ref.read(analyticsServiceProvider.notifier);
+
+                final success = await notifier.signInWithApple();
+                if (success && context.mounted) {
+                  unawaited(analytics.logLogin(LoginMethod.apple.name));
+                }
+              },
+              isEnabled: true,
+              textColor: context.colorScheme.onSurface,
+              backgroundColor: context.colorScheme.onSurfaceVariant,
+              borderColor: context.colorScheme.primaryContainer,
+              asset: 'assets/icons/apple_sign_in.svg',
+              splashColor: context.colorScheme.surfaceDim,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        Center(
+          child: LoginButton(
+            text: 'Continue with Google',
             onPressed: () async {
-              final success = await ref
-                  .read(loginNotifierProvider.notifier)
-                  .signInWithApple();
-              if (success) {
-                unawaited(
-                  ref
-                      .read(analyticsServiceProvider.notifier)
-                      .logLogin(LoginMethod.apple.name),
-                );
-              }
+              await ref.read(loginNotifierProvider.notifier).signInWithGoogle();
             },
             isEnabled: true,
             textColor: context.colorScheme.onSurface,
             backgroundColor: context.colorScheme.onSurfaceVariant,
             borderColor: context.colorScheme.primaryContainer,
-            asset: 'assets/icons/apple_sign_in.svg',
+            asset: 'assets/icons/google_sign_in.svg',
             splashColor: context.colorScheme.surfaceDim,
           ),
-          const SizedBox(height: 8),
-        ],
-        LoginButton(
-          text: 'Continue with Google',
-          onPressed: () async {
-            await ref.read(loginNotifierProvider.notifier).signInWithGoogle();
-          },
-          isEnabled: true,
-          textColor: context.colorScheme.onSurface,
-          backgroundColor: context.colorScheme.onSurfaceVariant,
-          borderColor: context.colorScheme.primaryContainer,
-          asset: 'assets/icons/google_sign_in.svg',
-          splashColor: context.colorScheme.surfaceDim,
         ),
         // const SizedBox(height: 8),
         // TextButton(

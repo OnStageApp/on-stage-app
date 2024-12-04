@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,10 +11,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await EnvironmentManager.initialize();
-  if (EnvironmentManager.isProduction) {
+
+  if (EnvironmentManager.isProduction && !kDebugMode) {
     await SentryFlutter.init(
       (options) {
         options
+          ..debug = false
+          ..enableAutoSessionTracking = !kDebugMode
           ..dsn = dotenv.env['SENTRY_DSN']
           ..tracesSampleRate = 1.0
           ..profilesSampleRate = 1.0;

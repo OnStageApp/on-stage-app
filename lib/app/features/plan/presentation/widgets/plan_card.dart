@@ -6,6 +6,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan_feature.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -182,7 +183,9 @@ class PlanCard extends ConsumerWidget {
     } else {
       await subscriptionNotifier.purchasePackage(plan.appleProductId);
     }
-    context.popDialog();
+    if (context.mounted) {
+      context.pop();
+    }
   }
 
   void showLoadingOverlay(BuildContext context) {
