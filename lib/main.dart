@@ -9,21 +9,24 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'firebase_options.dart';
 
+import 'package:on_stage_app/app/app.dart';
+import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
+import 'package:on_stage_app/bootstrap.dart';
+
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  try {
+  if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  } catch (e) {
-    // Firebase is already initialized, ignore
-    print('Firebase already initialized: $e');
   }
 
-
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await dotenv.load();
+
   await bootstrap(() => const App());
 }
