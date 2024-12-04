@@ -55,14 +55,64 @@ class TeamMemberModal extends ConsumerStatefulWidget {
 }
 
 class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
+  late TeamMember teamMember;
+  bool isDisposed = false;
+
   @override
   void initState() {
     super.initState();
+    teamMember = widget.teamMember;
   }
 
   @override
   void dispose() {
+    isDisposed = true;
     super.dispose();
+  }
+
+  Future<void> handlePermissionChange() async {
+    final role = await ChangePermissionsModal.show(
+      context: context,
+      selectedRole: teamMember.role ?? TeamMemberRole.none,
+    );
+
+    if (role != null && mounted) {
+      setState(() => teamMember = teamMember.copyWith(role: role));
+
+      await ref.read(teamMembersNotifierProvider.notifier).updateTeamMemberRole(
+            teamMember.id,
+            role,
+          );
+
+      await ref.read(teamMembersNotifierProvider.notifier).getTeamMembers();
+
+      if (mounted) {
+        context.popDialog();
+        TopFlushBar.show(
+          context,
+          'Permissions have been updated',
+        );
+      }
+    }
+  }
+
+  Future<void> handleResendInvitation() async {
+    if (!mounted) return;
+
+    await ref
+        .read(teamMembersNotifierProvider.notifier)
+        .resendInvitationOnTeamMember(
+          teamMember.id ?? '',
+          teamMember.role ?? TeamMemberRole.none,
+        );
+
+    if (mounted) {
+      context.popDialog();
+      TopFlushBar.show(
+        context,
+        'Invitation has been resent',
+      );
+    }
   }
 
   @override
@@ -72,8 +122,8 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
       child: Column(
         children: [
           _buildContent(
-            widget.teamMember.profilePicture,
-            widget.teamMember.name ?? 'Name',
+            teamMember.profilePicture,
+            teamMember.name ?? 'Name',
             'Pian',
             () {},
           ),
@@ -81,41 +131,15 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
           _buildContent(
             null,
             'Change permissions',
-            widget.teamMember.role?.title ?? 'None',
-            () async {
-              final role = await ChangePermissionsModal.show(
-                context: context,
-                selectedRole: widget.teamMember.role ?? TeamMemberRole.none,
-              );
-
-              if (role != null) {
-                setState(() => widget.teamMember.copyWith(role: role));
-              }
-
-              await ref
-                  .read(teamMembersNotifierProvider.notifier)
-                  .updateTeamMemberRole(
-                    widget.teamMember.id,
-                    role ?? TeamMemberRole.none,
-                  );
-              if (mounted) {
-                context.popDialog();
-                TopFlushBar.show(
-                  context,
-                  'Permissions have been updated',
-                );
-              }
-              await ref
-                  .read(teamMembersNotifierProvider.notifier)
-                  .getTeamMembers();
-            },
+            teamMember.role?.title ?? 'None',
+            handlePermissionChange,
           ),
           const SizedBox(height: 64),
-          if (widget.teamMember.inviteStatus == InviteStatus.pending)
+          if (teamMember.inviteStatus == InviteStatus.pending)
             _buildResendInvitation(context),
           const SizedBox(height: 12),
           RemoveMemberWidget(
-            teamMemberId: widget.teamMember.id,
+            teamMemberId: teamMember.id,
           ),
           const SizedBox(height: 24),
         ],
@@ -125,21 +149,7 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
 
   Widget _buildResendInvitation(BuildContext context) {
     return InkWell(
-      onTap: () {
-        ref
-            .read(teamMembersNotifierProvider.notifier)
-            .resendInvitationOnTeamMember(
-              widget.teamMember.id ?? '',
-              widget.teamMember.role ?? TeamMemberRole.none,
-            );
-        context.popDialog();
-        if (mounted) {
-          TopFlushBar.show(
-            context,
-            'Invitation has been resent',
-          );
-        }
-      },
+      onTap: handleResendInvitation,
       overlayColor: WidgetStateProperty.all(
         context.colorScheme.outline.withOpacity(0.1),
       ),
@@ -166,41 +176,40 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
     String? name,
     String trailing,
     void Function() onTap,
-  ) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: onTap,
-      overlayColor: WidgetStateProperty.all(
-        context.colorScheme.outline.withOpacity(0.1),
-      ),
-      child: Ink(
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(8),
+  ) =>
+      InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        overlayColor: WidgetStateProperty.all(
+          context.colorScheme.outline.withOpacity(0.1),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Row(
-          children: [
-            if (photo != null) ...[
-              ImageWithPlaceholder(
-                photo: photo,
-                name: name!,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: context.colorScheme.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            children: [
+              if (photo != null) ...[
+                ImageWithPlaceholder(
+                  photo: photo,
+                  name: name!,
+                ),
+                const SizedBox(width: 10),
+              ],
+              Text(
+                name ?? 'Unknown',
+                style: context.textTheme.titleMedium,
               ),
-              const SizedBox(width: 10),
+              const Spacer(),
+              Text(
+                trailing,
+                style: context.textTheme.titleMedium!
+                    .copyWith(color: context.colorScheme.outline),
+              ),
             ],
-            Text(
-              name ?? 'Unknown',
-              style: context.textTheme.titleMedium,
-            ),
-            const Spacer(),
-            Text(
-              trailing,
-              style: context.textTheme.titleMedium!
-                  .copyWith(color: context.colorScheme.outline),
-            ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -32,7 +32,10 @@ class LoginButton extends StatelessWidget {
     return TextButton(
       style: ButtonStyle(
         minimumSize: WidgetStateProperty.all(
-          const Size(double.infinity, 54),
+          const Size(400, 54),
+        ),
+        maximumSize: WidgetStateProperty.all(
+          const Size(800, 54),
         ),
         splashFactory: InkRipple.splashFactory,
         shape: WidgetStateProperty.all(

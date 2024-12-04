@@ -44,12 +44,7 @@ class InvitePeopleToEventModal extends ConsumerStatefulWidget {
       builder: (context) => NestedScrollModal(
         buildFooter: () => SizedBox(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              32,
-            ),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
             child: Consumer(
               builder: (context, ref, _) {
                 return ContinueButton(
@@ -68,12 +63,8 @@ class InvitePeopleToEventModal extends ConsumerStatefulWidget {
           ),
         ),
         buildHeader: () => const ModalHeader(title: 'Add People'),
-        headerHeight: () {
-          return 64;
-        },
-        footerHeight: () {
-          return 64;
-        },
+        headerHeight: () => 64,
+        footerHeight: () => 64,
         buildContent: () => InvitePeopleToEventModal(
           eventId: eventId,
         ),
@@ -90,15 +81,39 @@ class AddParticipantsModalState
     extends ConsumerState<InvitePeopleToEventModal> {
   final TextEditingController _searchController = TextEditingController();
   List<TeamMember> _searchedParticipants = [];
+  List<TeamMember> _allParticipants = [];
+  final FocusNode _searchFocusNode = FocusNode();
+
   bool _areParticipantsLoading = false;
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestParticipants();
     });
+    _searchController.addListener(_onSearchChanged);
+  }
 
-    super.initState();
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final searchQuery = _searchController.text.toLowerCase().trim();
+    setState(() {
+      if (searchQuery.isEmpty) {
+        _searchedParticipants = _allParticipants;
+      } else {
+        _searchedParticipants = _allParticipants.where((member) {
+          final name = member.name?.toLowerCase() ?? '';
+          return name.contains(searchQuery);
+        }).toList();
+      }
+    });
   }
 
   Future<void> _requestParticipants() async {
@@ -110,6 +125,7 @@ class AddParticipantsModalState
         .read(teamMembersNotifierProvider.notifier)
         .getUninvitedTeamMembers(eventId: widget.eventId);
 
+    _setParticipants();
     setState(() {
       _areParticipantsLoading = false;
     });
@@ -117,10 +133,10 @@ class AddParticipantsModalState
 
   void _setParticipants() {
     if (widget.eventId != null) {
-      _searchedParticipants =
+      _allParticipants =
           ref.watch(teamMembersNotifierProvider).uninvitedTeamMembers;
     } else {
-      _searchedParticipants = ref
+      _allParticipants = ref
           .watch(teamMembersNotifierProvider)
           .uninvitedTeamMembers
           .where(
@@ -131,52 +147,64 @@ class AddParticipantsModalState
           )
           .toList();
     }
+    _searchedParticipants = _allParticipants;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _setParticipants();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          _buildSearchBar(),
-          const SizedBox(height: 12),
-          if (_areParticipantsLoading)
-            _buildShimmerLoading()
-          else
-            Padding(
-              padding: const EdgeInsets.only(bottom: 42),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: _searchedParticipants.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      if (_isItemChecked(index)) {
-                        ref
-                            .read(eventControllerProvider.notifier)
-                            .unSelectTeamMember(
-                              _searchedParticipants.elementAt(index),
-                            );
-                      } else {
-                        ref
-                            .read(eventControllerProvider.notifier)
-                            .selectTeamMember(
-                              _searchedParticipants.elementAt(index),
-                            );
-                      }
-                    },
-                    child: _buildTile(index),
-                  );
-                },
-              ),
-            ),
-        ],
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {
+      _searchedParticipants = _allParticipants;
+    });
+  }
+
+  bool _isItemChecked(int index) {
+    final currentParticipant = _searchedParticipants.elementAt(index);
+    final addedMemberIds = ref
+        .watch(eventControllerProvider)
+        .selectedTeamMembers
+        .map((member) => member.id)
+        .toSet();
+
+    return addedMemberIds.contains(currentParticipant.id);
+  }
+
+  Widget _buildSearchBar() {
+    return StageSearchBar(
+      focusNode: _searchFocusNode,
+      controller: _searchController,
+      onClosed: _clearSearch,
+      onChanged: (value) {
+        if (value.isEmpty) {
+          _clearSearch();
+        }
+      },
+    );
+  }
+
+  Widget _buildPlaceholder(BuildContext context, TeamMember participant) {
+    return Container(
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: context.colorScheme.onSurfaceVariant,
+        border: Border.all(
+          color: context.colorScheme.primaryContainer,
+          width: participant.profilePicture != null ? 0 : 1,
+        ),
+        shape: BoxShape.circle,
+        image: participant.profilePicture != null
+            ? DecorationImage(
+                image: MemoryImage(
+                  participant.profilePicture!,
+                ),
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
+      child: participant.profilePicture != null
+          ? null
+          : PlaceholderImageWidget(name: participant.name ?? 'Unknown'),
     );
   }
 
@@ -226,59 +254,6 @@ class AddParticipantsModalState
     );
   }
 
-  Widget _buildPlaceholder(BuildContext context, TeamMember participant) {
-    return Container(
-      width: 30,
-      height: 30,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        border: Border.all(
-          color: context.colorScheme.primaryContainer,
-          width: participant.profilePicture != null ? 0 : 1,
-        ),
-        shape: BoxShape.circle,
-        image: participant.profilePicture != null
-            ? DecorationImage(
-                image: MemoryImage(
-                  participant.profilePicture!,
-                ),
-                fit: BoxFit.cover,
-              )
-            : null,
-      ),
-      child: participant.profilePicture != null
-          ? null
-          : PlaceholderImageWidget(name: participant.name ?? 'Unknown'),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return StageSearchBar(
-      focusNode: FocusNode(),
-      controller: _searchController,
-      onClosed: () {},
-      onChanged: (value) {
-        if (value.isEmpty) {
-          _clearSearch();
-        }
-      },
-    );
-  }
-
-  void _clearSearch() {}
-
-  bool _isItemChecked(int index) {
-    final currentParticipant = _searchedParticipants.elementAt(index);
-    final addedMemberIds = ref
-        .watch(eventControllerProvider)
-        .selectedTeamMembers
-        .map((member) => member.id)
-        .toSet();
-
-    return addedMemberIds.contains(currentParticipant.id);
-  }
-
   Widget _buildShimmerLoading() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 42),
@@ -300,6 +275,63 @@ class AddParticipantsModalState
             ),
           );
         },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          _buildSearchBar(),
+          const SizedBox(height: 12),
+          if (_areParticipantsLoading)
+            _buildShimmerLoading()
+          else if (_searchedParticipants.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 24),
+                child: Text(
+                  'No members found',
+                  style: context.textTheme.bodyLarge,
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.only(bottom: 42),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _searchedParticipants.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      _searchFocusNode.unfocus();
+                      if (_isItemChecked(index)) {
+                        ref
+                            .read(eventControllerProvider.notifier)
+                            .unSelectTeamMember(
+                              _searchedParticipants.elementAt(index),
+                            );
+                      } else {
+                        ref
+                            .read(eventControllerProvider.notifier)
+                            .selectTeamMember(
+                              _searchedParticipants.elementAt(index),
+                            );
+                      }
+                    },
+                    child: _buildTile(index),
+                  );
+                },
+              ),
+            ),
+        ],
       ),
     );
   }

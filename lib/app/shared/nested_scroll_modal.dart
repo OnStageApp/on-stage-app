@@ -61,6 +61,8 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
                 return true;
               },
               child: ListView.builder(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 shrinkWrap: true,
                 itemCount: itemsCount,
                 physics: _physics,

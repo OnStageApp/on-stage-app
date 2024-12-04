@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
@@ -123,6 +124,15 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
           e == PurchasesErrorCode.invalidReceiptError) {
         logger
             .e('Invalid receipt error: Ensure sandbox and production handling');
+      } else if (e is PurchasesErrorCode &&
+          e == PurchasesErrorCode.purchaseCancelledError) {
+        logger.i('Purchase cancelled for package: $packageId');
+      } else if (e is PlatformException && e.code == '1') {
+        logger.i('User cancelled the purchase with package: $packageId');
+        state = state.copyWith(
+          isLoading: false,
+        );
+        return;
       } else {
         logger.e('Failed to purchase package: $packageId, error: $e');
       }
@@ -131,7 +141,6 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         isLoading: false,
         errorMessage: 'Failed to purchase package: $e',
       );
-      rethrow;
     }
   }
 
