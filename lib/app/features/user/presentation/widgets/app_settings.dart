@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppSettings extends ConsumerStatefulWidget {
   const AppSettings({
@@ -16,14 +17,50 @@ class AppSettings extends ConsumerStatefulWidget {
   AppSettingsState createState() => AppSettingsState();
 }
 
-class AppSettingsState extends ConsumerState<AppSettings> {
+class AppSettingsState extends ConsumerState<AppSettings>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkAndUpdateNotificationStatus();
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkAndUpdateNotificationStatus();
+    }
+  }
+
+  Future<void> _checkAndUpdateNotificationStatus() async {
+    final status = await Permission.notification.status;
+    final currentNotificationSetting =
+        ref.read(userSettingsNotifierProvider).isNotificationsEnabled ?? false;
+
+    if (status.isGranted && !currentNotificationSetting) {
+      await ref
+          .read(userSettingsNotifierProvider.notifier)
+          .setNotification(isActive: true);
+    }
+
+    else if (!status.isGranted && currentNotificationSetting) {
+      await ref
+          .read(userSettingsNotifierProvider.notifier)
+          .setNotification(isActive: false);
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final userSettings = ref.watch(userSettingsNotifierProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -46,15 +83,22 @@ class AppSettingsState extends ConsumerState<AppSettings> {
         CustomSwitchListTile(
           title: 'Notifications',
           icon: Icons.notifications,
-          value:
-              ref.watch(userSettingsNotifierProvider).isNotificationsEnabled ??
-                  true,
-          onSwitch: (value) {
-            ref
+          value: userSettings.isNotificationsEnabled ?? false,
+          onSwitch: (value) async {
+            if (value) {
+              final permissionGranted = await ref
+                  .read(userSettingsNotifierProvider.notifier)
+                  .requestNotificationPermission(context);
+
+              if (!permissionGranted) return;
+            }
+
+            await ref
                 .read(userSettingsNotifierProvider.notifier)
                 .setNotification(isActive: value);
           },
         ),
+
         if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
           const SizedBox(height: 12),
           ListTile(
