@@ -17,7 +17,6 @@ class ProfileHeader extends ConsumerWidget {
       child: Row(
         children: [
           ProfileImageWidget(
-            userId: user?.id ?? '',
             name: user?.name ?? 'User',
             photo: user?.image,
           ),

@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/preference_selector.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
@@ -78,7 +79,7 @@ class _AddSongFirstStepDetailsState
   }
 
   void _prefillValuesIfEditing() {
-    final song = ref.read(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider).song;
     if (song.id != null) {
       _songNameController.text = song.title ?? '';
       _bpmController.text = song.tempo.toString();
@@ -99,14 +100,14 @@ class _AddSongFirstStepDetailsState
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
-          text: 'Continue',
+          text: 'Save',
           onPressed: _addSongDetails,
           isEnabled: _isFormValid(),
         ),
       ),
       appBar: const StageAppBar(
         isBackButtonVisible: true,
-        title: 'Add Song',
+        title: 'Song Info',
       ),
       body: Padding(
         padding: defaultScreenPadding,
@@ -213,15 +214,33 @@ class _AddSongFirstStepDetailsState
 
   void _addSongDetails() {
     if (_formKey.currentState?.validate() ?? false) {
-      _setFieldsOnController();
-      context.pushNamed(AppRoute.editSongContent.name);
+      if (widget.songId == null) {
+        _setFieldsOnController();
+        context.pushNamed(AppRoute.editSongContent.name);
+      } else {
+        _updateSongToDb();
+        context.pop();
+      }
     } else {
       logger.e('Validation failed');
     }
   }
 
+  void _updateSongToDb() {
+    ref.read(songNotifierProvider.notifier).updateSongToDB(
+          SongRequest(
+            title: _songNameController.text,
+            tempo: int.tryParse(_bpmController.text) ?? 0,
+            originalKey: _selectedKey,
+            artistId: _selectedArtist?.id,
+            theme: _selectedTheme,
+            genre: _selectedGenre,
+          ),
+        );
+  }
+
   void _setFieldsOnController() {
-    ref.read(songNotifierProvider.notifier).updateSong(
+    ref.read(songNotifierProvider.notifier).updateSongLocalCache(
           SongModelV2(
             title: _songNameController.text,
             tempo: int.tryParse(_bpmController.text) ?? 0,

@@ -115,7 +115,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  genre.name.substring(0, 1),
+                  genre.title.substring(0, 1),
                   textAlign: TextAlign.center,
                   style: context.textTheme.titleSmall!
                       .copyWith(color: context.colorScheme.onSurface),
@@ -124,7 +124,7 @@ class GenreModalState extends ConsumerState<GenreModal> {
               Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: Text(
-                  genre.name,
+                  genre.title,
                   style: context.textTheme.titleSmall,
                 ),
               ),

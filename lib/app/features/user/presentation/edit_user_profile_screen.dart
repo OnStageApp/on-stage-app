@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/login/domain/user_request.dart';
@@ -15,17 +12,15 @@ import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart' as path_provider;
 
-class EditProfileScreen extends ConsumerStatefulWidget {
-  const EditProfileScreen({super.key});
+class EditUserProfile extends ConsumerStatefulWidget {
+  const EditUserProfile({super.key});
 
   @override
-  EditProfileScreenState createState() => EditProfileScreenState();
+  EditUserProfileState createState() => EditUserProfileState();
 }
 
-class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+class EditUserProfileState extends ConsumerState<EditUserProfile> {
   bool _isUploading = false;
   bool _isNameChanged = false;
   String? _initialName;
@@ -112,7 +107,6 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       child: ProfileImageWidget(
                         size: 140,
                         canChangeProfilePicture: true,
-                        userId: userState.currentUser?.id ?? '',
                         name: userState.currentUser?.name ?? 'User',
                         photo: userState.currentUser?.image,
                       ),
@@ -188,7 +182,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     const SizedBox(
                       height: 100,
-                    ), // Add extra padding at the bottom
+                    ),
                   ],
                 ),
               ),
@@ -208,21 +202,15 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       });
 
       try {
-        final compressedFile = await _compressImage(selectedImage);
+        await ref
+            .read(userNotifierProvider.notifier)
+            .uploadPhoto(selectedImage);
 
-        if (compressedFile != null) {
-          await ref
-              .read(userNotifierProvider.notifier)
-              .uploadPhoto(compressedFile);
-
-          if (mounted) {
-            TopFlushBar.show(
-              context,
-              'Photo uploaded successfully',
-            );
-          }
-        } else {
-          throw Exception('Failed to compress image');
+        if (mounted) {
+          TopFlushBar.show(
+            context,
+            'Photo uploaded successfully',
+          );
         }
       } catch (e) {
         logger.i('Error compressing or uploading image: $e');
@@ -241,22 +229,5 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         }
       }
     }
-  }
-
-  Future<File?> _compressImage(File file) async {
-    final dir = await path_provider.getTemporaryDirectory();
-    final targetPath = path.join(
-      dir.absolute.path,
-      '${DateTime.now().millisecondsSinceEpoch}.jpg',
-    );
-
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: 50,
-    );
-
-    final newFile = File(result!.path);
-    return newFile;
   }
 }

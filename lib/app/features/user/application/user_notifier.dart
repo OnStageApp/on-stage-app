@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/team_member/domain/position_enum/posit
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
+import 'package:on_stage_app/app/features/user/domain/models/profile/user_profile.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -39,6 +40,15 @@ class UserNotifier extends _$UserNotifier {
     final currentUser = await usersRepository.getCurrentUser();
     _setUserIdInAnalytics(currentUser.id, currentUser.name ?? '');
     state = state.copyWith(currentUser: currentUser, isLoading: false);
+  }
+
+  Future<UserProfileInfo> getUserProfileInfo(String id) async {
+    final userProfileInfo = await usersRepository.getUserProfileInfo(id);
+    final photo = await ref
+        .read(amazonS3NotifierProvider.notifier)
+        .getPhotoFromAWS(userProfileInfo.photoUrl ?? '');
+
+    return userProfileInfo.copyWith(image: photo);
   }
 
   Future<void> editUserById(UserRequest userRequest) async {

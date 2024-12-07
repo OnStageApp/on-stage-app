@@ -20,6 +20,11 @@
             tools:replace="android:authorities" />
 
         <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"

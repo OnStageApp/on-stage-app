@@ -109,7 +109,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
                   shape: BoxShape.circle,
                 ),
                 child: Text(
-                  theme.name.substring(0, 1),
+                  theme.title.substring(0, 1),
                   textAlign: TextAlign.center,
                   style: context.textTheme.titleSmall!.copyWith(
                     color: context.colorScheme.onSurface,
@@ -119,7 +119,7 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
               Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: Text(
-                  theme.name,
+                  theme.title,
                   style: context.textTheme.titleSmall,
                 ),
               ),

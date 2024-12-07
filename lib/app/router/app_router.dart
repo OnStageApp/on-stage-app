@@ -17,7 +17,7 @@ enum AppRoute {
   vocalModal,
   addEventSongs,
   eventSettings,
-  editProfile,
+  editUserProfile,
   teamDetails,
   changePassword,
   addTeamMember,
@@ -25,13 +25,14 @@ enum AppRoute {
   loading,
   signUp,
   songDetailsWithPages,
-  addEditSong,
+  editSongInfos,
   editSongContent,
   addStructureForSong,
   plans,
   about,
   privacyPolicy,
   termsOfUse,
+  userProfileInfo,
 }
 
 extension GoRouterExtension on GoRouter {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
@@ -16,17 +18,23 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getNotifications();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _getNotifications();
+      unawaited(
+        ref
+            .read(notificationNotifierProvider.notifier)
+            .markNotificationsAsViewed(),
+      );
     });
   }
 
-  void _getNotifications() {
-    ref.read(notificationNotifierProvider.notifier).getNotifications();
+  Future<void> _getNotifications() async {
+    await ref.read(notificationNotifierProvider.notifier).getNotifications();
   }
 
   Future<void> _refreshNotifications() async {
-    _getNotifications();
+    await _getNotifications();
   }
 
   @override
@@ -34,14 +42,7 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
     return Scaffold(
       appBar: StageAppBar(
         isBackButtonVisible: true,
-        onBackButtonPressed: () {
-          ref
-              .read(notificationNotifierProvider.notifier)
-              .markNotificationsAsViewed();
-          ref
-              .read(notificationNotifierProvider.notifier)
-              .setHasNewNotifications(hasNewNotifications: false);
-        },
+        onBackButtonPressed: () {},
         title: 'Notifications',
       ),
       body: RefreshIndicator.adaptive(

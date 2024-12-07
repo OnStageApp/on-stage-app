@@ -6,7 +6,7 @@ extension InviteStatusExtension on InviteStatus {
       case InviteStatus.confirmed:
         return 'Confirmed';
       case InviteStatus.pending:
-        return 'Pending Invitation';
+        return 'Pending...';
       case InviteStatus.declined:
         return 'Declined';
       case InviteStatus.inactive:

@@ -41,6 +41,7 @@ class NotificationNotifier extends _$NotificationNotifier {
   }
 
   Future<void> getNotifications() async {
+    print('Getting notifications');
     await _fetchNotifications(offset: 0, append: false);
     _checkIfHaveNewNotifications();
   }
@@ -91,6 +92,7 @@ class NotificationNotifier extends _$NotificationNotifier {
   Future<void> markNotificationsAsViewed() async {
     try {
       await notificationRepository.markAsViewed();
+      setHasNewNotifications(hasNewNotifications: false);
     } catch (e, s) {
       logger.e('Error updating notification: $e $s');
     }
@@ -123,6 +125,7 @@ class NotificationNotifier extends _$NotificationNotifier {
   }
 
   void setHasNewNotifications({required bool hasNewNotifications}) {
+    logger.i('Setting hasNewNotifications to $hasNewNotifications');
     state = state.copyWith(hasNewNotifications: hasNewNotifications);
   }
 

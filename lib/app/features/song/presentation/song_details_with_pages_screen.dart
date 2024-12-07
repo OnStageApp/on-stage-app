@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class SongDetailsWithPagesScreen extends ConsumerStatefulWidget {
   const SongDetailsWithPagesScreen({
@@ -72,7 +73,32 @@ class SongDetailsWithPagesScreenState
           ),
         ),
       ),
-      body: _buildSongsWithPageView(),
+      body: Stack(
+        children: [
+          _buildSongsWithPageView(),
+          _buildPageIndicator(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator(BuildContext context) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 20,
+      child: Center(
+        child: SmoothPageIndicator(
+          controller: _pageController,
+          count: _eventItems.length,
+          effect: ScrollingDotsEffect(
+            activeDotColor: context.colorScheme.onSurface,
+            dotColor: context.colorScheme.onSurface.withOpacity(0.3),
+            dotHeight: 8,
+            dotWidth: 8,
+          ),
+        ),
+      ),
     );
   }
 

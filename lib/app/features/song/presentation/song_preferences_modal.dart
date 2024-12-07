@@ -112,12 +112,33 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
               title: 'Lyrics And Chords',
               trailingIcon: Icons.keyboard_arrow_right_rounded,
               onTap: () {
-                context.pushNamed(
-                  AppRoute.addEditSong.name,
-                  queryParameters: {
-                    'songId': ref.watch(songNotifierProvider).song.id,
-                  },
-                );
+                context
+                  ..popDialog()
+                  ..pushNamed(
+                    AppRoute.editSongContent.name,
+                    queryParameters: {
+                      'songId': ref.watch(songNotifierProvider).song.id,
+                    },
+                  );
+              },
+            ),
+            const SizedBox(height: Insets.smallNormal),
+            PreferencesActionTile(
+              leadingWidget: Icon(
+                LucideIcons.tags,
+                color: context.colorScheme.outline,
+              ),
+              title: 'Song Info',
+              trailingIcon: Icons.keyboard_arrow_right_rounded,
+              onTap: () {
+                context
+                  ..popDialog()
+                  ..pushNamed(
+                    AppRoute.editSongInfos.name,
+                    queryParameters: {
+                      'songId': ref.watch(songNotifierProvider).song.id,
+                    },
+                  );
               },
             ),
           ],

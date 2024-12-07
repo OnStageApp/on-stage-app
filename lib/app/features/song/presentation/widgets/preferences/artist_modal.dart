@@ -31,6 +31,7 @@ class ArtistModal extends ConsumerStatefulWidget {
     showModalBottomSheet<Widget>(
       enableDrag: false,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.85,

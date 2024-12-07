@@ -124,6 +124,7 @@ class AddStructureItemsWidgetState
               );
             },
           ),
+          const SizedBox(height: 42),
         ],
       ),
     );

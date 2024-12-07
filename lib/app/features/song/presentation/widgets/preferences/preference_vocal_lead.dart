@@ -48,7 +48,6 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
         if (leadVocalStagers.isNotNullOrEmpty)
           Container(
             margin: const EdgeInsets.only(top: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 6),
             decoration: BoxDecoration(
               color: context.colorScheme.onSurfaceVariant,
               borderRadius: BorderRadius.circular(10),
@@ -59,6 +58,7 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
               itemCount: leadVocalStagers.length,
               itemBuilder: (context, index) {
                 return ParticipantListingItem(
+                  userId: leadVocalStagers[index].userId ?? '',
                   name: leadVocalStagers[index].name ?? '',
                   photo: leadVocalStagers[index].profilePicture,
                   onDelete: () {

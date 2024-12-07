@@ -9,6 +9,7 @@ class DialogHelper {
     required Widget title,
     required Widget content,
     String? cancelText,
+    Color? cancelTextColor,
     String? confirmText,
     bool isDestructive = false,
     VoidCallback? onConfirm,
@@ -21,19 +22,26 @@ class DialogHelper {
             title: title,
             content: content,
             actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: Text(cancelText ?? 'Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                  onConfirm?.call();
-                },
-                child: Text(confirmText ?? 'Confirm'),
-              ),
+              if (cancelText != null)
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text(cancelText),
+                ),
+              if (confirmText != null)
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                    onConfirm?.call();
+                  },
+                  child: Text(
+                    confirmText,
+                    style: const TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
             ],
           );
         },
@@ -46,20 +54,25 @@ class DialogHelper {
             title: title,
             content: content,
             actions: [
-              CupertinoDialogAction(
-                child: Text(cancelText ?? 'Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-              CupertinoDialogAction(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                  onConfirm?.call();
-                },
-                isDestructiveAction: isDestructive,
-                child: Text(confirmText ?? 'Confirm'),
-              ),
+              if (cancelText != null)
+                CupertinoDialogAction(
+                  child: Text(cancelText),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+              if (confirmText != null)
+                CupertinoDialogAction(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                    onConfirm?.call();
+                  },
+                  isDestructiveAction: isDestructive,
+                  child: Text(
+                    confirmText,
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                ),
             ],
           );
         },

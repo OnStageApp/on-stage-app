@@ -25,8 +25,9 @@ import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
-import 'package:on_stage_app/app/features/user/presentation/edit_profile_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/edit_user_profile_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
+import 'package:on_stage_app/app/features/user/presentation/user_profile_info_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -71,6 +72,7 @@ class NavigationNotifier extends _$NavigationNotifier {
 
   GoRouter _createRouter() {
     return GoRouter(
+      navigatorKey: rootNavigatorKey,
       initialLocation: '/welcome',
       debugLogDiagnostics: true,
       redirect: (context, state) {
@@ -146,13 +148,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
-                      name: AppRoute.addEditSong.name,
-                      path: 'addEditSong',
+                      name: AppRoute.editSongInfos.name,
+                      path: 'editSongInfos',
                       builder: (context, state) {
                         final songId = state.uri.queryParameters['songId'];
                         ref
                             .read(analyticsServiceProvider.notifier)
-                            .logScreenView(AppRoute.addEditSong.name);
+                            .logScreenView(AppRoute.editSongInfos.name);
                         return AddSongFirstStepDetails(songId: songId);
                       },
                       routes: [
@@ -294,10 +296,19 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
-                      name: AppRoute.editProfile.name,
-                      path: 'editProfile',
+                      name: AppRoute.editUserProfile.name,
+                      path: 'editUserProfile',
                       builder: (context, state) {
-                        return const EditProfileScreen();
+                        return const EditUserProfile();
+                      },
+                    ),
+                    GoRoute(
+                      name: AppRoute.userProfileInfo.name,
+                      path: 'userProfileInfo',
+                      builder: (context, state) {
+                        final userId =
+                            state.uri.queryParameters['userId'] ?? '';
+                        return UserProfileInfoScreen(userId: userId);
                       },
                     ),
                     GoRoute(

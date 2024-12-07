@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/group_tile.d
 import 'package:on_stage_app/app/features/home/presentation/widgets/notification_widget.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_tiled.dart';
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
+import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
@@ -59,6 +60,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           await Future.wait([
             ref.read(songsNotifierProvider.notifier).getSongs(),
             ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+            ref.read(notificationNotifierProvider.notifier).getNotifications(),
           ]);
         },
         child: CustomScrollView(

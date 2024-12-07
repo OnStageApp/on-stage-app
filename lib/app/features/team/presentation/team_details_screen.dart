@@ -87,7 +87,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               Text('Members', style: context.textTheme.titleSmall),
               const SizedBox(height: 8),
               _buildParticipantsList(),
-              if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
+              if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
                 const SizedBox(height: 12),
                 EventActionButton(
                   onTap: () {
@@ -159,17 +159,23 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             onTap: () {
               final currentTeamMemberId =
                   ref.read(currentTeamMemberNotifierProvider).teamMember?.id;
-              final isNotLeaderOnTeam =
-                  !ref.watch(permissionServiceProvider).isLeaderOnTeam;
+              final hasAccessToEdit =
+                  ref.watch(permissionServiceProvider).hasAccessToEdit;
               if (currentTeamMemberId == teamMembers[index].id ||
-                  isNotLeaderOnTeam) {
-                return;
+                  !hasAccessToEdit) {
+                context.pushNamed(
+                  AppRoute.userProfileInfo.name,
+                  queryParameters: {
+                    'userId': teamMembers[index].userId,
+                  },
+                );
+              } else {
+                TeamMemberModal.show(
+                  onSave: (model) {},
+                  context: context,
+                  teamMember: teamMembers[index],
+                );
               }
-              TeamMemberModal.show(
-                onSave: (model) {},
-                context: context,
-                teamMember: teamMembers[index],
-              );
             },
           );
         },

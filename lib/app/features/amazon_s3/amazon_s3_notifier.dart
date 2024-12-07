@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_repository.dart';
-import 'package:on_stage_app/app/features/team/application/team_state.dart';
 import 'package:on_stage_app/app/shared/data/dio_s3_client/dio_s3_client.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,6 +22,9 @@ class AmazonS3Notifier extends _$AmazonS3Notifier {
 
   Future<Uint8List?> getPhotoFromAWS(String preSignedUrl) async {
     try {
+      if (preSignedUrl.isNullEmptyOrWhitespace) {
+        return null;
+      }
       final photoBytes = await _s3Repository.getUserPhotoFromS3(preSignedUrl);
 
       if (photoBytes.isNotEmpty) {

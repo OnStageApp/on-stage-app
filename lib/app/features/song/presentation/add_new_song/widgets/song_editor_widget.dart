@@ -12,6 +12,7 @@ import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets
 import 'package:on_stage_app/app/features/song/presentation/widgets/custom_text_widget.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class SongEditorWidget extends ConsumerStatefulWidget {
   const SongEditorWidget({
@@ -26,9 +27,25 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   List<SectionData> _sections = [];
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeSections();
+    });
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _updateSectionsFromSong();
+    _initializeSections();
+  }
+
+  @override
+  void dispose() {
+    for (final section in _sections) {
+      section.controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -64,14 +81,118 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     );
   }
 
+  void _initializeSections() {
+    final song = ref.watch(songNotifierProvider).song;
+    final rawSections = song.rawSections ?? [];
+
+    if (_sections.isEmpty || _sections.length != rawSections.length) {
+      setState(() {
+        for (final section in _sections) {
+          section.controller.dispose();
+        }
+
+        _sections = rawSections
+            .map(
+              (rawSection) => SectionData(
+                rawSection: rawSection,
+                controller:
+                    CustomTextEditingController(text: rawSection.content),
+              ),
+            )
+            .toList();
+      });
+    }
+  }
+
+  Future<void> _addNewSection() async {
+    final addedStructureItem = await ChooseStructureToAddModal.show(
+      context: context,
+      ref: ref,
+    );
+
+    if (addedStructureItem != null) {
+      setState(() {
+        _sections.add(
+          SectionData(
+            rawSection: RawSection(
+              structureItem: addedStructureItem,
+              content: '',
+            ),
+            controller: CustomTextEditingController(text: ''),
+          ),
+        );
+      });
+      _updateSong();
+      logger.i('New section added successfully. '
+          'Total sections: ${_sections.length}');
+    } else {
+      logger.d('No structure item selected, modal dismissed');
+    }
+  }
+
+  void _updateSong() {
+    logger.d('Updating song with ${_sections.length} sections');
+    final rawSections = _sections
+        .map(
+          (section) => RawSection(
+            structureItem: section.rawSection.structureItem,
+            content: section.controller.text,
+          ),
+        )
+        .toList();
+
+    final songState = ref.read(songNotifierProvider);
+    final songId = songState.song.id;
+
+    final song = SongModelV2(
+      rawSections: rawSections,
+      structure: songId == null
+          ? rawSections
+              .map((e) => e.structureItem ?? StructureItem.none)
+              .toList()
+          : songState.song.structure,
+    );
+
+    ref.read(songNotifierProvider.notifier).updateSongLocalCache(song);
+    logger.i('Song updated successfully in local cache');
+  }
+
   void _listenForTabsChange() {
     ref.listen<int>(tabIndexProvider, (previousIndex, newIndex) {
       if (previousIndex == 0 && newIndex == 1) {
-        //dismiss keyboard
+        logger.d('Dismissing keyboard and updating song');
         FocusScope.of(context).unfocus();
         _updateSong();
       }
     });
+  }
+
+  Widget _buildSongContentView(
+    BuildContext context,
+    SectionData sectionData,
+    int index,
+  ) {
+    return SongContentView(
+      color: sectionData.rawSection.structureItem!.color,
+      shortName: sectionData.rawSection.structureItem!.shortName,
+      name: sectionData.rawSection.structureItem!.name,
+      onDelete: () {
+        try {
+          logger.d('Deleting section at index $index');
+          setState(() {
+            final controller = _sections[index].controller;
+            _sections.removeAt(index);
+            controller.dispose();
+          });
+          _updateSong();
+          logger.i('Section deleted successfully. '
+              'Remaining sections: ${_sections.length}');
+        } catch (e, stackTrace) {
+          logger.e('Error deleting section', e, stackTrace);
+        }
+      },
+      controller: sectionData.controller,
+    );
   }
 
   Widget _buildEmptySections() {
@@ -98,133 +219,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
             ],
           ),
         ),
-        const SizedBox(height: 16)
+        const SizedBox(height: 16),
       ],
     );
-  }
-
-  Widget _buildSongContentView(
-    BuildContext context,
-    SectionData sectionData,
-    int index,
-  ) {
-    return SongContentView(
-      color: sectionData.rawSection.structureItem!.color,
-      shortName: sectionData.rawSection.structureItem!.shortName,
-      name: sectionData.rawSection.structureItem!.name,
-      onDelete: () {
-        setState(() {
-          final controller = _sections[index].controller;
-          _sections.removeAt(index);
-          controller.dispose(); // Dispose the controller when removing section
-        });
-        _updateSong();
-      },
-      controller: sectionData.controller,
-    );
-  }
-
-  Future<void> _addNewSection() async {
-    final addedStructureItem = await ChooseStructureToAddModal.show(
-      context: context,
-      ref: ref,
-    );
-
-    if (addedStructureItem != null) {
-      final controller = CustomTextEditingController(text: '');
-      setState(() {
-        _sections.add(
-          SectionData(
-            rawSection: RawSection(
-              structureItem: addedStructureItem,
-              content: '',
-            ),
-            controller: controller,
-          ),
-        );
-      });
-      _updateSong();
-    }
-  }
-
-  void _updateSectionsFromSong() {
-    final song = ref.watch(songNotifierProvider).song;
-    final rawSections = song.rawSections ?? [];
-
-    if (_sections.isEmpty) {
-      // Initialize sections when empty
-      setState(() {
-        _sections = rawSections
-            .map(
-              (rawSection) => SectionData(
-                rawSection: rawSection,
-                controller:
-                    CustomTextEditingController(text: rawSection.content),
-              ),
-            )
-            .toList();
-      });
-      return;
-    }
-
-    // Create a map of existing controllers
-    final existingControllers = {
-      for (var section in _sections)
-        section.rawSection.structureItem: section.controller
-    };
-
-    // Reuse existing controllers when possible
-    setState(() {
-      _sections = rawSections.map((rawSection) {
-        final existingController =
-            existingControllers[rawSection.structureItem];
-        if (existingController != null) {
-          return SectionData(
-            rawSection: rawSection,
-            controller: existingController,
-          );
-        } else {
-          return SectionData(
-            rawSection: rawSection,
-            controller: CustomTextEditingController(text: rawSection.content),
-          );
-        }
-      }).toList();
-    });
-  }
-
-  void _updateSong() {
-    final rawSections = _sections
-        .map(
-          (section) => RawSection(
-            structureItem: section.rawSection.structureItem,
-            content: section.controller.text,
-          ),
-        )
-        .toList();
-    SongModelV2 song;
-    song = _getSongChangesBasedOnIsCreatingOrEditing(rawSections);
-
-    ref.read(songNotifierProvider.notifier).updateSong(song);
-  }
-
-  SongModelV2 _getSongChangesBasedOnIsCreatingOrEditing(
-    List<RawSection> rawSections,
-  ) {
-    SongModelV2 song;
-    if (ref.watch(songNotifierProvider).song.id == null) {
-      song = SongModelV2(
-        rawSections: rawSections,
-        structure: rawSections
-            .map((e) => e.structureItem ?? StructureItem.none)
-            .toList(),
-      );
-    } else {
-      song = SongModelV2(
-        rawSections: rawSections,
-        structure: ref.watch(songNotifierProvider).song.structure,
-      );
-    }
-    return song;
   }
 }

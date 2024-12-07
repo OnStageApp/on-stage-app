@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class PreferencesTempo extends StatelessWidget {
+class PreferencesTempo extends ConsumerWidget {
   const PreferencesTempo({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +28,10 @@ class PreferencesTempo extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text('120 bpm', style: context.textTheme.titleMedium),
+            child: Text(
+              '${ref.watch(songNotifierProvider).song.tempo} BPM',
+              style: context.textTheme.titleMedium,
+            ),
           ),
         ],
       ),
