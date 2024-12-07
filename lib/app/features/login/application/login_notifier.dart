@@ -273,6 +273,7 @@ class LoginNotifier extends _$LoginNotifier {
     );
 
     await ref.read(deviceServiceProvider).logInDeviceAndSaveDeviceInfo();
+
     state = state.copyWith(isLoading: false);
   }
 }

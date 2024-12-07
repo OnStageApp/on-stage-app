@@ -16,7 +16,7 @@ class ParticipantsList extends ConsumerWidget {
     final addedTeamMembers = ref.watch(eventControllerProvider).addedMembers;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
@@ -28,6 +28,7 @@ class ParticipantsList extends ConsumerWidget {
         itemBuilder: (context, index) {
           final member = addedTeamMembers[index];
           return ParticipantListingItem(
+            userId: member.userId,
             key: ValueKey(member.id),
             name: member.name ?? '',
             photo: member.profilePicture ?? Uint8List(0),

@@ -19,7 +19,7 @@ class EditProfileButton extends StatelessWidget {
           backgroundColor: context.colorScheme.onSurfaceVariant,
         ),
         onPressed: () {
-          context.pushNamed(AppRoute.editProfile.name);
+          context.pushNamed(AppRoute.editUserProfile.name);
         },
         child: Text(
           'Edit Profile',

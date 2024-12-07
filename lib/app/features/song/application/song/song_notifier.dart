@@ -110,7 +110,7 @@ class SongNotifier extends _$SongNotifier {
         );
   }
 
-  void updateSong(SongModelV2 newSong) {
+  void updateSongLocalCache(SongModelV2 newSong) {
     final updatedStructure = _filterStructureByAvailableSections(newSong);
 
     final updatedSong = state.song.copyWith(
@@ -120,6 +120,8 @@ class SongNotifier extends _$SongNotifier {
       tempo: newSong.tempo ?? state.song.tempo,
       artist: newSong.artist ?? state.song.artist,
       rawSections: newSong.rawSections ?? state.song.rawSections,
+      genre: newSong.genre ?? state.song.genre,
+      theme: newSong.theme ?? state.song.theme,
       structure: updatedStructure,
     );
 

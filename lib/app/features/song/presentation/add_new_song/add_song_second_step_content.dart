@@ -8,6 +8,9 @@ import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
+import 'package:on_stage_app/logger.dart';
+
+final tabIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
@@ -28,11 +31,23 @@ class AddSongSecondStepContentState
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging && mounted) {
-        ref.read(tabIndexProvider.notifier).state = _tabController.index;
-      }
-    });
+    _setupTabController();
+  }
+
+  void _setupTabController() {
+    try {
+      _tabController.addListener(() {
+        logger.d('Tab controller listener');
+        if (!_tabController.indexIsChanging && mounted) {
+          logger.d('Tab changed to: ${_tabController.index}');
+          ref
+              .read(tabIndexProvider.notifier)
+              .update((_) => _tabController.index);
+        }
+      });
+    } catch (e, stackTrace) {
+      logger.e('Error setting up tab controller', e, stackTrace);
+    }
   }
 
   @override
@@ -128,5 +143,3 @@ class AddSongSecondStepContentState
     }
   }
 }
-
-final tabIndexProvider = StateProvider<int>((ref) => 0);

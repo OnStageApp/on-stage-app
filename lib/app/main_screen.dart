@@ -88,6 +88,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref
           .read(planServiceProvider.notifier)
           .fetchAndSavePlans(forceRefresh: true),
+      ref.read(notificationNotifierProvider.notifier).getNotifications(),
     ]).then((_) {
       logger.i('All providers initialized');
     }).catchError((error, s) {
@@ -119,20 +120,32 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               onTap: _onChangedScreen,
               items: [
                 BottomNavigationBarItem(
-                  activeIcon: SvgPicture.asset(
-                    'assets/icons/nav_home_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurface,
-                      BlendMode.srcIn,
+                  activeIcon: Badge(
+                    isLabelVisible: ref
+                        .watch(notificationNotifierProvider)
+                        .hasNewNotifications,
+                    backgroundColor: Colors.red,
+                    child: SvgPicture.asset(
+                      'assets/icons/nav_home_icon.svg',
+                      height: 21,
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.onSurface,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/nav_home_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.outline,
-                      BlendMode.srcIn,
+                  icon: Badge(
+                    isLabelVisible: ref
+                        .watch(notificationNotifierProvider)
+                        .hasNewNotifications,
+                    backgroundColor: Colors.red,
+                    child: SvgPicture.asset(
+                      'assets/icons/nav_home_icon.svg',
+                      height: 21,
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.outline,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                   label: 'Home',

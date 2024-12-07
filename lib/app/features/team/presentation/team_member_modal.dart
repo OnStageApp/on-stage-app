@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/features/team_member/application/team_members_n
 import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -125,7 +126,16 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
             teamMember.profilePicture,
             teamMember.name ?? 'Name',
             'Pian',
-            () {},
+            () {
+              context
+                ..popDialog()
+                ..pushNamed(
+                  AppRoute.userProfileInfo.name,
+                  queryParameters: {
+                    'userId': teamMember.userId,
+                  },
+                );
+            },
           ),
           const SizedBox(height: 12),
           _buildContent(

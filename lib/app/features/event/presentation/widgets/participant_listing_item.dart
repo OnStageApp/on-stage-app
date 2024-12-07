@@ -3,12 +3,14 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ParticipantListingItem extends StatelessWidget {
   const ParticipantListingItem({
     required this.name,
+    required this.userId,
     required this.photo,
     required this.onDelete,
     this.status,
@@ -18,6 +20,7 @@ class ParticipantListingItem extends StatelessWidget {
   });
 
   final String name;
+  final String userId;
   final Uint8List? photo;
   final StagerStatusEnum? status;
   final Widget? trailing;
@@ -43,29 +46,39 @@ class ParticipantListingItem extends StatelessWidget {
           ),
         ],
       ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 8,
-        ),
-        child: Row(
-          children: [
-            ImageWithPlaceholder(
-              photo: photo,
-              name: name,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              name,
-              style: context.textTheme.titleMedium,
-            ),
-            const Spacer(),
-            if (trailing != null) trailing!,
-            if (trailing == null &&
-                status != null &&
-                status != StagerStatusEnum.UNINVINTED)
-              _statusIcon(context, status),
-          ],
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          dense: true,
+          minVerticalPadding: 0,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          leading: ImageWithPlaceholder(
+            photo: photo,
+            name: name,
+          ),
+          title: Text(
+            name,
+            style: context.textTheme.titleMedium,
+          ),
+          trailing: trailing ??
+              (status != null && status != StagerStatusEnum.UNINVINTED
+                  ? _statusIcon(context, status)
+                  : null),
+          splashColor: context.colorScheme.outline.withOpacity(0.1),
+          onTap: userId.isEmpty
+              ? null
+              : () {
+                  context.pushNamed(
+                    AppRoute.userProfileInfo.name,
+                    queryParameters: {
+                      'userId': userId,
+                    },
+                  );
+                },
         ),
       ),
     );

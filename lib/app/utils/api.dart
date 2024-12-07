@@ -74,6 +74,7 @@ class API {
   static const String users = 'users';
   static const String currentUser = 'users/current';
   static const String user = 'users/{id}';
+  static const String userProfileInfo = 'users/{id}/profile-info';
   static const String userPhoto = 'users/photo/currentUser';
   static const String checkPermission = 'users/check-permission';
 

@@ -321,7 +321,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
     final stagers = ref.watch(eventNotifierProvider).stagers;
     final currentUserId = ref.watch(userNotifierProvider).currentUser?.id;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
@@ -331,6 +331,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         children: [
           ...stagers.map(
             (stager) => ParticipantListingItem(
+              userId: stager.userId ?? '',
               canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
                   stager.userId != currentUserId,
               name: stager.name ?? '',

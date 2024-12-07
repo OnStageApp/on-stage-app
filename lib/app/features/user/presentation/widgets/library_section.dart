@@ -53,7 +53,7 @@ class LibrarySection extends ConsumerWidget {
             color: context.colorScheme.primary,
             height: 54,
             onTap: () {
-              context.pushNamed(AppRoute.addEditSong.name);
+              context.goNamed(AppRoute.editSongInfos.name);
             },
           ),
       ],
