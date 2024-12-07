@@ -9,6 +9,7 @@ part 'user_request.g.dart';
 class UserRequest with _$UserRequest {
   const factory UserRequest({
     String? name,
+    String? username,
     String? revenueCatId,
     Position? position,
   }) = _UserRequest;

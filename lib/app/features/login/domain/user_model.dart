@@ -13,6 +13,7 @@ class UserModel with _$UserModel {
     required String id,
     required Position? position,
     String? email,
+    String? username,
     String? photoUrl,
     String? name,
     @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)

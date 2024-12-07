@@ -55,7 +55,7 @@ class UserProfileInfoScreenState extends ConsumerState<UserProfileInfoScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
       appBar: const StageAppBar(
-        title: 'Edit Profile',
+        title: 'User Profile',
         isBackButtonVisible: true,
       ),
       body: SafeArea(
@@ -88,8 +88,8 @@ class UserProfileInfoScreenState extends ConsumerState<UserProfileInfoScreen> {
                     const SizedBox(height: 12),
                     CustomTextField(
                       enabled: false,
-                      label: 'Position',
-                      hint: user?.position?.title ?? '',
+                      label: 'Username',
+                      hint: user?.username ?? '',
                       icon: Icons.church,
                       controller: _nameController,
                     ),
@@ -98,6 +98,14 @@ class UserProfileInfoScreenState extends ConsumerState<UserProfileInfoScreen> {
                       enabled: false,
                       label: 'Email',
                       hint: user?.email ?? '',
+                      icon: Icons.church,
+                      controller: _nameController,
+                    ),
+                    const SizedBox(height: 12),
+                    CustomTextField(
+                      enabled: false,
+                      label: 'Position',
+                      hint: user?.position?.title ?? '',
                       icon: Icons.church,
                       controller: _nameController,
                     ),

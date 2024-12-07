@@ -59,6 +59,7 @@ class UserNotifier extends _$UserNotifier {
       final editedUser = await usersRepository.editUser(userRequest);
       final finalUser = state.currentUser!.copyWith(
         name: editedUser.name,
+        username: editedUser.username,
       );
       state = state.copyWith(currentUser: finalUser, isLoading: false);
     } catch (e) {

@@ -13,6 +13,7 @@ enum NotificationType {
   ROLE_CHANGED,
   TEAM_MEMBER_ADDED,
   STAGER_REMOVED,
+  REMINDER,
 }
 
 extension NotificationTypeX on NotificationType {
@@ -30,7 +31,6 @@ extension NotificationTypeX on NotificationType {
         return 'EVENT_INVITATION_ACCEPTED';
       case NotificationType.EVENT_INVITATION_DECLINED:
         return 'EVENT_INVITATION_DECLINED';
-
       case NotificationType.NEW_REHEARSAL:
         return 'NEW_REHEARSAL';
       case NotificationType.LEAD_VOICE_ASSIGNED:
@@ -47,6 +47,8 @@ extension NotificationTypeX on NotificationType {
         return 'TEAM_MEMBER_ADDED';
       case NotificationType.STAGER_REMOVED:
         return 'STAGER_REMOVED';
+      case NotificationType.REMINDER:
+        return 'REMINDER';
     }
   }
 
@@ -80,6 +82,8 @@ extension NotificationTypeX on NotificationType {
         return 'Team Member Added';
       case NotificationType.STAGER_REMOVED:
         return 'Member Removed';
+      case NotificationType.REMINDER:
+        return 'Reminder';
     }
   }
 }

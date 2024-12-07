@@ -12,6 +12,7 @@ class UserProfileInfo with _$UserProfileInfo {
   const factory UserProfileInfo({
     String? name,
     String? email,
+    String? username,
     required Position? position,
     String? photoUrl,
     @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)

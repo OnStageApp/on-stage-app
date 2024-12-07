@@ -141,19 +141,27 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                       ),
                       onTap: () async {
                         if (_isItemChecked(index)) return;
-                        await ref
-                            .read(teamsNotifierProvider.notifier)
-                            .setCurrentTeam(
-                              _teams.elementAt(index).id,
-                            );
 
-                        await ref
-                            .read(teamNotifierProvider.notifier)
-                            .getCurrentTeam();
-                        ref.read(eventsNotifierProvider.notifier).resetState();
-                        ref
-                            .read(navigationNotifierProvider.notifier)
-                            .resetRouterAndState();
+                        final teamsNotifier =
+                            ref.read(teamsNotifierProvider.notifier);
+                        final teamNotifier =
+                            ref.read(teamNotifierProvider.notifier);
+                        final eventsNotifier =
+                            ref.read(eventsNotifierProvider.notifier);
+                        final navigationNotifier =
+                            ref.read(navigationNotifierProvider.notifier);
+
+                        await teamsNotifier
+                            .setCurrentTeam(_teams.elementAt(index).id);
+
+                        if (!mounted) return;
+
+                        await teamNotifier.getCurrentTeam();
+
+                        if (!mounted) return;
+
+                        eventsNotifier.resetState();
+                        navigationNotifier.resetRouterAndState();
                       },
                     ),
                   );

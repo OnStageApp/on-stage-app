@@ -38,7 +38,7 @@ class PermissionService {
     if (!isLeaderOnTeam && !hasPaidPlan && currentPlan?.maxMembers == null) {
       return false;
     }
-    return currentPlan!.maxMembers > membersCount;
+    return (currentPlan?.maxMembers ?? 1) > membersCount;
   }
 
   bool get canAddEvents => true;

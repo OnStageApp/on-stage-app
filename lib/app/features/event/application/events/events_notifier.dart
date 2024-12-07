@@ -18,8 +18,13 @@ part 'events_notifier.g.dart';
 @Riverpod()
 class EventsNotifier extends _$EventsNotifier {
   final TimeUtils timeUtils = TimeUtils();
-  late final EventsRepository _eventsRepository;
+  EventsRepository? _eventsRepository;
   static const int _pageSize = 15;
+
+  EventsRepository get eventsRepository {
+    _eventsRepository ??= EventsRepository(ref.watch(dioProvider));
+    return _eventsRepository!;
+  }
 
   @override
   EventsState build() {
@@ -48,7 +53,7 @@ class EventsNotifier extends _$EventsNotifier {
 
   Future<void> getUpcomingEvent() async {
     try {
-      final event = await _eventsRepository.getUpcomingEvent();
+      final event = await eventsRepository.getUpcomingEvent();
 
       if (event == null) {
         final eventsState = EventsState(
@@ -82,7 +87,7 @@ class EventsNotifier extends _$EventsNotifier {
       return;
     }
     try {
-      final eventsResponse = await _eventsRepository.getEvents(
+      final eventsResponse = await eventsRepository.getEvents(
         eventsFilter: EventsFilter(
           searchValue: search,
           limit: _pageSize,
@@ -162,7 +167,7 @@ class EventsNotifier extends _$EventsNotifier {
     EventSearchType eventType, {
     int offset = 0,
   }) async {
-    final eventResponse = await _eventsRepository.getEvents(
+    final eventResponse = await eventsRepository.getEvents(
       eventsFilter: EventsFilter(
         limit: _pageSize,
         offset: offset,

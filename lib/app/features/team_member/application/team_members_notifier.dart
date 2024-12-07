@@ -104,6 +104,12 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
           await teamMemberRepository.inviteTeamMember(createTeamMemberRequest);
 
       if (teamMember != null) {
+        if (state.teamMembers.any((member) => member.id == teamMember.id)) {
+          logger.i('Team member with ID ${teamMember.id} '
+              'already exists, resending invitation');
+          return null;
+        }
+
         final teamMemberWithPhoto =
             await _getMemberWithPhotoFromLocalStorage(teamMember);
 
@@ -117,8 +123,7 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
         return null;
       } else {
         logger.i('Failed to invite team member. API returned null.');
-        return 'User with this email not found. '
-            'We have sent an email to the user to download the app.';
+        return 'User with this email or username not found. ';
       }
     } on DioException catch (e) {
       logger.i('Error inviting team member: $e');
@@ -127,7 +132,12 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
         final errorData = e.response!.data as Map<String, dynamic>;
         final errorModel = ApiErrorResponse.fromJson(errorData);
         if (errorModel.errorName == ErrorType.RESOURCE_NOT_FOUND) {
-          return errorModel.errorName?.getDescription('User with this Email');
+          return errorModel.errorName
+              ?.getDescription('User with email or username');
+        } else if (errorModel.errorName ==
+            ErrorType.TEAM_MEMBER_ALREADY_EXISTS) {
+          return errorModel.errorName
+              ?.getDescription('User with email or username');
         }
       }
 

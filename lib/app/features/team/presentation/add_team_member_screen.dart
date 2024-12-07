@@ -25,7 +25,8 @@ class AddTeamMemberScreen extends ConsumerStatefulWidget {
 
 class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
   final FocusNode _emailFocus = FocusNode();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailUsernameController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var _selectedRole = TeamMemberRole.none;
 
@@ -39,7 +40,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
   @override
   void dispose() {
     _emailFocus.dispose();
-    _emailController.dispose();
+    _emailUsernameController.dispose();
     super.dispose();
   }
 
@@ -60,12 +61,12 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
-                      label: 'Email',
-                      hint: 'ionutpopescu@gmail.com',
+                      label: 'Email or Username',
+                      hint: 'ionutpopescu32',
                       icon: Icons.add,
                       focusNode: _emailFocus,
-                      controller: _emailController,
-                      validator: InputValidator.validateEmail,
+                      controller: _emailUsernameController,
+                      validator: InputValidator.validateEmptyValue,
                     ),
                     const SizedBox(height: 16),
                     Container(
@@ -104,7 +105,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                           final errorMessage = await ref
                               .read(teamMembersNotifierProvider.notifier)
                               .inviteTeamMember(
-                                _emailController.text,
+                                _emailUsernameController.text,
                                 _selectedRole,
                               );
                           if (errorMessage.isNullEmptyOrWhitespace && mounted) {
@@ -112,8 +113,6 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                             return;
                           }
                           if (mounted) {
-                            context.pop();
-
                             TopFlushBar.show(
                               context,
                               errorMessage ?? 'Error inviting team member',

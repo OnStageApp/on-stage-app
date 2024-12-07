@@ -23,6 +23,16 @@ class Plan with _$Plan {
   }) = _Plan;
 
   factory Plan.fromJson(Map<String, dynamic> json) => _$PlanFromJson(json);
+
+  factory Plan.starter() => const Plan(
+        id: 'starter',
+        name: 'Starter',
+        entitlementId: 'starter',
+        appleProductId: 'starter',
+        googleProductId: 'starter',
+        maxEvents: 1,
+        maxMembers: 1,
+      );
 }
 
 extension PlanFeatures on Plan {

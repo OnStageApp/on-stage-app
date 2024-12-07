@@ -69,10 +69,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     logger.i('Init providers');
     await ref.read(databaseProvider).initDatabase();
     ref.read(socketIoServiceProvider.notifier);
-    unawaited(
-      ref.read(notificationNotifierProvider.notifier).getNotifications(),
-    );
-
     ref.read(firebaseNotifierProvider.notifier);
 
     await Future.wait([
@@ -88,8 +84,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ref
           .read(planServiceProvider.notifier)
           .fetchAndSavePlans(forceRefresh: true),
-      ref.read(notificationNotifierProvider.notifier).getNotifications(),
     ]).then((_) {
+      ref.read(notificationNotifierProvider.notifier).getNotifications();
+
       logger.i('All providers initialized');
     }).catchError((error, s) {
       logger.e('Error during provider initialization: $error $s');

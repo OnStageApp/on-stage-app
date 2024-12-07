@@ -12,7 +12,13 @@ part 'songs_notifier.g.dart';
 
 @Riverpod()
 class SongsNotifier extends _$SongsNotifier {
-  late final SongRepository _songRepository;
+  SongRepository? _songRepository;
+
+  SongRepository get songRepository {
+    _songRepository ??= SongRepository(ref.watch(dioProvider));
+    return _songRepository!;
+  }
+
   static const String _userId = '9zNhTEXqVXdbXZoUczUtWK3OJq63';
 
   @override
@@ -52,7 +58,7 @@ class SongsNotifier extends _$SongsNotifier {
     state = state.copyWith(isLoading: true, error: null);
     try {
       _updateSongFavoriteStatus(id, true);
-      await _songRepository.saveFavoriteSong(
+      await songRepository.saveFavoriteSong(
         songId: id,
         userId: _userId,
       );
@@ -69,7 +75,7 @@ class SongsNotifier extends _$SongsNotifier {
     state = state.copyWith(isLoading: true, error: null);
     try {
       _updateSongFavoriteStatus(id, false);
-      await _songRepository.removeSavedSong(
+      await songRepository.removeSavedSong(
         songId: id,
         userId: _userId,
       );
@@ -89,7 +95,7 @@ class SongsNotifier extends _$SongsNotifier {
       error: null,
     );
     try {
-      final savedSongs = await _songRepository.getSavedSongs(userId: _userId);
+      final savedSongs = await songRepository.getSavedSongs(userId: _userId);
       _updateSavedSongs(savedSongs);
     } catch (error) {
       final appError =
@@ -102,7 +108,7 @@ class SongsNotifier extends _$SongsNotifier {
 
   Future<void> _fetchSongs(SongFilter? songFilter) async {
     try {
-      final songs = await _songRepository.getSongs(
+      final songs = await songRepository.getSongs(
         songFilter: songFilter ?? const SongFilter(),
       );
       _updateSongs(songs);
@@ -113,8 +119,7 @@ class SongsNotifier extends _$SongsNotifier {
 
   Future<void> _fetchFavoriteSongs() async {
     try {
-      final favoriteSongs =
-          await _songRepository.getSavedSongs(userId: _userId);
+      final favoriteSongs = await songRepository.getSavedSongs(userId: _userId);
       _updateSavedSongs(favoriteSongs);
     } catch (e) {
       rethrow; // Let the parent method handle this error

@@ -24,6 +24,13 @@ class NotificationTileFactory extends ConsumerWidget {
     final notificationActions = ref.read(notificationActionsProvider);
 
     switch (notification.type) {
+      case NotificationType.REMINDER:
+        return PhotoMessageNotificationTile(
+          status: notification.status ?? NotificationStatus.VIEWED,
+          description: notification.description,
+          icon: LucideIcons.bell,
+          onTap: () {},
+        );
       case NotificationType.TEAM_INVITATION_REQUEST:
         return ActionNotificationTile(
           notification: notification,

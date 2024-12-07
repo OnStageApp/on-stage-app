@@ -12,11 +12,12 @@ final currentPlanProvider = Provider<Plan>((ref) {
   );
 
   if (plans.isEmpty) {
-    throw StateError('No plans available');
+    return Plan.starter();
   }
 
   final starterPlan = plans.firstWhere(
     (plan) => plan.entitlementId == 'starter',
+    orElse: Plan.starter,
   );
 
   if (currentPlanId == null) return starterPlan;

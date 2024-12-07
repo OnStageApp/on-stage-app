@@ -22,10 +22,12 @@ class EditUserProfile extends ConsumerStatefulWidget {
 
 class EditUserProfileState extends ConsumerState<EditUserProfile> {
   bool _isUploading = false;
-  bool _isNameChanged = false;
+  bool _hasChanges = false;
   String? _initialName;
+  String? _initialUsername;
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
@@ -35,42 +37,54 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
       if (user != null) {
         setState(() {
           _initialName = user.name ?? '';
+          _initialUsername = user.username ?? '';
           _nameController.text = _initialName!;
+          _usernameController.text = _initialUsername ?? '';
         });
       }
     });
-    _nameController.addListener(_onNameChanged);
+    _nameController.addListener(_checkForChanges);
+    _usernameController.addListener(_checkForChanges);
   }
 
   @override
   void dispose() {
     _nameController
-      ..removeListener(_onNameChanged)
+      ..removeListener(_checkForChanges)
+      ..dispose();
+    _usernameController
+      ..removeListener(_checkForChanges)
       ..dispose();
     super.dispose();
   }
 
-  void _onNameChanged() {
-    setState(() {
-      _isNameChanged =
-          _nameController.text != _initialName && _initialName != null;
-    });
+  void _checkForChanges() {
+    final nameChanged = _nameController.text != _initialName;
+    final usernameChanged = _usernameController.text != _initialUsername;
+
+    if (_hasChanges != (nameChanged || usernameChanged)) {
+      setState(() {
+        _hasChanges = nameChanged || usernameChanged;
+      });
+    }
   }
 
   Future<void> _editProfile() async {
     final updatedUserRequest = UserRequest(
       name: _nameController.text,
+      username: _usernameController.text,
     );
-    if (updatedUserRequest.name != _initialName) {
-      await ref.read(userNotifierProvider.notifier).editUserById(
-            updatedUserRequest,
-          );
 
-      setState(() {
-        _initialName = updatedUserRequest.name;
-        _isNameChanged = false;
-      });
-    }
+    FocusScope.of(context).unfocus();
+    await ref.read(userNotifierProvider.notifier).editUserById(
+          updatedUserRequest,
+        );
+
+    setState(() {
+      _initialName = updatedUserRequest.name;
+      _initialUsername = updatedUserRequest.username;
+      _hasChanges = false;
+    });
   }
 
   @override
@@ -83,8 +97,8 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
         padding: defaultScreenHorizontalPadding,
         child: ContinueButton(
           text: 'Edit Profile',
-          onPressed: _isNameChanged ? _editProfile : () {},
-          isEnabled: _isNameChanged,
+          onPressed: _hasChanges ? _editProfile : () {},
+          isEnabled: _hasChanges,
           hasShadow: false,
         ),
       ),
@@ -167,6 +181,20 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                     const PositionTile(),
                     const SizedBox(height: 12),
                     CustomTextField(
+                      enabled: true,
+                      label: 'Username',
+                      hint: 'Enter your username',
+                      icon: Icons.church,
+                      controller: _usernameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an username';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    CustomTextField(
                       enabled: false,
                       label: 'Email',
                       hint: '${userState.currentUser?.email}',
@@ -178,7 +206,6 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                         }
                         return null;
                       },
-                      onChanged: (value) {},
                     ),
                     const SizedBox(
                       height: 100,
