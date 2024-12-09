@@ -135,7 +135,7 @@ class SongDetailsWithPagesScreenState
             ? const SizedBox()
             : SongDetailWidget(
                 widgetPadding: 64,
-                onTapChord: () {},
+                onTapChord: (chord) {},
               ),
       ),
     );

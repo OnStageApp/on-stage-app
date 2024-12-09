@@ -27,7 +27,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.showContentByStructure = true,
   });
 
-  final Function onTapChord;
+  final void Function(String chord) onTapChord;
 
   final int widgetPadding;
 
