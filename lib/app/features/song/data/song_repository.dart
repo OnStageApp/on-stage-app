@@ -23,9 +23,7 @@ abstract class SongRepository {
   });
 
   @GET(API.savedSongs)
-  Future<List<SongOverview>> getSavedSongs({
-    @Path('userId') required String userId,
-  });
+  Future<List<SongOverview>> getSavedSongs();
 
   @POST(API.savedSongsWithUserId)
   Future<String> saveFavoriteSong({
