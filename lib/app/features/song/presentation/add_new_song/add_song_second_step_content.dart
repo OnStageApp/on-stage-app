@@ -81,7 +81,7 @@ class AddSongSecondStepContentState
             margin: const EdgeInsets.only(bottom: 80),
             child: SongDetailWidget(
               widgetPadding: 64,
-              onTapChord: () {},
+              onTapChord: (chord) {},
               showContentByStructure: false,
             ),
           ),

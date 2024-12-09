@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event_items/application/controller/event_item_songs_controller.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -23,12 +24,12 @@ class AddSongsModal extends ConsumerStatefulWidget {
     required VoidCallback onSongsAdded,
   }) {
     showModalBottomSheet<Widget>(
-      enableDrag: false,
+      enableDrag: true,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-        minHeight: MediaQuery.of(context).size.height * 0.7,
+        maxHeight: MediaQuery.of(context).size.height * 0.95,
+        minHeight: MediaQuery.of(context).size.height * 0.95,
         maxWidth: MediaQuery.of(context).size.width,
       ),
       context: context,
@@ -71,6 +72,9 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(songsNotifierProvider.notifier).getSongs();
+    });
     super.initState();
   }
 
@@ -86,7 +90,16 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
             focusNode: FocusNode(),
             controller: _searchController,
             onClosed: _clearSearch,
-            onChanged: (value) {},
+            onChanged: (value) {
+              final searchState = ref.watch(searchNotifierProvider);
+              final songFilter = searchState.toSongFilter();
+              ref.read(searchNotifierProvider.notifier).setText(value);
+              ref.read(songsNotifierProvider.notifier).getSongs(
+                    songFilter: songFilter.copyWith(
+                      search: value,
+                    ),
+                  );
+            },
           ),
           const SizedBox(height: 12),
           ListView.builder(

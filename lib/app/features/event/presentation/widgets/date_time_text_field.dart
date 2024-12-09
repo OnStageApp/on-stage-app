@@ -108,6 +108,9 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       if (!widget.enabled) return;
                       final renderBox = _datePickerKey.currentContext
                           ?.findRenderObject() as RenderBox?;
+                      setState(() {
+                        _selectedDate ??= _now;
+                      });
                       if (renderBox != null) {
                         showCupertinoCalendarPicker(
                           context,
@@ -180,6 +183,15 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
                       final renderBox = _timePickerKey.currentContext
                           ?.findRenderObject() as RenderBox?;
                       if (renderBox != null) {
+                        setState(() {
+                          _selectedTime ??= TimeOfDay.fromDateTime(
+                            TimeUtils().approximateToNearestInterval(
+                              DateTime.now(),
+                              UtilConstants.minuteInterval,
+                            ),
+                          );
+                        });
+
                         showCupertinoTimePicker(
                           context,
                           widgetRenderBox: renderBox,

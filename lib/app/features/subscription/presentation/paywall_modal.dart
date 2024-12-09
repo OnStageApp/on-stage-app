@@ -100,19 +100,20 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           ),
           const SizedBox(height: 32),
           SizedBox(
-            height: 300,
+            height: 350,
             child: Image.asset(
               'assets/images/onboarding_first_step.png',
               fit: BoxFit.contain,
             ),
           ),
+          const Spacer(),
           TitleWidget(
             title: widget.permissionType.title,
             subtitle: '${widget.permissionType.paywallDescription}\n '
                 'Get ${upgradePlan?.name ?? 'N/A'} to unlock this feature.',
             subtitleFontSize: 18,
           ),
-          const Spacer(),
+          const SizedBox(height: 48),
           if (isLoading)
             const CircularProgressIndicator()
           else if (errorMessage != null)
@@ -129,8 +130,10 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ContinueButton(
-                text: 'Get ${upgradePlan!.name}',
+                text:
+                    'Go ${upgradePlan!.entitlementId.toUpperCase()} - 1 Month Free',
                 isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
+                borderColor: context.colorScheme.primary,
                 backgroundColor: context.isDarkMode
                     ? context.colorScheme.secondary
                     : context.colorScheme.onSecondary,
@@ -164,7 +167,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '1-month free, auto-renews for ',
+                    text: 'Auto-renews for ',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: context.colorScheme.outline,
                       fontSize: 12,

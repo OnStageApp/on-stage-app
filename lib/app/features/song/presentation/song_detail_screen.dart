@@ -68,7 +68,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
             ? const SizedBox()
             : SongDetailWidget(
                 widgetPadding: 64,
-                onTapChord: () {},
+                onTapChord: (chord) {},
               ),
       ),
     );
