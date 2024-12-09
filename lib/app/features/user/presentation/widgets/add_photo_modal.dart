@@ -5,19 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/add_item_button_widget.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:permission_handler/permission_handler.dart';
 
-class AddPhotoModal extends StatelessWidget {
+class AddPhotoModal extends ConsumerWidget {
   const AddPhotoModal({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: defaultScreenPadding,
       child: Column(
@@ -52,6 +55,17 @@ class AddPhotoModal extends StatelessWidget {
   }
 
   Future<void> _selectAndCropImage(BuildContext context) async {
+    final status = await Permission.photos.status;
+
+    if (!status.isGranted) {
+      await requestPermission(
+        permission: Permission.photos,
+        context: context,
+        onSettingsOpen: () => openSettings(context),
+      );
+    }
+
+    if (await Permission.photos.isGranted) {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
@@ -91,8 +105,11 @@ class AddPhotoModal extends StatelessWidget {
           Navigator.of(context).pop(compressedFile);
         }
       }
+    } } else {
+      debugPrint('Permission not granted. Cannot open photo picker.');
     }
   }
+
 
   static Future<File?> show({required BuildContext context}) async {
     return showModalBottomSheet<File>(
