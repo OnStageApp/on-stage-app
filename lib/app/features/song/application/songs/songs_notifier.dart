@@ -95,7 +95,7 @@ class SongsNotifier extends _$SongsNotifier {
       error: null,
     );
     try {
-      final savedSongs = await songRepository.getSavedSongs(userId: _userId);
+      final savedSongs = await songRepository.getSavedSongs();
       _updateSavedSongs(savedSongs);
     } catch (error) {
       final appError =
@@ -119,7 +119,7 @@ class SongsNotifier extends _$SongsNotifier {
 
   Future<void> _fetchFavoriteSongs() async {
     try {
-      final favoriteSongs = await songRepository.getSavedSongs(userId: _userId);
+      final favoriteSongs = await songRepository.getSavedSongs();
       _updateSavedSongs(favoriteSongs);
     } catch (e) {
       rethrow; // Let the parent method handle this error
