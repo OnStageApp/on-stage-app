@@ -54,11 +54,6 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
-  Future<bool> checkNotificationPermissions() async {
-    final status = await Permission.notification.status;
-    return status.isGranted;
-  }
-
   Future<bool> requestNotificationPermission(BuildContext context) async {
     final status = await Permission.notification.status;
 

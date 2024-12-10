@@ -12,6 +12,7 @@ import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:permission_handler/permission_handler.dart';
@@ -55,9 +56,9 @@ class AddPhotoModal extends ConsumerWidget {
   }
 
   Future<void> _selectAndCropImage(BuildContext context) async {
-    final status = await Permission.photos.status;
+    final permissionStatus = await Permission.photos.status;
 
-    if (!status.isGranted) {
+    if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
       await requestPermission(
         permission: Permission.photos,
         context: context,
@@ -65,50 +66,53 @@ class AddPhotoModal extends ConsumerWidget {
       );
     }
 
-    if (await Permission.photos.isGranted) {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (permissionStatus.isGranted || permissionStatus.isLimited) {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedImage != null && context.mounted) {
-      final croppedFile = await ImageCropper().cropImage(
-        sourcePath: pickedImage.path,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Edit Photo',
-            cropStyle: CropStyle.circle,
-            toolbarColor: context.colorScheme.surface,
-            toolbarWidgetColor: context.colorScheme.onSurface,
-            activeControlsWidgetColor: context.colorScheme.primary,
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true,
-            hideBottomControls: false,
-            statusBarColor: context.colorScheme.surface,
-          ),
-          IOSUiSettings(
-            title: 'Crop Photo',
-            cropStyle: CropStyle.circle,
-            cancelButtonTitle: 'Cancel',
-            doneButtonTitle: 'Done',
-            aspectRatioLockEnabled: true,
-            resetAspectRatioEnabled: false,
-            aspectRatioPickerButtonHidden: true,
-            rotateButtonsHidden: true,
-            rotateClockwiseButtonHidden: true,
-          ),
-        ],
-      );
+      if (pickedImage != null && context.mounted) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedImage.path,
+          aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Edit Photo',
+              cropStyle: CropStyle.circle,
+              toolbarColor: context.colorScheme.surface,
+              toolbarWidgetColor: context.colorScheme.onSurface,
+              activeControlsWidgetColor: context.colorScheme.primary,
+              initAspectRatio: CropAspectRatioPreset.square,
+              lockAspectRatio: true,
+              hideBottomControls: false,
+              statusBarColor: context.colorScheme.surface,
+            ),
+            IOSUiSettings(
+              title: 'Crop Photo',
+              cropStyle: CropStyle.circle,
+              cancelButtonTitle: 'Cancel',
+              doneButtonTitle: 'Done',
+              aspectRatioLockEnabled: true,
+              resetAspectRatioEnabled: false,
+              aspectRatioPickerButtonHidden: true,
+              rotateButtonsHidden: true,
+              rotateClockwiseButtonHidden: true,
+            ),
+          ],
+        );
 
-      if (croppedFile != null && context.mounted) {
-        final compressedFile = await _compressImage(File(croppedFile.path));
-        if (compressedFile != null && context.mounted) {
-          Navigator.of(context).pop(compressedFile);
+        if (croppedFile != null && context.mounted) {
+          final compressedFile = await _compressImage(File(croppedFile.path));
+          if (compressedFile != null && context.mounted) {
+            Navigator.of(context).pop(compressedFile);
+          }
         }
       }
-    } } else {
-      debugPrint('Permission not granted. Cannot open photo picker.');
+    } else {
+      logger.i('Permission not granted. Cannot open photo picker.');
     }
   }
+
+
 
 
   static Future<File?> show({required BuildContext context}) async {
