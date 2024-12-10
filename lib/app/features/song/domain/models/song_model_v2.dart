@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
@@ -18,7 +17,6 @@ class SongModelV2 with _$SongModelV2 {
     List<StructureItem>? structure,
     int? tempo,
     ThemeEnum? theme,
-    GenreEnum? genre,
     SongKey? originalKey,
     SongKey? key,
     String? createdAt,

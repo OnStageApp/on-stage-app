@@ -131,49 +131,53 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
                   ),
                   child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              ref
-                                      .read(songsNotifierProvider)
-                                      .songs
-                                      .elementAt(index)
-                                      .title ??
-                                  '',
-                              style: context.textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Text(
-                                  ref
-                                          .read(songsNotifierProvider)
-                                          .songs
-                                          .elementAt(index)
-                                          .artist
-                                          ?.name ??
-                                      '',
-                                  style: context.textTheme.titleSmall,
-                                ),
-                                const SizedBox(width: 8),
-                                SongKeyLabelWidget(
-                                  songKey: ref
-                                          .read(songsNotifierProvider)
-                                          .songs
-                                          .elementAt(index)
-                                          .key
-                                          ?.name ??
-                                      '',
-                                ),
-                              ],
-                            ),
-                          ],
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ref
+                                        .read(songsNotifierProvider)
+                                        .songs
+                                        .elementAt(index)
+                                        .title ??
+                                    '',
+                                style: context.textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      ref
+                                              .read(songsNotifierProvider)
+                                              .songs
+                                              .elementAt(index)
+                                              .artist
+                                              ?.name ??
+                                          '',
+                                      style: context.textTheme.titleSmall,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  SongKeyLabelWidget(
+                                    songKey: ref
+                                            .read(songsNotifierProvider)
+                                            .songs
+                                            .elementAt(index)
+                                            .key
+                                            ?.name ??
+                                        '',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      // const Spacer(),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Icon(

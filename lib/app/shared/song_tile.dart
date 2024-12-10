@@ -41,51 +41,58 @@ class _SongTileState extends ConsumerState<SongTile> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (widget.song.teamId.isNotNullEmptyOrWhitespace)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 4),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text("Team's Song"),
-                      ),
-                    Text(
-                      widget.song.title ?? '',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: context.colorScheme.onSurface,
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.song.teamId.isNotNullEmptyOrWhitespace)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                      maxLines: 1,
-                    ),
-                    const SizedBox(height: Insets.smaller),
-                    Row(
-                      children: [
-                        Text(
-                          '${widget.song.artist?.name}' ?? '',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall!
-                              .copyWith(color: const Color(0xFF7F818B)),
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Text("Team's Song"),
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        SongKeyLabelWidget(
-                          songKey: widget.song.key?.name ?? '',
-                        ),
-                      ],
-                    ),
-                  ],
+                      Text(
+                        widget.song.title ?? '',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              color: context.colorScheme.onSurface,
+                            ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: Insets.smaller),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              '${widget.song.artist?.name}' ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(color: const Color(0xFF7F818B)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SongKeyLabelWidget(
+                            songKey: widget.song.key?.name ?? '',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               InkWell(

@@ -28,34 +28,30 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Theme',
-            style: context.textTheme.titleMedium,
-          ),
-          const SizedBox(height: Insets.small),
-          PreferencesActionTile(
-            title: ref.watch(searchNotifierProvider).themeFilter?.name ??
-                'All Themes',
-            trailingIcon: Icons.keyboard_arrow_right_rounded,
-            onTap: () {
-              ThemeModal.show(
-                context: context,
-                onSelected: (theme) {
-                  if (theme == null) return;
-                  ref
-                      .read(searchNotifierProvider.notifier)
-                      .setThemeFilter(theme);
-                  context.popDialog();
-                },
-              );
-            },
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Theme',
+          style: context.textTheme.titleMedium,
+        ),
+        const SizedBox(height: Insets.small),
+        PreferencesActionTile(
+          title: ref.watch(searchNotifierProvider).themeFilter?.name ??
+              'All Themes',
+          trailingIcon: Icons.keyboard_arrow_right_rounded,
+          onTap: () {
+            ThemeModal.show(
+              context: context,
+              onSelected: (theme) {
+                if (theme == null) return;
+                ref.read(searchNotifierProvider.notifier).setThemeFilter(theme);
+                context.popDialog();
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 }
