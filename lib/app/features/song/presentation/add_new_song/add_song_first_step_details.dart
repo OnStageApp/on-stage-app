@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
@@ -12,7 +11,6 @@ import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.d
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/preference_selector.dart';
 import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/genre_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -42,7 +40,6 @@ class _AddSongFirstStepDetailsState
   SongKey? _selectedKey;
   Artist? _selectedArtist;
   ThemeEnum? _selectedTheme;
-  GenreEnum? _selectedGenre;
 
   @override
   void initState() {
@@ -87,7 +84,6 @@ class _AddSongFirstStepDetailsState
           song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
       _selectedArtist = song.artist;
       _selectedTheme = song.theme;
-      _selectedGenre = song.genre;
     } else {
       _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
     }
@@ -169,24 +165,6 @@ class _AddSongFirstStepDetailsState
                 },
               ),
               const SizedBox(height: Insets.medium),
-              PreferenceSelector<GenreEnum>(
-                label: 'Genre',
-                placeholder: 'Choose genre',
-                selectedValue: _selectedGenre,
-                displayValue: (genre) => genre?.title ?? '',
-                onTap: () {
-                  GenreModal.show(
-                    context: context,
-                    onSelected: (genre) {
-                      setState(() {
-                        _selectedGenre = genre;
-                      });
-                      context.popDialog();
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: Insets.medium),
               PreferenceSelector<ThemeEnum>(
                 label: 'Theme',
                 placeholder: 'Choose one or more themes',
@@ -234,7 +212,6 @@ class _AddSongFirstStepDetailsState
             originalKey: _selectedKey,
             artistId: _selectedArtist?.id,
             theme: _selectedTheme,
-            genre: _selectedGenre,
           ),
         );
   }
@@ -248,7 +225,6 @@ class _AddSongFirstStepDetailsState
             key: _selectedKey,
             artist: _selectedArtist,
             theme: _selectedTheme,
-            genre: _selectedGenre,
           ),
         );
   }
@@ -259,7 +235,6 @@ class _AddSongFirstStepDetailsState
         int.tryParse(_bpmController.text) != null &&
         _selectedKey != null &&
         _selectedArtist != null &&
-        _selectedGenre != null &&
         _selectedTheme != null;
   }
 }

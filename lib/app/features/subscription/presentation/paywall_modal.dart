@@ -30,7 +30,9 @@ class PaywallModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       useRootNavigator: true,
       context: context,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.isDarkMode
+          ? context.colorScheme.surface
+          : context.colorScheme.onSurfaceVariant,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -80,8 +82,27 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: defaultScreenPadding.copyWith(bottom: 32, top: 16),
+      decoration: BoxDecoration(
+        color: context.isDarkMode
+            ? context.colorScheme.surface
+            : context.colorScheme.surface,
+        gradient: LinearGradient(
+          stops: const [0.0, 0.7],
+          colors: context.isDarkMode
+              ? [
+                  const Color(0x1A1996FF),
+                  const Color(0x001A1C1E),
+                ]
+              : [
+                  const Color(0x1A1996FF),
+                  const Color(0x001A1C1E),
+                ],
+          begin: Alignment.topRight,
+          end: Alignment.center,
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -102,7 +123,8 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           SizedBox(
             height: 350,
             child: Image.asset(
-              'assets/images/onboarding_first_step.png',
+              widget.permissionType
+                  .paywallImage(isDarkMode: context.isDarkMode),
               fit: BoxFit.contain,
             ),
           ),
@@ -110,7 +132,8 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           TitleWidget(
             title: widget.permissionType.title,
             subtitle: '${widget.permissionType.paywallDescription}\n '
-                'Get ${upgradePlan?.name ?? 'N/A'} to unlock this feature.',
+                'Get ${upgradePlan?.entitlementId.toUpperCase() ?? 'N/A'} '
+                'to unlock this feature.',
             subtitleFontSize: 18,
           ),
           const SizedBox(height: 48),

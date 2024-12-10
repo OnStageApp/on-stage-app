@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/filter_tempo_range.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_artist.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_genre.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_theme.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_library_toggle.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -79,13 +78,7 @@ class SongFilterModalState extends ConsumerState<SongFilterModal> {
         children: [
           const PreferenceArtist(),
           const SizedBox(height: Insets.medium),
-          const Row(
-            children: [
-              PreferenceGenre(),
-              SizedBox(width: Insets.medium),
-              PreferenceTheme(),
-            ],
-          ),
+          const PreferenceTheme(),
           const SizedBox(height: Insets.medium),
           const SongLibraryToggle(),
           const SizedBox(height: Insets.medium),

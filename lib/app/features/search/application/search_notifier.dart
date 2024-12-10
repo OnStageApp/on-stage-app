@@ -1,6 +1,5 @@
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
-import 'package:on_stage_app/app/features/search/domain/enums/genre_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/search_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/search/domain/models/search_filter_model.dart';
@@ -28,10 +27,6 @@ class SearchNotifier extends _$SearchNotifier {
     state = const SearchState(isFocused: false, text: '');
   }
 
-  void setGenreFilter(GenreEnum? searchFilter) {
-    state = state.copyWith(genreFilter: searchFilter);
-  }
-
   void setArtistFilter(Artist? selectedArtist) {
     state = state.copyWith(artistFilter: selectedArtist);
   }
@@ -52,7 +47,6 @@ class SearchNotifier extends _$SearchNotifier {
 
   void resetAllFilters() {
     state = state.copyWith(
-      genreFilter: null,
       artistFilter: null,
       themeFilter: null,
       tempoFilter: null,
@@ -62,9 +56,6 @@ class SearchNotifier extends _$SearchNotifier {
 
   void removeFilter(SearchFilter filter) {
     switch (filter.type) {
-      case SearchFilterEnum.genre:
-        state = state.copyWith(genreFilter: null);
-
       case SearchFilterEnum.artist:
         state = state.copyWith(artistFilter: null);
       case SearchFilterEnum.theme:
@@ -79,14 +70,6 @@ class SearchNotifier extends _$SearchNotifier {
 
   List<SearchFilter?> getAllFilters() {
     final filters = <SearchFilter?>[];
-    if (state.genreFilter != null) {
-      filters.add(
-        SearchFilter(
-          type: SearchFilterEnum.genre,
-          value: state.genreFilter!.title,
-        ),
-      );
-    }
     if (state.artistFilter != null) {
       filters.add(
         SearchFilter(
