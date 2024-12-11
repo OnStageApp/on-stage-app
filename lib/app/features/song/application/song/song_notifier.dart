@@ -198,22 +198,34 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(selectedStructureItem: item);
   }
 
-  Future<void> saveSongToDB() async {
-    final songRequestModel = SongRequest.fromSongModel(state.song);
-    final savedSong = await songRepository.addSong(song: songRequestModel);
-    state = state.copyWith(
-      song: savedSong,
-    );
+  Future<bool> saveSongToDB() async {
+    try {
+      final songRequestModel = SongRequest.fromSongModel(state.song);
+      final savedSong = await songRepository.addSong(song: songRequestModel);
+      state = state.copyWith(
+        song: savedSong,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error saving song to DB', e);
+      return false;
+    }
   }
 
-  Future<void> updateSongToDB(SongRequest songRequest) async {
-    final songRequestModel = songRequest;
-    final savedSong = await songRepository.updateSong(
-      song: songRequestModel,
-      id: state.song.id!,
-    );
-    state = state.copyWith(
-      song: savedSong,
-    );
+  Future<bool> updateSongToDB(SongRequest songRequest) async {
+    try {
+      final songRequestModel = songRequest;
+      final savedSong = await songRepository.updateSong(
+        song: songRequestModel,
+        id: state.song.id!,
+      );
+      state = state.copyWith(
+        song: savedSong,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error updating song in DB', e);
+      return false;
+    }
   }
 }

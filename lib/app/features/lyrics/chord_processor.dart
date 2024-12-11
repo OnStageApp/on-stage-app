@@ -200,29 +200,39 @@ class ChordProcessor extends _$ChordProcessor {
     var lyricsSoFar = '';
     var chordsSoFar = '';
     var chordHasStarted = false;
+    final isChordOnlyLine =
+        !line.replaceAll(RegExp(r'\[.*?\]'), '').trim().isNotEmpty;
+    var isFirstChord = true;
 
     line.split('').forEach(
       (character) {
         if (character == ']') {
-          final sizeOfLeadingLyrics =
-              _getTextWidthFromStyle(lyricsSoFar, lyricsStyle);
+          final double leadingSpace;
 
-          final lastChordText = chordLyricsLine.chords.isNotEmpty
-              ? chordLyricsLine.chords.last.chordText
-              : '';
-
-          final lastChordWidth =
-              _getTextWidthFromStyle(lastChordText, chordStyle);
-
-          final double leadingSpace =
-              max(0, sizeOfLeadingLyrics - lastChordWidth);
+          if (isChordOnlyLine) {
+            leadingSpace = isFirstChord ? 0 : 16.0;
+          } else {
+            final sizeOfLeadingLyrics =
+                _getTextWidthFromStyle(lyricsSoFar, lyricsStyle);
+            final lastChordText = chordLyricsLine.chords.isNotEmpty
+                ? chordLyricsLine.chords.last.chordText
+                : '';
+            final lastChordWidth =
+                _getTextWidthFromStyle(lastChordText, chordStyle);
+            leadingSpace = max(0, sizeOfLeadingLyrics - lastChordWidth);
+          }
 
           final transposedChord = chordTransposer.transposeChord(chordsSoFar);
           chordLyricsLine.chords.add(Chord(leadingSpace, transposedChord));
-          chordLyricsLine.lyrics += lyricsSoFar;
+
+          if (!isChordOnlyLine) {
+            chordLyricsLine.lyrics += lyricsSoFar;
+          }
+
           lyricsSoFar = '';
           chordsSoFar = '';
           chordHasStarted = false;
+          isFirstChord = false;
         } else if (character == '[') {
           chordHasStarted = true;
         } else {
@@ -234,7 +244,10 @@ class ChordProcessor extends _$ChordProcessor {
         }
       },
     );
-    chordLyricsLine.lyrics += lyricsSoFar;
+
+    if (!isChordOnlyLine) {
+      chordLyricsLine.lyrics += lyricsSoFar;
+    }
 
     return chordLyricsLine;
   }
