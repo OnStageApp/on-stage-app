@@ -2,11 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/song_editor/song_editor_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/section_data_model.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
-import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/choose_structure_to_add_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/song_content_view.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/custom_text_widget.dart';
@@ -24,74 +23,31 @@ class SongEditorWidget extends ConsumerStatefulWidget {
 }
 
 class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
-  List<SectionData> _sections = [];
-
   @override
   void initState() {
+    logger.d('Initializing SongEditorWidget');
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      logger.d('Running post-frame callback to initialize sections');
       _initializeSections();
     });
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeSections();
-  }
-
-  @override
-  void dispose() {
-    for (final section in _sections) {
-      section.controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _listenForTabsChange();
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: _sections.isEmpty
-          ? _buildEmptySections()
-          : ListView.builder(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              itemCount: _sections.length + 1,
-              itemBuilder: (context, index) {
-                if (index == _sections.length) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 160),
-                        child: EventActionButton(
-                          onTap: _addNewSection,
-                          text: 'Add New Section',
-                          icon: Icons.add,
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                final section = _sections[index];
-                return _buildSongContentView(context, section, index);
-              },
-            ),
-    );
-  }
-
   void _initializeSections() {
+    logger.d('Starting sections initialization');
     final song = ref.watch(songNotifierProvider).song;
     final rawSections = song.rawSections ?? [];
 
-    if (_sections.isEmpty || _sections.length != rawSections.length) {
-      setState(() {
-        for (final section in _sections) {
-          section.controller.dispose();
-        }
+    logger.d('Current song has ${rawSections.length} raw sections');
 
-        _sections = rawSections
+    final currentSections = ref.watch(songEditorNotifierProvider);
+    if (currentSections.isEmpty ||
+        currentSections.length != rawSections.length) {
+      logger.d(
+          'Need to initialize sections: current=${currentSections.length}, new=${rawSections.length}');
+
+      try {
+        final sections = rawSections
             .map(
               (rawSection) => SectionData(
                 rawSection: rawSection,
@@ -100,62 +56,43 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
               ),
             )
             .toList();
-      });
+
+        ref.read(songEditorNotifierProvider.notifier).setSections(sections);
+        logger.i('Successfully initialized ${sections.length} sections');
+      } catch (e, stack) {
+        logger.e('Error initializing sections', e, stack);
+      }
+    } else {
+      logger.d('Sections already initialized correctly');
     }
   }
 
   Future<void> _addNewSection() async {
-    final addedStructureItem = await ChooseStructureToAddModal.show(
-      context: context,
-      ref: ref,
-    );
+    logger.d('Opening structure selection modal');
+    try {
+      final addedStructureItem = await ChooseStructureToAddModal.show(
+        context: context,
+        ref: ref,
+      );
 
-    if (addedStructureItem != null) {
-      setState(() {
-        _sections.add(
-          SectionData(
-            rawSection: RawSection(
-              structureItem: addedStructureItem,
-              content: '',
-            ),
-            controller: CustomTextEditingController(text: ''),
+      if (addedStructureItem != null) {
+        logger.d('Selected structure: ${addedStructureItem.name}');
+
+        final newSection = SectionData(
+          rawSection: RawSection(
+            structureItem: addedStructureItem,
+            content: '',
           ),
+          controller: CustomTextEditingController(text: ''),
         );
-      });
-      logger.i('New section added successfully. '
-          'Total sections: ${_sections.length}');
-    } else {
-      logger.d('No structure item selected, modal dismissed');
-    }
-  }
 
-  void _updateSong() {
-    logger.d('Updating song with ${_sections.length} sections');
-    final rawSections = _sections
-        .map(
-          (section) => RawSection(
-            structureItem: section.rawSection.structureItem,
-            content: section.controller.text,
-          ),
-        )
-        .toList();
-
-    final song = SongModelV2(
-      rawSections: rawSections,
-    );
-
-    ref.read(songNotifierProvider.notifier).updateSongLocalCache(song);
-    logger.i('Song updated successfully in local cache');
-  }
-
-  void _listenForTabsChange() {
-    ref.listen<int>(tabIndexProvider, (previousIndex, newIndex) {
-      if (newIndex == 1) {
-        logger.d('Dismissing keyboard and updating song');
-        FocusScope.of(context).unfocus();
-        _updateSong();
+        ref.read(songEditorNotifierProvider.notifier).addSection(newSection);
+      } else {
+        logger.d('Structure selection cancelled');
       }
-    });
+    } catch (e, stack) {
+      logger.e('Error adding new section', e, stack);
+    }
   }
 
   Widget _buildSongContentView(
@@ -168,20 +105,43 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       shortName: sectionData.rawSection.structureItem!.shortName,
       name: sectionData.rawSection.structureItem!.name,
       onDelete: () {
+        logger.d(
+            'Delete requested for section ${sectionData.rawSection.structureItem?.name} at index $index');
         try {
-          logger.d('Deleting section at index $index');
-          setState(() {
-            final controller = _sections[index].controller;
-            _sections.removeAt(index);
-            controller.dispose();
-          });
-          logger.i('Section deleted successfully. '
-              'Remaining sections: ${_sections.length}');
+          ref.read(songEditorNotifierProvider.notifier).removeSection(index);
         } catch (e, stackTrace) {
-          logger.e('Error deleting section', e, stackTrace);
+          logger.e('Error deleting section at index $index', e, stackTrace);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error deleting section')),
+            );
+          }
         }
       },
       controller: sectionData.controller,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = ref.watch(songEditorNotifierProvider);
+    logger.d('Building SongEditorWidget with ${sections.length} sections');
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: sections.isEmpty
+          ? _buildEmptySections()
+          : ListView.builder(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              itemCount: sections.length + 1,
+              itemBuilder: (context, index) {
+                if (index == sections.length) {
+                  return _buildAddButton();
+                }
+                final section = sections[index];
+                return _buildSongContentView(context, section, index);
+              },
+            ),
     );
   }
 
@@ -210,6 +170,22 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           ),
         ),
         const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildAddButton() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 160),
+          child: EventActionButton(
+            onTap: _addNewSection,
+            text: 'Add New Section',
+            icon: Icons.add,
+          ),
+        ),
       ],
     );
   }
