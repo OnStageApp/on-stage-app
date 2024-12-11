@@ -158,12 +158,14 @@ class ChordProcessor extends _$ChordProcessor {
         if (_getTextWidthFromStyle(currentCharacters, lyricsStyle) +
                 widgetPadding >=
             media) {
-          chordLyricsLines.add(_processLine(
-            currentLine.substring(characterIndex, lastSpace).trim(),
-            lyricsStyle,
-            chordStyle,
-            chordTransposer,
-          ));
+          chordLyricsLines.add(
+            _processLine(
+              currentLine.substring(characterIndex, lastSpace).trim(),
+              lyricsStyle,
+              chordStyle,
+              chordTransposer,
+            ),
+          );
           currentCharacters = '';
           characterIndex = lastSpace;
         }

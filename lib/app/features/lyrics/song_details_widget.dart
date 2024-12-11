@@ -108,6 +108,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   List<StructureItem> _getStructure() {
     List<StructureItem> structures;
+    print('showContentByStructure: ${widget.showContentByStructure}');
     if (widget.showContentByStructure) {
       structures = ref.watch(songNotifierProvider).song.structure ?? [];
     } else {
