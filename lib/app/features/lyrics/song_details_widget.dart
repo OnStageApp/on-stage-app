@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
@@ -180,8 +181,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
       //   }
       // })
       ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.song.structure != next.song.structure) {
-          logger.i('song structure changed');
+        if (!listEquals(previous?.song.structure, next.song.structure)) {
+          logger.i('song structure changed ');
+          logger.i('old structure: ${previous?.song.structure}');
+          logger.i('new structure: ${next.song.structure}');
           _processTextAndSetSections();
         }
       })

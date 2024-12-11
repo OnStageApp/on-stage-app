@@ -12,5 +12,7 @@ class SongsState with _$SongsState {
     @Default(false) bool isLoadingWithShimmer,
     @Default(false) bool isLoading,
     @Default(null) String? error,
+    @Default(false) bool hasMore,
+    @Default(0) int songsCount,
   }) = _SongsState;
 }

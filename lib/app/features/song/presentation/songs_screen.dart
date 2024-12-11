@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/load_more_button.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
@@ -51,7 +52,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: songsState.songs.length.toString(),
+                text: songsState.songsCount.toString(),
                 style: context.textTheme.headlineLarge?.copyWith(
                   fontSize: 28,
                   color: context.colorScheme.surfaceDim,
@@ -115,6 +116,22 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               ),
             ),
             const SongsListView(),
+            if (songsState.hasMore)
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverToBoxAdapter(
+                    child: Center(
+                  child: LoadMoreButton(
+                    onPressed: songsState.isLoading
+                        ? () {}
+                        : () => ref
+                            .read(songsNotifierProvider.notifier)
+                            .loadMoreSongs(
+                              ref.watch(searchNotifierProvider).toSongFilter(),
+                            ),
+                  ),
+                )),
+              ),
           ],
         ),
       ),
