@@ -290,13 +290,16 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                 if (ref.watch(userSettingsNotifierProvider).songView !=
                     SongViewMode.lyrics)
                   _buildChordsLine(line),
-                RichText(
-                  text: TextSpan(
-                    text: line.lyrics,
-                    style: _textStyle,
+                if (line.lyrics.trim().isNotEmpty)
+
+                  /// Only show lyrics if there's actual content
+                  RichText(
+                    text: TextSpan(
+                      text: line.lyrics,
+                      style: _textStyle,
+                    ),
+                    textScaler: TextScaler.linear(widget.scaleFactor),
                   ),
-                  textScaler: TextScaler.linear(widget.scaleFactor),
-                ),
               ],
             );
           },

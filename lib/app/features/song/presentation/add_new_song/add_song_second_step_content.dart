@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
@@ -91,28 +92,38 @@ class AddSongSecondStepContentState
 
   Future<void> _onSavedSong(BuildContext context) async {
     ref.read(songEditorNotifierProvider.notifier).updateSong();
-
     final song = ref.watch(songNotifierProvider).song;
     final songNotifier = ref.read(songNotifierProvider.notifier);
 
     if (song.id == null) {
       songNotifier.setDefaultStructureLocally(song.availableStructureItems);
-      await songNotifier.saveSongToDB();
-      if (mounted) {
-        context.goNamed(
-          AppRoute.song.name,
-          queryParameters: {'songId': song.id},
-        );
-      }
-    } else {
-      await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
-      if (mounted) {
-        context.pushReplacementNamed(
-          AppRoute.song.name,
-          queryParameters: {'songId': song.id},
-        );
-      }
     }
+
+    final success = song.id == null
+        ? await songNotifier.saveSongToDB()
+        : await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
+
+    if (!mounted) return;
+
+    if (!success) {
+      TopFlushBar.show(
+        context,
+        'Error saving song, something went wrong.',
+        isError: true,
+      );
+      return;
+    }
+
+    /// Navigate based on whether it was a new song or update
+    song.id == null
+        ? context.goNamed(
+            AppRoute.song.name,
+            queryParameters: {'songId': song.id},
+          )
+        : context.pushReplacementNamed(
+            AppRoute.song.name,
+            queryParameters: {'songId': song.id},
+          );
   }
 }
 
