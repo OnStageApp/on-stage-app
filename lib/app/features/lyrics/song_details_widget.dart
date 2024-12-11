@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
@@ -27,7 +28,7 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.showContentByStructure = true,
   });
 
-  final Function onTapChord;
+  final void Function(String chord) onTapChord;
 
   final int widgetPadding;
 
@@ -107,6 +108,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   List<StructureItem> _getStructure() {
     List<StructureItem> structures;
+    print('showContentByStructure: ${widget.showContentByStructure}');
     if (widget.showContentByStructure) {
       structures = ref.watch(songNotifierProvider).song.structure ?? [];
     } else {
@@ -180,8 +182,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
       //   }
       // })
       ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.song.structure != next.song.structure) {
-          logger.i('song structure changed');
+        if (!listEquals(previous?.song.structure, next.song.structure)) {
+          logger.i('song structure changed ');
+          logger.i('old structure: ${previous?.song.structure}');
+          logger.i('new structure: ${next.song.structure}');
           _processTextAndSetSections();
         }
       })
@@ -286,13 +290,16 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                 if (ref.watch(userSettingsNotifierProvider).songView !=
                     SongViewMode.lyrics)
                   _buildChordsLine(line),
-                RichText(
-                  text: TextSpan(
-                    text: line.lyrics,
-                    style: _textStyle,
+                if (line.lyrics.trim().isNotEmpty)
+
+                  /// Only show lyrics if there's actual content
+                  RichText(
+                    text: TextSpan(
+                      text: line.lyrics,
+                      style: _textStyle,
+                    ),
+                    textScaler: TextScaler.linear(widget.scaleFactor),
                   ),
-                  textScaler: TextScaler.linear(widget.scaleFactor),
-                ),
               ],
             );
           },

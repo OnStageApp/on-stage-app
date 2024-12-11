@@ -37,16 +37,12 @@
 
     <!-- Permissions -->
 
-
-    <key>NSCameraUsageDescription</key>
-    <string>To scan cards or capture images for your profile and other app features.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Access to the photo library is requested to allow users to select photos or set a profile picture within the app.</string>
+    <string>Access to your photos is needed to let you choose and set your profile picture in the app.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Allows saving images to your photo library from the app.</string>
+    <string>Access to your photos is needed to let you choose and set your profile picture in the app.</string>
     <key>NSUserNotificationUsageDescription</key>
-    <string>We use notifications to keep you informed about updates and important events.</string>
-
+    <string>We'll notify you about new messages, comments, and updates from other users in your network to help you stay connected with your community.</string>
     <!-- URL Schemes -->
     <key>CFBundleURLTypes</key>
     <array>

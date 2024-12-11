@@ -111,7 +111,7 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void updateSongLocalCache(SongModelV2 newSong) {
-    final updatedStructure = _filterStructureByAvailableSections(newSong);
+    final updatedStructure = _getModifiedStructure(newSong);
 
     final updatedSong = state.song.copyWith(
       title: newSong.title ?? state.song.title,
@@ -120,26 +120,47 @@ class SongNotifier extends _$SongNotifier {
       tempo: newSong.tempo ?? state.song.tempo,
       artist: newSong.artist ?? state.song.artist,
       rawSections: newSong.rawSections ?? state.song.rawSections,
-      genre: newSong.genre ?? state.song.genre,
       theme: newSong.theme ?? state.song.theme,
       structure: updatedStructure,
     );
 
     state = state.copyWith(song: updatedSong);
 
-    logger.i('updated song');
+    logger.i('updated song in notifier with title: ${state.song.title}');
   }
 
-  List<StructureItem> _filterStructureByAvailableSections(SongModelV2 newSong) {
-    if (newSong.rawSections == null) {
-      return state.song.structure ?? [];
+  List<StructureItem> _getModifiedStructure(SongModelV2 newSong) {
+    final rawSections = newSong.rawSections;
+    final currentStructure = state.song.structure ?? [];
+
+    /// If no raw sections, return current structure
+    if (rawSections == null || rawSections.isEmpty) {
+      return currentStructure;
     }
 
-    final availableStructure =
-        newSong.rawSections!.map((e) => e.structureItem).toSet();
-    return (state.song.structure ?? [])
-        .where(availableStructure.contains)
-        .toList();
+    /// Get all non-null structure items from new sections
+    final newSectionItems = rawSections
+        .map((e) => e.structureItem)
+        .whereType<StructureItem>()
+        .toSet();
+
+    /// For existing songs, handle structure changes
+    if (state.song.id != null) {
+      final currentItems = currentStructure.toSet();
+
+      /// Find added and removed items
+      final addedItems = newSectionItems.difference(currentItems);
+      final removedItems = currentItems.difference(newSectionItems);
+
+      /// Update structure: keep existing items, add new ones, remove deleted ones
+      return [
+        ...currentStructure.where((item) => !removedItems.contains(item)),
+        ...addedItems,
+      ];
+    }
+
+    /// For new songs, only keep structure items that exist in sections
+    return currentStructure.where(newSectionItems.contains).toList();
   }
 
   void updateSongSectionsWithNewStructureItems(
@@ -177,22 +198,34 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(selectedStructureItem: item);
   }
 
-  Future<void> saveSongToDB() async {
-    final songRequestModel = SongRequest.fromSongModel(state.song);
-    final savedSong = await songRepository.addSong(song: songRequestModel);
-    state = state.copyWith(
-      song: savedSong,
-    );
+  Future<bool> saveSongToDB() async {
+    try {
+      final songRequestModel = SongRequest.fromSongModel(state.song);
+      final savedSong = await songRepository.addSong(song: songRequestModel);
+      state = state.copyWith(
+        song: savedSong,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error saving song to DB', e);
+      return false;
+    }
   }
 
-  Future<void> updateSongToDB(SongRequest songRequest) async {
-    final songRequestModel = songRequest;
-    final savedSong = await songRepository.updateSong(
-      song: songRequestModel,
-      id: state.song.id!,
-    );
-    state = state.copyWith(
-      song: savedSong,
-    );
+  Future<bool> updateSongToDB(SongRequest songRequest) async {
+    try {
+      final songRequestModel = songRequest;
+      final savedSong = await songRepository.updateSong(
+        song: songRequestModel,
+        id: state.song.id!,
+      );
+      state = state.copyWith(
+        song: savedSong,
+      );
+      return true;
+    } catch (e) {
+      logger.e('Error updating song in DB', e);
+      return false;
+    }
   }
 }

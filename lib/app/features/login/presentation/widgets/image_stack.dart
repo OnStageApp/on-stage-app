@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_overlay.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ImageStack extends StatelessWidget {
   const ImageStack({Key? key}) : super(key: key);
@@ -27,7 +28,9 @@ class ImageStack extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
-                      'assets/images/home_preview_screen.png',
+                      context.isDarkMode
+                          ? 'assets/images/home_preview_screen_dark.png'
+                          : 'assets/images/home_preview_screen.png',
                       fit: BoxFit.contain,
                     ),
                     const GradientOverlay(),

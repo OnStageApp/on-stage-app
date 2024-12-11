@@ -47,7 +47,8 @@ class SongAppBarLeading extends ConsumerWidget {
                 title: ref.watch(permissionServiceProvider).hasAccessToEdit
                     ? 'Change Key'
                     : 'Preview Key',
-                songKey: ref.watch(songNotifierProvider).song.key!,
+                songKey:
+                    ref.watch(songNotifierProvider).song.key ?? const SongKey(),
                 onKeyChanged: (key) async {
                   ref.read(songNotifierProvider.notifier).transpose(key);
                   if (ref.watch(permissionServiceProvider).hasAccessToEdit) {

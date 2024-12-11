@@ -30,7 +30,9 @@ class PaywallModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       useRootNavigator: true,
       context: context,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: context.isDarkMode
+          ? context.colorScheme.surface
+          : context.colorScheme.onSurfaceVariant,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -80,8 +82,27 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: defaultScreenPadding.copyWith(bottom: 32, top: 16),
+      decoration: BoxDecoration(
+        color: context.isDarkMode
+            ? context.colorScheme.surface
+            : context.colorScheme.surface,
+        gradient: LinearGradient(
+          stops: const [0.0, 0.7],
+          colors: context.isDarkMode
+              ? [
+                  const Color(0x1A1996FF),
+                  const Color(0x001A1C1E),
+                ]
+              : [
+                  const Color(0x1A1996FF),
+                  const Color(0x001A1C1E),
+                ],
+          begin: Alignment.topRight,
+          end: Alignment.center,
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -100,19 +121,22 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           ),
           const SizedBox(height: 32),
           SizedBox(
-            height: 300,
+            height: 350,
             child: Image.asset(
-              'assets/images/onboarding_first_step.png',
+              widget.permissionType
+                  .paywallImage(isDarkMode: context.isDarkMode),
               fit: BoxFit.contain,
             ),
           ),
+          const Spacer(),
           TitleWidget(
             title: widget.permissionType.title,
             subtitle: '${widget.permissionType.paywallDescription}\n '
-                'Get ${upgradePlan?.name ?? 'N/A'} to unlock this feature.',
+                'Get ${upgradePlan?.entitlementId.toUpperCase() ?? 'N/A'} '
+                'to unlock this feature.',
             subtitleFontSize: 18,
           ),
-          const Spacer(),
+          const SizedBox(height: 48),
           if (isLoading)
             const CircularProgressIndicator()
           else if (errorMessage != null)
@@ -129,8 +153,10 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ContinueButton(
-                text: 'Get ${upgradePlan!.name}',
+                text:
+                    'Go ${upgradePlan!.entitlementId.toUpperCase()} - 1 Month Free',
                 isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
+                borderColor: context.colorScheme.primary,
                 backgroundColor: context.isDarkMode
                     ? context.colorScheme.secondary
                     : context.colorScheme.onSecondary,
@@ -164,7 +190,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '1-month free, auto-renews for ',
+                    text: 'Auto-renews for ',
                     style: context.textTheme.bodySmall!.copyWith(
                       color: context.colorScheme.outline,
                       fontSize: 12,

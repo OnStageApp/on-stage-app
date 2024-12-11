@@ -60,6 +60,8 @@ class API {
 
   //Songs
   static const String getSongs = 'songs';
+  static const String getSongsWithPagination = 'songs/paginated';
+  static const String getSongsCount = 'songs/count';
   static const String addSong = 'songs';
   static const String updateSongById = 'songs/{id}';
   static const String getSongsById = 'songs/{id}';

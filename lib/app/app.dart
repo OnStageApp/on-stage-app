@@ -16,6 +16,7 @@ import 'package:on_stage_app/app/utils/app_launcher_checker.dart';
 import 'package:on_stage_app/app/utils/dialog_helper.dart';
 import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
+import 'package:on_stage_app/app/utils/shared_prefs/shared_prefs_provider.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -53,11 +54,13 @@ class _AppState extends ConsumerState<App> {
     final router = ref.watch(navigationNotifierProvider);
     final userSettings = ref.watch(userSettingsNotifierProvider);
     final remoteConfig = ref.watch(remoteConfigProvider);
+    final isDarkModeCache =
+        ref.read(sharedPreferencesProvider).getBool('isDarkMode');
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: !EnvironmentManager.isProduction,
       routerConfig: router,
-      theme: userSettings.isDarkMode ?? false
+      theme: userSettings.isDarkMode ?? isDarkModeCache ?? false
           ? getOnStageDarkTheme(context)
           : getOnStageLightTheme(context),
       builder: (context, child) {

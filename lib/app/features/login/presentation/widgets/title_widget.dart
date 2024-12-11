@@ -115,7 +115,9 @@ class _TitleWidgetState extends State<TitleWidget>
                   fontWeight: FontWeight.w700,
                   height: 1.2,
                   fontSize: 32,
-                  color: context.colorScheme.onSecondary,
+                  color: context.isDarkMode
+                      ? context.colorScheme.onSurface
+                      : context.colorScheme.onSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -131,7 +133,9 @@ class _TitleWidgetState extends State<TitleWidget>
                   child: Text(
                     widget.subtitle!,
                     style: context.textTheme.titleMedium!.copyWith(
-                      color: context.colorScheme.onSecondary,
+                      color: context.isDarkMode
+                          ? context.colorScheme.onSurface
+                          : context.colorScheme.onSecondary,
                       fontSize: widget.subtitleFontSize ?? 16,
                     ),
                     textAlign: TextAlign.center,

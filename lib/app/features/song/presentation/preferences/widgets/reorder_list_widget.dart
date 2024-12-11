@@ -1,9 +1,13 @@
+import 'dart:ui';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reordable_list_item.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ReorderListWidget extends ConsumerStatefulWidget {
   const ReorderListWidget({super.key});
@@ -56,24 +60,40 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
     );
   }
 
+  Widget proxyDecorator(Widget child, int index, Animation<double> animation) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final animValue = Curves.easeIn.transform(animation.value);
+        final scale = lerpDouble(1, 1.02, animValue)!;
+        return Transform.scale(
+          scale: scale,
+          child: Card(
+            color: context.colorScheme.surface.withOpacity(0.2),
+            elevation: 6,
+            shadowColor: Colors.black.withOpacity(0.2),
+            child: child,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+
   Widget _buildReordableList() {
     final cacheStructureItems =
         ref.watch(songPreferencesControllerProvider).structureItems.toList();
     return ReorderableListView.builder(
+      buildDefaultDragHandles: false,
       onReorder: _onReorder,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: cacheStructureItems.length,
-      proxyDecorator: (child, index, animation) => Material(
-        color: Colors.transparent,
-        elevation: 6,
-        shadowColor: Colors.black.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        child: child,
-      ),
+      proxyDecorator: proxyDecorator,
       itemBuilder: (context, index) {
-        return Container(
+        return MyDragStartListener(
           key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
+          index: index,
           child: ReordableListItem(
             itemKey: '${cacheStructureItems[index].shortName}_$index',
             itemId: cacheStructureItems[index].index,
@@ -112,5 +132,22 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
     ref
         .read(songPreferencesControllerProvider.notifier)
         .addAllStructureItems(cacheStructureItems);
+  }
+}
+
+class MyDragStartListener extends ReorderableDelayedDragStartListener {
+  const MyDragStartListener({
+    super.key,
+    required super.child,
+    required super.index,
+    super.enabled,
+  });
+
+  @override
+  MultiDragGestureRecognizer createRecognizer() {
+    return DelayedMultiDragGestureRecognizer(
+      delay: const Duration(milliseconds: 250), // default: 500 ms
+      debugOwner: this,
+    );
   }
 }

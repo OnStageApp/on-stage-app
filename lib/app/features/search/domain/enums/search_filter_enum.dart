@@ -1,7 +1,6 @@
 enum SearchFilterEnum {
   all,
   tempo,
-  genre,
   theme,
   artist,
   team,
@@ -14,8 +13,6 @@ extension SearchFilterEnumExtension on SearchFilterEnum {
         return 'All';
       case SearchFilterEnum.tempo:
         return 'BPM';
-      case SearchFilterEnum.genre:
-        return 'Genre';
       case SearchFilterEnum.theme:
         return 'Theme';
       case SearchFilterEnum.artist:

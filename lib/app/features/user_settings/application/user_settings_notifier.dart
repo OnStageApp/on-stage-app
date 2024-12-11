@@ -39,8 +39,6 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
 
   @override
   UserSettings build() {
-
-
     return const UserSettings();
   }
 

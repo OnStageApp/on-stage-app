@@ -3,14 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_dark_dropdwon.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/song_editor/song_editor_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/song_editor_widget.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
-import 'package:on_stage_app/logger.dart';
-
-final tabIndexProvider = StateProvider.autoDispose<int>((ref) => 0);
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
@@ -31,23 +30,6 @@ class AddSongSecondStepContentState
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _setupTabController();
-  }
-
-  void _setupTabController() {
-    try {
-      _tabController.addListener(() {
-        logger.d('Tab controller listener');
-        if (!_tabController.indexIsChanging && mounted) {
-          logger.d('Tab changed to: ${_tabController.index}');
-          ref
-              .read(tabIndexProvider.notifier)
-              .update((_) => _tabController.index);
-        }
-      });
-    } catch (e, stackTrace) {
-      logger.e('Error setting up tab controller', e, stackTrace);
-    }
   }
 
   @override
@@ -66,27 +48,7 @@ class AddSongSecondStepContentState
         isBackButtonVisible: true,
         title: songTitle,
       ),
-      body: _buildContent(),
-    );
-  }
-
-  Widget _buildContent() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          const SongEditorWidget(),
-          Container(
-            margin: const EdgeInsets.only(bottom: 80),
-            child: SongDetailWidget(
-              widgetPadding: 64,
-              onTapChord: () {},
-              showContentByStructure: false,
-            ),
-          ),
-        ],
-      ),
+      body: EditorTabSwitch(tabController: _tabController),
     );
   }
 
@@ -104,6 +66,9 @@ class AddSongSecondStepContentState
                 tabs: const ['Preview', 'Edit'],
                 onSwitch: () {
                   final newIndex = _tabController.index == 0 ? 1 : 0;
+                  if (newIndex == 1) {
+                    ref.read(songEditorNotifierProvider.notifier).updateSong();
+                  }
                   _tabController.animateTo(newIndex);
                 },
               ),
@@ -113,8 +78,8 @@ class AddSongSecondStepContentState
             flex: 3,
             child: ContinueButton(
               text: 'Save Song',
-              onPressed: () async {
-                await _onSavedSong(context);
+              onPressed: () {
+                _onSavedSong(context);
               },
               isEnabled: true,
               hasShadow: false,
@@ -126,20 +91,68 @@ class AddSongSecondStepContentState
   }
 
   Future<void> _onSavedSong(BuildContext context) async {
+    ref.read(songEditorNotifierProvider.notifier).updateSong();
     final song = ref.watch(songNotifierProvider).song;
     final songNotifier = ref.read(songNotifierProvider.notifier);
 
     if (song.id == null) {
       songNotifier.setDefaultStructureLocally(song.availableStructureItems);
-      await songNotifier.saveSongToDB();
-    } else {
-      await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
     }
-    if (mounted) {
-      context.goNamed(
-        AppRoute.song.name,
-        queryParameters: {'songId': song.id},
+
+    final success = song.id == null
+        ? await songNotifier.saveSongToDB()
+        : await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
+
+    if (!mounted) return;
+
+    if (!success) {
+      TopFlushBar.show(
+        context,
+        'Error saving song, something went wrong.',
+        isError: true,
       );
+      return;
     }
+
+    /// Navigate based on whether it was a new song or update
+    song.id == null
+        ? context.goNamed(
+            AppRoute.song.name,
+            queryParameters: {'songId': song.id},
+          )
+        : context.pushReplacementNamed(
+            AppRoute.song.name,
+            queryParameters: {'songId': song.id},
+          );
+  }
+}
+
+class EditorTabSwitch extends ConsumerWidget {
+  const EditorTabSwitch({
+    required this.tabController,
+    super.key,
+  });
+
+  final TabController tabController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: TabBarView(
+        controller: tabController,
+        children: [
+          const SongEditorWidget(),
+          Container(
+            margin: const EdgeInsets.only(bottom: 80),
+            child: SongDetailWidget(
+              widgetPadding: 64,
+              onTapChord: (chord) {},
+              showContentByStructure: false,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
