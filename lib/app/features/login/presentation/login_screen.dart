@@ -28,6 +28,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colorScheme.surface,
       body: Stack(
         children: [
           const GradientBackground(),

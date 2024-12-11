@@ -17,26 +17,29 @@ class EditableStructureList extends ConsumerWidget {
 
     sections = ref.watch(songNotifierProvider).sections;
 
-    return SizedBox(
-      height: 36,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: sections.length,
-        itemBuilder: (context, index) {
-          final structure = sections[index].structure;
-          final count = sections[index].count;
-          return AnimatedTile(
-            key: ValueKey('${structure.shortName}_'
-                '${structure.index}'),
-            structureItem: structure,
-            index: index,
-            xTimes: count,
-            onTap: () {
-              ref.read(songNotifierProvider.notifier).selectSection(index);
-              logger.i('selected ${structure.name}');
-            },
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: SizedBox(
+        height: 36,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: sections.length,
+          itemBuilder: (context, index) {
+            final structure = sections[index].structure;
+            final count = sections[index].count;
+            return AnimatedTile(
+              key: ValueKey('${structure.shortName}_'
+                  '${structure.index}'),
+              structureItem: structure,
+              index: index,
+              xTimes: count,
+              onTap: () {
+                ref.read(songNotifierProvider.notifier).selectSection(index);
+                logger.i('selected ${structure.name}');
+              },
+            );
+          },
+        ),
       ),
     );
   }

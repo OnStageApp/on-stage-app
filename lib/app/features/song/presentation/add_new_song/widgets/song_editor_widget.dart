@@ -122,7 +122,6 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           ),
         );
       });
-      _updateSong();
       logger.i('New section added successfully. '
           'Total sections: ${_sections.length}');
     } else {
@@ -141,16 +140,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
         )
         .toList();
 
-    final songState = ref.read(songNotifierProvider);
-    final songId = songState.song.id;
-
     final song = SongModelV2(
       rawSections: rawSections,
-      structure: songId == null
-          ? rawSections
-              .map((e) => e.structureItem ?? StructureItem.none)
-              .toList()
-          : songState.song.structure,
     );
 
     ref.read(songNotifierProvider.notifier).updateSongLocalCache(song);
@@ -159,7 +150,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
 
   void _listenForTabsChange() {
     ref.listen<int>(tabIndexProvider, (previousIndex, newIndex) {
-      if (previousIndex == 0 && newIndex == 1) {
+      if (newIndex == 1) {
         logger.d('Dismissing keyboard and updating song');
         FocusScope.of(context).unfocus();
         _updateSong();
@@ -184,7 +175,6 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
             _sections.removeAt(index);
             controller.dispose();
           });
-          _updateSong();
           logger.i('Section deleted successfully. '
               'Remaining sections: ${_sections.length}');
         } catch (e, stackTrace) {

@@ -13,6 +13,7 @@ part 'songs_notifier.g.dart';
 @Riverpod()
 class SongsNotifier extends _$SongsNotifier {
   SongRepository? _songRepository;
+  static const int _pageSize = 25;
 
   SongRepository get songRepository {
     _songRepository ??= SongRepository(ref.watch(dioProvider));
@@ -28,6 +29,11 @@ class SongsNotifier extends _$SongsNotifier {
     return const SongsState();
   }
 
+  Future<void> _getSongsCount() async {
+    final songsCount = await songRepository.getSongsCount();
+    state = state.copyWith(songsCount: songsCount);
+  }
+
   Future<void> getSongs({
     SongFilter? songFilter,
     bool isLoadingWithShimmer = false,
@@ -38,6 +44,7 @@ class SongsNotifier extends _$SongsNotifier {
       error: null,
     );
 
+    unawaited(_getSongsCount());
     try {
       await Future.wait([
         _fetchSongs(songFilter),
@@ -51,6 +58,32 @@ class SongsNotifier extends _$SongsNotifier {
         isLoading: false,
         isLoadingWithShimmer: false,
       );
+    }
+  }
+
+  Future<void> loadMoreSongs(
+    SongFilter? songFilter,
+  ) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final songsPage = await songRepository.getSongsWithPagination(
+        songFilter: songFilter ?? const SongFilter(),
+        limit: _pageSize,
+        offset: state.songs.length,
+      );
+
+      final hasMore = songsPage.songs.length >= _pageSize;
+
+      final allSongs = [...state.songs, ...songsPage.songs];
+
+      _updateSongs(allSongs);
+
+      state = state.copyWith(hasMore: hasMore);
+    } catch (error) {
+      final appError = ErrorHandler.handleError(error, 'Error fetching songs');
+      state = state.copyWith(error: appError.message);
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
@@ -108,12 +141,19 @@ class SongsNotifier extends _$SongsNotifier {
 
   Future<void> _fetchSongs(SongFilter? songFilter) async {
     try {
-      final songs = await songRepository.getSongs(
+      final songsPage = await songRepository.getSongsWithPagination(
         songFilter: songFilter ?? const SongFilter(),
+        limit: _pageSize,
+        offset: 0,
       );
-      _updateSongs(songs);
+
+      final hasMore = songsPage.songs.length >= _pageSize;
+
+      _updateSongs(songsPage.songs);
+
+      state = state.copyWith(hasMore: hasMore);
     } catch (e) {
-      rethrow; // Let the parent method handle this error
+      rethrow;
     }
   }
 

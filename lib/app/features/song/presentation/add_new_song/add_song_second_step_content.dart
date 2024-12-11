@@ -114,9 +114,13 @@ class AddSongSecondStepContentState
             child: ContinueButton(
               text: 'Save Song',
               onPressed: () async {
-                await _onSavedSong(context);
+                if (ref.watch(tabIndexProvider) == 1) {
+                  await _onSavedSong(context);
+                } else {
+                  return;
+                }
               },
-              isEnabled: true,
+              isEnabled: ref.watch(tabIndexProvider) == 1,
               hasShadow: false,
             ),
           ),
