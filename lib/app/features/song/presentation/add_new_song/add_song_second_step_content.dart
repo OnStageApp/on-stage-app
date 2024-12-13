@@ -30,6 +30,7 @@ class AddSongSecondStepContentState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      //See if it's needed
       ref.read(songEditorNotifierProvider.notifier).init();
     });
     _tabController = TabController(length: 2, vsync: this);
