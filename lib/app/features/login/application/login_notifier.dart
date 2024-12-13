@@ -233,6 +233,8 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       state = const LoginState();
 
+      final googleSignIn = GoogleSignIn();
+      await googleSignIn.disconnect();
       await FirebaseAuth.instance.signOut();
 
       final deviceId = await ref.read(deviceServiceProvider).getDeviceId();

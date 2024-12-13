@@ -57,9 +57,7 @@ class SongDetailsWithPagesScreenState
   Widget build(BuildContext context) {
     _eventItems = ref.watch(eventItemsNotifierProvider).songEventItems;
     return Scaffold(
-      backgroundColor: context.colorScheme.surface,
       appBar: StageAppBar(
-        background: context.colorScheme.surface,
         isBackButtonVisible: true,
         title: ref.watch(songNotifierProvider).song.title ?? '',
         trailing: const SongAppBarLeading(

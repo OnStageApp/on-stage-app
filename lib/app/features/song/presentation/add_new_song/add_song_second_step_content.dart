@@ -82,7 +82,7 @@ class AddSongSecondStepContentState
                 _onSavedSong(context);
               },
               isEnabled: true,
-              hasShadow: false,
+              hasShadow: true,
             ),
           ),
         ],
@@ -140,6 +140,7 @@ class EditorTabSwitch extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
         children: [
           const SongEditorWidget(),

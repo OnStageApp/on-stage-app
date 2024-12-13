@@ -8,6 +8,9 @@ class EditProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: const BoxConstraints(
+        maxWidth: 400,
+      ),
       margin: const EdgeInsets.only(right: 10),
       width: double.infinity,
       child: TextButton(
