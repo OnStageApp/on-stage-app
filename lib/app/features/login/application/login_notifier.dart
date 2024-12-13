@@ -231,7 +231,7 @@ class LoginNotifier extends _$LoginNotifier {
 
   Future<void> signOut() async {
     try {
-      state = const LoginState();
+      state = const LoginState(isLoading: true);
 
       final googleSignIn = GoogleSignIn();
       await googleSignIn.disconnect();
@@ -255,6 +255,7 @@ class LoginNotifier extends _$LoginNotifier {
         ..invalidate(currentTeamMemberNotifierProvider);
 
       logger.i('User signed out successfully');
+      state = const LoginState(isLoading: false, isLoggedIn: false);
     } catch (e, s) {
       logger.e('Failed to sign out: $e, $s');
       state = LoginState(error: e.toString());

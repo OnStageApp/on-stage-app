@@ -30,6 +30,7 @@ import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart'
 import 'package:on_stage_app/app/features/user/presentation/user_profile_info_screen.dart';
 import 'package:on_stage_app/app/main_screen.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router_notifier.g.dart';
@@ -79,25 +80,36 @@ class NavigationNotifier extends _$NavigationNotifier {
         final loginState = ref.watch(loginNotifierProvider);
         final isLoggedIn = loginState.isLoggedIn;
         final isLoading = loginState.isLoading;
+
         final currentLocation = state.uri.toString();
 
+        logger.i('Current location: $currentLocation');
+        logger.i('Is logged in: $isLoggedIn');
+        logger.i('Is loading: $isLoading');
+        logger.i('current location : $currentLocation');
+
         if (isLoading) {
+          logger.i('Redirecting to loading screen');
           return '/loading';
         }
 
         if (isLoggedIn) {
+          logger.i('Redirecting to home screen');
           if (['/login', '/welcome', '/login/signUp']
               .contains(currentLocation)) {
             return '/home';
           }
+          logger.i('Redirecting to home screen');
           return null;
         } else {
+          logger.i('Redirecting to login screen');
           if (!['/login', '/loading', '/login/signUp']
               .contains(currentLocation)) {
             return '/login';
           }
         }
 
+        logger.i('Redirecting to welcome screen');
         return null;
       },
       routes: _routes(),
@@ -107,8 +119,10 @@ class NavigationNotifier extends _$NavigationNotifier {
 
   List<RouteBase> _routes() => [
         StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) {
-            return MainScreen(navigationShell: navigationShell);
+          pageBuilder: (context, state, navigationShell) {
+            return NoTransitionPage(
+              child: MainScreen(navigationShell: navigationShell),
+            );
           },
           branches: [
             StatefulShellBranch(
@@ -117,11 +131,11 @@ class NavigationNotifier extends _$NavigationNotifier {
                 GoRoute(
                   name: AppRoute.home.name,
                   path: '/home',
-                  builder: (context, state) {
+                  pageBuilder: (context, state) {
                     ref
                         .read(analyticsServiceProvider.notifier)
                         .logScreenView(AppRoute.home.name);
-                    return const HomeScreen();
+                    return const NoTransitionPage(child: HomeScreen());
                   },
                 ),
               ],
@@ -386,21 +400,23 @@ class NavigationNotifier extends _$NavigationNotifier {
         GoRoute(
           name: AppRoute.loading.name,
           path: '/loading',
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             ref
                 .read(analyticsServiceProvider.notifier)
                 .logScreenView(AppRoute.loading.name);
-            return const LoadingScreen();
+            return const NoTransitionPage(
+              child: LoadingScreen(),
+            );
           },
         ),
         GoRoute(
           name: AppRoute.login.name,
           path: '/login',
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             ref
                 .read(analyticsServiceProvider.notifier)
                 .logScreenView(AppRoute.login.name);
-            return const LoginScreen();
+            return const NoTransitionPage(child: LoginScreen());
           },
           routes: [
             GoRoute(
@@ -418,11 +434,13 @@ class NavigationNotifier extends _$NavigationNotifier {
         GoRoute(
           name: AppRoute.welcome.name,
           path: '/welcome',
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             ref
                 .read(analyticsServiceProvider.notifier)
                 .logScreenView(AppRoute.welcome.name);
-            return const HomeScreen();
+            return const NoTransitionPage(
+              child: HomeScreen(),
+            );
           },
           redirect: (context, state) {
             return '/home';
