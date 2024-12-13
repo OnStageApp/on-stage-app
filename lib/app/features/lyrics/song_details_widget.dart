@@ -175,17 +175,16 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           _scrollToIndex();
         }
       })
-      // ..listen(songNotifierProvider, (previous, next) {
-      //   if (previous?.song.rawSections != next.song.rawSections) {
-      //     logger.i('raw sections changed ');
-      //     _processTextAndSetSections();
-      //   }
-      // })
+      ..listen(songNotifierProvider, (previous, next) {
+        /// Need to reprocess text if text changed
+        if (previous?.song.rawSections != next.song.rawSections) {
+          logger.i('raw sections changed ');
+          _processTextAndSetSections();
+        }
+      })
       ..listen(songNotifierProvider, (previous, next) {
         if (!listEquals(previous?.song.structure, next.song.structure)) {
           logger.i('song structure changed ');
-          logger.i('old structure: ${previous?.song.structure}');
-          logger.i('new structure: ${next.song.structure}');
           _processTextAndSetSections();
         }
       })

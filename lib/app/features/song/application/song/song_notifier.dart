@@ -43,6 +43,8 @@ class SongNotifier extends _$SongNotifier {
 
     state = state.copyWith(
       song: song,
+      sections: [],
+      originalSongSections: [],
       isLoading: false,
     );
     logger.i('init song with title: ${state.song.title}');

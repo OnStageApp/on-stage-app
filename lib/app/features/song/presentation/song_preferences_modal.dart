@@ -117,7 +117,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                   ..pushNamed(
                     AppRoute.editSongContent.name,
                     queryParameters: {
-                      'songId': ref.watch(songNotifierProvider).song.id,
+                      'songId': ref.watch(songNotifierProvider).song.id ?? '',
                     },
                   );
               },
@@ -134,9 +134,9 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                 context
                   ..popDialog()
                   ..pushNamed(
-                    AppRoute.editSongInfos.name,
+                    AppRoute.editSongInfo.name,
                     queryParameters: {
-                      'songId': ref.watch(songNotifierProvider).song.id,
+                      'songId': ref.watch(songNotifierProvider).song.id ?? '',
                     },
                   );
               },
