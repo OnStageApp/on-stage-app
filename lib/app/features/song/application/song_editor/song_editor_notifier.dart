@@ -15,6 +15,11 @@ class SongEditorNotifier extends _$SongEditorNotifier {
     return [];
   }
 
+  void init() {
+    logger.d('Initializing SongEditorNotifier');
+    state = [];
+  }
+
   void setSections(List<SectionData> sections) {
     logger.d('Setting sections: count=${sections.length}');
     try {
