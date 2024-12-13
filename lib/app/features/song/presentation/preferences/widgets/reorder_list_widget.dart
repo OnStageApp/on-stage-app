@@ -94,22 +94,24 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
         return MyDragStartListener(
           key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
           index: index,
-          child: ReordableListItem(
-            itemKey: '${cacheStructureItems[index].shortName}_$index',
-            itemId: cacheStructureItems[index].index,
-            color: cacheStructureItems[index].color,
-            shortName: cacheStructureItems[index].shortName,
-            name: cacheStructureItems[index].name,
-            onRemove: () {
-              ref
-                  .read(songPreferencesControllerProvider.notifier)
-                  .removeStructureItem(cacheStructureItems[index]);
-            },
-            onClone: () {
-              ref
-                  .read(songPreferencesControllerProvider.notifier)
-                  .addStructureItem(cacheStructureItems[index]);
-            },
+          child: ClipRect(
+            child: ReordableListItem(
+              itemKey: '${cacheStructureItems[index].shortName}_$index',
+              itemId: cacheStructureItems[index].index,
+              color: cacheStructureItems[index].color,
+              shortName: cacheStructureItems[index].shortName,
+              name: cacheStructureItems[index].name,
+              onRemove: () {
+                ref
+                    .read(songPreferencesControllerProvider.notifier)
+                    .removeStructureItem(cacheStructureItems[index]);
+              },
+              onClone: () {
+                ref
+                    .read(songPreferencesControllerProvider.notifier)
+                    .addStructureItem(cacheStructureItems[index]);
+              },
+            ),
           ),
         );
       },

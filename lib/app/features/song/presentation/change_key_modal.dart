@@ -35,6 +35,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
   }) {
     showModalBottomSheet<Widget>(
       backgroundColor: context.colorScheme.surfaceContainerHigh,
+      useRootNavigator: true,
       context: context,
       builder: (context) => NestedScrollModal(
         buildHeader: () => ModalHeader(title: title),
