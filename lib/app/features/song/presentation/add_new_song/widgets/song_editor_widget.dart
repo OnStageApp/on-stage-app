@@ -37,34 +37,17 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     logger.d('Starting sections initialization');
     final song = ref.watch(songNotifierProvider).song;
     final rawSections = song.rawSections ?? [];
+    final sections = rawSections
+        .map(
+          (rawSection) => SectionData(
+            rawSection: rawSection,
+            controller: CustomTextEditingController(text: rawSection.content),
+          ),
+        )
+        .toList();
 
-    logger.d('Current song has ${rawSections.length} raw sections');
-
-    final currentSections = ref.watch(songEditorNotifierProvider);
-    if (currentSections.isEmpty ||
-        currentSections.length != rawSections.length) {
-      logger.d(
-          'Need to initialize sections: current=${currentSections.length}, new=${rawSections.length}');
-
-      try {
-        final sections = rawSections
-            .map(
-              (rawSection) => SectionData(
-                rawSection: rawSection,
-                controller:
-                    CustomTextEditingController(text: rawSection.content),
-              ),
-            )
-            .toList();
-
-        ref.read(songEditorNotifierProvider.notifier).setSections(sections);
-        logger.i('Successfully initialized ${sections.length} sections');
-      } catch (e, stack) {
-        logger.e('Error initializing sections', e, stack);
-      }
-    } else {
-      logger.d('Sections already initialized correctly');
-    }
+    ref.read(songEditorNotifierProvider.notifier).setSections(sections);
+    logger.i('Successfully initialized ${sections.length} sections');
   }
 
   Future<void> _addNewSection() async {
@@ -154,13 +137,13 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: 'No sections added yet, ',
+                text: 'No sections added, ',
                 style: context.textTheme.titleSmall?.copyWith(
                   color: context.colorScheme.surfaceDim,
                 ),
               ),
               TextSpan(
-                text: 'add one.',
+                text: 'add sections',
                 style: context.textTheme.titleSmall?.copyWith(
                   color: context.colorScheme.primary,
                 ),

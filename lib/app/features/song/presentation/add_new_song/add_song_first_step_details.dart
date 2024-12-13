@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
@@ -34,12 +36,11 @@ class _AddSongFirstStepDetailsState
   final _songNameController = TextEditingController();
   final _bpmController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _tempoFocusNode = FocusNode();
-  final _nameFocusNode = FocusNode();
 
   SongKey? _selectedKey;
   Artist? _selectedArtist;
   ThemeEnum? _selectedTheme;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -97,7 +98,8 @@ class _AddSongFirstStepDetailsState
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
           text: 'Save',
-          onPressed: _addSongDetails,
+          isLoading: _isLoading,
+          onPressed: _onSave,
           isEnabled: _isFormValid(),
         ),
       ),
@@ -190,22 +192,48 @@ class _AddSongFirstStepDetailsState
     );
   }
 
-  void _addSongDetails() {
+  void _onSave() {
+    setState(() {
+      _isLoading = true;
+    });
     if (_formKey.currentState?.validate() ?? false) {
-      if (widget.songId == null) {
-        _setFieldsOnController();
-        context.pushNamed(AppRoute.editSongContent.name);
+      if (ref.watch(songNotifierProvider).song.id == null) {
+        logger.i('Validation passed');
+        _saveSongToDb();
       } else {
         _updateSongToDb();
-        context.pop();
       }
     } else {
-      logger.e('Validation failed');
+      logger.i('Validation failed');
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  void _updateSongToDb() {
-    ref.read(songNotifierProvider.notifier).updateSongToDB(
+  Future<void> _saveSongToDb() async {
+    _setFieldsOnController();
+    final isSuccess =
+        await ref.read(songNotifierProvider.notifier).saveSongToDB();
+    if (!context.mounted || !isSuccess) return;
+    context.goNamed(
+      AppRoute.song.name,
+      queryParameters: {
+        'songId': ref.watch(songNotifierProvider).song.id,
+      },
+    );
+    unawaited(
+      context.pushNamed(
+        AppRoute.editSongContent.name,
+        queryParameters: {
+          'songId': ref.watch(songNotifierProvider).song.id,
+        },
+      ),
+    );
+  }
+
+  Future<void> _updateSongToDb() async {
+    await ref.read(songNotifierProvider.notifier).updateSongToDB(
           SongRequest(
             title: _songNameController.text,
             tempo: int.tryParse(_bpmController.text) ?? 0,
@@ -214,6 +242,8 @@ class _AddSongFirstStepDetailsState
             theme: _selectedTheme,
           ),
         );
+    if (!context.mounted) return;
+    context.pop();
   }
 
   void _setFieldsOnController() {

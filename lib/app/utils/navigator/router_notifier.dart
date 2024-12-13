@@ -146,18 +146,18 @@ class NavigationNotifier extends _$NavigationNotifier {
                             .logScreenView('${AppRoute.song.name}/$songId');
                         return SongDetailScreen(songId: songId);
                       },
-                    ),
-                    GoRoute(
-                      name: AppRoute.editSongInfos.name,
-                      path: 'editSongInfos',
-                      builder: (context, state) {
-                        final songId = state.uri.queryParameters['songId'];
-                        ref
-                            .read(analyticsServiceProvider.notifier)
-                            .logScreenView(AppRoute.editSongInfos.name);
-                        return AddSongFirstStepDetails(songId: songId);
-                      },
                       routes: [
+                        GoRoute(
+                          name: AppRoute.editSongInfo.name,
+                          path: 'editSongInfo',
+                          builder: (context, state) {
+                            final songId = state.uri.queryParameters['songId'];
+                            ref
+                                .read(analyticsServiceProvider.notifier)
+                                .logScreenView(AppRoute.editSongInfo.name);
+                            return AddSongFirstStepDetails(songId: songId);
+                          },
+                        ),
                         GoRoute(
                           name: AppRoute.editSongContent.name,
                           path: 'editSongContent',
@@ -169,6 +169,16 @@ class NavigationNotifier extends _$NavigationNotifier {
                           },
                         ),
                       ],
+                    ),
+                    GoRoute(
+                      name: AppRoute.createSongInfo.name,
+                      path: 'createSongInfo',
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.createSongInfo.name);
+                        return const AddSongFirstStepDetails();
+                      },
                     ),
                   ],
                 ),

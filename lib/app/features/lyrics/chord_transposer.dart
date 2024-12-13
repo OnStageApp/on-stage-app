@@ -6,13 +6,13 @@ class ChordTransposer {
     required this.key,
     this.transpose = 0,
   }) {
-    cycle = americanNotes;
+    cycle = defaultCycle;
 
     switch (chordNotation) {
       case SongViewMode.lyrics:
-        cycle = americanNotes;
+        cycle = defaultCycle;
       case SongViewMode.american:
-        cycle = americanNotes;
+        cycle = defaultCycle;
       case SongViewMode.numeric:
         cycle = romanNumerals;
     }
@@ -22,6 +22,26 @@ class ChordTransposer {
   late List<String> cycle;
   int transpose;
   String key;
+
+  static const List<String> defaultCycle = [
+    'C',
+    'C#',
+    'Db',
+    'D',
+    'D#',
+    'Eb',
+    'E',
+    'F',
+    'F#',
+    'Gb',
+    'G',
+    'G#',
+    'Ab',
+    'A',
+    'A#',
+    'Bb',
+    'B'
+  ];
 
   static const Map<String, int> noteToSemitone = {
     'C': 0,
@@ -43,25 +63,21 @@ class ChordTransposer {
     'B': 11,
   };
 
-  static const List<String> americanNotes = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B',
-    'Db',
-    'Eb',
-    'Gb',
-    'Ab',
-    'Bb',
-  ];
+  // Maps to maintain the original style (sharp or flat) for each semitone
+  static const Map<int, Map<String, String>> semitoneToNote = {
+    0: {'sharp': 'C', 'flat': 'C'},
+    1: {'sharp': 'C#', 'flat': 'Db'},
+    2: {'sharp': 'D', 'flat': 'D'},
+    3: {'sharp': 'D#', 'flat': 'Eb'},
+    4: {'sharp': 'E', 'flat': 'E'},
+    5: {'sharp': 'F', 'flat': 'F'},
+    6: {'sharp': 'F#', 'flat': 'Gb'},
+    7: {'sharp': 'G', 'flat': 'G'},
+    8: {'sharp': 'G#', 'flat': 'Ab'},
+    9: {'sharp': 'A', 'flat': 'A'},
+    10: {'sharp': 'A#', 'flat': 'Bb'},
+    11: {'sharp': 'B', 'flat': 'B'},
+  };
 
   static const List<String> romanNumerals = [
     'I',
@@ -77,12 +93,11 @@ class ChordTransposer {
     if (transpose == 0 && chordNotation != SongViewMode.numeric) {
       if (chordNotation == SongViewMode.american) {
         return _convertAccidentals(chord);
-      } else {
-        return chord;
       }
+      return chord;
     }
-    final outChord = <String>[];
 
+    final outChord = <String>[];
     for (final partChord in chord.split('/')) {
       outChord.add(_processChord(partChord));
     }
@@ -100,142 +115,91 @@ class ChordTransposer {
       return _toNumeric(chord, key);
     }
 
-    var index = cycle.lastIndexWhere((note) => chord.startsWith(note));
-    if (index == -1) {
-      return chord;
-    }
-    final chordFound = cycle[index];
-    var simpleChord = chord.substring(0, chordFound.length);
-    final otherPartChord = chord.substring(simpleChord.length);
+    // Extract the root note and the rest of the chord
+    final match = RegExp(r'^([A-G][#b]?)(.*)$').firstMatch(chord);
+    if (match == null) return chord;
 
-    simpleChord = _handleFlatOrSharp(chord, simpleChord);
-    index = cycle.indexOf(simpleChord);
+    final rootNote = match.group(1)!;
+    final remainder = match.group(2) ?? '';
 
-    final newInd = (index + transpose + cycle.length) % cycle.length;
-    final newChord = cycle[newInd];
+    // Get semitone value for the root note
+    final semitone = noteToSemitone[rootNote];
+    if (semitone == null) return chord;
 
-    if (chordNotation == SongViewMode.american) {
-      return _convertAccidentals(newChord + otherPartChord);
-    } else {
-      return newChord + otherPartChord;
-    }
-  }
+    // Determine if the original chord used flats or sharps
+    final usesFlat = rootNote.contains('b');
 
-  String _handleFlatOrSharp(String chord, String simpleChordParam) {
-    var simpleChord = simpleChordParam;
-    if (chord.startsWith('#', simpleChord.length)) {
-      simpleChord += '#';
-    }
-    if (chord.startsWith('b', simpleChord.length)) {
-      simpleChord = _fromFlatToSharp(simpleChord);
-    }
-    return simpleChord;
-  }
+    // Calculate new semitone after transposition
+    final newSemitone = (semitone + transpose + 12) % 12;
 
-  String _fromFlatToSharp(String simpleChord) {
-    final index = cycle.indexOf(simpleChord) - 1 + cycle.length;
-    return cycle[index % cycle.length];
+    // Get the new note preserving the original accidental style
+    final newNote = semitoneToNote[newSemitone]![usesFlat ? 'flat' : 'sharp']!;
+
+    return newNote + remainder;
   }
 
   String _toNumeric(String chord, String key) {
-    final match = RegExp(r'^([A-G])([#b]?)(m|maj|min|dim|aug)?([#b]?)(.*)$')
-        .firstMatch(chord);
+    final match =
+        RegExp(r'^([A-G][#b]?)(maj|min|dim|aug|m)?(.*)$').firstMatch(chord);
     if (match == null) return chord;
 
-    var root = match.group(1)!;
-    var accidental = match.group(2) ?? '';
-    final quality = match.group(3) ?? '';
-    final accidental2 = match.group(4) ?? '';
-    var suffix = match.group(5) ?? '';
+    final root = match.group(1)!;
+    final quality = match.group(2) ?? '';
+    print('quality: $quality');
+    final remainder = match.group(3) ?? '';
+    print('remainder: $remainder');
 
-    if (accidental2.isNotEmpty) {
-      if (accidental.isNotEmpty) {
-        // Both accidentals present, possibly an invalid chord
-        return chord; // Or handle as needed
+    // Get semitones for both chord and key
+    final chordSemitone = noteToSemitone[root];
+    final keySemitone = noteToSemitone[key.replaceAll(RegExp(r'[^A-G#b]'), '')];
+
+    if (chordSemitone == null || keySemitone == null) return chord;
+
+    // Calculate interval
+    final interval = (chordSemitone - keySemitone + 12) % 12;
+
+    // Map interval to roman numeral
+    final degreeMap = {
+      0: 'I',
+      2: 'II',
+      4: 'III',
+      5: 'IV',
+      7: 'V',
+      9: 'VI',
+      11: 'VII',
+    };
+
+    var numeral = degreeMap[interval];
+    if (numeral == null) {
+      // Handle non-diatonic chords
+      final flatInterval = (interval - 1 + 12) % 12;
+      if (degreeMap.containsKey(flatInterval)) {
+        numeral = '♭${degreeMap[flatInterval]}';
       } else {
-        accidental = accidental2;
+        return chord; // Return original if can't map
       }
     }
 
-    root += accidental;
-    suffix = quality + suffix;
-
-    final keyMatch = RegExp(r'^([A-G][#b]?)(\s|$)').firstMatch(key);
-    if (keyMatch == null) return chord;
-
-    final keyRoot = keyMatch.group(1)!;
-
-    // Semitone mapping
-    final noteSemitoneMap = <String, int>{
-      'C': 0,
-      'C#': 1,
-      'Db': 1,
-      'D': 2,
-      'D#': 3,
-      'Eb': 3,
-      'E': 4,
-      'F': 5,
-      'F#': 6,
-      'Gb': 6,
-      'G': 7,
-      'G#': 8,
-      'Ab': 8,
-      'A': 9,
-      'A#': 10,
-      'Bb': 10,
-      'B': 11,
-    };
-
-    final keySemitone = noteSemitoneMap[keyRoot];
-    final chordSemitone = noteSemitoneMap[root];
-
-    if (keySemitone == null || chordSemitone == null) return chord;
-
-    final interval = (chordSemitone - keySemitone + 12) % 12;
-
-    // Extended scale steps and Roman numerals
-    final scaleSteps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-    final romanNumerals = [
-      'I',
-      '♭II',
-      'II',
-      '♭III',
-      'III',
-      'IV',
-      '♯IV/♭V',
-      'V',
-      '♭VI',
-      'VI',
-      '♭VII',
-      'VII',
-    ];
-
-    final degreeIndex = scaleSteps.indexOf(interval);
-    if (degreeIndex == -1) return chord;
-
-    var romanNumeral = romanNumerals[degreeIndex];
-
-    final isMinorChord = quality.startsWith('m') || quality.startsWith('min');
-
     // Adjust case based on chord quality
-    if (isMinorChord) {
-      romanNumeral = romanNumeral.toLowerCase();
-    } else {
-      romanNumeral = romanNumeral.toUpperCase();
+    if (!quality.toLowerCase().startsWith('maj') &&
+        (quality.startsWith('m') && RegExp('[a-z]').hasMatch(quality[0]) ||
+            quality.startsWith('min'))) {
+      print('$quality lowercase');
+      numeral = numeral.toLowerCase();
     }
 
-    return romanNumeral + _convertSuffix(suffix);
+    return numeral + _convertSuffix(quality + remainder);
   }
 
   String _convertSuffix(String suffixChord) {
     var suffix = suffixChord;
     if (suffix.isEmpty) return '';
-    suffix = suffix.replaceAll('maj', 'Δ');
-    suffix = suffix.replaceAll('min', 'm');
-    suffix =
-        suffix.replaceAll('m', ''); // Minor is indicated by lowercase numeral
-    suffix = suffix.replaceAll('aug', '+');
-    suffix = suffix.replaceAll('dim', '°');
+    suffix = suffix
+        .replaceAll('maj', '')
+        .replaceAll('min', 'm')
+        .replaceAll('m', '') // Minor is indicated by lowercase numeral
+        .replaceAll('aug', '+')
+        .replaceAll('dim', '°');
     return suffix;
   }
 

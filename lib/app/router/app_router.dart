@@ -25,14 +25,15 @@ enum AppRoute {
   loading,
   signUp,
   songDetailsWithPages,
-  editSongInfos,
-  editSongContent,
+  createSongInfo,
   addStructureForSong,
   plans,
   about,
   privacyPolicy,
   termsOfUse,
   userProfileInfo,
+  editSongInfo,
+  editSongContent,
 }
 
 extension GoRouterExtension on GoRouter {

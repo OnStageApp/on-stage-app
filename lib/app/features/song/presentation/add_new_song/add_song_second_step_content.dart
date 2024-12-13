@@ -29,6 +29,9 @@ class AddSongSecondStepContentState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(songEditorNotifierProvider.notifier).init();
+    });
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -47,6 +50,14 @@ class AddSongSecondStepContentState
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: songTitle,
+        onBackButtonPressed: () {
+          final songId = ref.watch(songNotifierProvider).song.id;
+          if (songId == null) {
+            context.goNamed(AppRoute.home.name);
+            return;
+          }
+          ref.read(songNotifierProvider.notifier).init(songId);
+        },
       ),
       body: EditorTabSwitch(tabController: _tabController),
     );
@@ -82,7 +93,6 @@ class AddSongSecondStepContentState
                 _onSavedSong(context);
               },
               isEnabled: true,
-              hasShadow: true,
             ),
           ),
         ],
@@ -114,16 +124,13 @@ class AddSongSecondStepContentState
       return;
     }
 
-    /// Navigate based on whether it was a new song or update
-    song.id == null
-        ? context.goNamed(
-            AppRoute.song.name,
-            queryParameters: {'songId': song.id},
-          )
-        : context.pushReplacementNamed(
-            AppRoute.song.name,
-            queryParameters: {'songId': song.id},
-          );
+    if (song.id == null) {
+      return;
+    }
+    context.goNamed(
+      AppRoute.song.name,
+      queryParameters: {'songId': song.id},
+    );
   }
 }
 

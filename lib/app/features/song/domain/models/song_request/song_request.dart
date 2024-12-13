@@ -31,6 +31,7 @@ class SongRequest with _$SongRequest {
       tempo: songModel.tempo,
       originalKey: songModel.originalKey,
       artistId: songModel.artist?.id,
+      theme: songModel.theme,
     );
   }
 }
