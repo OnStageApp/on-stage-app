@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
@@ -36,6 +39,17 @@ class FirebaseNotifier extends _$FirebaseNotifier {
   /// Requests notification permissions from the user.
   Future<void> _requestPermissions() async {
     await FirebaseMessaging.instance.requestPermission();
+
+    // For Android 13+
+    if (Platform.isAndroid) {
+      final androidImplementation =
+          _localNotificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      if (androidImplementation != null) {
+        await androidImplementation.requestNotificationsPermission();
+      }
+    }
   }
 
   /// Sets up local notifications for both Android and iOS.
@@ -51,10 +65,12 @@ class FirebaseNotifier extends _$FirebaseNotifier {
       iOS: iosSettings,
     );
 
-    await _localNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: (response) {
-      _handleNotificationResponse(response.payload);
-    });
+    await _localNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (response) {
+        _handleNotificationResponse(response.payload);
+      },
+    );
 
     // Disable automatic notification display by Firebase Messaging
     await FirebaseMessaging.instance
@@ -63,6 +79,19 @@ class FirebaseNotifier extends _$FirebaseNotifier {
       badge: true,
       sound: true,
     );
+  }
+
+  // TODO: Define the background message handler
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    // await Firebase.initializeApp();
+
+    if (kDebugMode) {
+      print("Handling a background message: ${message.messageId}");
+      print('Message data: ${message.data}');
+      print('Message notification: ${message.notification?.title}');
+      print('Message notification: ${message.notification?.body}');
+    }
   }
 
   /// Configures the push token and handles token refresh.
@@ -83,6 +112,30 @@ class FirebaseNotifier extends _$FirebaseNotifier {
 
   /// Configures message handlers for foreground and background messages.
   void _configureMessageHandlers() {
+    // Add this handler for foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        _localNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'High Importance Notifications',
+              icon: '@mipmap/ic_launcher',
+              priority: Priority.high,
+              importance: Importance.high,
+            ),
+          ),
+          payload: message.data['screen'] as String?,
+        );
+      }
+    });
+
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _handleNotificationResponse(message.data['screen'] as String?);
     });
