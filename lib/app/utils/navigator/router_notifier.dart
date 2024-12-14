@@ -256,7 +256,8 @@ class NavigationNotifier extends _$NavigationNotifier {
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(
-                                '${AppRoute.eventDetails.name}/$eventId');
+                              '${AppRoute.eventDetails.name}/$eventId',
+                            );
                         return EventDetailsScreen(eventId);
                       },
                       routes: [

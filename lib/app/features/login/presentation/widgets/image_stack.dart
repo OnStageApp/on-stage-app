@@ -3,7 +3,7 @@ import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_ov
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ImageStack extends StatelessWidget {
-  const ImageStack({Key? key}) : super(key: key);
+  const ImageStack({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class ImageStack extends StatelessWidget {
     final width = size.width;
     final height = size.height;
 
-    return Container(
+    return SizedBox(
       height: height,
       width: width,
       child: Stack(

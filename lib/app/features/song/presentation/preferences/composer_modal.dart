@@ -33,20 +33,13 @@ class ComposerModal extends ConsumerStatefulWidget {
 }
 
 class ArtistModalState extends ConsumerState<ComposerModal> {
-  // List<Section> _sections = [];
   final List<Artist> _addedArtists = [];
-  // bool isAddPage = false;
 
   final List<Artist> _artists = [];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        //_sections = ref.watch(songNotifierProvider).sections;
-      });
-    });
   }
 
   @override
@@ -110,17 +103,7 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
                       width: 30,
                       height: 30,
                       alignment: Alignment.center,
-                      // key: ValueKey(_sections[index].structure.id),
-                      //  decoration: BoxDecoration(
-                      //    color: Colors.white,
-                      //    border: Border.all(
-                      //      color: Color(_artists[index].structure.item.color),
-                      //      width: 3,
-                      //    ),
-                      //    shape: BoxShape.circle,
-                      //  ),
-                      child: CircleAvatar(
-                        // backgroundImage: AssetImage(_artists[index].imageUrl!),
+                      child: const CircleAvatar(
                         radius: 12,
                       ),
                     ),
@@ -141,10 +124,6 @@ class ArtistModalState extends ConsumerState<ComposerModal> {
                             _addedArtists.add(_artists[index]);
                           }
                         });
-
-                        // ref
-                        //     .read(songNotifierProvider.notifier);
-                        //.updateSongSections(_artists);
                       },
                       icon: Icon(
                         _isItemChecked(index)

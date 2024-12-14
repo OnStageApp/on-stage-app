@@ -6,21 +6,15 @@ import 'package:mime/mime.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 
 class ProfilePictureRepository {
-  final Dio _dio;
-
   ProfilePictureRepository(this._dio);
+
+  final Dio _dio;
 
   Future<void> updateUserImage(File imageFile) async {
     try {
       final fileName = imageFile.path.split('/').last;
       final fileExtension = fileName.split('.').last.toLowerCase();
-      String? mimeType = lookupMimeType(fileName);
-
-      print('Uploading image:');
-      print('  File name: $fileName');
-      print('  File extension: $fileExtension');
-      print('  Detected MIME type: $mimeType');
-      print('  File size: ${await imageFile.length()} bytes');
+      var mimeType = lookupMimeType(fileName);
 
       // Handle HEIF files
       if (fileExtension == 'heic' || fileExtension == 'heif') {
@@ -38,10 +32,8 @@ class ProfilePictureRepository {
         throw Exception('Could not determine file type');
       }
 
-      print('  Final MIME type: $mimeType');
-
-      FormData formData = FormData.fromMap({
-        "image": await MultipartFile.fromFile(
+      final formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(
           imageFile.path,
           filename: imageFile.path.split('/').last,
           contentType: MediaType('image', 'jpeg'),
@@ -53,19 +45,15 @@ class ProfilePictureRepository {
         data: formData,
         options: Options(
           headers: {
-            "Cache-Control": "no-cache",
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Connection": "keep-alive",
+            'Cache-Control': 'no-cache',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
             // Let Dio set the Content-Type header with the boundary
           },
           validateStatus: (status) => status! < 500,
         ),
       );
-
-      print('Server response:');
-      print('  Status code: ${response.statusCode}');
-      print('  Response data: ${response.data}');
 
       if (response.statusCode != 200) {
         throw DioException(
@@ -74,14 +62,7 @@ class ProfilePictureRepository {
           type: DioExceptionType.badResponse,
         );
       }
-
-      print('Image upload successful');
     } on DioException catch (e, s) {
-      print('DioException occurred: $s');
-      print('  Type: ${e.type}');
-      print('  Message: ${e.message}');
-      print('  Status code: ${e.response?.statusCode}');
-      print('  Response data: ${e.response?.data}');
       rethrow;
     } catch (e) {
       print('Unexpected error occurred: $e');

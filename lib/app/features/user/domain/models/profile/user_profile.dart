@@ -10,10 +10,10 @@ part 'user_profile.g.dart';
 @Freezed()
 class UserProfileInfo with _$UserProfileInfo {
   const factory UserProfileInfo({
+    required Position? position,
     String? name,
     String? email,
     String? username,
-    required Position? position,
     String? photoUrl,
     @JsonKey(name: 'image', fromJson: _imageFromJson, toJson: _imageToJson)
     Uint8List? image,

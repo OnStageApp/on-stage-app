@@ -49,16 +49,14 @@ class StageTooltipState extends State<StageTooltip> {
       ),
       popupDirection:
           widget.preferBelow ? TooltipDirection.down : TooltipDirection.up,
-      arrowTipDistance: 15.0,
-      arrowBaseWidth: 20.0, // Reduce the base width to make the arrow straight
-      arrowLength: 10.0,
-      backgroundColor: Colors.grey[700]!,
+      arrowTipDistance: 15,
+      arrowLength: 10,
+      backgroundColor: Colors.grey[700],
       borderColor: Colors.transparent,
-      borderWidth: 0,
       hasShadow: false,
       shadowColor: Colors.transparent,
-      shadowBlurRadius: 4.0,
-      shadowSpreadRadius: 1.0,
+      shadowBlurRadius: 4,
+      shadowSpreadRadius: 1,
       touchThroughAreaShape: ClipAreaShape.rectangle,
       child: widget.child,
     );

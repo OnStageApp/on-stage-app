@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/add_item_button_widget.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -111,9 +111,6 @@ class AddPhotoModal extends ConsumerWidget {
       logger.i('Permission not granted. Cannot open photo picker.');
     }
   }
-
-
-
 
   static Future<File?> show({required BuildContext context}) async {
     return showModalBottomSheet<File>(

@@ -125,7 +125,7 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
                 onPressed: _createRehearsal,
               ),
               const SizedBox(height: 24),
-            ]
+            ],
           ],
         ),
       ),

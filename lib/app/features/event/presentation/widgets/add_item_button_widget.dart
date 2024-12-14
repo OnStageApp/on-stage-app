@@ -4,11 +4,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class AddItemButtonWidget extends StatelessWidget {
   const AddItemButtonWidget({
     required this.title,
-    this.subtitle,
     required this.icon,
     required this.iconColor,
     required this.backgroundColor,
     required this.onPressed,
+    this.subtitle,
     super.key,
   });
 

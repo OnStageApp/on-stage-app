@@ -8,7 +8,7 @@ class NameUtils {
     final initials = nameParts
         .take(maxInitials)
         .map((part) => part.isNotEmpty ? part[0].toUpperCase() : '')
-        .join('');
+        .join();
 
     return initials;
   }

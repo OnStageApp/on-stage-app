@@ -103,8 +103,11 @@ class ChordProcessor extends _$ChordProcessor {
           count++;
         } else {
           compressedSections.add(
-            Section(currentSection.lines, currentSection.structure,
-                count: count),
+            Section(
+              currentSection.lines,
+              currentSection.structure,
+              count: count,
+            ),
           );
           currentSection = modifiedDocumentContent[i];
           count = 1;
@@ -171,12 +174,14 @@ class ChordProcessor extends _$ChordProcessor {
         }
       }
     }
-    chordLyricsLines.add(_processLine(
-      currentLine.substring(characterIndex, currentLine.length).trim(),
-      lyricsStyle,
-      chordStyle,
-      chordTransposer,
-    ));
+    chordLyricsLines.add(
+      _processLine(
+        currentLine.substring(characterIndex, currentLine.length).trim(),
+        lyricsStyle,
+        chordStyle,
+        chordTransposer,
+      ),
+    );
   }
 
   double _getTextWidthFromStyle(String text, TextStyle textStyle) {

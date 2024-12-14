@@ -57,14 +57,16 @@ class SongEditorNotifier extends _$SongEditorNotifier {
       final newSections = [...state];
       final removedSection = newSections.removeAt(index);
       logger.d(
-          'Removed section: ${removedSection.rawSection.structureItem?.name}');
+        'Removed section: ${removedSection.rawSection.structureItem?.name}',
+      );
 
       removedSection.controller.dispose();
       logger.d('Disposed controller for removed section');
 
       state = newSections;
       logger.i(
-          'Successfully removed section. Remaining sections: ${state.length}');
+        'Successfully removed section. Remaining sections: ${state.length}',
+      );
 
       updateSong();
     } catch (e, stack) {

@@ -34,13 +34,13 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
 
   void _updateValues(double dx, BoxConstraints constraints, bool isStart) {
     final fullWidth = constraints.maxWidth;
-    const int valueRange = maxValue - minValue;
+    const valueRange = maxValue - minValue;
 
     // Calculate relative position based on drag side
     if (isStart) {
       // For start handle
-      final double position = dx.clamp(0, fullWidth);
-      double newValue = minValue + (position / fullWidth) * valueRange;
+      final position = dx.clamp(0, fullWidth);
+      var newValue = minValue + (position / fullWidth) * valueRange;
       // Snap to steps of 10
       newValue = (newValue / 10).round() * 10;
       setState(() {
@@ -48,8 +48,8 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
       });
     } else {
       // For end handle
-      final double position = (dx.clamp(0, fullWidth));
-      double newValue = minValue + (position / fullWidth) * valueRange;
+      final position = dx.clamp(0, fullWidth);
+      var newValue = minValue + (position / fullWidth) * valueRange;
       // Snap to steps of 10
       newValue = (newValue / 10).round() * 10;
       setState(() {
@@ -66,7 +66,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
       children: List.generate(
         3,
         (row) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0),
+          padding: const EdgeInsets.symmetric(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(
@@ -75,7 +75,9 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                 width: 3,
                 height: 3,
                 margin: const EdgeInsets.symmetric(
-                    horizontal: 0.78, vertical: 0.78),
+                  horizontal: 0.78,
+                  vertical: 0.78,
+                ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
@@ -103,10 +105,10 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
         const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) {
-            final double fullWidth = constraints.maxWidth;
-            final double startPosition =
+            final fullWidth = constraints.maxWidth;
+            final startPosition =
                 (_startValue - minValue) / (maxValue - minValue) * fullWidth;
-            final double endPosition =
+            final endPosition =
                 (_endValue - minValue) / (maxValue - minValue) * fullWidth;
 
             return SizedBox(
@@ -157,12 +159,15 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                         children: [
                           GestureDetector(
                             onHorizontalDragUpdate: (details) {
-                              final RenderBox box =
-                                  context.findRenderObject() as RenderBox;
-                              final Offset localPosition =
+                              final box =
+                                  context.findRenderObject()! as RenderBox;
+                              final localPosition =
                                   box.globalToLocal(details.globalPosition);
                               _updateValues(
-                                  localPosition.dx, constraints, true);
+                                localPosition.dx,
+                                constraints,
+                                true,
+                              );
                             },
                             child: Container(
                               width: 32,
@@ -188,7 +193,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                               ),
                               child: Center(
                                 child: Text(
-                                  '${_startValue.round()} - ${_endValue == maxValue ? '${maxValue}+' : _endValue.round()}',
+                                  '$_startValue - ${_endValue == maxValue ? '$maxValue+' : _endValue}',
                                   style: context.textTheme.titleMedium,
                                 ),
                               ),
@@ -196,12 +201,15 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                           ),
                           GestureDetector(
                             onHorizontalDragUpdate: (details) {
-                              final RenderBox box =
-                                  context.findRenderObject() as RenderBox;
-                              final Offset localPosition =
+                              final box =
+                                  context.findRenderObject()! as RenderBox;
+                              final localPosition =
                                   box.globalToLocal(details.globalPosition);
                               _updateValues(
-                                  localPosition.dx, constraints, false);
+                                localPosition.dx,
+                                constraints,
+                                false,
+                              );
                             },
                             child: Container(
                               width: 32,
@@ -210,7 +218,7 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                                         _endValue == maxValue)
                                     ? context.colorScheme.outline
                                     : Colors.blue,
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(8),
                                   bottomRight: Radius.circular(8),
                                 ),

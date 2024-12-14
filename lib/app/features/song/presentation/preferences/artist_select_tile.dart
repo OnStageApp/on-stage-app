@@ -19,9 +19,8 @@ class ArtistSelectTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 12,
-              // backgroundImage: AssetImage(artist.imageUrl!),
             ),
             const SizedBox(width: 12),
             Text(

@@ -137,7 +137,7 @@ class PlanCard extends ConsumerWidget {
                 },
                 isEnabled: true,
                 hasShadow: false,
-              )
+              ),
           ],
         ),
       ),

@@ -108,7 +108,9 @@ class NotificationNotifier extends _$NotificationNotifier {
         notifications: state.notifications.map((notification) {
           return notification.notificationId == notificationId
               ? notification.copyWith(
-                  status: status, actionStatus: actionStatus)
+                  status: status,
+                  actionStatus: actionStatus,
+                )
               : notification;
         }).toList(),
       );

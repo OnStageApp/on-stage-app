@@ -162,7 +162,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         // Navigate to next screen or perform other actions
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${error.toString()}')),
+          SnackBar(content: Text('Error: $error')),
         );
       });
     }

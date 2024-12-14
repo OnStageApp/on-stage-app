@@ -5,8 +5,9 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({
     required this.controller,
     required this.style,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
   final CustomTextEditingController controller;
   final TextStyle style;
 

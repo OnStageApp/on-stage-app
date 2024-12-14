@@ -3,16 +3,16 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class CustomAnimatedTabSwitch extends StatefulWidget {
-  final List<String> tabs;
-  final TabController tabController;
-  final VoidCallback onSwitch;
-
   const CustomAnimatedTabSwitch({
     required this.tabs,
     required this.tabController,
     required this.onSwitch,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final List<String> tabs;
+  final TabController tabController;
+  final VoidCallback onSwitch;
 
   @override
   _CustomAnimatedTabSwitchState createState() =>
@@ -46,7 +46,6 @@ class _CustomAnimatedTabSwitchState extends State<CustomAnimatedTabSwitch> {
       text: buttonText,
       onPressed: widget.onSwitch,
       isEnabled: true,
-      hasShadow: true,
       backgroundColor: context.colorScheme.onSurfaceVariant,
       textColor: context.colorScheme.onSurface,
     );

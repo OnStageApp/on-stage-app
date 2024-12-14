@@ -122,7 +122,10 @@ class CustomSideNavigation extends StatelessWidget {
       : BorderRadius.circular(12);
 
   Widget _buildNavigationIcon(
-      BuildContext context, NavigationItem item, bool isSelected) {
+    BuildContext context,
+    NavigationItem item,
+    bool isSelected,
+  ) {
     return SvgPicture.asset(
       item.iconPath,
       height: 24,
@@ -136,7 +139,10 @@ class CustomSideNavigation extends StatelessWidget {
   }
 
   Widget _buildNavigationLabel(
-      BuildContext context, NavigationItem item, bool isSelected) {
+    BuildContext context,
+    NavigationItem item,
+    bool isSelected,
+  ) {
     return Text(
       item.label,
       style: context.textTheme.bodyMedium?.copyWith(
@@ -147,8 +153,11 @@ class CustomSideNavigation extends StatelessWidget {
     );
   }
 
-  BoxDecoration _getItemDecoration(BuildContext context, bool isSelected,
-      {BorderRadius? borderRadius}) {
+  BoxDecoration _getItemDecoration(
+    BuildContext context,
+    bool isSelected, {
+    BorderRadius? borderRadius,
+  }) {
     return BoxDecoration(
       color: isSelected
           ? context.colorScheme.onSurfaceVariant
@@ -158,7 +167,10 @@ class CustomSideNavigation extends StatelessWidget {
   }
 
   Widget _buildCollapsedItem(
-      BuildContext context, NavigationItem item, bool isSelected) {
+    BuildContext context,
+    NavigationItem item,
+    bool isSelected,
+  ) {
     return Container(
       decoration: _getItemDecoration(context, isSelected),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -172,7 +184,10 @@ class CustomSideNavigation extends StatelessWidget {
   }
 
   Widget _buildExpandedItem(
-      BuildContext context, NavigationItem item, bool isSelected) {
+    BuildContext context,
+    NavigationItem item,
+    bool isSelected,
+  ) {
     return Row(
       children: [
         Container(

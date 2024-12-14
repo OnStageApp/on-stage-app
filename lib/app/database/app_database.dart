@@ -22,9 +22,7 @@ final databaseProvider = Provider<AppDatabase>((ref) {
   final database = AppDatabase();
 
   // Ensure the database is closed when the provider is disposed
-  ref.onDispose(() {
-    database.close();
-  });
+  ref.onDispose(database.close);
 
   return database;
 });
@@ -120,7 +118,7 @@ class AppDatabase extends _$AppDatabase {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'app_database.sqlite'));
 
-    return await file.exists(); // Returns true if the database exists
+    return file.exists(); // Returns true if the database exists
   }
 
   Future<bool> updateSubscriptionStatus(
@@ -265,9 +263,11 @@ class AppDatabase extends _$AppDatabase {
   Future<bool> updateTeamMemberPhoto(TeamMemberPhoto photo) async {
     return await (update(profilePictureTable)
               ..where((tbl) => tbl.id.equals(photo.userId)))
-            .write(ProfilePictureTableCompanion(
-          picture: Value(photo.profilePicture),
-        )) >
+            .write(
+          ProfilePictureTableCompanion(
+            picture: Value(photo.profilePicture),
+          ),
+        ) >
         0;
   }
 

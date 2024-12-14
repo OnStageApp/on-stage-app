@@ -4,7 +4,9 @@ import 'package:dio/dio.dart';
 class ConnectivityInterceptor extends Interceptor {
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final connectivityResults = await Connectivity().checkConnectivity();
     if (connectivityResults.isEmpty ||
         connectivityResults.every(

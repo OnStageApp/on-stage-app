@@ -72,143 +72,144 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
     final rehearsals =
         ref.watch(eventNotifierProvider.select((state) => state.rehearsals));
     return Scaffold(
-        appBar: StageAppBar(
-          isBackButtonVisible: true,
-          title: 'Event',
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SettingsTrailingAppBarButton(
-                onTap: () {
-                  if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
-                    context.pushNamed(AppRoute.eventSettings.name);
-                  } else {
-                    DeclineEventInvitationModal.show(
-                      context: context,
-                      onDeclineInvitation: () {
-                        _onDeclineInvitation(context);
-                      },
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+      appBar: StageAppBar(
+        isBackButtonVisible: true,
+        title: 'Event',
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SettingsTrailingAppBarButton(
+              onTap: () {
+                if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
+                  context.pushNamed(AppRoute.eventSettings.name);
+                } else {
+                  DeclineEventInvitationModal.show(
+                    context: context,
+                    onDeclineInvitation: () {
+                      _onDeclineInvitation(context);
+                    },
+                  );
+                }
+              },
+            ),
+          ],
         ),
-        floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton:
-            ref.watch(permissionServiceProvider).hasAccessToEdit &&
-                    event?.eventStatus == EventStatus.draft
-                ? _buildFloatingButton()
-                : null,
-        body: Padding(
-          padding: defaultScreenPadding,
-          child: ListView(
-            children: [
-              _buildEnhancedEventTile(event, stagers),
-              const SizedBox(height: 12),
-              EventStructureButton(
-                onTap: () {
-                  context.pushNamed(
-                    AppRoute.addEventSongs.name,
-                    queryParameters: {
-                      'eventId': widget.eventId,
+      ),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:
+          ref.watch(permissionServiceProvider).hasAccessToEdit &&
+                  event?.eventStatus == EventStatus.draft
+              ? _buildFloatingButton()
+              : null,
+      body: Padding(
+        padding: defaultScreenPadding,
+        child: ListView(
+          children: [
+            _buildEnhancedEventTile(event, stagers),
+            const SizedBox(height: 12),
+            EventStructureButton(
+              onTap: () {
+                context.pushNamed(
+                  AppRoute.addEventSongs.name,
+                  queryParameters: {
+                    'eventId': widget.eventId,
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: Insets.medium),
+            Text(
+              'Rehearsals',
+              style: context.textTheme.titleSmall,
+            ),
+            if (rehearsals.isNotEmpty)
+              ...rehearsals.asMap().entries.map(
+                (entry) {
+                  final rehearsal = entry.value;
+
+                  return RehearsalTile(
+                    key: ValueKey(rehearsal.id),
+                    onDelete: () {
+                      ref
+                          .read(eventNotifierProvider.notifier)
+                          .deleteRehearsal(rehearsal.id!);
+
+                      setState(() {
+                        rehearsals.removeAt(entry.key);
+                      });
+                    },
+                    title: rehearsal.name ?? '',
+                    dateTime: rehearsal.dateTime ?? DateTime.now(),
+                    onTap: () {
+                      CreateRehearsalModal.show(
+                        enabled: false,
+                        context: context,
+                        rehearsal: rehearsal,
+                        onRehearsalCreated: (RehearsalModel rehearsal) {
+                          ref
+                              .read(eventNotifierProvider.notifier)
+                              .updateRehearsal(rehearsal);
+                        },
+                      );
                     },
                   );
                 },
-              ),
-              const SizedBox(height: Insets.medium),
-              Text(
-                'Rehearsals',
-                style: context.textTheme.titleSmall,
-              ),
-              if (rehearsals.isNotEmpty)
-                ...rehearsals.asMap().entries.map(
-                  (entry) {
-                    final rehearsal = entry.value;
-
-                    return RehearsalTile(
-                      key: ValueKey(rehearsal.id),
-                      onDelete: () {
-                        ref
-                            .read(eventNotifierProvider.notifier)
-                            .deleteRehearsal(rehearsal.id!);
-
-                        setState(() {
-                          rehearsals.removeAt(entry.key);
-                        });
-                      },
-                      title: rehearsal.name ?? '',
-                      dateTime: rehearsal.dateTime ?? DateTime.now(),
-                      onTap: () {
-                        CreateRehearsalModal.show(
-                          enabled: false,
-                          context: context,
-                          rehearsal: rehearsal,
-                          onRehearsalCreated: (RehearsalModel rehearsal) {
-                            ref
-                                .read(eventNotifierProvider.notifier)
-                                .updateRehearsal(rehearsal);
-                          },
-                        );
-                      },
-                    );
-                  },
-                )
-              else if (!hasEditorRoles)
-                Container(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(
-                    'No rehearsals added',
-                    style: context.textTheme.titleSmall!.copyWith(
-                      color: context.colorScheme.outline,
-                    ),
+              )
+            else if (!hasEditorRoles)
+              Container(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Text(
+                  'No rehearsals added',
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.outline,
                   ),
                 ),
-              if (hasEditorRoles) ...[
-                const SizedBox(height: Insets.extraSmall),
-                _buildCreateRehearsalButton(),
-              ],
-              const SizedBox(height: Insets.medium),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Participants',
-                    style: context.textTheme.titleSmall,
-                  ),
-                  Text(
-                    ref
-                        .watch(eventControllerProvider.notifier)
-                        .getAcceptedInviteesLabel(),
-                    style: context.textTheme.bodyMedium!.copyWith(
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                ],
               ),
-              if (stagers.isNotEmpty) ...[
-                const SizedBox(height: Insets.smallNormal),
-                _buildParticipantsList(),
-              ] else if (!hasEditorRoles)
-                Container(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    'No rehearsals added',
-                    style: context.textTheme.titleSmall!.copyWith(
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                ),
-              if (hasEditorRoles) ...[
-                const SizedBox(height: Insets.smallNormal),
-                _buildInvitePeopleButton(),
-              ],
-              const SizedBox(height: 120),
+            if (hasEditorRoles) ...[
+              const SizedBox(height: Insets.extraSmall),
+              _buildCreateRehearsalButton(),
             ],
-          ),
-        ));
+            const SizedBox(height: Insets.medium),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Participants',
+                  style: context.textTheme.titleSmall,
+                ),
+                Text(
+                  ref
+                      .watch(eventControllerProvider.notifier)
+                      .getAcceptedInviteesLabel(),
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+              ],
+            ),
+            if (stagers.isNotEmpty) ...[
+              const SizedBox(height: Insets.smallNormal),
+              _buildParticipantsList(),
+            ] else if (!hasEditorRoles)
+              Container(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  'No rehearsals added',
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+              ),
+            if (hasEditorRoles) ...[
+              const SizedBox(height: Insets.smallNormal),
+              _buildInvitePeopleButton(),
+            ],
+            const SizedBox(height: 120),
+          ],
+        ),
+      ),
+    );
   }
 
   void _onDeclineInvitation(BuildContext context) {

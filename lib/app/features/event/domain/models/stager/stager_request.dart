@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 

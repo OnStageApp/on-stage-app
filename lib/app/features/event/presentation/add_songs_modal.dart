@@ -12,7 +12,7 @@ import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddSongsModal extends ConsumerStatefulWidget {
-  const AddSongsModal({super.key, required this.onSongsAdded});
+  const AddSongsModal({required this.onSongsAdded, super.key});
 
   final VoidCallback onSongsAdded;
 
@@ -24,7 +24,6 @@ class AddSongsModal extends ConsumerStatefulWidget {
     required VoidCallback onSongsAdded,
   }) {
     showModalBottomSheet<Widget>(
-      enableDrag: true,
       isScrollControlled: true,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
