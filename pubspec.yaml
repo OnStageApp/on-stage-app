@@ -8,8 +8,12 @@ environment:
 
 
 flutter_native_splash:
-  image: assets/images/ic_launcher.png
-  color: ^2.4.2
+  color: "#DDECF1" # Set the background color of your splash screen
+  icon_background_color: "#DDECF1" # Set the background color of your splash screen icon
+  image: assets/icons/logo_without_background.png # Path to your splash image
+  android: true # Enable for Android
+  ios: false # Enable for iOS
+  android_gravity: center # Optional: Position of the image
 
 
 dependencies:
@@ -36,7 +40,7 @@ dependencies:
   firebase_messaging: ^15.1.6
   flutter_local_notifications: ^18.0.1
   flutter_native_splash: ^2.4.1
-  flutter_launcher_icons: ^0.14.1
+  flutter_launcher_icons: ^0.14.2
   flutter_reorderable_grid_view: ^5.3.2
   reorderables: ^0.6.0
   flutter_svg: ^2.0.12
@@ -115,6 +119,13 @@ flutter_gen:
   line_length: 160
   integrations:
     flutter_svg: true
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/icons/logo-onstage.png"
+  adaptive_icon_background: "#DDECF1"
+  adaptive_icon_foreground: "assets/icons/logo_without_background.png"
 
 
 flutter:

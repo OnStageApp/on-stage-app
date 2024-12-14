@@ -13,8 +13,34 @@ part 'firebase_notifier.g.dart';
 /// Background message handler for Firebase Messaging.
 /// This function must be a top-level function to be called by the OS.
 @pragma('vm:entry-point')
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  logger.i('Background message: ${message.messageId}');
+  // Initialize Flutter and Firebase if not already initialized
+  // await Firebase.initializeApp();
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // Show a notification
+  RemoteNotification? notification = message.notification;
+  AndroidNotification? android = notification?.android;
+
+  if (notification != null && android != null) {
+    await flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'high_importance_channel',
+          'High Importance Notifications',
+          icon: '@mipmap/ic_launcher',
+          priority: Priority.high,
+          importance: Importance.high,
+        ),
+      ),
+    );
+  }
 }
 
 @riverpod
@@ -57,7 +83,6 @@ class FirebaseNotifier extends _$FirebaseNotifier {
   Future<void> _setupLocalNotifications() async {
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-
     const iosSettings = DarwinInitializationSettings();
 
     const initializationSettings = InitializationSettings(
@@ -71,6 +96,22 @@ class FirebaseNotifier extends _$FirebaseNotifier {
         _handleNotificationResponse(response.payload);
       },
     );
+
+    // Define a notification channel for Android (required for API 26+)
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // ID must match in AndroidNotificationDetails
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
+      importance: Importance.high,
+    );
+
+    final androidImplementation =
+        _localNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidImplementation != null) {
+      await androidImplementation.createNotificationChannel(channel);
+    }
 
     // Disable automatic notification display by Firebase Messaging
     await FirebaseMessaging.instance
