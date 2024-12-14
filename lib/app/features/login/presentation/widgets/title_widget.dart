@@ -3,11 +3,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TitleWidget extends StatefulWidget {
   const TitleWidget({
-    Key? key,
+    super.key,
     this.title,
     this.subtitle,
     this.subtitleFontSize,
-  }) : super(key: key);
+  });
 
   final String? title;
   final String? subtitle;

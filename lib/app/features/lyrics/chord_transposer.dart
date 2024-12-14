@@ -40,7 +40,7 @@ class ChordTransposer {
     'A',
     'A#',
     'Bb',
-    'B'
+    'B',
   ];
 
   static const Map<String, int> noteToSemitone = {
@@ -151,7 +151,7 @@ class ChordTransposer {
 
     // Get semitones for both chord and key
     final chordSemitone = noteToSemitone[root];
-    final keySemitone = noteToSemitone[key.replaceAll(RegExp(r'[^A-G#b]'), '')];
+    final keySemitone = noteToSemitone[key.replaceAll(RegExp('[^A-G#b]'), '')];
 
     if (chordSemitone == null || keySemitone == null) return chord;
 

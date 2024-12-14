@@ -26,14 +26,14 @@ part 'login_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class LoginNotifier extends _$LoginNotifier {
+  LoginNotifier() {
+    _tokenManager = TokenManager(const FlutterSecureStorage());
+  }
+
   LoginRepository? _loginRepository;
   late final TokenManager _tokenManager;
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
-  LoginNotifier() {
-    _tokenManager = TokenManager(const FlutterSecureStorage());
-  }
 
   LoginRepository get loginRepository {
     _loginRepository ??= LoginRepository(ref.watch(dioProvider));
@@ -190,7 +190,7 @@ class LoginNotifier extends _$LoginNotifier {
         ],
       );
 
-      final oauthCredential = OAuthProvider("apple.com").credential(
+      final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
@@ -255,7 +255,7 @@ class LoginNotifier extends _$LoginNotifier {
         ..invalidate(currentTeamMemberNotifierProvider);
 
       logger.i('User signed out successfully');
-      state = const LoginState(isLoading: false, isLoggedIn: false);
+      state = const LoginState();
     } catch (e, s) {
       logger.e('Failed to sign out: $e, $s');
       state = LoginState(error: e.toString());

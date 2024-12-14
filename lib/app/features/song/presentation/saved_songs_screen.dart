@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
@@ -99,7 +98,7 @@ class SavedSongsScreenState extends ConsumerState<SavedSongsScreen> {
                   childCount: songsState.savedSongs.length,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

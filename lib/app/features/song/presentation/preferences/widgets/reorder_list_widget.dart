@@ -139,16 +139,16 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
 
 class MyDragStartListener extends ReorderableDelayedDragStartListener {
   const MyDragStartListener({
-    super.key,
     required super.child,
     required super.index,
+    super.key,
     super.enabled,
   });
 
   @override
   MultiDragGestureRecognizer createRecognizer() {
     return DelayedMultiDragGestureRecognizer(
-      delay: const Duration(milliseconds: 250), // default: 500 ms
+      delay: const Duration(milliseconds: 250),
       debugOwner: this,
     );
   }

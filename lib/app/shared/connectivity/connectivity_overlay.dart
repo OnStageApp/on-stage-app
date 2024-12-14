@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/shared/connectivity/connectivity_notifier.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-import 'connectivity_notifier.dart';
-
 class ConnectivityOverlay extends ConsumerWidget {
-  const ConnectivityOverlay({Key? key}) : super(key: key);
+  const ConnectivityOverlay({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

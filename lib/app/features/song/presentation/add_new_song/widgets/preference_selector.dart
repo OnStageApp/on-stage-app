@@ -4,21 +4,22 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferenceSelector<T> extends StatelessWidget {
-  final String label;
-  final String placeholder;
-  final T? selectedValue;
-  final String Function(T?) displayValue;
-  final VoidCallback onTap;
-  final FormFieldValidator<T?>? validator;
-
   const PreferenceSelector({
     required this.label,
     required this.placeholder,
     required this.selectedValue,
     required this.displayValue,
     required this.onTap,
+    super.key,
     this.validator,
   });
+
+  final String label;
+  final String placeholder;
+  final T? selectedValue;
+  final String Function(T?) displayValue;
+  final VoidCallback onTap;
+  final FormFieldValidator<T?>? validator;
 
   @override
   Widget build(BuildContext context) {

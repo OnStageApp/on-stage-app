@@ -5,14 +5,14 @@ import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/logger.dart';
 
 class EnvSwitcher extends ConsumerStatefulWidget {
-  final Widget child;
-  final int requiredTaps;
-
   const EnvSwitcher({
-    super.key,
     required this.child,
+    super.key,
     this.requiredTaps = 10,
   });
+
+  final Widget child;
+  final int requiredTaps;
 
   @override
   ConsumerState<EnvSwitcher> createState() => _EnvSwitcherState();
@@ -23,8 +23,8 @@ class _EnvSwitcherState extends ConsumerState<EnvSwitcher> {
 
   void _checkAndShowEnvSwitcher() {
     if (_tapCount >= widget.requiredTaps) {
-      _tapCount = 0; // Reset the counter
-      _showEnvSwitcherModal(); // Show the modal
+      _tapCount = 0;
+      _showEnvSwitcherModal();
     }
   }
 

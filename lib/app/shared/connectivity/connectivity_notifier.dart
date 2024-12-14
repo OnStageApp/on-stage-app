@@ -8,7 +8,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier {
   @override
   bool build() {
     _initConnectivity();
-    return true; // Assume connected initially
+    return true;
   }
 
   void _initConnectivity() {
@@ -18,7 +18,7 @@ class ConnectivityNotifier extends _$ConnectivityNotifier {
     });
   }
 
-  void checkConnectivity() async {
+  Future<void> checkConnectivity() async {
     final result = await Connectivity().checkConnectivity();
     state = result.isNotEmpty &&
         result.any((status) => status != ConnectivityResult.none);

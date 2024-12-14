@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
@@ -126,7 +125,6 @@ class _RehearsalTileState extends State<RehearsalTile> {
       ),
     );
   }
-
 
   Widget _buildCircle(BuildContext context) {
     return Padding(

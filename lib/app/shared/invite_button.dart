@@ -4,8 +4,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class InviteButton extends StatelessWidget {
   const InviteButton({
     required this.text,
-    this.onPressed,
     required this.isConfirm,
+    this.onPressed,
     this.backgroundColor,
     this.textColor,
     super.key,

@@ -203,7 +203,7 @@ class SongsNotifier extends _$SongsNotifier {
     final updatedSavedSongs = isFavorite
         ? [
             ...state.savedSongs,
-            updatedSongs.firstWhere((song) => song.id == id)
+            updatedSongs.firstWhere((song) => song.id == id),
           ]
         : state.savedSongs.where((song) => song.id != id).toList();
 

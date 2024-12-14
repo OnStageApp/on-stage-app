@@ -1,10 +1,6 @@
 import 'package:dio/dio.dart';
 
 class AppError implements Exception {
-  final String message;
-  final String? code;
-  final dynamic originalError;
-
   AppError({
     required this.message,
     this.code,
@@ -36,15 +32,12 @@ class AppError implements Exception {
         message =
             'Connection timeout. Please check your internet connection and try again.';
         code = 'timeout_error';
-        break;
       case DioExceptionType.badResponse:
         message = _handleBadResponse(error.response?.statusCode);
         code = 'http_error_${error.response?.statusCode}';
-        break;
       case DioExceptionType.cancel:
         message = 'Request was cancelled';
         code = 'request_cancelled';
-        break;
       default:
         message = 'An unexpected error occurred. Please try again.';
         code = 'network_error';
@@ -57,6 +50,10 @@ class AppError implements Exception {
     );
   }
 
+  final String message;
+  final String? code;
+  final dynamic originalError;
+
   static String _handleBadResponse(int? statusCode) {
     switch (statusCode) {
       case 400:
@@ -64,7 +61,7 @@ class AppError implements Exception {
       case 401:
         return 'Unauthorized. Please log in and try again.';
       case 403:
-        return 'Forbidden. You don\'t have permission to access this resource.';
+        return "Forbidden. You don't have permission to access this resource.";
       case 404:
         return 'Resource not found. Please check your request and try again.';
       case 500:

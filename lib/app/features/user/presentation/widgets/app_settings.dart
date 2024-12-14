@@ -48,15 +48,12 @@ class AppSettingsState extends ConsumerState<AppSettings>
       await ref
           .read(userSettingsNotifierProvider.notifier)
           .setNotification(isActive: true);
-    }
-
-    else if (!status.isGranted && currentNotificationSetting) {
+    } else if (!status.isGranted && currentNotificationSetting) {
       await ref
           .read(userSettingsNotifierProvider.notifier)
           .setNotification(isActive: false);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +95,6 @@ class AppSettingsState extends ConsumerState<AppSettings>
                 .setNotification(isActive: value);
           },
         ),
-
         if (ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
           const SizedBox(height: 12),
           ListTile(
@@ -129,7 +125,7 @@ class AppSettingsState extends ConsumerState<AppSettings>
             },
           ),
           const SizedBox(height: 12),
-        ]
+        ],
       ],
     );
   }

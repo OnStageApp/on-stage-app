@@ -106,7 +106,8 @@ class UserNotifier extends _$UserNotifier {
 
       if (photoBytes != null) {
         state = state.copyWith(
-            currentUser: state.currentUser?.copyWith(image: photoBytes));
+          currentUser: state.currentUser?.copyWith(image: photoBytes),
+        );
         await _savePhotoToLocalStorage(photoBytes);
         logger.i('Done fetching and saving user photo ${DateTime.now()}');
       } else {

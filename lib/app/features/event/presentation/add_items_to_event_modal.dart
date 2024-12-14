@@ -9,8 +9,8 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddItemsToEventModal extends ConsumerStatefulWidget {
   const AddItemsToEventModal({
-    super.key,
     required this.onItemsAdded,
+    super.key,
   });
 
   final VoidCallback onItemsAdded;

@@ -178,7 +178,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     } catch (e, s) {
       if (e.toString().contains('Sandbox receipt used in production')) {
         logger.w(
-            'Sandbox receipt encountered in production, switching to sandbox environment $s');
+          'Sandbox receipt encountered in '
+          'production, switching to sandbox environment $s',
+        );
       }
       logger.e('Error getting current subscription $e');
       state = state.copyWith(isLoading: false);
@@ -227,7 +229,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     await Purchases.configure(configuration);
 
     logger.d(
-        'Purchases configured using ${Platform.isAndroid ? "Android" : "iOS"} environment');
+      'Purchases configured '
+      'using ${Platform.isAndroid ? "Android" : "iOS"} environment',
+    );
 
     final customerInfo = await Purchases.getCustomerInfo();
     logger

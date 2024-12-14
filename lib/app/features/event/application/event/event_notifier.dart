@@ -128,7 +128,8 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> addStagersToEvent(
-      CreateStagersRequest createStagerRequest) async {
+    CreateStagersRequest createStagerRequest,
+  ) async {
     await eventsRepository.addStagerToEvent(createStagerRequest);
     if (state.event != null) {
       unawaited(getStagers(state.event!.id!));

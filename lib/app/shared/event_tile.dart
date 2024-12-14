@@ -9,8 +9,8 @@ class EventTile extends StatelessWidget {
   const EventTile({
     required this.title,
     required this.dateTime,
-    this.isDraft = true,
     required this.onTap,
+    this.isDraft = true,
     this.participantsProfile = const [],
     this.stagersCount = 0,
     super.key,

@@ -18,12 +18,11 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Flutter and Firebase if not already initialized
   // await Firebase.initializeApp();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   // Show a notification
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = notification?.android;
+  final notification = message.notification;
+  final android = notification?.android;
 
   if (notification != null && android != null) {
     await flutterLocalNotificationsPlugin.show(
@@ -98,7 +97,7 @@ class FirebaseNotifier extends _$FirebaseNotifier {
     );
 
     // Define a notification channel for Android (required for API 26+)
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    const channel = AndroidNotificationChannel(
       'high_importance_channel', // ID must match in AndroidNotificationDetails
       'High Importance Notifications',
       description: 'This channel is used for important notifications.',
@@ -124,11 +123,12 @@ class FirebaseNotifier extends _$FirebaseNotifier {
 
   // TODO: Define the background message handler
   Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+    RemoteMessage message,
+  ) async {
     // await Firebase.initializeApp();
 
     if (kDebugMode) {
-      print("Handling a background message: ${message.messageId}");
+      print('Handling a background message: ${message.messageId}');
       print('Message data: ${message.data}');
       print('Message notification: ${message.notification?.title}');
       print('Message notification: ${message.notification?.body}');
@@ -155,8 +155,8 @@ class FirebaseNotifier extends _$FirebaseNotifier {
   void _configureMessageHandlers() {
     // Add this handler for foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
+      final notification = message.notification;
+      final android = message.notification?.android;
 
       if (notification != null && android != null) {
         _localNotificationsPlugin.show(

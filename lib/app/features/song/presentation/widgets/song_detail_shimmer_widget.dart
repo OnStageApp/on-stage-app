@@ -44,7 +44,7 @@ class SongDetailShimmerWidget extends StatelessWidget {
             const SizedBox(height: 12),
             _buildLyrics(true, context),
             const SizedBox(height: 12),
-            _buildLyrics(false, context)
+            _buildLyrics(false, context),
           ],
         ),
       ),
@@ -107,7 +107,7 @@ class SongDetailShimmerWidget extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
           ),

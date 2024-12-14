@@ -79,6 +79,7 @@ class AddSongSecondStepContentState
                 onSwitch: () {
                   final newIndex = _tabController.index == 0 ? 1 : 0;
                   if (newIndex == 1) {
+                    FocusScope.of(context).unfocus();
                     ref.read(songEditorNotifierProvider.notifier).updateSong();
                   }
                   _tabController.animateTo(newIndex);

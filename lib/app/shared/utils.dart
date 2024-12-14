@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/dialog_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,8 +8,6 @@ Future<void> requestPermission({
   required void Function() onSettingsOpen,
 }) async {
   final status = await permission.status;
-
-
 
   if (status.isDenied || status.isPermanentlyDenied) {
     final bool shouldShowDialog;
@@ -50,4 +47,3 @@ Future<void> openSettings(BuildContext context) async {
     );
   }
 }
-

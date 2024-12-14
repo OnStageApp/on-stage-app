@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class OnboardingForthStep extends StatefulWidget {
-  const OnboardingForthStep({Key? key}) : super(key: key);
+  const OnboardingForthStep({super.key});
 
   @override
   _OnboardingForthStepState createState() => _OnboardingForthStepState();
@@ -36,8 +36,8 @@ class _OnboardingForthStepState extends State<OnboardingForthStep>
     );
 
     _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
+      begin: 0,
+      end: 1,
     ).animate(
       CurvedAnimation(
         parent: _controller,

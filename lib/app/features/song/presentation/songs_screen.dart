@@ -120,17 +120,20 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               SliverPadding(
                 padding: const EdgeInsets.all(16),
                 sliver: SliverToBoxAdapter(
-                    child: Center(
-                  child: LoadMoreButton(
-                    onPressed: songsState.isLoading
-                        ? () {}
-                        : () => ref
-                            .read(songsNotifierProvider.notifier)
-                            .loadMoreSongs(
-                              ref.watch(searchNotifierProvider).toSongFilter(),
-                            ),
+                  child: Center(
+                    child: LoadMoreButton(
+                      onPressed: songsState.isLoading
+                          ? () {}
+                          : () => ref
+                              .read(songsNotifierProvider.notifier)
+                              .loadMoreSongs(
+                                ref
+                                    .watch(searchNotifierProvider)
+                                    .toSongFilter(),
+                              ),
+                    ),
                   ),
-                )),
+                ),
               ),
           ],
         ),

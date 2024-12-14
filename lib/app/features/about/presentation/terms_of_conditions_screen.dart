@@ -32,7 +32,6 @@ class TermsOfUseScreen extends ConsumerWidget {
           p: theme.textTheme.bodyLarge,
           listBullet: theme.textTheme.bodyLarge,
         ),
-        padding: const EdgeInsets.all(16.0),
         onTapLink: (text, href, title) {
           if (href != null) {
             // launchUrl(Uri.parse(href));

@@ -89,7 +89,9 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       name: sectionData.rawSection.structureItem!.name,
       onDelete: () {
         logger.d(
-            'Delete requested for section ${sectionData.rawSection.structureItem?.name} at index $index');
+          'Delete requested for section '
+          '${sectionData.rawSection.structureItem?.name} at index $index',
+        );
         try {
           ref.read(songEditorNotifierProvider.notifier).removeSection(index);
         } catch (e, stackTrace) {

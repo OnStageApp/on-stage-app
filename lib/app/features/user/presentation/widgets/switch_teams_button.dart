@@ -31,7 +31,7 @@ class SwitchTeamsButton extends StatelessWidget {
           SvgPicture.asset(
             'assets/icons/arrow_down.svg',
             color: context.colorScheme.primary,
-          )
+          ),
         ],
       ),
     );
