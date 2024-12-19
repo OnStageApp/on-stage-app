@@ -15,9 +15,9 @@ class SongPreferencesController extends _$SongPreferencesController {
     state = state.copyWith(isOnAddStructurePage: isOnAddStructurePage);
   }
 
-  void removeStructureItem(StructureItem structureItem) {
+  void removeStructureItem(int index) {
     final structureItems = List<StructureItem>.from(state.structureItems)
-      ..remove(structureItem);
+      ..removeAt(index);
     state = state.copyWith(structureItems: structureItems);
   }
 

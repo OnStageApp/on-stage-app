@@ -3,7 +3,6 @@ import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/features/about/presentation/about_screen.dart';
 import 'package:on_stage_app/app/features/about/presentation/privacy_policy_screen.dart';
 import 'package:on_stage_app/app/features/about/presentation/terms_of_conditions_screen.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
@@ -137,6 +136,18 @@ class NavigationNotifier extends _$NavigationNotifier {
                         .logScreenView(AppRoute.home.name);
                     return const NoTransitionPage(child: HomeScreen());
                   },
+                  routes: [
+                    GoRoute(
+                      name: AppRoute.notification.name,
+                      path: 'notification',
+                      builder: (context, state) {
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(AppRoute.notification.name);
+                        return const NotificationPage();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -219,6 +230,21 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
+                      name: AppRoute.songDetailsWithPages.name,
+                      path: 'songDetailsWithPages',
+                      builder: (context, state) {
+                        final eventId = state.uri.queryParameters['eventId']!;
+                        ref
+                            .read(analyticsServiceProvider.notifier)
+                            .logScreenView(
+                              AppRoute.songDetailsWithPages.name,
+                            );
+                        return SongDetailsWithPagesScreen(
+                          eventId: eventId,
+                        );
+                      },
+                    ),
+                    GoRoute(
                       name: AppRoute.addEventSongs.name,
                       path: 'addEventSongs',
                       builder: (context, state) {
@@ -230,23 +256,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                             );
                         return AddEventMomentsScreen(eventId: eventId);
                       },
-                      routes: [
-                        GoRoute(
-                          name: AppRoute.songDetailsWithPages.name,
-                          path: 'songDetailsWithPages',
-                          builder: (context, state) {
-                            final eventItems = state.extra as List<EventItem>?;
-                            ref
-                                .read(analyticsServiceProvider.notifier)
-                                .logScreenView(
-                                  AppRoute.songDetailsWithPages.name,
-                                );
-                            return SongDetailsWithPagesScreen(
-                              eventItems: eventItems,
-                            );
-                          },
-                        ),
-                      ],
                     ),
                     GoRoute(
                       name: AppRoute.eventDetails.name,
@@ -371,16 +380,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                           },
                         ),
                       ],
-                    ),
-                    GoRoute(
-                      name: AppRoute.notification.name,
-                      path: 'notification',
-                      builder: (context, state) {
-                        ref
-                            .read(analyticsServiceProvider.notifier)
-                            .logScreenView(AppRoute.notification.name);
-                        return const NotificationPage();
-                      },
                     ),
                     GoRoute(
                       name: AppRoute.favorites.name,

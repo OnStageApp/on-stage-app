@@ -204,17 +204,14 @@ class ChordTransposer {
   }
 
   String _convertAccidentals(String chord) {
-    return chord
-        .replaceAllMapped(
-          RegExp('([A-G])([#b])'),
-          (Match m) {
-            final note = m.group(1)!;
-            final accidental = m.group(2)!;
-            final symbol = accidental == '#' ? '♯' : '♭';
-            return note + symbol;
-          },
-        )
-        .replaceAll('b', '♭')
-        .replaceAll('#', '♯');
+    return chord.replaceAllMapped(
+      RegExp('([A-G])([#b])'),
+      (Match m) {
+        final note = m.group(1)!;
+        final accidental = m.group(2)!;
+        final symbol = accidental == '#' ? '♯' : '♭';
+        return note + symbol;
+      },
+    ).replaceAll('#', '♯');
   }
 }

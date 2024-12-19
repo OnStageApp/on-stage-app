@@ -159,7 +159,7 @@ const lightColorScheme = ColorScheme(
   shadow: Color(0xFF000000),
   surfaceTint: Colors.transparent,
   onSecondaryFixedVariant: Color(0xFFFED8ED),
-  onPrimaryFixedVariant: Color(0x80FFD98F),
+  onPrimaryFixedVariant: Color(0xFFD8E1FE),
 );
 
 const darkColorScheme = ColorScheme(
@@ -198,7 +198,7 @@ const darkColorScheme = ColorScheme(
   shadow: Color(0xFF000000),
   surfaceTint: Color(0xFFCBBEFF),
   onSecondaryFixedVariant: Colors.transparent,
-  onPrimaryFixedVariant: Colors.pink,
+  onPrimaryFixedVariant: Color(0xFFD8E1FE),
 );
 
 class Insets {

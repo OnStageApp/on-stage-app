@@ -104,7 +104,7 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
               onRemove: () {
                 ref
                     .read(songPreferencesControllerProvider.notifier)
-                    .removeStructureItem(cacheStructureItems[index]);
+                    .removeStructureItem(index);
               },
               onClone: () {
                 ref
