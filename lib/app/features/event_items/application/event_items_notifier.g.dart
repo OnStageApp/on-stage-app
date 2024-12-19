@@ -7,7 +7,7 @@ part of 'event_items_notifier.dart';
 // **************************************************************************
 
 String _$eventItemsNotifierHash() =>
-    r'b1cbdad8f6ea6c87fedf8ce88df525d3862a090a';
+    r'f608823df0e19e4083b8d601ea0de03965363428';
 
 /// See also [EventItemsNotifier].
 @ProviderFor(EventItemsNotifier)
