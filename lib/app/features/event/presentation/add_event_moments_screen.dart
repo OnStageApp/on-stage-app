@@ -183,35 +183,19 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           : () {
               if (eventItem.song == null) return;
               final eventItems =
-                  ref.read(eventItemsNotifierProvider).songEventItems;
+                  ref.read(eventItemsNotifierProvider).eventItems;
               ref
                   .read(eventItemsNotifierProvider.notifier)
                   .setCurrentIndex(eventItems.indexOf(eventItem));
 
               context.pushNamed(
                 AppRoute.songDetailsWithPages.name,
-                extra: eventItems,
+                queryParameters: {
+                  'eventId': widget.eventId,
+                },
               );
             },
       isAdmin: ref.watch(permissionServiceProvider).hasAccessToEdit,
-      // trailing: eventItem.song?.id != null
-      //     ? Container(
-      //         height: 28,
-      //         width: 28,
-      //         margin: const EdgeInsets.symmetric(horizontal: 8),
-      //         decoration: BoxDecoration(
-      //           borderRadius: BorderRadius.circular(6),
-      //           color: context.colorScheme.surface,
-      //         ),
-      //         child: InkWell(
-      //             overlayColor: WidgetStateProperty.all(
-      //                 context.colorScheme.surfaceBright),
-      //             // onTap: () => SongFilterModal.show(context: context),
-      //             child: Center(
-      //               child: Assets.icons.arrowDown.svg(),
-      //             )),
-      //       )
-      //     : const SizedBox(),
     );
   }
 

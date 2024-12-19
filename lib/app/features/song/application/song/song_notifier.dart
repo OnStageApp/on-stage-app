@@ -39,6 +39,7 @@ class SongNotifier extends _$SongNotifier {
       return;
     }
     state = state.copyWith(isLoading: true);
+
     final song = await songRepository.getSong(songId: songId);
 
     state = state.copyWith(

@@ -93,120 +93,129 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     });
   }
 
+  bool _shouldHideBottomNav(String location) {
+    return [
+      '/events/songDetailsWithPages',
+    ].any((route) => location.startsWith(route));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
     _listenForPermissionDeniedAndShowPaywall();
     final horizontalPadding = context.screenSize.width > 1200 ? 132.0 : 23.0;
     return Scaffold(
       backgroundColor: context.isLargeScreen && !context.isDarkMode
           ? context.colorScheme.onSurfaceVariant
           : context.colorScheme.surface,
-      bottomNavigationBar: context.isLargeScreen
-          ? null
-          : BottomNavigationBar(
-              currentIndex: widget.navigationShell.currentIndex,
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: context.colorScheme.surface,
-              selectedLabelStyle: context.textTheme.bodyMedium,
-              unselectedLabelStyle: context.textTheme.bodyMedium,
-              selectedItemColor: context.colorScheme.onSurface,
-              unselectedItemColor: context.colorScheme.outline,
-              showUnselectedLabels: true,
-              showSelectedLabels: true,
-              elevation: 1,
-              onTap: _onChangedScreen,
-              items: [
-                BottomNavigationBarItem(
-                  activeIcon: Badge(
-                    isLabelVisible: ref
-                        .watch(notificationNotifierProvider)
-                        .hasNewNotifications,
-                    backgroundColor: Colors.red,
-                    child: SvgPicture.asset(
-                      'assets/icons/nav_home_icon.svg',
-                      height: 21,
-                      colorFilter: ColorFilter.mode(
-                        context.colorScheme.onSurface,
-                        BlendMode.srcIn,
+      bottomNavigationBar:
+          _shouldHideBottomNav(currentLocation) || context.isLargeScreen
+              ? null
+              : BottomNavigationBar(
+                  currentIndex: widget.navigationShell.currentIndex,
+                  type: BottomNavigationBarType.fixed,
+                  backgroundColor: context.colorScheme.surface,
+                  selectedLabelStyle: context.textTheme.bodyMedium,
+                  unselectedLabelStyle: context.textTheme.bodyMedium,
+                  selectedItemColor: context.colorScheme.onSurface,
+                  unselectedItemColor: context.colorScheme.outline,
+                  showUnselectedLabels: true,
+                  showSelectedLabels: true,
+                  elevation: 1,
+                  onTap: _onChangedScreen,
+                  items: [
+                    BottomNavigationBarItem(
+                      activeIcon: Badge(
+                        isLabelVisible: ref
+                            .watch(notificationNotifierProvider)
+                            .hasNewNotifications,
+                        backgroundColor: Colors.red,
+                        child: SvgPicture.asset(
+                          'assets/icons/nav_home_icon.svg',
+                          height: 21,
+                          colorFilter: ColorFilter.mode(
+                            context.colorScheme.onSurface,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  icon: Badge(
-                    isLabelVisible: ref
-                        .watch(notificationNotifierProvider)
-                        .hasNewNotifications,
-                    backgroundColor: Colors.red,
-                    child: SvgPicture.asset(
-                      'assets/icons/nav_home_icon.svg',
-                      height: 21,
-                      colorFilter: ColorFilter.mode(
-                        context.colorScheme.outline,
-                        BlendMode.srcIn,
+                      icon: Badge(
+                        isLabelVisible: ref
+                            .watch(notificationNotifierProvider)
+                            .hasNewNotifications,
+                        backgroundColor: Colors.red,
+                        child: SvgPicture.asset(
+                          'assets/icons/nav_home_icon.svg',
+                          height: 21,
+                          colorFilter: ColorFilter.mode(
+                            context.colorScheme.outline,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                       ),
+                      label: 'Home',
+                      backgroundColor: Colors.white,
                     ),
-                  ),
-                  label: 'Home',
-                  backgroundColor: Colors.white,
+                    BottomNavigationBarItem(
+                      activeIcon: SvgPicture.asset(
+                        'assets/icons/nav_list_music_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      icon: SvgPicture.asset(
+                        'assets/icons/nav_list_music_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.outline,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      label: 'Songs',
+                    ),
+                    BottomNavigationBarItem(
+                      activeIcon: SvgPicture.asset(
+                        'assets/icons/nav_calendar_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      icon: SvgPicture.asset(
+                        'assets/icons/nav_calendar_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.outline,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      label: 'Events',
+                    ),
+                    BottomNavigationBarItem(
+                      activeIcon: SvgPicture.asset(
+                        'assets/icons/nav_profile_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      icon: SvgPicture.asset(
+                        'assets/icons/nav_profile_icon.svg',
+                        height: 21,
+                        colorFilter: ColorFilter.mode(
+                          context.colorScheme.outline,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                      label: 'Profile',
+                    ),
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  activeIcon: SvgPicture.asset(
-                    'assets/icons/nav_list_music_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurface,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/nav_list_music_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.outline,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Songs',
-                ),
-                BottomNavigationBarItem(
-                  activeIcon: SvgPicture.asset(
-                    'assets/icons/nav_calendar_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurface,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/nav_calendar_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.outline,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Events',
-                ),
-                BottomNavigationBarItem(
-                  activeIcon: SvgPicture.asset(
-                    'assets/icons/nav_profile_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.onSurface,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/nav_profile_icon.svg',
-                    height: 21,
-                    colorFilter: ColorFilter.mode(
-                      context.colorScheme.outline,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                  label: 'Profile',
-                ),
-              ],
-            ),
       body: context.isLargeScreen
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,

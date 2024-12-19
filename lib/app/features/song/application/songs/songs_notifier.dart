@@ -44,8 +44,8 @@ class SongsNotifier extends _$SongsNotifier {
       error: null,
     );
 
-    unawaited(_getSongsCount());
     try {
+      unawaited(_getSongsCount());
       await Future.wait([
         _fetchSongs(songFilter),
         _fetchFavoriteSongs(),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
@@ -14,10 +15,10 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/stager_requ
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/event_structure_button.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
@@ -108,15 +109,49 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           children: [
             _buildEnhancedEventTile(event, stagers),
             const SizedBox(height: 12),
-            EventStructureButton(
-              onTap: () {
-                context.pushNamed(
-                  AppRoute.addEventSongs.name,
-                  queryParameters: {
-                    'eventId': widget.eventId,
-                  },
-                );
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: PreferencesActionTile(
+                    title: 'Structure',
+                    color: context.colorScheme.primary,
+                    leadingWidget: Icon(
+                      LucideIcons.list_music,
+                      color: context.colorScheme.primary,
+                    ),
+                    height: 54,
+                    onTap: () {
+                      context.pushNamed(
+                        AppRoute.addEventSongs.name,
+                        queryParameters: {
+                          'eventId': widget.eventId,
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: PreferencesActionTile(
+                    title: 'Start Event',
+                    color: context.colorScheme.onSurface,
+                    backgroundColor: context.colorScheme.primary,
+                    leadingWidget: Icon(
+                      LucideIcons.circle_play,
+                      color: context.colorScheme.onSurface,
+                    ),
+                    height: 54,
+                    onTap: () {
+                      context.pushNamed(
+                        AppRoute.songDetailsWithPages.name,
+                        queryParameters: {
+                          'eventId': widget.eventId,
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: Insets.medium),
             Text(

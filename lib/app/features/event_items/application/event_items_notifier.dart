@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/event_items/application/event_items_st
 import 'package:on_stage_app/app/features/event_items/data/event_items_repository.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item_create.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item_type.dart';
+import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,16 +16,23 @@ part 'event_items_notifier.g.dart';
 @Riverpod(keepAlive: false)
 class EventItemsNotifier extends _$EventItemsNotifier {
   EventItemsRepository? _eventItemsRepository;
+  SongRepository? _songRepository;
 
   EventItemsRepository get eventItemsRepository {
     _eventItemsRepository ??= EventItemsRepository(ref.watch(dioProvider));
     return _eventItemsRepository!;
   }
 
+  SongRepository get songRepository {
+    _songRepository ??= SongRepository(ref.watch(dioProvider));
+    return _songRepository!;
+  }
+
   @override
   EventItemsState build() {
     final dio = ref.watch(dioProvider);
     _eventItemsRepository = EventItemsRepository(dio);
+    _songRepository = SongRepository(dio);
     print('Event Items Notifier rebuild');
     return const EventItemsState();
   }
@@ -37,16 +45,10 @@ class EventItemsNotifier extends _$EventItemsNotifier {
   }
 
   Future<void> getEventItems(String eventId) async {
-    final eventItemsFuture = eventItemsRepository.getEventItems(eventId);
-
-    final results = await Future.wait([
-      eventItemsFuture,
-      eventItemsFuture.then(_getSongEventItems),
-    ]);
+    final eventItems = await eventItemsRepository.getEventItems(eventId);
 
     state = state.copyWith(
-      eventItems: results[0],
-      songEventItems: results[1],
+      eventItems: eventItems,
     );
   }
 
@@ -72,7 +74,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     state = state.copyWith(
       isLoading: false,
       eventItems: updatedEventItems,
-      songEventItems: _getSongEventItems(updatedEventItems),
     );
   }
 
@@ -88,12 +89,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
           .where((item) => item.index != eventItem.index)
           .toList(),
     );
-  }
-
-  List<EventItem> _getSongEventItems(List<EventItem> eventItems) {
-    return eventItems
-        .where((item) => item.eventType == EventItemType.song)
-        .toList();
   }
 
   void addSelectedSongsToEventItemsCache(List<SongOverview> songs) {

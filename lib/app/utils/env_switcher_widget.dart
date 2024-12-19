@@ -38,8 +38,17 @@ class _EnvSwitcherState extends ConsumerState<EnvSwitcher> {
             children: [
               ListTile(
                 leading: const Icon(Icons.developer_mode),
-                title: const Text('Switch to Dev Environment'),
+                title: const Text(
+                  ' Dev Environment',
+                ),
+                trailing: !_isProduction()
+                    ? const Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      )
+                    : const Icon(Icons.circle_outlined),
                 onTap: () async {
+                  if (!_isProduction()) return;
                   await ref
                       .read(loginNotifierProvider.notifier)
                       .signOutAndSwitchEnv(AppEnvironment.development);
@@ -49,20 +58,33 @@ class _EnvSwitcherState extends ConsumerState<EnvSwitcher> {
               ),
               ListTile(
                 leading: const Icon(Icons.production_quantity_limits),
-                title: const Text('Switch to Prod Environment'),
+                title: const Text(
+                  ' Prod Environment',
+                ),
                 onTap: () async {
+                  if (_isProduction()) return;
                   await ref
                       .read(loginNotifierProvider.notifier)
                       .signOutAndSwitchEnv(AppEnvironment.production);
 
                   if (mounted) Navigator.pop(context);
                 },
+                trailing: _isProduction()
+                    ? const Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.green,
+                      )
+                    : const Icon(Icons.circle_outlined),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  bool _isProduction() {
+    return EnvironmentManager.currentEnvironment == AppEnvironment.production;
   }
 
   @override

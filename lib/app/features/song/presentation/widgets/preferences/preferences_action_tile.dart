@@ -11,6 +11,7 @@ class PreferencesActionTile extends StatelessWidget {
     this.color,
     this.height,
     this.suffixWidget,
+    this.backgroundColor,
     super.key,
   });
 
@@ -21,6 +22,7 @@ class PreferencesActionTile extends StatelessWidget {
   final VoidCallback onTap;
   final double? height;
   final Widget? suffixWidget;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class PreferencesActionTile extends StatelessWidget {
         height: height ?? 48,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
+          color: backgroundColor ?? context.colorScheme.onSurfaceVariant,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
