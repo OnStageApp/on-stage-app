@@ -69,7 +69,7 @@ class _AddSongFirstStepDetailsState
   Future<void> _initSong() async {
     ref.read(songNotifierProvider.notifier).resetState();
     if (widget.songId != null) {
-      await ref.read(songNotifierProvider.notifier).init(widget.songId!);
+      await ref.read(songNotifierProvider.notifier).getSongById(widget.songId!);
       _prefillValuesIfEditing();
     } else {
       _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);

@@ -97,6 +97,6 @@ class SongAppBarLeading extends ConsumerWidget {
             key: songKey,
           ),
         );
-    unawaited(ref.read(songNotifierProvider.notifier).init(songId!));
+    unawaited(ref.read(songNotifierProvider.notifier).getSongById(songId!));
   }
 }

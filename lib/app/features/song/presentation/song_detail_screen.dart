@@ -29,7 +29,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songNotifierProvider.notifier).init(widget.songId);
+      ref.read(songNotifierProvider.notifier).getSongById(widget.songId);
     });
   }
 

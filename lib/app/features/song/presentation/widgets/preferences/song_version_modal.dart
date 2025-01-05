@@ -128,6 +128,6 @@ class ChordViewModeModalState extends ConsumerState<SongVersionModal> {
       ..popDialog()
       ..popDialog();
 
-    unawaited(ref.read(songNotifierProvider.notifier).init(songId!));
+    unawaited(ref.read(songNotifierProvider.notifier).getSongById(songId!));
   }
 }

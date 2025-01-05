@@ -61,7 +61,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
 
     return Scaffold(
       appBar: const StageAppBar(
-        title: 'Event Structure',
+        title: 'Schedule',
         isBackButtonVisible: true,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

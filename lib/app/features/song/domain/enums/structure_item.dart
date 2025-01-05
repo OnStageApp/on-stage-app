@@ -70,6 +70,12 @@ StructureItem stringToEnum(String value) {
 }
 
 extension StructureItemExtension on StructureItem {
+  String toJson() => shortName;
+
+  static StructureItem fromJson(String jsonValue) {
+    return stringToEnum(jsonValue);
+  }
+
   String get shortName {
     switch (this) {
       case StructureItem.V1:

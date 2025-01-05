@@ -222,7 +222,6 @@ class LoginNotifier extends _$LoginNotifier {
     await EnvironmentManager.setEnvironment(
       env: env,
       onChange: () async {
-        // Refresh or reinitialize services after environment change
         ref.refresh(dioProvider);
       },
     );

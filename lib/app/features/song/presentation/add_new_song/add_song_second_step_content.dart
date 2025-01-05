@@ -57,7 +57,7 @@ class AddSongSecondStepContentState
             context.goNamed(AppRoute.home.name);
             return;
           }
-          ref.read(songNotifierProvider.notifier).init(songId);
+          ref.read(songNotifierProvider.notifier).getSongById(songId);
         },
       ),
       body: EditorTabSwitch(tabController: _tabController),

@@ -40,7 +40,7 @@ class UpcomingEventEnhanced extends ConsumerWidget {
       child: Ink(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: context.colorScheme.secondary,
+          color: context.colorScheme.tertiary,
           borderRadius: BorderRadius.circular(10),
         ),
         child: hasUpcomingEvent
@@ -102,7 +102,7 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                     children: [
                       ParticipantsOnTile(
                         backgroundColor: context.colorScheme.onSurface,
-                        borderColor: context.colorScheme.secondary,
+                        borderColor: context.colorScheme.tertiary,
                         textColor: context.colorScheme.onSurfaceVariant,
                         participantsProfileBytes: stagerPhotos,
                         participantsLength: stagerCount,
@@ -130,11 +130,16 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                           onPressed: () {
                             context.goNamed(AppRoute.addEvent.name);
                           },
-                          icon: Assets.icons.plus.svg(),
+                          icon: Assets.icons.plus.svg(
+                            colorFilter: ColorFilter.mode(
+                              context.colorScheme.primary,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                           label: Text(
                             'Create Event',
                             style: context.textTheme.titleSmall!.copyWith(
-                              color: const Color(0xFF7366FF),
+                              color: context.colorScheme.primary,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(

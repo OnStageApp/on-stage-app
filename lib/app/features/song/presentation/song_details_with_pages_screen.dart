@@ -39,10 +39,18 @@ class _SongDetailsWithPagesScreenState
       await ref
           .read(eventItemsNotifierProvider.notifier)
           .getEventItems(widget.eventId);
-      if (_isSongAtIndex(_currentIndex)) {
-        await _initSong(_currentIndex);
-      }
+      await _initSongAtIndex();
     });
+  }
+
+  Future<void> _initSongAtIndex() async {
+    if (_isSongItemAtIndex(_currentIndex)) {
+      final items = ref.watch(eventItemsNotifierProvider).eventItems;
+      final songId = items[_currentIndex].song!.id;
+      await ref
+          .read(songNotifierProvider.notifier)
+          .getSongFromEventItem(songId);
+    }
   }
 
   @override
@@ -51,15 +59,9 @@ class _SongDetailsWithPagesScreenState
     super.dispose();
   }
 
-  bool _isSongAtIndex(int index) {
+  bool _isSongItemAtIndex(int index) {
     final items = ref.watch(eventItemsNotifierProvider).eventItems;
     return items.isNotEmpty && items[index].song?.id != null;
-  }
-
-  Future<void> _initSong(int index) async {
-    final items = ref.watch(eventItemsNotifierProvider).eventItems;
-    final songId = items[index].song!.id;
-    await ref.read(songNotifierProvider.notifier).init(songId);
   }
 
   @override
@@ -68,9 +70,18 @@ class _SongDetailsWithPagesScreenState
     final items = eventItemsState.eventItems;
     final songState = ref.watch(songNotifierProvider);
 
-    if (items.isEmpty ||
-        (songState.song.id == null && _isSongAtIndex(_currentIndex))) {
+    if (songState.isLoading || eventItemsState.isLoading) {
       return const LoadingOverlay();
+    } else if (items.isEmpty) {
+      return const Scaffold(
+        appBar: StageAppBar(
+          isBackButtonVisible: true,
+          title: '',
+        ),
+        body: Center(
+          child: Text('No items added'),
+        ),
+      );
     }
 
     return PopScope(
@@ -78,13 +89,13 @@ class _SongDetailsWithPagesScreenState
       child: Scaffold(
         appBar: StageAppBar(
           isBackButtonVisible: true,
-          title: _isSongAtIndex(_currentIndex)
+          title: _isSongItemAtIndex(_currentIndex)
               ? songState.song.title ?? ''
               : items[_currentIndex].name ?? '',
-          trailing: _isSongAtIndex(_currentIndex)
+          trailing: _isSongItemAtIndex(_currentIndex)
               ? const SongAppBarLeading(isFromEvent: true)
               : null,
-          bottom: _isSongAtIndex(_currentIndex)
+          bottom: _isSongItemAtIndex(_currentIndex)
               ? const PreferredSize(
                   preferredSize: Size.fromHeight(52),
                   child: Padding(
@@ -108,9 +119,9 @@ class _SongDetailsWithPagesScreenState
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                   child: Transform.scale(
                     scale: 1,
-                    child: _isSongAtIndex(index)
+                    child: _isSongItemAtIndex(index)
                         ? SongDetailWidget(
-                            key: ValueKey(index),
+                            key: ValueKey('$index - ${items[index].song!.id}'),
                             widgetPadding: 64,
                             onTapChord: (chord) {},
                           )
@@ -129,12 +140,10 @@ class _SongDetailsWithPagesScreenState
     );
   }
 
-  Future<void> _onPageChanged(int page) async {
-    setState(() => _currentIndex = page);
-    ref.read(eventItemsNotifierProvider.notifier).setCurrentIndex(page);
-    if (_isSongAtIndex(page)) {
-      await _initSong(page);
-    }
+  Future<void> _onPageChanged(int pageIndex) async {
+    setState(() => _currentIndex = pageIndex);
+    ref.read(eventItemsNotifierProvider.notifier).setCurrentIndex(pageIndex);
+    await _initSongAtIndex();
   }
 }
 
@@ -179,9 +188,6 @@ class _PageIndicator extends StatelessWidget {
               effect: ScrollingPlayEffect(
                 activeDotColor: Colors.blue,
                 activeDotScale: 1.2,
-                activeDotWidthScale: 2.0,
-                // Width scale
-
                 secondColorIndexes: _getMomentIndexes(),
                 secondColor: context.colorScheme.onPrimaryFixedVariant,
                 dotHeight: 15,

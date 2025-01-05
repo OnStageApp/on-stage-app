@@ -7,34 +7,39 @@ class SettingsTrailingAppBarButton extends ConsumerWidget {
   const SettingsTrailingAppBarButton({
     required this.onTap,
     this.iconPath,
+    this.rightPadding = 6,
     super.key,
   });
 
   final void Function() onTap;
   final String? iconPath;
+  final double rightPadding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      style: IconButton.styleFrom(
-        visualDensity: VisualDensity.compact,
-        enableFeedback: true,
-        highlightColor: context.colorScheme.surfaceBright,
-        backgroundColor: context.colorScheme.onSurfaceVariant,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    return Padding(
+      padding: EdgeInsets.only(right: rightPadding),
+      child: IconButton(
+        style: IconButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          enableFeedback: true,
+          highlightColor: context.colorScheme.surfaceBright,
+          backgroundColor: context.colorScheme.onSurfaceVariant,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.zero,
         ),
-        padding: EdgeInsets.zero,
-      ),
-      onPressed: onTap,
-      icon: SvgPicture.asset(
-        iconPath ?? 'assets/icons/mixer_horizontal.svg',
-        colorFilter: ColorFilter.mode(
-          context.colorScheme.outline,
-          BlendMode.srcIn,
+        onPressed: onTap,
+        icon: SvgPicture.asset(
+          iconPath ?? 'assets/icons/mixer_horizontal.svg',
+          colorFilter: ColorFilter.mode(
+            context.colorScheme.outline,
+            BlendMode.srcIn,
+          ),
+          height: 16,
+          width: 16,
         ),
-        height: 16,
-        width: 16,
       ),
     );
   }

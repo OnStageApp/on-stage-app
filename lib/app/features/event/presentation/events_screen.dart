@@ -15,7 +15,6 @@ import 'package:on_stage_app/app/features/user_settings/application/user_setting
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -122,8 +121,8 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   Widget _buildTrailingButton(BuildContext context) {
     final userSettingsNotifier = ref.watch(userSettingsNotifierProvider);
-    return Padding(
-      padding: const EdgeInsets.only(right: Insets.normal),
+    return Container(
+      padding: const EdgeInsets.only(right: 12),
       child: StageTooltip(
         message: 'Add your first Event',
         key: _createEventTooltipKey,

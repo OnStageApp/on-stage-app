@@ -38,7 +38,7 @@ class EventTileEnhanced extends ConsumerWidget {
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
-          backgroundColor: context.colorScheme.secondary,
+          backgroundColor: context.colorScheme.tertiary,
           overlayColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
           padding: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
@@ -78,11 +78,16 @@ class EventTileEnhanced extends ConsumerWidget {
                     onPressed: () {
                       context.pushNamed(AppRoute.addEvent.name);
                     },
-                    icon: Assets.icons.plus.svg(),
+                    icon: Assets.icons.plus.svg(
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     label: Text(
                       'Create Event',
                       style: context.textTheme.titleSmall!.copyWith(
-                        color: const Color(0xFF7366FF),
+                        color: context.colorScheme.primary,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -100,7 +105,7 @@ class EventTileEnhanced extends ConsumerWidget {
               else
                 ParticipantsOnTile(
                   backgroundColor: context.colorScheme.onSurface,
-                  borderColor: context.colorScheme.secondary,
+                  borderColor: context.colorScheme.tertiary,
                   textColor: context.colorScheme.surface,
                   participantsProfileBytes: participantsProfileBytes,
                   participantsLength: participantsCount,

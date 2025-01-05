@@ -1,3 +1,4 @@
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_state.dart';
@@ -34,13 +35,37 @@ class SongNotifier extends _$SongNotifier {
     return const SongState();
   }
 
-  Future<void> init(String songId) async {
+  Future<void> getSongById(String songId) async {
     if (songId.isNullEmptyOrWhitespace) {
       return;
     }
     state = state.copyWith(isLoading: true);
 
     final song = await songRepository.getSong(songId: songId);
+
+    state = state.copyWith(
+      song: song,
+      sections: [],
+      originalSongSections: [],
+      isLoading: false,
+    );
+    logger.i('init song with title: ${state.song.title}');
+  }
+
+  Future<void> getSongFromEventItem(String songId) async {
+    if (songId.isNullEmptyOrWhitespace) {
+      return;
+    }
+
+    var song = ref
+        .watch(eventItemsNotifierProvider)
+        .songsFromEvent
+        .firstWhere((element) => element.id == songId);
+
+    if (song.id == null) {
+      state = state.copyWith(isLoading: true);
+      song = await songRepository.getSong(songId: songId);
+    }
 
     state = state.copyWith(
       song: song,

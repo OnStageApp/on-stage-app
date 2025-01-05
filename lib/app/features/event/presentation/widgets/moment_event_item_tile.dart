@@ -66,7 +66,7 @@ class _EventItemTileState extends State<EventItemTile> {
                 decoration: BoxDecoration(
                   color: widget.isSong
                       ? context.colorScheme.onSurfaceVariant
-                      : context.colorScheme.secondary,
+                      : context.colorScheme.tertiary,
                   borderRadius: isSliding
                       ? const BorderRadius.only(
                           topLeft: Radius.circular(8),
@@ -76,7 +76,7 @@ class _EventItemTileState extends State<EventItemTile> {
                   border: Border.all(
                     color: widget.isSong
                         ? context.colorScheme.onSurfaceVariant
-                        : const Color(0xFF77A5F3),
+                        : context.colorScheme.tertiary,
                   ),
                 ),
                 child: Row(

@@ -48,7 +48,7 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
             title: 'Add song',
             subtitle: 'Start adding your songs to your event',
             icon: Icons.music_note,
-            iconColor: context.colorScheme.tertiary,
+            iconColor: Colors.green,
             backgroundColor: context.colorScheme.onSurfaceVariant,
             onPressed: () {
               context.popDialog();
@@ -73,12 +73,12 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
               );
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           AddItemButtonWidget(
             title: 'Copy Last Event',
             subtitle: 'Use the structure of your last event',
             icon: Icons.refresh,
-            iconColor: context.colorScheme.primary,
+            iconColor: context.colorScheme.outline,
             backgroundColor: context.colorScheme.onSurfaceVariant,
             onPressed: () {},
           ),

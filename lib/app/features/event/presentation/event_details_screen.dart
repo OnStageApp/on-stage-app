@@ -80,6 +80,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             SettingsTrailingAppBarButton(
+              rightPadding: 12,
               onTap: () {
                 if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
                   context.pushNamed(AppRoute.eventSettings.name);
@@ -113,17 +114,16 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
               children: [
                 Expanded(
                   child: PreferencesActionTile(
-                    title: 'Start Event',
-                    color: context.colorScheme.onSurface,
-                    backgroundColor: Colors.green,
+                    title: 'Schedule',
+                    color: context.colorScheme.primary,
                     leadingWidget: Icon(
-                      LucideIcons.circle_play,
-                      color: context.colorScheme.onSurface,
+                      LucideIcons.list_music,
+                      color: context.colorScheme.primary,
                     ),
                     height: 54,
                     onTap: () {
                       context.pushNamed(
-                        AppRoute.songDetailsWithPages.name,
+                        AppRoute.addEventSongs.name,
                         queryParameters: {
                           'eventId': widget.eventId,
                         },
@@ -134,16 +134,17 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 const SizedBox(width: 12),
                 Expanded(
                   child: PreferencesActionTile(
-                    title: 'Structure',
-                    color: context.colorScheme.primary,
-                    leadingWidget: Icon(
-                      LucideIcons.list_music,
-                      color: context.colorScheme.primary,
+                    title: 'Start Event',
+                    color: Colors.white,
+                    backgroundColor: const Color(0xFF40A54A),
+                    leadingWidget: const Icon(
+                      LucideIcons.circle_play,
+                      color: Colors.white,
                     ),
                     height: 54,
                     onTap: () {
                       context.pushNamed(
-                        AppRoute.addEventSongs.name,
+                        AppRoute.songDetailsWithPages.name,
                         queryParameters: {
                           'eventId': widget.eventId,
                         },
