@@ -12,6 +12,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.background,
     this.bottom,
     this.onBackButtonPressed,
+    this.centerTitle = false,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSize? bottom;
   final void Function()? onBackButtonPressed;
   final Color? background;
+  final bool centerTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
                 : context.colorScheme.surface),
         leading: _buildLeading(context),
         // leadingWidth: 48,
-        centerTitle: false,
+        centerTitle: centerTitle,
         title: titleWidget ??
             Text(
               title,

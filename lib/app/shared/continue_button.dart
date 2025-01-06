@@ -13,6 +13,7 @@ class ContinueButton extends StatelessWidget {
     this.textColor,
     this.textStyle,
     this.borderColor,
+    this.boxShadow,
     super.key,
   });
 
@@ -25,6 +26,7 @@ class ContinueButton extends StatelessWidget {
   final Color? textColor;
   final TextStyle? textStyle;
   final Color? borderColor;
+  final BoxShadow? boxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +37,16 @@ class ContinueButton extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: hasShadow
             ? [
-                BoxShadow(
-                  color: context.isLargeScreen
-                      ? context.colorScheme.surfaceContainerHigh
-                          .withOpacity(0.6)
-                      : context.colorScheme.surface.withOpacity(0.6),
-                  blurRadius: 24,
-                  spreadRadius: 6,
-                  offset: const Offset(0, 10),
-                ),
+                boxShadow ??
+                    BoxShadow(
+                      color: context.isLargeScreen
+                          ? context.colorScheme.surfaceContainerHigh
+                              .withOpacity(0.6)
+                          : context.colorScheme.surface.withOpacity(0.6),
+                      blurRadius: 24,
+                      spreadRadius: 6,
+                      offset: const Offset(0, 10),
+                    ),
               ]
             : [],
       ),

@@ -102,6 +102,7 @@ dependencies:
   image_cropper: ^8.0.2
   permission_handler: ^11.3.1
   path: any
+  pull_down_button: ^0.10.2
 dev_dependencies:
   build_runner: ^2.4.13
   custom_lint: ^0.7.0
