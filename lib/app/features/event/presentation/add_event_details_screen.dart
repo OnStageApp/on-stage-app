@@ -4,9 +4,9 @@ import 'package:on_stage_app/app/features/event/application/event/controller/eve
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
-import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participants_list_widget.dart';
+import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
+import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_grid.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
@@ -39,17 +39,21 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(groupEventNotifierProvider.notifier).getGroupsEvent();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final eventGroups = ref.watch(groupEventNotifierProvider).groupEvents;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(12),
         child: ContinueButton(
-          text: 'Create Draft Event',
+          text: 'Create Event',
           onPressed: () {
             _createDraftEvent(context);
           },
@@ -108,15 +112,15 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 'Participants',
                 style: context.textTheme.titleSmall,
               ),
-              if (ref
-                  .watch(eventControllerProvider)
-                  .addedMembers
-                  .isNotEmpty) ...[
-                const SizedBox(height: Insets.smallNormal),
-                const ParticipantsList(),
-              ],
               const SizedBox(height: Insets.smallNormal),
-              _buildInvitePeopleButton(),
+              if (ref.watch(eventNotifierProvider).event?.id != null)
+                GroupsEventGrid(
+                  groups: eventGroups,
+                  eventId: ref.watch(eventNotifierProvider).event!.id!,
+                  isTemplateEditable: false,
+                ),
+              const SizedBox(height: Insets.smallNormal),
+              // _buildInvitePeopleButton(),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: DashedLineDivider(),
@@ -204,26 +208,6 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         );
       },
       text: 'Create new Rehearsal',
-      icon: Icons.add,
-    );
-  }
-
-  Widget _buildInvitePeopleButton() {
-    return EventActionButton(
-      onTap: () {
-        if (mounted) {
-          InvitePeopleToEventModal.show(
-            context: context,
-            onPressed: () {
-              ref.read(eventControllerProvider.notifier).addMembersToCache();
-              ref
-                  .read(eventControllerProvider.notifier)
-                  .resetSelectedMembersFromList();
-            },
-          );
-        }
-      },
-      text: 'Invite People',
       icon: Icons.add,
     );
   }

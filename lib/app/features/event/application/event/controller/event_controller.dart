@@ -2,7 +2,6 @@ import 'package:on_stage_app/app/features/event/application/event/controller/eve
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
-import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,34 +31,6 @@ class EventController extends _$EventController {
     state = state.copyWith(dateTime: dateTime);
   }
 
-  void selectTeamMember(TeamMember member) {
-    state = state.copyWith(
-      selectedTeamMembers: [...state.selectedTeamMembers, member],
-    );
-  }
-
-  void unSelectTeamMember(TeamMember member) {
-    state = state.copyWith(
-      selectedTeamMembers:
-          state.selectedTeamMembers.where((p) => p.id != member.id).toList(),
-    );
-  }
-
-  void addMembersToCache() {
-    final members = state.selectedTeamMembers;
-    state = state.copyWith(
-      addedMembers: [...state.addedMembers, ...members],
-    );
-  }
-
-  void resetAddedMembersToCache() {
-    state = state.copyWith(addedMembers: []);
-  }
-
-  void resetSelectedMembersFromList() {
-    state = state.copyWith(selectedTeamMembers: []);
-  }
-
   void addRehearsal(RehearsalModel rehearsal) {
     state = state.copyWith(rehearsals: [...state.rehearsals, rehearsal]);
   }
@@ -67,13 +38,6 @@ class EventController extends _$EventController {
   void removeRehearsal(RehearsalModel rehearsal) {
     state = state.copyWith(
       rehearsals: state.rehearsals.where((r) => r.id != rehearsal.id).toList(),
-    );
-  }
-
-  void removeMemberFromCache(String teamMemberId) {
-    state = state.copyWith(
-      addedMembers:
-          state.addedMembers.where((m) => m.id != teamMemberId).toList(),
     );
   }
 

@@ -8,12 +8,12 @@ part 'create_event_model.g.dart';
 @Freezed()
 class CreateEventModel with _$CreateEventModel {
   const factory CreateEventModel({
-    required String name,
-    required DateTime? dateTime,
-    required String location,
-    required EventStatus eventStatus,
-    required List<String> teamMemberIds,
-    required List<RehearsalModel> rehearsals,
+    @Default('Undefined') String name,
+    DateTime? dateTime,
+    String? location,
+    @Default(EventStatus.draft) EventStatus eventStatus,
+    @Default([]) List<RehearsalModel> rehearsals,
+    @Default([]) List<String> teamMemberIds,
   }) = _CreateEventModel;
 
   factory CreateEventModel.fromJson(Map<String, dynamic> json) =>

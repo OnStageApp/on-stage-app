@@ -9,12 +9,10 @@ import 'package:on_stage_app/app/features/event/application/events/events_notifi
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/invite_people_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
@@ -239,7 +237,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
               ),
             if (hasEditorRoles) ...[
               const SizedBox(height: Insets.smallNormal),
-              _buildInvitePeopleButton(),
+              // _buildInvitePeopleButton(),
             ],
             const SizedBox(height: 120),
           ],
@@ -249,7 +247,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   }
 
   void _onDeclineInvitation(BuildContext context) {
-    const stagerRequest = StagerRequest(
+    const stagerRequest = EditStagerRequest(
       participationStatus: StagerStatusEnum.DECLINED,
     );
     ref.read(eventNotifierProvider.notifier).updateStager(stagerRequest);
@@ -399,35 +397,5 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
       text: 'Create new Rehearsal',
       icon: Icons.add,
     );
-  }
-
-  Widget _buildInvitePeopleButton() {
-    return EventActionButton(
-      onTap: () {
-        if (mounted) {
-          InvitePeopleToEventModal.show(
-            context: context,
-            onPressed: _addStagersToEvent,
-            eventId: widget.eventId,
-          );
-        }
-      },
-      text: 'Invite People to Event',
-      icon: Icons.add,
-    );
-  }
-
-  void _addStagersToEvent() {
-    ref.read(eventControllerProvider.notifier).resetAddedMembersToCache();
-    ref.read(eventControllerProvider.notifier).addMembersToCache();
-    ref.read(eventControllerProvider.notifier).resetSelectedMembersFromList();
-    final addedTeamMembers = ref.read(eventControllerProvider).addedMembers;
-
-    ref.read(eventNotifierProvider.notifier).addStagersToEvent(
-          CreateStagersRequest(
-            eventId: widget.eventId,
-            teamMemberIds: addedTeamMembers.map((e) => e.id).toList(),
-          ),
-        );
   }
 }

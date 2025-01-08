@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 part 'adaptive_menu_context.freezed.dart';
@@ -61,7 +62,7 @@ class AdaptiveMenuContext extends StatelessWidget {
                             item.icon,
                             color: item.isDestructive
                                 ? Theme.of(context).colorScheme.error
-                                : null,
+                                : context.colorScheme.outline,
                           ),
                           const SizedBox(width: 8),
                         ],
@@ -70,7 +71,7 @@ class AdaptiveMenuContext extends StatelessWidget {
                           style: TextStyle(
                             color: item.isDestructive
                                 ? Theme.of(context).colorScheme.error
-                                : null,
+                                : context.colorScheme.outline,
                           ),
                         ),
                       ],

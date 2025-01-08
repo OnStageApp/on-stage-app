@@ -11,10 +11,11 @@ import 'package:on_stage_app/app/features/event/domain/models/create_event_model
 import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/create_all_stagers_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/features/positions/position_template/domain/position_stagers.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -103,12 +104,10 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
   }
 
-  Future<void> getStagers(String eventId) async {
-    final stagers = await eventsRepository.getStagersByEventId(eventId);
-    final stagersWithPhotos = await Future.wait(
-      stagers.map(_getStagerWithPhoto),
-    );
-    state = state.copyWith(stagers: stagersWithPhotos);
+  Future<void> createEmptyEvent() async {
+    state = state.copyWith(isLoading: true);
+    final event = await eventsRepository.createEvent(const CreateEventModel());
+    state = state.copyWith(event: event);
   }
 
   Future<void> createEvent() async {
@@ -125,22 +124,6 @@ class EventNotifier extends _$EventNotifier {
     }
     await eventsRepository.updateEvent(state.event!.id!, updatedEvent);
     state = state.copyWith(isLoading: false);
-  }
-
-  Future<void> addStagersToEvent(
-    CreateStagersRequest createStagerRequest,
-  ) async {
-    await eventsRepository.addStagerToEvent(createStagerRequest);
-    if (state.event != null) {
-      unawaited(getStagers(state.event!.id!));
-    }
-  }
-
-  Future<void> removeStagerFromEvent(String stagerId) async {
-    await eventsRepository.removeStagerFromEvent(stagerId);
-    if (state.event != null) {
-      unawaited(getStagers(state.event!.id!));
-    }
   }
 
   void updateEventLocation(String location) {
@@ -171,11 +154,110 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(event: newEvent, isLoading: false);
   }
 
+  Future<void> deleteEventAndGetAll() async {
+    await deleteEvent();
+    unawaited(ref.read(eventsNotifierProvider.notifier).initEvents());
+  }
+
+  Future<void> deleteEvent() async {
+    state = state.copyWith(isLoading: true);
+    await eventsRepository.deleteEvent(state.event!.id!);
+    state = state.copyWith(isLoading: false);
+  }
+
+  CreateEventModel _createDraftEvent() {
+    final eventControllerState = ref.read(eventControllerProvider);
+    return CreateEventModel(
+      name: eventControllerState.eventName,
+      dateTime: eventControllerState.dateTime,
+      location: eventControllerState.eventLocation,
+      rehearsals: eventControllerState.rehearsals,
+    );
+  }
+
+  /// New Stagers Methods
+  Future<void> getStagersByPositionId(String positionId) async {
+    if (state.event?.id == null) return;
+    final stagers = await eventsRepository.getStagersByEventAndPosition(
+      state.event!.id!,
+      positionId,
+    );
+    final stagersWithPhotos = await Future.wait(
+      stagers.map(_getStagerWithPhoto),
+    );
+    state = state.copyWith(stagers: stagersWithPhotos);
+  }
+
+  Future<void> addStagersToEvent(
+    CreateAllStagersRequest createAllStagersRequest,
+  ) async {
+    // await eventsRepository.addStagerToEvent(createAllStagersRequest);
+    //TODO: Just for dummy data
+
+    final positionWithStagers = [
+      const PositionWithStagers(
+        id: '2',
+        groupId: '1',
+        name: 'Bass Guitar',
+        stagers: [
+          Stager(
+            id: '1',
+            name: 'aiaiai Heasdashehe',
+            userId: '1',
+            participationStatus: StagerStatusEnum.CONFIRMED,
+          ),
+        ],
+      ),
+    ];
+    //TODO: Delete after backend ready
+    logger.i('PositionsWithStagers: $positionWithStagers');
+    state = state.copyWith(
+      positionsWithStagers: positionWithStagers,
+    );
+    // if (state.event != null) {
+    //   // unawaited(getStagers(state.event!.id!));
+    // }
+  }
+
+  /// OLD Stagers Methods
+  Future<void> getStagers(String eventId) async {
+    final stagers = await eventsRepository.getStagersByEventId(eventId);
+    final stagersWithPhotos = await Future.wait(
+      stagers.map(_getStagerWithPhoto),
+    );
+    state = state.copyWith(stagers: stagersWithPhotos);
+  }
+
+  Future<void> getPositionsWithStagers(String groupId) async {
+    state = state.copyWith(isLoading: true);
+
+    try {
+      final positions = await _getDummyPositionsWithStagers();
+      final positionByGroup =
+          positions.where((element) => element.groupId == groupId).toList();
+      state = state.copyWith(
+        positionsWithStagers: positionByGroup,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+      );
+    }
+  }
+
+  Future<void> removeStagerFromEvent(String stagerId) async {
+    await eventsRepository.removeStagerFromEvent(stagerId);
+    if (state.event != null) {
+      unawaited(getStagers(state.event!.id!));
+    }
+  }
+
   Future<void> setStatusForStager({
     required StagerStatusEnum participationStatus,
     required String stagerId,
   }) async {
-    final newStager = StagerRequest(
+    final newStager = EditStagerRequest(
       participationStatus: participationStatus,
     );
     await eventsRepository.updateStager(stagerId, newStager);
@@ -192,37 +274,13 @@ class EventNotifier extends _$EventNotifier {
     return stager.id;
   }
 
-  Future<void> deleteEventAndGetAll() async {
-    await deleteEvent();
-    unawaited(ref.read(eventsNotifierProvider.notifier).initEvents());
-  }
-
-  Future<void> deleteEvent() async {
-    state = state.copyWith(isLoading: true);
-    await eventsRepository.deleteEvent(state.event!.id!);
-    state = state.copyWith(isLoading: false);
-  }
-
-  Future<void> updateStager(StagerRequest stagerRequest) async {
+  Future<void> updateStager(EditStagerRequest stagerRequest) async {
     final userId = ref.read(userNotifierProvider).currentUser!.id;
     state = state.copyWith(isLoading: true);
     final stager =
         state.stagers.firstWhere((stager) => stager.userId == userId);
     await eventsRepository.updateStager(stager.id, stagerRequest);
     state = state.copyWith(isLoading: false);
-  }
-
-  CreateEventModel _createDraftEvent() {
-    final eventControllerState = ref.read(eventControllerProvider);
-    return CreateEventModel(
-      name: eventControllerState.eventName,
-      dateTime: eventControllerState.dateTime,
-      location: eventControllerState.eventLocation,
-      eventStatus: EventStatus.draft,
-      teamMemberIds:
-          eventControllerState.addedMembers.map((p) => p.id).toList(),
-      rehearsals: eventControllerState.rehearsals,
-    );
   }
 
   Future<Stager> _getStagerWithPhoto(
@@ -246,5 +304,51 @@ class EventNotifier extends _$EventNotifier {
     if (userId == null) return null;
     final photo = await ref.read(databaseProvider).getTeamMemberPhoto(userId);
     return photo?.profilePicture;
+  }
+
+  Future<List<PositionWithStagers>> _getDummyPositionsWithStagers() async {
+    return Future.delayed(
+      Duration(milliseconds: 1000),
+      () => [
+        const PositionWithStagers(
+          id: '1',
+          name: 'Bass Guitar',
+          groupId: '1',
+          stagers: [
+            Stager(
+              id: '1',
+              name: 's Ionescu',
+              userId: '1',
+              participationStatus: StagerStatusEnum.CONFIRMED,
+            ),
+            Stager(
+              id: '1',
+              name: 'a Alex',
+              userId: '1',
+              participationStatus: StagerStatusEnum.CONFIRMED,
+            ),
+          ],
+        ),
+        const PositionWithStagers(
+          id: '2',
+          name: 'El Guitar ',
+          groupId: '1',
+          stagers: [
+            Stager(
+              id: '1',
+              name: 'Elena Micascovi',
+              userId: '1',
+              participationStatus: StagerStatusEnum.CONFIRMED,
+            ),
+            Stager(
+              id: '1',
+              name: 'John Hehehe',
+              userId: '1',
+              participationStatus: StagerStatusEnum.CONFIRMED,
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

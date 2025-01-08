@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -128,6 +129,9 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           onPressed: () {
+                            ref
+                                .read(eventNotifierProvider.notifier)
+                                .createEmptyEvent();
                             context.goNamed(AppRoute.addEvent.name);
                           },
                           icon: Assets.icons.plus.svg(

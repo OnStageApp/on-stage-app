@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
@@ -142,6 +143,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
             }
 //TODO: implement new method for permission
             if (ref.watch(permissionServiceProvider).canAddEvents) {
+              ref.read(eventNotifierProvider.notifier).createEmptyEvent();
               context.pushNamed(AppRoute.addEvent.name);
             } else {
               PaywallModal.show(
