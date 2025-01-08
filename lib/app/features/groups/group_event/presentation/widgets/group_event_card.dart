@@ -5,7 +5,6 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/participant
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/domain/group_event.dart';
 import 'package:on_stage_app/app/features/positions/position_event/presentation/position_members_modal.dart';
-import 'package:on_stage_app/app/features/positions/position_template/presentation/position_modal.dart';
 import 'package:on_stage_app/app/shared/square_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -13,14 +12,12 @@ class GroupEventCard extends ConsumerStatefulWidget {
   const GroupEventCard({
     required this.groupId,
     required this.eventId,
-    this.isTemplateEditable = true,
     this.onTap,
     super.key,
   });
 
   final String groupId;
   final String eventId;
-  final bool isTemplateEditable;
   final VoidCallback? onTap;
 
   @override
@@ -53,7 +50,7 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: InkWell(
-        onTap: () => widget.isTemplateEditable ? null : _doActionOnTap(context),
+        onTap: () => _doActionOnTap(context),
         overlayColor:
             WidgetStateProperty.all(context.colorScheme.surfaceBright),
         child: Padding(
@@ -100,16 +97,11 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
   }
 
   void _doActionOnTap(BuildContext context) {
-    widget.isTemplateEditable
-        ? PositionModal.show(
-            context: context,
-            groupId: widget.groupId,
-          )
-        : PositionMembersModal.show(
-            context: context,
-            groupId: widget.groupId,
-            eventId: widget.eventId,
-          );
+    PositionMembersModal.show(
+      context: context,
+      groupId: widget.groupId,
+      eventId: widget.eventId,
+    );
   }
 
   Widget _buildSubtitle(GroupEvent group, BuildContext context) {

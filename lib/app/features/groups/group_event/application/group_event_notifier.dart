@@ -21,6 +21,7 @@ class GroupEventNotifier extends _$GroupEventNotifier {
   }
 
   Future<void> getGroupsEvent() async {
+    state = state.copyWith(isLoading: true);
     final groups = await Future.delayed(const Duration(seconds: 1), () {
       return List.generate(
         3,
@@ -32,16 +33,6 @@ class GroupEventNotifier extends _$GroupEventNotifier {
         ),
       );
     });
-
-    state = state.copyWith(isLoading: true, error: null);
-
-    try {
-      // final groups = await groupEventRepository.getGroups();
-      state = state.copyWith(groupEvents: groups);
-    } catch (e) {
-      state = state.copyWith(error: e);
-    } finally {
-      state = state.copyWith(isLoading: false);
-    }
+    state = state.copyWith(groupEvents: groups, isLoading: false);
   }
 }

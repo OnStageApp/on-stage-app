@@ -5,13 +5,13 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
-import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
-import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_grid.dart';
+import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
@@ -21,6 +21,7 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AddEventDetailsScreen extends ConsumerStatefulWidget {
   const AddEventDetailsScreen({super.key});
@@ -39,15 +40,11 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(groupEventNotifierProvider.notifier).getGroupsEvent();
-    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final eventGroups = ref.watch(groupEventNotifierProvider).groupEvents;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
@@ -62,6 +59,20 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       ),
       appBar: StageAppBar(
         isBackButtonVisible: true,
+        onBackButtonPressed: () {
+          AdaptiveDialog.show(
+            context: context,
+            title: 'Discard Changes',
+            description: 'Are you sure you want to leave? '
+                'Any unsaved changes will be lost.',
+            actionText: 'Yes',
+            onAction: () {
+              context
+                ..popDialog()
+                ..pop();
+            },
+          );
+        },
         title: 'Create Event',
         trailing: SettingsTrailingAppBarButton(
           iconPath: 'assets/icons/bell.svg',
@@ -113,14 +124,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              if (ref.watch(eventNotifierProvider).event?.id != null)
-                GroupsEventGrid(
-                  groups: eventGroups,
-                  eventId: ref.watch(eventNotifierProvider).event!.id!,
-                  isTemplateEditable: false,
-                ),
+              const GroupsEventGrid(),
               const SizedBox(height: Insets.smallNormal),
-              // _buildInvitePeopleButton(),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: DashedLineDivider(),
@@ -143,6 +148,23 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               _buildCreateRehearsalButton(),
               const SizedBox(height: 120),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerGroupCard() {
+    return SizedBox(
+      height: 200,
+      width: 200,
+      child: Shimmer.fromColors(
+        baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+        highlightColor: context.colorScheme.onSurfaceVariant,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.colorScheme.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),

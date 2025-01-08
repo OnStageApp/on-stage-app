@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -57,10 +57,7 @@ class StageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget? _buildLeading(BuildContext context) {
     if (isBackButtonVisible) {
       return InkWell(
-        onTap: () {
-          onBackButtonPressed?.call();
-          context.pop();
-        },
+        onTap: onBackButtonPressed ?? () => context.pop(),
         child: Icon(
           Icons.arrow_back_ios,
           size: 22,

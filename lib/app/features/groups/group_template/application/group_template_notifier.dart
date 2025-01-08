@@ -41,27 +41,6 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
     }
   }
 
-  Future<void> getGroupsEvent() async {
-    // final groups = List.generate(
-    //   3,
-    //   (index) => GroupEvent(
-    //     id: index.toString(),
-    //     name: 'Group ${index + 1}',
-    //
-    //   ),
-    // );
-    // state = state.copyWith(isLoading: true, error: null);
-    //
-    // try {
-    //   // final groups = await groupRepository.getGroups();
-    //   state = state.copyWith(groups: groups);
-    // } catch (e) {
-    //   state = state.copyWith(error: e);
-    // } finally {
-    //   state = state.copyWith(isLoading: false);
-    // }
-  }
-
   Future<void> createGroup(String title) async {
     state = state.copyWith(isLoading: true, error: null);
 
