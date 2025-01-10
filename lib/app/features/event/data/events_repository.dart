@@ -62,24 +62,8 @@ abstract class EventsRepository {
     @Query('eventId') String eventId,
   );
 
-  @GET(API.stagers)
-  Future<List<Stager>> getStagersByEventAndPosition(
-    @Query('eventId') String eventId,
-    @Query('positionId') String positionId,
-  );
-
   @POST(API.events)
   Future<EventModel> createEvent(@Body() CreateEventModel? event);
-
-  @POST(API.stagers)
-  Future<List<Stager>> addStagerToEvent(
-    @Body() CreateAllStagersRequest createStagerRequest,
-  );
-
-  @DELETE(API.stagersById)
-  Future<String> removeStagerFromEvent(
-    @Path('id') String id,
-  );
 
   @PUT(API.eventById)
   Future<EventModel> updateEvent(
@@ -98,6 +82,23 @@ abstract class EventsRepository {
     @Path('id') String eventId,
   );
 
+  ///Stagers
+  @GET(API.getStagersV2)
+  Future<List<Stager>> getStagersByGroupAndEvent({
+    @Query('eventId') required String eventId,
+    @Query('groupId') required String groupId,
+  });
+
+  @POST(API.addStagersV2)
+  Future<List<Stager>> addStagerToEvent(
+    @Body() CreateAllStagersRequest createStagerRequest,
+  );
+
+  @DELETE(API.stagersById)
+  Future<String> removeStagerFromEvent(
+    @Path('id') String id,
+  );
+
   @PUT(API.editStagerById)
   Future<void> updateStager(
     @Path('id') String stagerId,
@@ -108,5 +109,11 @@ abstract class EventsRepository {
   Future<Stager> getStagerByEventAndTeamMember(
     @Query('eventId') String eventId,
     @Query('teamMemberId') String teamMemberId,
+  );
+
+  @GET(API.stagers)
+  Future<List<Stager>> getStagersByEventAndPosition(
+    @Query('eventId') String eventId,
+    @Query('positionId') String positionId,
   );
 }

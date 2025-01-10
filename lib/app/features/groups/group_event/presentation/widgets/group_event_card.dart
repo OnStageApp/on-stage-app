@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/domain/group_event.dart';
-import 'package:on_stage_app/app/features/positions/position_event/presentation/position_members_modal.dart';
+import 'package:on_stage_app/app/features/positions/presentation/position_members_modal.dart';
 import 'package:on_stage_app/app/shared/square_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -61,10 +63,10 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (group.stagerCount > 0)
+                  if (group.membersCount > 0)
                     Expanded(
                       child: ParticipantsOnTile(
-                        participantsLength: group.stagerCount,
+                        participantsLength: group.membersCount,
                         textColor: Colors.white,
                         participantsProfileName: const [],
                         useRandomColors: true,
@@ -96,17 +98,27 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
     );
   }
 
-  void _doActionOnTap(BuildContext context) {
-    PositionMembersModal.show(
+  Future<void> _doActionOnTap(BuildContext context) async {
+    await PositionMembersModal.show(
       context: context,
       groupId: widget.groupId,
       eventId: widget.eventId,
     );
+    unawaited(
+      ref
+          .read(groupEventNotifierProvider.notifier)
+          .getGroupEventById(widget.eventId, widget.groupId),
+    );
   }
 
   Widget _buildSubtitle(GroupEvent group, BuildContext context) {
+    var subtitle = '${group.membersCount} Members';
+
+    if (group.confirmedCount > 0) {
+      subtitle = '${group.confirmedCount}/${group.membersCount} Confirmed';
+    }
     return Text(
-      '${group.stagerCount} Members',
+      subtitle,
       style: context.textTheme.bodyMedium!
           .copyWith(color: context.colorScheme.outline),
     );

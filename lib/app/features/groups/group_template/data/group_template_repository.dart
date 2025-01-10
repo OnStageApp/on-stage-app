@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:on_stage_app/app/features/groups/group_template/domain/create_or_edit_group_request.dart';
 import 'package:on_stage_app/app/features/groups/group_template/domain/group_template.dart';
+import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'group_template_repository.g.dart';
@@ -8,15 +10,20 @@ part 'group_template_repository.g.dart';
 abstract class GroupTemplateRepository {
   factory GroupTemplateRepository(Dio dio) = _GroupTemplateRepository;
 
-  @GET('')
-  Future<List<GroupTemplateModel>> getGroups();
+  @GET(API.groupsTemplate)
+  Future<List<GroupTemplateModel>> getGroupsTemplate();
 
-  @POST('')
-  Future<GroupTemplateModel> createGroup(@Body() GroupTemplateModel group);
+  @POST(API.createGroup)
+  Future<GroupTemplateModel> createGroup(
+    @Body() CreateOrEditGroupRequest group,
+  );
 
-  @PUT('')
-  Future<GroupTemplateModel> updateGroup();
+  @PUT(API.updateGroup)
+  Future<GroupTemplateModel> updateGroup(
+    @Path('id') String id,
+    @Body() CreateOrEditGroupRequest group,
+  );
 
-  @DELETE('')
+  @DELETE(API.deleteGroup)
   Future<void> deleteGroup(@Path('id') String id);
 }

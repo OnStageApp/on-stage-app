@@ -3,21 +3,20 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class AdaptiveDialog extends ConsumerWidget {
-  const AdaptiveDialog({
+class AdaptiveEventPopDialog extends ConsumerWidget {
+  const AdaptiveEventPopDialog({
     required this.title,
     required this.description,
     required this.actionText,
-    required this.onAction,
     super.key,
   });
 
   final String title;
   final String description;
   final String actionText;
-  final VoidCallback onAction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,7 +32,10 @@ class AdaptiveDialog extends ConsumerWidget {
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: onAction,
+                onPressed: () {
+                  ref.read(eventNotifierProvider.notifier).deleteEvent();
+                  context.popDialog(true);
+                },
                 style: TextButton.styleFrom(
                   foregroundColor: context.colorScheme.error,
                 ),
@@ -50,7 +52,10 @@ class AdaptiveDialog extends ConsumerWidget {
                 child: const Text('Cancel'),
               ),
               CupertinoDialogAction(
-                onPressed: onAction,
+                onPressed: () {
+                  ref.read(eventNotifierProvider.notifier).deleteEvent();
+                  context.popDialog(true);
+                },
                 isDestructiveAction: true,
                 child: Text(actionText),
               ),
@@ -60,29 +65,25 @@ class AdaptiveDialog extends ConsumerWidget {
 
   static Future<bool?> show({
     required BuildContext context,
-    required String title,
-    required String description,
-    required String actionText,
-    required VoidCallback onAction,
   }) {
     if (Platform.isAndroid) {
       return showDialog<bool>(
         context: context,
-        builder: (_) => AdaptiveDialog(
-          title: title,
-          description: description,
-          actionText: actionText,
-          onAction: onAction,
+        builder: (_) => const AdaptiveEventPopDialog(
+          title: 'Discard Changes',
+          description: 'Are you sure you want to leave? '
+              'Any unsaved changes will be lost.',
+          actionText: 'Yes',
         ),
       );
     } else {
       return showCupertinoDialog<bool>(
         context: context,
-        builder: (_) => AdaptiveDialog(
-          title: title,
-          description: description,
-          actionText: actionText,
-          onAction: onAction,
+        builder: (_) => const AdaptiveEventPopDialog(
+          title: 'Discard Changes',
+          description: 'Are you sure you want to leave? '
+              'Any unsaved changes will be lost.',
+          actionText: 'Yes',
         ),
       );
     }

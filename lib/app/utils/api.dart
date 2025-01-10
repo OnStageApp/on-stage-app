@@ -43,16 +43,21 @@ class API {
   static const String events = 'events';
   static const String rehearsals = 'rehearsals';
   static const String rehearsalById = 'rehearsals/{id}';
-  static const String stagers = 'stagers';
-  static const String stagersById = 'stagers/{id}';
-  static const String editStagerById = 'stagers/{id}';
-  static const String stagerByEventAndTeamMember =
-      'stagers/getByEventAndTeamMember';
   static const String eventItems = 'event-items';
   static const String leadVocalsByEventItemId = 'event-items/{id}/lead-vocals';
   static const String leadVocalsByEventItemIdAndStagerId =
       'event-items/{id}/lead-vocals/{stagerId}';
   static const String upcomingEvent = 'events/upcoming';
+
+  static const String stagers = 'stagers';
+
+  static const String stagersById = 'stagers/{id}';
+  static const String editStagerById = 'stagers/{id}';
+  static const String stagerByEventAndTeamMember =
+      'stagers/getByEventAndTeamMember';
+
+  static const String getStagersV2 = 'stagers/v2';
+  static const String addStagersV2 = 'stagers/v2';
 
   static const String artists = 'artists';
 
@@ -119,4 +124,21 @@ class API {
   static const String deviceLogin = 'devices/login';
 
   static const String plans = 'plans';
+
+  //positions
+  static const String groupsTemplate = 'groups/template';
+  static const String getGroupsForEvent = 'groups/events/{id}';
+  static const String createGroup = 'groups';
+  static const String updateGroup = 'groups/{id}';
+  static const String deleteGroup = 'groups/{id}';
+
+  static const String groupsForEvent = 'groups/events/{eventId}';
+  static const String groupEventById = 'groups/{groupId}/events/{eventId}';
+
+  static const String getPositions = 'positions/groups/{id}';
+  static const String createPositon = 'positions';
+  static const String updatePosition = 'positions/{id}';
+  static const String deletePosition = 'positions/{id}';
+
+  static const String getAllPositionsWithStagers = 'positions/stagers';
 }

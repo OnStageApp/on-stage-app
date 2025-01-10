@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PositionMemberShimmer extends StatelessWidget {
-  const PositionMemberShimmer({super.key});
+class PositionTileShimmer extends StatelessWidget {
+  const PositionTileShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {

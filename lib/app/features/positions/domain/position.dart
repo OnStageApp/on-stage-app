@@ -7,7 +7,6 @@ part 'position.g.dart';
 class Position with _$Position {
   const factory Position({
     required String id,
-    required String groupId,
     required String name,
   }) = _Position;
 

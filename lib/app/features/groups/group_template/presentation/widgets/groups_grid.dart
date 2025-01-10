@@ -1,33 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/groups/group_template/domain/group_template.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/groups/group_template/application/group_template_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/widgets/group_template_card.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
-class GroupsTemplateGrid extends StatelessWidget {
+class GroupsTemplateGrid extends ConsumerWidget {
   const GroupsTemplateGrid({
-    required this.groups,
     super.key,
   });
 
-  final List<GroupTemplateModel> groups;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final groupTemplateState = ref.watch(groupTemplateNotifierProvider);
+    final isLoading = groupTemplateState.isLoading;
     return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 1.2,
       ),
-      itemCount: groups.length,
+      itemCount: isLoading ? 2 : groupTemplateState.groups.length,
       itemBuilder: (_, index) {
-        final group = groups[index];
+        if (isLoading) {
+          return _buildShimmerGroupCard(context);
+        }
+        final group = groupTemplateState.groups[index];
         return GroupTemplateCard(
           groupId: group.id,
         );
       },
     );
   }
+}
+
+Widget _buildShimmerGroupCard(BuildContext context) {
+  return SizedBox(
+    height: 200,
+    width: 200,
+    child: Shimmer.fromColors(
+      baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+      highlightColor: context.colorScheme.onSurfaceVariant,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.colorScheme.onSurfaceVariant,
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+  );
 }

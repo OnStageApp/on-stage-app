@@ -6,7 +6,7 @@ part 'group_card_template_state.freezed.dart';
 @freezed
 class GroupCardTemplateState with _$GroupCardTemplateState {
   const factory GroupCardTemplateState({
-    required GroupTemplateModel group,
+    required GroupTemplateModel? group,
     @Default(false) bool isEditing,
   }) = _GroupCardTemplateState;
 }

@@ -111,7 +111,7 @@ class ParticipantsOnTile extends StatelessWidget {
                     width: 2,
                   ),
                   // Use last color from backgroundColors for overflow indicator
-                  color: _backgroundColors.isNotEmpty == true
+                  color: useRandomColors
                       ? _backgroundColors.last
                       : (backgroundColor ?? context.colorScheme.secondary),
                 ),

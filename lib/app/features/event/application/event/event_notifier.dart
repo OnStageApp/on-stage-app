@@ -12,10 +12,10 @@ import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_re
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_all_stagers_request.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
-import 'package:on_stage_app/app/features/positions/position_template/domain/position_stagers.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/logger.dart';
@@ -52,7 +52,6 @@ class EventNotifier extends _$EventNotifier {
   Future<void> initEventById(String eventId) async {
     unawaited(getEventById(eventId));
     unawaited(getRehearsals(eventId));
-    unawaited(getStagers(eventId));
   }
 
   Future<void> publishEvent() async {
@@ -73,10 +72,15 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> addRehearsal(RehearsalModel rehearsal) async {
-    state = state.copyWith(isLoading: true);
-    final rehearsals = await eventsRepository.addRehearsal(rehearsal);
-    final updatedRehearsals = [...state.rehearsals, rehearsals];
-    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+    final previousRehearsals = state.rehearsals;
+    try {
+      final updatedRehearsals = [...state.rehearsals, rehearsal];
+      state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+      await eventsRepository.addRehearsal(rehearsal);
+    } catch (e) {
+      state = state.copyWith(rehearsals: previousRehearsals);
+      logger.e('Error adding rehearsal: $e');
+    }
   }
 
   Future<void> updateRehearsal(RehearsalModel rehearsalRequest) async {
@@ -161,6 +165,9 @@ class EventNotifier extends _$EventNotifier {
 
   Future<void> deleteEvent() async {
     state = state.copyWith(isLoading: true);
+    if (state.event?.id == null) {
+      throw Exception('Event id is null');
+    }
     await eventsRepository.deleteEvent(state.event!.id!);
     state = state.copyWith(isLoading: false);
   }
@@ -176,80 +183,57 @@ class EventNotifier extends _$EventNotifier {
   }
 
   /// New Stagers Methods
-  Future<void> getStagersByPositionId(String positionId) async {
-    if (state.event?.id == null) return;
-    final stagers = await eventsRepository.getStagersByEventAndPosition(
-      state.event!.id!,
-      positionId,
-    );
-    final stagersWithPhotos = await Future.wait(
-      stagers.map(_getStagerWithPhoto),
-    );
-    state = state.copyWith(stagers: stagersWithPhotos);
-  }
-
   Future<void> addStagersToEvent(
-    CreateAllStagersRequest createAllStagersRequest,
+    List<String> selectedMemberIds,
+    String positionId,
+    String groupId,
   ) async {
-    // await eventsRepository.addStagerToEvent(createAllStagersRequest);
-    //TODO: Just for dummy data
-
-    final positionWithStagers = [
-      const PositionWithStagers(
-        id: '2',
-        groupId: '1',
-        name: 'Bass Guitar',
-        stagers: [
-          Stager(
-            id: '1',
-            name: 'aiaiai Heasdashehe',
-            userId: '1',
-            participationStatus: StagerStatusEnum.CONFIRMED,
-          ),
-        ],
-      ),
-    ];
-    //TODO: Delete after backend ready
-    logger.i('PositionsWithStagers: $positionWithStagers');
-    state = state.copyWith(
-      positionsWithStagers: positionWithStagers,
-    );
-    // if (state.event != null) {
-    //   // unawaited(getStagers(state.event!.id!));
-    // }
-  }
-
-  /// OLD Stagers Methods
-  Future<void> getStagers(String eventId) async {
-    final stagers = await eventsRepository.getStagersByEventId(eventId);
-    final stagersWithPhotos = await Future.wait(
-      stagers.map(_getStagerWithPhoto),
-    );
-    state = state.copyWith(stagers: stagersWithPhotos);
-  }
-
-  Future<void> getPositionsWithStagers(String groupId) async {
-    state = state.copyWith(isLoading: true);
-
     try {
-      final positions = await _getDummyPositionsWithStagers();
-      final positionByGroup =
-          positions.where((element) => element.groupId == groupId).toList();
-      state = state.copyWith(
-        positionsWithStagers: positionByGroup,
-        isLoading: false,
+      final request = CreateAllStagersRequest(
+        eventId: state.event?.id ?? '',
+        stagers: selectedMemberIds
+            .map(
+              (teamMemberId) => CreateStagerRequest(
+                positionId: positionId,
+                groupId: groupId,
+                teamMemberId: teamMemberId,
+              ),
+            )
+            .toList(),
       );
+
+      final newStagers = await eventsRepository.addStagerToEvent(request);
+      final newStagersWithPhoto =
+          await Future.wait(newStagers.map(_getStagerWithPhoto));
+
+      final updatedStagers = [...state.stagers, ...newStagersWithPhoto];
+
+      state = state.copyWith(
+        stagers: updatedStagers,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getStagersByGroupAndEvent({
+    required String eventId,
+    required String groupId,
+  }) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final stagers = await eventsRepository.getStagersByGroupAndEvent(
+        eventId: eventId,
+        groupId: groupId,
+      );
+      final stagersWithPhoto =
+          await Future.wait(stagers.map(_getStagerWithPhoto));
+      state = state.copyWith(stagers: stagersWithPhoto, isLoading: false);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
       );
-    }
-  }
-
-  Future<void> removeStagerFromEvent(String stagerId) async {
-    await eventsRepository.removeStagerFromEvent(stagerId);
-    if (state.event != null) {
-      unawaited(getStagers(state.event!.id!));
+      rethrow;
     }
   }
 
@@ -261,17 +245,6 @@ class EventNotifier extends _$EventNotifier {
       participationStatus: participationStatus,
     );
     await eventsRepository.updateStager(stagerId, newStager);
-  }
-
-  Future<String> getStagerByEventAndTeamMember(
-    String eventId,
-    String teamMemberId,
-  ) async {
-    final stager = await eventsRepository.getStagerByEventAndTeamMember(
-      eventId,
-      teamMemberId,
-    );
-    return stager.id;
   }
 
   Future<void> updateStager(EditStagerRequest stagerRequest) async {
@@ -306,49 +279,25 @@ class EventNotifier extends _$EventNotifier {
     return photo?.profilePicture;
   }
 
-  Future<List<PositionWithStagers>> _getDummyPositionsWithStagers() async {
-    return Future.delayed(
-      Duration(milliseconds: 1000),
-      () => [
-        const PositionWithStagers(
-          id: '1',
-          name: 'Bass Guitar',
-          groupId: '1',
-          stagers: [
-            Stager(
-              id: '1',
-              name: 's Ionescu',
-              userId: '1',
-              participationStatus: StagerStatusEnum.CONFIRMED,
-            ),
-            Stager(
-              id: '1',
-              name: 'a Alex',
-              userId: '1',
-              participationStatus: StagerStatusEnum.CONFIRMED,
-            ),
-          ],
-        ),
-        const PositionWithStagers(
-          id: '2',
-          name: 'El Guitar ',
-          groupId: '1',
-          stagers: [
-            Stager(
-              id: '1',
-              name: 'Elena Micascovi',
-              userId: '1',
-              participationStatus: StagerStatusEnum.CONFIRMED,
-            ),
-            Stager(
-              id: '1',
-              name: 'John Hehehe',
-              userId: '1',
-              participationStatus: StagerStatusEnum.CONFIRMED,
-            ),
-          ],
-        ),
-      ],
-    );
+  Future<void> removeStagerFromEvent(String stagerId) async {
+    try {
+      await eventsRepository.removeStagerFromEvent(stagerId);
+      final updatedStagers =
+          state.stagers.where((stager) => stager.id != stagerId).toList();
+      state = state.copyWith(stagers: updatedStagers);
+    } catch (e) {
+      rethrow;
+    }
   }
+
+// Future<String> getStagerByEventAndTeamMember(
+//   String eventId,
+//   String teamMemberId,
+// ) async {
+//   final stager = await eventsRepository.getStagerByEventAndTeamMember(
+//     eventId,
+//     teamMemberId,
+//   );
+//   return stager.id;
+// }
 }

@@ -11,7 +11,7 @@ import 'package:on_stage_app/app/features/reminder/application/reminder_notifier
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
+import 'package:on_stage_app/app/shared/adaptive_event_pop_dialog.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
@@ -45,10 +45,14 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final eventId = ref.watch(eventNotifierProvider).event?.id;
+    if (eventId == null) {
+      return const SizedBox();
+    }
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ContinueButton(
           text: 'Create Event',
           onPressed: () {
@@ -59,19 +63,14 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       ),
       appBar: StageAppBar(
         isBackButtonVisible: true,
-        onBackButtonPressed: () {
-          AdaptiveDialog.show(
+        onBackButtonPressed: () async {
+          final shouldPop = await AdaptiveEventPopDialog.show(
             context: context,
-            title: 'Discard Changes',
-            description: 'Are you sure you want to leave? '
-                'Any unsaved changes will be lost.',
-            actionText: 'Yes',
-            onAction: () {
-              context
-                ..popDialog()
-                ..pop();
-            },
           );
+
+          if (shouldPop ?? true && mounted) {
+            context.pop();
+          }
         },
         title: 'Create Event',
         trailing: SettingsTrailingAppBarButton(
@@ -124,7 +123,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              const GroupsEventGrid(),
+              GroupsEventGrid(
+                eventId: eventId,
+              ),
               const SizedBox(height: Insets.smallNormal),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),

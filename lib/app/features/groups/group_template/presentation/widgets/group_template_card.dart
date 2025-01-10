@@ -3,7 +3,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/groups/group_template/domain/group_template.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/providers/group_card_template_provider.dart';
-import 'package:on_stage_app/app/features/positions/position_template/presentation/position_modal.dart';
+import 'package:on_stage_app/app/features/positions/presentation/position_modal.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/shared/square_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -58,6 +58,10 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
     final state = ref.watch(groupTemplateProvider(widget.groupId));
     final group = state.group;
 
+    if (group == null) {
+      return const SizedBox();
+    }
+
     if (state.isEditing && _controller.text != group.name) {
       _controller.text = group.name;
       _focusNode.requestFocus();
@@ -72,74 +76,88 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
         borderRadius: BorderRadius.circular(8),
       ),
 
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SquareIconButton(
-                  icon: LucideIcons.plus,
-                  onPressed: () => PositionModal.show(
-                    context: context,
-                    groupId: widget.groupId,
-                  ),
-                  backgroundColor: context.isDarkMode
-                      ? const Color(0xFF43474E)
-                      : context.colorScheme.surface,
-                ),
-                AdaptiveMenuContext(
-                  items: [
-                    MenuAction(
-                      title: 'Rename',
-                      onTap: () => ref
-                          .read(groupTemplateProvider(widget.groupId).notifier)
-                          .startEditing(),
-                      icon: Icons.edit,
+      child: InkWell(
+        overlayColor: WidgetStateProperty.all(
+          context.colorScheme.surfaceBright.withOpacity(0.3),
+        ),
+        onTap: () => PositionModal.show(
+          context: context,
+          groupId: widget.groupId,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SquareIconButton(
+                    icon: LucideIcons.plus,
+                    onPressed: () => PositionModal.show(
+                      context: context,
+                      groupId: widget.groupId,
                     ),
-                    MenuAction(
-                      title: 'Delete',
-                      onTap: () => ref
-                          .read(groupTemplateProvider(widget.groupId).notifier)
-                          .deleteGroup(),
-                      icon: Icons.delete_outline,
-                      isDestructive: true,
-                    ),
-                  ],
-                  child: Icon(
-                    LucideIcons.ellipsis_vertical,
-                    color: context.colorScheme.outline,
-                    size: 16,
+                    backgroundColor: context.isDarkMode
+                        ? const Color(0xFF43474E)
+                        : context.colorScheme.surface,
                   ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            if (state.isEditing)
-              TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                style: context.textTheme.titleMedium,
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.zero,
-                  border: InputBorder.none,
-                  isDense: true,
-                ),
-                onSubmitted: (value) => ref
-                    .read(groupTemplateProvider(widget.groupId).notifier)
-                    .stopEditingAndSave(value),
-              )
-            else
-              Text(
-                group.name,
-                style: context.textTheme.titleMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                  AdaptiveMenuContext(
+                    items: [
+                      MenuAction(
+                        title: 'Rename',
+                        onTap: () => ref
+                            .read(
+                                groupTemplateProvider(widget.groupId).notifier)
+                            .startEditing(),
+                        icon: Icons.edit,
+                      ),
+                      MenuAction(
+                        title: 'Delete',
+                        onTap: () => ref
+                            .read(
+                                groupTemplateProvider(widget.groupId).notifier)
+                            .deleteGroup(),
+                        icon: Icons.delete_outline,
+                        isDestructive: true,
+                      ),
+                    ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        LucideIcons.ellipsis_vertical,
+                        color: context.colorScheme.outline,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            _buildSubtitle(group, context),
-          ],
+              const Spacer(),
+              if (state.isEditing)
+                TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  style: context.textTheme.titleMedium,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    border: InputBorder.none,
+                    isDense: true,
+                  ),
+                  onSubmitted: (value) => ref
+                      .read(groupTemplateProvider(widget.groupId).notifier)
+                      .stopEditingAndSave(value),
+                )
+              else
+                Text(
+                  group.name,
+                  style: context.textTheme.titleMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              _buildSubtitle(group, context),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/groups/group_template/application/group_template_notifier.dart';
+import 'package:on_stage_app/app/features/groups/group_template/presentation/create_group_modal.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/widgets/groups_grid.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -23,7 +24,6 @@ class GroupsScreenState extends ConsumerState<GroupsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final groups = ref.watch(groupTemplateNotifierProvider).groups;
     return Scaffold(
       appBar: StageAppBar(
         title: 'Groups',
@@ -31,14 +31,21 @@ class GroupsScreenState extends ConsumerState<GroupsScreen> {
         trailing: Padding(
           padding: const EdgeInsets.only(right: 12),
           child: AddNewButton(
-            onPressed: () {},
+            onPressed: () {
+              CreateGroupModal.show(context: context);
+            },
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: GroupsTemplateGrid(
-          groups: groups,
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await ref
+              .read(groupTemplateNotifierProvider.notifier)
+              .getGroupsTemplate();
+        },
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: GroupsTemplateGrid(),
         ),
       ),
     );

@@ -1,38 +1,43 @@
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_state.dart';
-import 'package:on_stage_app/app/features/groups/group_event/data/group_repository.dart';
-import 'package:on_stage_app/app/features/groups/group_event/domain/group_event.dart';
-import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/features/groups/group_event/data/group_event_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'group_event_notifier.g.dart';
 
 @riverpod
 class GroupEventNotifier extends _$GroupEventNotifier {
-  GroupEventRepository? _groupRepository;
-
-  GroupEventRepository get groupRepository {
-    _groupRepository ??= GroupEventRepository(ref.watch(dioProvider));
-    return _groupRepository!;
-  }
+  GroupEventRepository get _groupEventRepo => ref.read(groupEventRepoProvider);
 
   @override
   GroupEventState build() {
     return const GroupEventState();
   }
 
-  Future<void> getGroupsEvent() async {
-    state = state.copyWith(isLoading: true);
-    final groups = await Future.delayed(const Duration(seconds: 1), () {
-      return List.generate(
-        3,
-        (index) => GroupEvent(
-          id: index.toString(),
-          name: 'Group ${index + 1}',
-          stagerCount: index + 1,
-          confirmedCount: index,
-        ),
-      );
-    });
-    state = state.copyWith(groupEvents: groups, isLoading: false);
+  Future<void> getGroupsEvent(String eventId) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final groups = await _groupEventRepo.getGroups(eventId);
+      state = state.copyWith(groupEvents: groups);
+    } catch (e) {
+      state = state.copyWith(error: e);
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> getGroupEventById(String eventId, String groupId) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final group = await _groupEventRepo.getGroupById(eventId, groupId);
+      final updatedList =
+          state.groupEvents.map((e) => e.id == groupId ? group : e).toList();
+      state = state.copyWith(groupEvents: updatedList);
+    } catch (e) {
+      state = state.copyWith(error: e);
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
   }
 }

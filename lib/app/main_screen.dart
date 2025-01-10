@@ -96,6 +96,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   bool _shouldHideBottomNav(String location) {
     return [
       '/events/songDetailsWithPages',
+      '/events/addEvent',
     ].any((route) => location.startsWith(route));
   }
 

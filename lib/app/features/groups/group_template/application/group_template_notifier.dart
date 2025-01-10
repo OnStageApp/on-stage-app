@@ -1,6 +1,6 @@
 import 'package:on_stage_app/app/features/groups/group_template/application/group_template_state.dart';
 import 'package:on_stage_app/app/features/groups/group_template/data/group_template_repository.dart';
-import 'package:on_stage_app/app/features/groups/group_template/domain/group_template.dart';
+import 'package:on_stage_app/app/features/groups/group_template/domain/create_or_edit_group_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,22 +17,16 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
 
   @override
   GroupTemplateState build() {
+    final dio = ref.watch(dioProvider);
+    _groupRepository = GroupTemplateRepository(dio);
     return const GroupTemplateState();
   }
 
   Future<void> getGroupsTemplate() async {
-    final groups = List.generate(
-      3,
-      (index) => GroupTemplateModel(
-        id: index.toString(),
-        name: 'Group ${index + 1}',
-        positionsCount: index + 1,
-      ),
-    );
-    state = state.copyWith(isLoading: true, error: null);
-
     try {
-      // final groups = await groupRepository.getGroups();
+      state = state.copyWith(isLoading: true);
+
+      final groups = await groupRepository.getGroupsTemplate();
       state = state.copyWith(groups: groups);
     } catch (e) {
       state = state.copyWith(error: e);
@@ -42,50 +36,67 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
   }
 
   Future<void> createGroup(String title) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(error: null);
 
     try {
-      final newGroup = await groupRepository
-          .createGroup(GroupTemplateModel(name: title, id: ''));
+      final newGroup = await groupRepository.createGroup(
+        CreateOrEditGroupRequest(
+          name: title,
+        ),
+      );
       state = state.copyWith(
         groups: [...state.groups, newGroup],
       );
     } catch (e) {
       state = state.copyWith(error: e);
-    } finally {
-      state = state.copyWith(isLoading: false);
     }
   }
 
-  Future<void> updateGroup(GroupTemplateModel updatedGroup) async {
-    state = state.copyWith(isLoading: true, error: null);
-
+  Future<void> updateGroup(String id, String newName) async {
     try {
-      // await groupRepository.updateGroup();
-      state = state.copyWith(
-        groups: state.groups.map((group) {
-          return group.id == updatedGroup.id ? updatedGroup : group;
-        }).toList(),
+      _updateLocally(id, newName);
+      await groupRepository.updateGroup(
+        id,
+        CreateOrEditGroupRequest(name: newName),
       );
     } catch (e) {
+      // Rollback on error
+      await getGroupsTemplate();
       state = state.copyWith(error: e);
-    } finally {
-      state = state.copyWith(isLoading: false);
     }
   }
 
   Future<void> deleteGroup(String id) async {
-    state = state.copyWith(isLoading: true, error: null);
+    final previousGroups = [...state.groups];
 
     try {
+      // First attempt backend deletion
       await groupRepository.deleteGroup(id);
+
+      // Only update state after successful backend operation
       state = state.copyWith(
         groups: state.groups.where((group) => group.id != id).toList(),
       );
     } catch (e) {
-      state = state.copyWith(error: e);
-    } finally {
-      state = state.copyWith(isLoading: false);
+      // On error, restore previous state
+      state = state.copyWith(
+        groups: previousGroups,
+        error: e.toString(),
+      );
+
+      // Optionally refresh to ensure sync with backend
+      await getGroupsTemplate();
     }
+  }
+
+  void _updateLocally(String id, String newName) {
+    state = state.copyWith(
+      groups: state.groups.map((group) {
+        if (group.id == id) {
+          return group.copyWith(name: newName);
+        }
+        return group;
+      }).toList(),
+    );
   }
 }

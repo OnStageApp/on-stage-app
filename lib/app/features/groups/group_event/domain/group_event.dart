@@ -8,9 +8,9 @@ class GroupEvent with _$GroupEvent {
   const factory GroupEvent({
     required String id,
     required String name,
-    @Default(0) int stagerCount,
+    @Default(0) int membersCount,
     @Default(0) int confirmedCount,
-    @Default([]) List<String> stagerPhotoUrls,
+    @Default([]) List<String>? stagersWithPhoto,
   }) = _GroupEvent;
 
   factory GroupEvent.fromJson(Map<String, dynamic> json) =>

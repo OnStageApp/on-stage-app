@@ -10,14 +10,13 @@ import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.d
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
+import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -59,12 +58,16 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
     unawaited(
       ref.read(eventNotifierProvider.notifier).initEventById(widget.eventId),
     );
+    unawaited(
+      ref
+          .read(groupEventNotifierProvider.notifier)
+          .getGroupsEvent(widget.eventId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final hasEditorRoles = ref.watch(permissionServiceProvider).hasAccessToEdit;
-    final stagers = ref.watch(eventNotifierProvider).stagers;
     final event = ref.watch(
       eventNotifierProvider.select((state) => state.event),
     );
@@ -106,7 +109,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         padding: defaultScreenPadding,
         child: ListView(
           children: [
-            _buildEnhancedEventTile(event, stagers),
+            _buildEnhancedEventTile(event),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -134,7 +137,8 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                   child: PreferencesActionTile(
                     title: 'Start Event',
                     color: Colors.white,
-                    backgroundColor: const Color(0xFF40A54A),
+                    backgroundColor: context.colorScheme.primary,
+                    overlayColor: Colors.white.withOpacity(0.1),
                     leadingWidget: const Icon(
                       LucideIcons.circle_play,
                       color: Colors.white,
@@ -222,10 +226,11 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 ),
               ],
             ),
-            if (stagers.isNotEmpty) ...[
-              const SizedBox(height: Insets.smallNormal),
-              _buildParticipantsList(),
-            ] else if (!hasEditorRoles)
+            const SizedBox(height: Insets.smallNormal),
+            GroupsEventGrid(
+              eventId: widget.eventId,
+            ),
+            if (!hasEditorRoles)
               Container(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
@@ -256,7 +261,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
       ..pop();
   }
 
-  Widget _buildEnhancedEventTile(EventModel? event, List<Stager> stagers) {
+  Widget _buildEnhancedEventTile(EventModel? event) {
     return SizedBox(
       height: 174,
       child: EventTileEnhanced(
@@ -264,9 +269,9 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         locationName: event?.location ?? '',
         dateTime: event?.dateTime ?? DateTime.now(),
         onTap: () {},
-        participantsProfileBytes: stagers.map((e) => e.profilePicture).toList(),
-        participantsCount: stagers.length,
-        participantsName: stagers.isNotEmpty ? stagers[0].name ?? '' : '',
+        participantsProfileBytes: [],
+        participantsCount: 0,
+        participantsName: '',
       ),
     );
   }
@@ -348,38 +353,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
       ),
       child: const Center(
         child: Icon(Icons.check, color: Colors.white, size: 30),
-      ),
-    );
-  }
-
-  Widget _buildParticipantsList() {
-    final stagers = ref.watch(eventNotifierProvider).stagers;
-    final currentUserId = ref.watch(userNotifierProvider).currentUser?.id;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...stagers.map(
-            (stager) => ParticipantListingItem(
-              userId: stager.userId ?? '',
-              canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
-                  stager.userId != currentUserId,
-              name: stager.name ?? '',
-              photo: stager.profilePicture,
-              status: stager.participationStatus,
-              onDelete: () {
-                ref
-                    .read(eventNotifierProvider.notifier)
-                    .removeStagerFromEvent(stager.id);
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

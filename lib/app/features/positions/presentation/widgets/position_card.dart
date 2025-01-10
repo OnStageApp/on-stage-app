@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/positions/position_template/providers/position_card_provider.dart';
+import 'package:on_stage_app/app/features/positions/providers/position_card_provider.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -53,9 +53,9 @@ class _PositionCardState extends ConsumerState<PositionCard> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(positionCardProvider(widget.positionId));
-
-    if (state.isEditing && _controller.text != state.position.name) {
-      _controller.text = state.position.name;
+    if (state.position == null) return const SizedBox();
+    if (state.isEditing && _controller.text != state.position!.name) {
+      _controller.text = state.position!.name;
       _focusNode.requestFocus();
     }
 
@@ -85,7 +85,7 @@ class _PositionCardState extends ConsumerState<PositionCard> {
                         .stopEditingAndSave(value),
                   )
                 : Text(
-                    state.position.name,
+                    state.position!.name,
                     style: context.textTheme.titleMedium!.copyWith(
                       color: context.colorScheme.onSurface,
                     ),

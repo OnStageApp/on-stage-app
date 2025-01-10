@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/positions/position_template/domain/position.dart';
+import 'package:on_stage_app/app/features/positions/domain/position.dart';
 
 part 'position_state.freezed.dart';
 

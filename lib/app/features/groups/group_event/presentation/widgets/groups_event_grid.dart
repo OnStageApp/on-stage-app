@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/group_event_card.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -8,8 +7,11 @@ import 'package:shimmer/shimmer.dart';
 
 class GroupsEventGrid extends ConsumerStatefulWidget {
   const GroupsEventGrid({
+    required this.eventId,
     super.key,
   });
+
+  final String eventId;
 
   @override
   ConsumerState<GroupsEventGrid> createState() => _GroupsEventGridState();
@@ -19,7 +21,9 @@ class _GroupsEventGridState extends ConsumerState<GroupsEventGrid> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(groupEventNotifierProvider.notifier).getGroupsEvent();
+      ref
+          .read(groupEventNotifierProvider.notifier)
+          .getGroupsEvent(widget.eventId);
     });
     super.initState();
   }
@@ -27,8 +31,6 @@ class _GroupsEventGridState extends ConsumerState<GroupsEventGrid> {
   @override
   Widget build(BuildContext context) {
     final groupState = ref.watch(groupEventNotifierProvider);
-    final eventId = ref.watch(eventNotifierProvider).event?.id;
-    if (eventId == null) return const SizedBox();
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -44,7 +46,7 @@ class _GroupsEventGridState extends ConsumerState<GroupsEventGrid> {
         final group = groupState.groupEvents.elementAt(index);
         return GroupEventCard(
           groupId: group.id,
-          eventId: eventId,
+          eventId: widget.eventId,
         );
       },
     );

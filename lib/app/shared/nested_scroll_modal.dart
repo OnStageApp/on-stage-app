@@ -49,7 +49,7 @@ class _NestedScrollModalState extends State<NestedScrollModal> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            top: 3,
+            top: 12,
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: NotificationListener<ScrollStartNotification>(

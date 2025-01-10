@@ -8,7 +8,7 @@ part 'create_all_stagers_request.g.dart';
 class CreateAllStagersRequest with _$CreateAllStagersRequest {
   const factory CreateAllStagersRequest({
     required String eventId,
-    required List<CreateStagerRequest> createStagersRequest,
+    required List<CreateStagerRequest> stagers,
   }) = _CreateAllStagersRequest;
 
   factory CreateAllStagersRequest.fromJson(Map<String, dynamic> json) =>
