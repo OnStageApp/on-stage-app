@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:on_stage_app/app/features/groups/group_template/application/group_template_state.dart';
 import 'package:on_stage_app/app/features/groups/group_template/data/group_template_repository.dart';
 import 'package:on_stage_app/app/features/groups/group_template/domain/create_or_edit_group_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
+import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'group_template_notifier.g.dart';
@@ -24,7 +27,7 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
 
   Future<void> getGroupsTemplate() async {
     try {
-      state = state.copyWith(isLoading: true);
+      state = state.copyWith(isLoading: true, error: null);
 
       final groups = await groupRepository.getGroupsTemplate();
       state = state.copyWith(groups: groups);
@@ -32,6 +35,18 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
       state = state.copyWith(error: e);
     } finally {
       state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> getGroupTemplate(String id) async {
+    try {
+      state = state.copyWith(error: null);
+      final group = await groupRepository.getGroupTemplate(id);
+      final updatedList =
+          state.groups.map((e) => e.id == id ? group : e).toList();
+      state = state.copyWith(groups: updatedList);
+    } catch (e) {
+      state = state.copyWith(error: e);
     }
   }
 
@@ -47,44 +62,63 @@ class GroupTemplateNotifier extends _$GroupTemplateNotifier {
       state = state.copyWith(
         groups: [...state.groups, newGroup],
       );
-    } catch (e) {
-      state = state.copyWith(error: e);
+    } on DioException catch (e) {
+      String? errorMessage;
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        final errorModel = ApiErrorResponse.fromJson(errorData);
+        if (errorModel.errorName == ErrorType.DUPLICATE_GROUP_NAME) {
+          errorMessage = errorModel.errorName
+              ?.getDescription('User with email or username');
+        }
+      }
+      state = state.copyWith(
+        error: errorMessage ?? e.message,
+      );
     }
   }
 
   Future<void> updateGroup(String id, String newName) async {
     try {
+      state = state.copyWith(error: null);
       _updateLocally(id, newName);
       await groupRepository.updateGroup(
         id,
         CreateOrEditGroupRequest(name: newName),
       );
-    } catch (e) {
-      // Rollback on error
+    } on DioException catch (e) {
+      String? errorMessage;
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        final errorModel = ApiErrorResponse.fromJson(errorData);
+        if (errorModel.errorName == ErrorType.DUPLICATE_GROUP_NAME) {
+          errorMessage = errorModel.errorName?.getDescription('Group');
+        }
+      }
+
+      state = state.copyWith(
+        error: errorMessage ?? e.message,
+      );
       await getGroupsTemplate();
-      state = state.copyWith(error: e);
     }
   }
 
   Future<void> deleteGroup(String id) async {
+    state = state.copyWith(error: null);
     final previousGroups = [...state.groups];
 
     try {
-      // First attempt backend deletion
       await groupRepository.deleteGroup(id);
 
-      // Only update state after successful backend operation
       state = state.copyWith(
         groups: state.groups.where((group) => group.id != id).toList(),
       );
     } catch (e) {
-      // On error, restore previous state
       state = state.copyWith(
         groups: previousGroups,
         error: e.toString(),
       );
 
-      // Optionally refresh to ensure sync with backend
       await getGroupsTemplate();
     }
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -76,11 +77,13 @@ class EventTileEnhanced extends ConsumerWidget {
                 SizedBox(
                   width: 150,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      ref
+                    onPressed: () async {
+                      await ref
                           .read(eventNotifierProvider.notifier)
                           .createEmptyEvent();
-                      context.pushNamed(AppRoute.addEvent.name);
+                      if (context.mounted) {
+                        unawaited(context.pushNamed(AppRoute.addEvent.name));
+                      }
                     },
                     icon: Assets.icons.plus.svg(
                       colorFilter: ColorFilter.mode(

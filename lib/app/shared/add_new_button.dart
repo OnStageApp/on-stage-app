@@ -14,35 +14,32 @@ class AddNewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(
-            horizontal: 4,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        overlayColor: WidgetStateProperty.all(
+          context.colorScheme.primary.withOpacity(0.1),
+        ),
+        borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Row(
+            children: [
+              Icon(
+                LucideIcons.plus,
+                color: context.colorScheme.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                text,
+                style: context.textTheme.titleMedium!
+                    .copyWith(color: context.colorScheme.primary),
+              ),
+            ],
           ),
         ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            LucideIcons.plus,
-            color: context.colorScheme.primary,
-            size: 20,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: context.textTheme.titleMedium!
-                .copyWith(color: context.colorScheme.primary),
-          ),
-        ],
       ),
     );
   }

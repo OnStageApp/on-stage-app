@@ -59,22 +59,24 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
-              const Text('Manage'),
-              const SizedBox(height: 8),
-              PreferencesActionTile(
-                title: 'Groups',
-                trailingIcon: Icons.keyboard_arrow_right_rounded,
-                leadingWidget: Icon(
-                  LucideIcons.users_round,
-                  size: 20,
-                  color: context.colorScheme.outline,
+              if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+                const SizedBox(height: 16),
+                const Text('Manage'),
+                const SizedBox(height: 8),
+                PreferencesActionTile(
+                  title: 'Groups',
+                  trailingIcon: Icons.keyboard_arrow_right_rounded,
+                  leadingWidget: Icon(
+                    LucideIcons.users_round,
+                    size: 20,
+                    color: context.colorScheme.outline,
+                  ),
+                  height: 54,
+                  onTap: () {
+                    context.goNamed(AppRoute.groups.name);
+                  },
                 ),
-                height: 54,
-                onTap: () {
-                  context.goNamed(AppRoute.groups.name);
-                },
-              ),
+              ],
               const SizedBox(height: 16),
               CustomSettingTile(
                 backgroundColor: context.colorScheme.onSurfaceVariant,

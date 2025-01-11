@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/uninvited_people_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/positions/domain/position.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -36,7 +37,7 @@ class PositionMembersCard extends ConsumerWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(14),
@@ -44,22 +45,27 @@ class PositionMembersCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                position.name,
-                style: context.textTheme.titleMedium,
-              ),
-              AddNewButton(
-                text: 'Add',
-                onPressed: () => _handleAddMembers(context, ref),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  position.name,
+                  style: context.textTheme.titleMedium,
+                ),
+                if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+                  AddNewButton(
+                    text: 'Add',
+                    onPressed: () => _handleAddMembers(context, ref),
+                  ),
+              ],
+            ),
           ),
           Divider(
             color: context.colorScheme.surfaceContainerHighest,
             thickness: 1,
+            height: 0,
           ),
           if (stagersByPosition.isEmpty)
             Padding(
@@ -72,27 +78,32 @@ class PositionMembersCard extends ConsumerWidget {
               ),
             )
           else
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: stagersByPosition.length,
-              itemBuilder: (context, index) {
-                final stager = stagersByPosition.elementAt(index);
-                return ParticipantListingItem(
-                  key: ValueKey(stager.id),
-                  userId: stager.userId ?? '',
-                  name: stager.name ?? '',
-                  photo: stager.profilePicture ?? Uint8List(0),
-                  status: currentEventStatus == EventStatus.published
-                      ? stager.participationStatus
-                      : null,
-                  onDelete: () {
-                    ref
-                        .read(eventNotifierProvider.notifier)
-                        .removeStagerFromEvent(stager.id);
-                  },
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: stagersByPosition.length,
+                itemBuilder: (context, index) {
+                  final stager = stagersByPosition.elementAt(index);
+                  return ParticipantListingItem(
+                    key: ValueKey(stager.id),
+                    userId: stager.userId ?? '',
+                    name: stager.name ?? '',
+                    photo: stager.profilePicture ?? Uint8List(0),
+                    status: currentEventStatus == EventStatus.published
+                        ? stager.participationStatus
+                        : null,
+                    canEdit:
+                        ref.watch(permissionServiceProvider).hasAccessToEdit,
+                    onDelete: () {
+                      ref
+                          .read(eventNotifierProvider.notifier)
+                          .removeStagerFromEvent(stager.id);
+                    },
+                  );
+                },
+              ),
             ),
         ],
       ),

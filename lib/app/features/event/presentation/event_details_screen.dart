@@ -161,6 +161,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 'Rehearsals',
                 style: context.textTheme.titleSmall,
               ),
+              const SizedBox(height: 6),
               if (rehearsals.isNotEmpty)
                 ...rehearsals.asMap().entries.map(
                   (entry) {
@@ -205,10 +206,10 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                   ),
                 ),
               if (hasEditorRoles) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 _buildCreateRehearsalButton(),
               ],
-              const SizedBox(height: Insets.medium),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -226,23 +227,12 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: Insets.smallNormal),
+              const SizedBox(height: 12),
               GroupsEventGrid(
                 eventId: widget.eventId,
               ),
-              if (!hasEditorRoles)
-                Container(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    'No rehearsals added',
-                    style: context.textTheme.titleSmall!.copyWith(
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                ),
               if (hasEditorRoles) ...[
                 const SizedBox(height: Insets.smallNormal),
-                // _buildInvitePeopleButton(),
               ],
               const SizedBox(height: 120),
             ],

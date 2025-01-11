@@ -128,11 +128,13 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            ref
+                          onPressed: () async {
+                            await ref
                                 .read(eventNotifierProvider.notifier)
                                 .createEmptyEvent();
-                            context.goNamed(AppRoute.addEvent.name);
+                            if (context.mounted) {
+                              context.goNamed(AppRoute.addEvent.name);
+                            }
                           },
                           icon: Assets.icons.plus.svg(
                             colorFilter: ColorFilter.mode(

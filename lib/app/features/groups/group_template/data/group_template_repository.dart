@@ -13,6 +13,9 @@ abstract class GroupTemplateRepository {
   @GET(API.groupsTemplate)
   Future<List<GroupTemplateModel>> getGroupsTemplate();
 
+  @GET(API.groupTemplate)
+  Future<GroupTemplateModel> getGroupTemplate(@Path('id') String id);
+
   @POST(API.createGroup)
   Future<GroupTemplateModel> createGroup(
     @Body() CreateOrEditGroupRequest group,

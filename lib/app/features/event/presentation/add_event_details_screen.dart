@@ -54,6 +54,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final eventId = ref.watch(eventNotifierProvider).event?.id;
+
     if (eventId == null) {
       return const SizedBox();
     }
@@ -134,7 +135,6 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               GroupsEventGrid(
                 eventId: eventId,
               ),
-              const SizedBox(height: Insets.smallNormal),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: DashedLineDivider(),

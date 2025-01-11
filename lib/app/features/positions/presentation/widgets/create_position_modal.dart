@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
@@ -75,7 +77,7 @@ class CreatePositionModalState extends ConsumerState<CreatePositionModal> {
             CustomTextField(
               enabled: true,
               label: 'Position Name',
-              hint: 'El. Guitar',
+              hint: 'eg. Acoustic Guitar',
               icon: null,
               focusNode: _positionNameFocus,
               controller: _positionNameController,
@@ -100,14 +102,15 @@ class CreatePositionModalState extends ConsumerState<CreatePositionModal> {
     );
   }
 
-  void _addPosition() {
+  Future<void> _addPosition() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    ref.read(positionNotifierProvider.notifier).addPosition(
+    await ref.read(positionNotifierProvider.notifier).addPosition(
           _positionNameController.text,
           widget.groupId,
         );
+
     context.popDialog();
   }
 }

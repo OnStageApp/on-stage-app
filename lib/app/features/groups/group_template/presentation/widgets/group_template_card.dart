@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/groups/group_template/application/group_template_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_template/domain/group_template.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/providers/group_card_template_provider.dart';
 import 'package:on_stage_app/app/features/positions/presentation/position_modal.dart';
@@ -80,10 +83,9 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
         overlayColor: WidgetStateProperty.all(
           context.colorScheme.surfaceBright.withOpacity(0.3),
         ),
-        onTap: () => PositionModal.show(
-          context: context,
-          groupId: widget.groupId,
-        ),
+        onTap: () async {
+          await _showPositionModal(context);
+        },
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -94,10 +96,9 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
                 children: [
                   SquareIconButton(
                     icon: LucideIcons.plus,
-                    onPressed: () => PositionModal.show(
-                      context: context,
-                      groupId: widget.groupId,
-                    ),
+                    onPressed: () async {
+                      await _showPositionModal(context);
+                    },
                     backgroundColor: context.isDarkMode
                         ? const Color(0xFF43474E)
                         : context.colorScheme.surface,
@@ -160,6 +161,18 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showPositionModal(BuildContext context) async {
+    await PositionModal.show(
+      context: context,
+      groupId: widget.groupId,
+    );
+    unawaited(
+      ref
+          .read(groupTemplateNotifierProvider.notifier)
+          .getGroupTemplate(widget.groupId),
     );
   }
 

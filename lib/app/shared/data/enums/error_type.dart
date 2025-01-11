@@ -3,6 +3,7 @@ enum ErrorType {
   RESOURCE_NOT_FOUND,
   TEAM_MEMBER_ALREADY_EXISTS,
   DUPLICATE_POSITION_NAME,
+  DUPLICATE_GROUP_NAME,
   InternalServerError,
 }
 
@@ -17,6 +18,8 @@ extension ErrorTypeX on ErrorType {
         return 'TEAM_MEMBER_ALREADY_EXISTS';
       case ErrorType.DUPLICATE_POSITION_NAME:
         return 'DUPLICATE_POSITION_NAME';
+      case ErrorType.DUPLICATE_GROUP_NAME:
+        return 'DUPLICATE_GROUP_NAME';
       case ErrorType.InternalServerError:
         return 'InternalServerError';
     }
@@ -32,6 +35,8 @@ extension ErrorTypeX on ErrorType {
         return 'Team member already exists';
       case ErrorType.DUPLICATE_POSITION_NAME:
         return 'Position with this name already exists';
+      case ErrorType.DUPLICATE_GROUP_NAME:
+        return 'Group with this name already exists';
       case ErrorType.InternalServerError:
         return 'Internal server error';
     }

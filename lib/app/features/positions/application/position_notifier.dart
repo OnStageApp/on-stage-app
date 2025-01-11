@@ -40,6 +40,7 @@ class PositionNotifier extends _$PositionNotifier {
   }
 
   Future<void> addPosition(String positionName, String groupId) async {
+    state = state.copyWith(error: null);
     try {
       final position = await _repository.addPosition(
         CreateOrEditPositionRequest(name: positionName, groupId: groupId),
@@ -71,6 +72,7 @@ class PositionNotifier extends _$PositionNotifier {
   }
 
   Future<void> updatePosition(String newName, String positionId) async {
+    state = state.copyWith(error: null);
     final previousPositions = state.positions;
 
     try {
@@ -97,6 +99,7 @@ class PositionNotifier extends _$PositionNotifier {
   }
 
   Future<void> deletePosition(String positionId) async {
+    state = state.copyWith(error: null);
     final previousPositions = state.positions;
 
     try {
@@ -116,6 +119,7 @@ class PositionNotifier extends _$PositionNotifier {
   }
 
   Position? getPositionById(String id) {
+    state = state.copyWith(error: null);
     try {
       return state.positions.firstWhere(
         (position) => position.id == id,

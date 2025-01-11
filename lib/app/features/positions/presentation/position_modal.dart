@@ -58,13 +58,15 @@ class _PositionModalState extends ConsumerState<PositionModal> {
     ref.listen<PositionState>(
       positionNotifierProvider,
       (previous, next) {
-        if (next.error != null && mounted) {
-          TopFlushBar.show(
-            context,
-            next.error ?? 'Error inviting team member',
-            isError: true,
-          );
-        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (next.error != null && mounted) {
+            TopFlushBar.show(
+              context,
+              next.error ?? 'Error inviting team member',
+              isError: true,
+            );
+          }
+        });
       },
     );
   }
@@ -89,7 +91,7 @@ class _PositionModalState extends ConsumerState<PositionModal> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           Text(
             'Positions',
             style: context.textTheme.titleSmall,

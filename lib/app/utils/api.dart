@@ -124,6 +124,7 @@ class API {
 
   //positions
   static const String groupsTemplate = 'groups/template';
+  static const String groupTemplate = 'groups/{id}/template';
   static const String getGroupsForEvent = 'groups/events/{id}';
   static const String createGroup = 'groups';
   static const String updateGroup = 'groups/{id}';

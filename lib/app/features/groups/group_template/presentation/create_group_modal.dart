@@ -77,7 +77,7 @@ class CreateGroupModalState extends ConsumerState<CreateGroupModal> {
             CustomTextField(
               enabled: widget.enabled,
               label: 'Group Name',
-              hint: 'Vocals',
+              hint: 'eg. Vocals',
               icon: null,
               focusNode: _rehearsalNameFocus,
               controller: _groupNameController,
