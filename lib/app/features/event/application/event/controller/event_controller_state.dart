@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
-import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 
 part 'event_controller_state.freezed.dart';
@@ -9,7 +8,6 @@ part 'event_controller_state.freezed.dart';
 class EventControllerState with _$EventControllerState {
   const factory EventControllerState({
     @Default([]) List<String> selectedTeamMemberIds,
-    @Default([]) List<RehearsalModel> rehearsals,
     @Default([]) List<SongOverview> songs,
     @Default([]) List<String> moments,
     @Default([]) List<EventItem> eventItems,

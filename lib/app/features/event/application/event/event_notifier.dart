@@ -7,9 +7,8 @@ import 'package:on_stage_app/app/features/event/application/event/event_state.da
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/event/data/events_repository.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
-import 'package:on_stage_app/app/features/event/domain/models/create_event_model.dart';
+import 'package:on_stage_app/app/features/event/domain/models/create_update_event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/duplicate_event_request.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_all_stagers_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
@@ -45,7 +44,7 @@ class EventNotifier extends _$EventNotifier {
     logger.i('init event provider state');
   }
 
-  void resetState() {
+  Future<void> resetState() async {
     state = const EventState();
   }
 
@@ -55,7 +54,7 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> publishEvent() async {
-    const partialEvent = EventModel(
+    const partialEvent = CreateUpdateEventModel(
       eventStatus: EventStatus.published,
     );
     await _updateEvent(partialEvent);
@@ -74,9 +73,9 @@ class EventNotifier extends _$EventNotifier {
   Future<void> addRehearsal(RehearsalModel rehearsal) async {
     final previousRehearsals = state.rehearsals;
     try {
-      final updatedRehearsals = [...state.rehearsals, rehearsal];
-      state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
-      await eventsRepository.addRehearsal(rehearsal);
+      final rehearsalResponse = await eventsRepository.addRehearsal(rehearsal);
+      final updatedRehearsals = [...state.rehearsals, rehearsalResponse];
+      state = state.copyWith(rehearsals: updatedRehearsals);
     } catch (e) {
       state = state.copyWith(rehearsals: previousRehearsals);
       logger.e('Error adding rehearsal: $e');
@@ -84,7 +83,6 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> updateRehearsal(RehearsalModel rehearsalRequest) async {
-    state = state.copyWith(isLoading: true);
     final updatedRehearsal = await eventsRepository.updateRehearsal(
       rehearsalRequest.id!,
       rehearsalRequest,
@@ -96,49 +94,45 @@ class EventNotifier extends _$EventNotifier {
               : rehearsal,
         )
         .toList();
-    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+    state = state.copyWith(rehearsals: updatedRehearsals);
   }
 
   Future<void> deleteRehearsal(String rehearsalId) async {
-    state = state.copyWith(isLoading: true);
     await eventsRepository.deleteRehearsal(rehearsalId);
     final updatedRehearsals = state.rehearsals
         .where((rehearsal) => rehearsal.id != rehearsalId)
         .toList();
-    state = state.copyWith(rehearsals: updatedRehearsals, isLoading: false);
+    state = state.copyWith(rehearsals: updatedRehearsals);
   }
 
   Future<void> createEmptyEvent() async {
     state = state.copyWith(isLoading: true);
-    final event = await eventsRepository.createEvent(const CreateEventModel());
+    await resetState();
+    final event =
+        await eventsRepository.createEvent(const CreateUpdateEventModel());
     state = state.copyWith(event: event);
   }
 
-  Future<void> createEvent() async {
-    state = state.copyWith(isLoading: true);
-    final eventToCreate = _createDraftEvent();
-    final event = await eventsRepository.createEvent(eventToCreate);
-    state = state.copyWith(event: event);
-  }
-
-  Future<void> _updateEvent(EventModel updatedEvent) async {
-    state = state.copyWith(isLoading: true);
+  Future<void> updateEventOnCreate() async {
     if (state.event!.id == null) {
       return;
     }
-    await eventsRepository.updateEvent(state.event!.id!, updatedEvent);
-    state = state.copyWith(isLoading: false);
+    state = state.copyWith(isLoading: true);
+    final eventToUpdate = _updateEventFromControllers();
+    final event =
+        await eventsRepository.updateEvent(state.event!.id!, eventToUpdate);
+    state = state.copyWith(event: event);
   }
 
   void updateEventLocation(String location) {
-    final partialEvent = EventModel(
+    final partialEvent = CreateUpdateEventModel(
       location: location,
     );
     unawaited(_updateEvent(partialEvent));
   }
 
   Future<void> updateEventName(String name) async {
-    final partialEvent = EventModel(
+    final partialEvent = CreateUpdateEventModel(
       name: name,
     );
     unawaited(_updateEvent(partialEvent));
@@ -172,17 +166,16 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false);
   }
 
-  CreateEventModel _createDraftEvent() {
+  CreateUpdateEventModel _updateEventFromControllers() {
     final eventControllerState = ref.read(eventControllerProvider);
-    return CreateEventModel(
+    return CreateUpdateEventModel(
       name: eventControllerState.eventName,
       dateTime: eventControllerState.dateTime,
       location: eventControllerState.eventLocation,
-      rehearsals: eventControllerState.rehearsals,
+      eventStatus: EventStatus.draft,
     );
   }
 
-  /// New Stagers Methods
   Future<void> addStagersToEvent(
     List<String> selectedMemberIds,
     String positionId,
@@ -290,14 +283,12 @@ class EventNotifier extends _$EventNotifier {
     }
   }
 
-// Future<String> getStagerByEventAndTeamMember(
-//   String eventId,
-//   String teamMemberId,
-// ) async {
-//   final stager = await eventsRepository.getStagerByEventAndTeamMember(
-//     eventId,
-//     teamMemberId,
-//   );
-//   return stager.id;
-// }
+  Future<void> _updateEvent(CreateUpdateEventModel updatedEvent) async {
+    state = state.copyWith(isLoading: true);
+    if (state.event!.id == null) {
+      return;
+    }
+    await eventsRepository.updateEvent(state.event!.id!, updatedEvent);
+    state = state.copyWith(isLoading: false);
+  }
 }

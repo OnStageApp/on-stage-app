@@ -1,6 +1,5 @@
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller_state.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
-import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,16 +28,6 @@ class EventController extends _$EventController {
   void setDateTime(DateTime? dateTime) {
     if (dateTime == null) return;
     state = state.copyWith(dateTime: dateTime);
-  }
-
-  void addRehearsal(RehearsalModel rehearsal) {
-    state = state.copyWith(rehearsals: [...state.rehearsals, rehearsal]);
-  }
-
-  void removeRehearsal(RehearsalModel rehearsal) {
-    state = state.copyWith(
-      rehearsals: state.rehearsals.where((r) => r.id != rehearsal.id).toList(),
-    );
   }
 
   String getAcceptedInviteesLabel() {

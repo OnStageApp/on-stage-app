@@ -28,7 +28,6 @@ class DeleteAccountButton extends ConsumerWidget {
           actionText: 'Remove',
           onAction: () {
             _deleteAccount(ref);
-            context.popDialog();
           },
         );
       },

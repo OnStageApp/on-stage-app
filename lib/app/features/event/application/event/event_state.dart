@@ -26,6 +26,7 @@ class EventState extends Equatable {
 
   EventState copyWith({
     List<Stager>? stagers,
+    List<Stager>? unassignedStagers,
     List<RehearsalModel>? rehearsals,
     EventModel? event,
     bool? isLoading,

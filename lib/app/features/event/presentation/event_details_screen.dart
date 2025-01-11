@@ -48,21 +48,17 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(eventNotifierProvider.notifier).resetState();
       _init();
     });
   }
 
-  Future<void> _init() async {
-    ref.read(eventNotifierProvider.notifier).resetState();
-    unawaited(
-      ref.read(eventNotifierProvider.notifier).initEventById(widget.eventId),
-    );
-    unawaited(
-      ref
-          .read(groupEventNotifierProvider.notifier)
-          .getGroupsEvent(widget.eventId),
-    );
+  void _init() {
+    ref.read(eventNotifierProvider.notifier).initEventById(widget.eventId);
+    ref
+        .read(groupEventNotifierProvider.notifier)
+        .getGroupsEvent(widget.eventId);
   }
 
   @override
@@ -105,147 +101,152 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                   event?.eventStatus == EventStatus.draft
               ? _buildFloatingButton()
               : null,
-      body: Padding(
-        padding: defaultScreenPadding,
-        child: ListView(
-          children: [
-            _buildEnhancedEventTile(event),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: PreferencesActionTile(
-                    title: 'Schedule',
-                    color: context.colorScheme.primary,
-                    leadingWidget: Icon(
-                      LucideIcons.list_music,
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          _init();
+        },
+        child: Padding(
+          padding: defaultScreenPadding,
+          child: ListView(
+            children: [
+              _buildEnhancedEventTile(event),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: PreferencesActionTile(
+                      title: 'Schedule',
                       color: context.colorScheme.primary,
+                      leadingWidget: Icon(
+                        LucideIcons.list_music,
+                        color: context.colorScheme.primary,
+                      ),
+                      height: 54,
+                      onTap: () {
+                        context.pushNamed(
+                          AppRoute.addEventSongs.name,
+                          queryParameters: {
+                            'eventId': widget.eventId,
+                          },
+                        );
+                      },
                     ),
-                    height: 54,
-                    onTap: () {
-                      context.pushNamed(
-                        AppRoute.addEventSongs.name,
-                        queryParameters: {
-                          'eventId': widget.eventId,
-                        },
-                      );
-                    },
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: PreferencesActionTile(
-                    title: 'Start Event',
-                    color: Colors.white,
-                    backgroundColor: context.colorScheme.primary,
-                    overlayColor: Colors.white.withOpacity(0.1),
-                    leadingWidget: const Icon(
-                      LucideIcons.circle_play,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: PreferencesActionTile(
+                      title: 'Start Event',
                       color: Colors.white,
+                      backgroundColor: context.colorScheme.primary,
+                      overlayColor: Colors.white.withOpacity(0.1),
+                      leadingWidget: const Icon(
+                        LucideIcons.circle_play,
+                        color: Colors.white,
+                      ),
+                      height: 54,
+                      onTap: () {
+                        context.pushNamed(
+                          AppRoute.songDetailsWithPages.name,
+                          queryParameters: {
+                            'eventId': widget.eventId,
+                          },
+                        );
+                      },
                     ),
-                    height: 54,
-                    onTap: () {
-                      context.pushNamed(
-                        AppRoute.songDetailsWithPages.name,
-                        queryParameters: {
-                          'eventId': widget.eventId,
-                        },
-                      );
-                    },
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Insets.medium),
-            Text(
-              'Rehearsals',
-              style: context.textTheme.titleSmall,
-            ),
-            if (rehearsals.isNotEmpty)
-              ...rehearsals.asMap().entries.map(
-                (entry) {
-                  final rehearsal = entry.value;
-
-                  return RehearsalTile(
-                    key: ValueKey(rehearsal.id),
-                    onDelete: () {
-                      ref
-                          .read(eventNotifierProvider.notifier)
-                          .deleteRehearsal(rehearsal.id!);
-
-                      setState(() {
-                        rehearsals.removeAt(entry.key);
-                      });
-                    },
-                    title: rehearsal.name ?? '',
-                    dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {
-                      CreateRehearsalModal.show(
-                        enabled: false,
-                        context: context,
-                        rehearsal: rehearsal,
-                        onRehearsalCreated: (RehearsalModel rehearsal) {
-                          ref
-                              .read(eventNotifierProvider.notifier)
-                              .updateRehearsal(rehearsal);
-                        },
-                      );
-                    },
-                  );
-                },
-              )
-            else if (!hasEditorRoles)
-              Container(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  'No rehearsals added',
-                  style: context.textTheme.titleSmall!.copyWith(
-                    color: context.colorScheme.outline,
-                  ),
-                ),
+                ],
               ),
-            if (hasEditorRoles) ...[
-              const SizedBox(height: Insets.extraSmall),
-              _buildCreateRehearsalButton(),
-            ],
-            const SizedBox(height: Insets.medium),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Participants',
-                  style: context.textTheme.titleSmall,
-                ),
-                Text(
-                  ref
-                      .watch(eventControllerProvider.notifier)
-                      .getAcceptedInviteesLabel(),
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: context.colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Insets.smallNormal),
-            GroupsEventGrid(
-              eventId: widget.eventId,
-            ),
-            if (!hasEditorRoles)
-              Container(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  'No rehearsals added',
-                  style: context.textTheme.titleSmall!.copyWith(
-                    color: context.colorScheme.outline,
-                  ),
-                ),
+              const SizedBox(height: Insets.medium),
+              Text(
+                'Rehearsals',
+                style: context.textTheme.titleSmall,
               ),
-            if (hasEditorRoles) ...[
+              if (rehearsals.isNotEmpty)
+                ...rehearsals.asMap().entries.map(
+                  (entry) {
+                    final rehearsal = entry.value;
+
+                    return RehearsalTile(
+                      key: ValueKey(rehearsal.id),
+                      onDelete: () {
+                        ref
+                            .read(eventNotifierProvider.notifier)
+                            .deleteRehearsal(rehearsal.id!);
+
+                        setState(() {
+                          rehearsals.removeAt(entry.key);
+                        });
+                      },
+                      title: rehearsal.name ?? '',
+                      dateTime: rehearsal.dateTime ?? DateTime.now(),
+                      onTap: () {
+                        CreateRehearsalModal.show(
+                          enabled: false,
+                          context: context,
+                          rehearsal: rehearsal,
+                          onRehearsalCreated: (RehearsalModel rehearsal) {
+                            ref
+                                .read(eventNotifierProvider.notifier)
+                                .updateRehearsal(rehearsal);
+                          },
+                        );
+                      },
+                    );
+                  },
+                )
+              else if (!hasEditorRoles)
+                Container(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    'No rehearsals added',
+                    style: context.textTheme.titleSmall!.copyWith(
+                      color: context.colorScheme.outline,
+                    ),
+                  ),
+                ),
+              if (hasEditorRoles) ...[
+                const SizedBox(height: 8),
+                _buildCreateRehearsalButton(),
+              ],
+              const SizedBox(height: Insets.medium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Participants',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  Text(
+                    ref
+                        .watch(eventControllerProvider.notifier)
+                        .getAcceptedInviteesLabel(),
+                    style: context.textTheme.bodyMedium!.copyWith(
+                      color: context.colorScheme.outline,
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: Insets.smallNormal),
-              // _buildInvitePeopleButton(),
+              GroupsEventGrid(
+                eventId: widget.eventId,
+              ),
+              if (!hasEditorRoles)
+                Container(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Text(
+                    'No rehearsals added',
+                    style: context.textTheme.titleSmall!.copyWith(
+                      color: context.colorScheme.outline,
+                    ),
+                  ),
+                ),
+              if (hasEditorRoles) ...[
+                const SizedBox(height: Insets.smallNormal),
+                // _buildInvitePeopleButton(),
+              ],
+              const SizedBox(height: 120),
             ],
-            const SizedBox(height: 120),
-          ],
+          ),
         ),
       ),
     );
@@ -363,6 +364,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         CreateRehearsalModal.show(
           context: context,
           onRehearsalCreated: (RehearsalModel rehearsal) {
+            print('im here');
             ref.read(eventNotifierProvider.notifier).addRehearsal(rehearsal);
           },
         );

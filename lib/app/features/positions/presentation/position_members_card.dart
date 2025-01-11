@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/uninvited_people_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/positions/domain/position.dart';
@@ -25,6 +26,8 @@ class PositionMembersCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentEventStatus =
+        ref.watch(eventNotifierProvider).event?.eventStatus;
     final stagersByPosition = ref.watch(
       eventNotifierProvider.select(
         (state) =>
@@ -80,7 +83,9 @@ class PositionMembersCard extends ConsumerWidget {
                   userId: stager.userId ?? '',
                   name: stager.name ?? '',
                   photo: stager.profilePicture ?? Uint8List(0),
-                  status: stager.participationStatus,
+                  status: currentEventStatus == EventStatus.published
+                      ? stager.participationStatus
+                      : null,
                   onDelete: () {
                     ref
                         .read(eventNotifierProvider.notifier)

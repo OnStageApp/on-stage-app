@@ -29,11 +29,14 @@ class AdaptiveDialog extends ConsumerWidget {
             ),
             actions: [
               TextButton(
-                onPressed: () => context.popDialog(false),
+                onPressed: () => context.popDialog(),
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: onAction,
+                onPressed: () {
+                  onAction();
+                  context.popDialog();
+                },
                 style: TextButton.styleFrom(
                   foregroundColor: context.colorScheme.error,
                 ),
@@ -46,11 +49,14 @@ class AdaptiveDialog extends ConsumerWidget {
             content: Text(description),
             actions: [
               CupertinoDialogAction(
-                onPressed: () => context.popDialog(false),
+                onPressed: () => context.popDialog(),
                 child: const Text('Cancel'),
               ),
               CupertinoDialogAction(
-                onPressed: onAction,
+                onPressed: () {
+                  onAction();
+                  context.popDialog();
+                },
                 isDestructiveAction: true,
                 child: Text(actionText),
               ),
@@ -58,7 +64,7 @@ class AdaptiveDialog extends ConsumerWidget {
           );
   }
 
-  static Future<bool?> show({
+  static void show({
     required BuildContext context,
     required String title,
     required String description,
@@ -66,7 +72,7 @@ class AdaptiveDialog extends ConsumerWidget {
     required VoidCallback onAction,
   }) {
     if (Platform.isAndroid) {
-      return showDialog<bool>(
+      showDialog<void>(
         context: context,
         builder: (_) => AdaptiveDialog(
           title: title,
@@ -76,7 +82,7 @@ class AdaptiveDialog extends ConsumerWidget {
         ),
       );
     } else {
-      return showCupertinoDialog<bool>(
+      showCupertinoDialog<void>(
         context: context,
         builder: (_) => AdaptiveDialog(
           title: title,

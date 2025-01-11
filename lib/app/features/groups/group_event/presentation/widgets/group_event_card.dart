@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/domain/group_event.dart';
@@ -39,10 +41,13 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
 
   @override
   Widget build(BuildContext context) {
-    final group = ref.watch(groupEventNotifierProvider).groupEvents.firstWhere(
+    GroupEvent group;
+
+    group = ref.watch(groupEventNotifierProvider).groupEvents.firstWhere(
           (group) => group.id == widget.groupId,
           orElse: () => throw StateError('Group not found: ${widget.groupId}'),
         );
+
     return Card(
       margin: const EdgeInsets.all(6),
       color: context.colorScheme.onSurfaceVariant,
@@ -113,8 +118,10 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
 
   Widget _buildSubtitle(GroupEvent group, BuildContext context) {
     var subtitle = '${group.membersCount} Members';
+    final currentEvent = ref.watch(eventNotifierProvider).event;
 
-    if (group.confirmedCount > 0) {
+    if (currentEvent?.eventStatus == EventStatus.published &&
+        group.membersCount > 0) {
       subtitle = '${group.confirmedCount}/${group.membersCount} Confirmed';
     }
     return Text(

@@ -33,9 +33,8 @@ class EventActionsSection extends ConsumerWidget {
                 await ref
                     .read(eventNotifierProvider.notifier)
                     .deleteEventAndGetAll();
-                context
-                  ..popDialog()
-                  ..pushReplacementNamed(AppRoute.events.name);
+
+                context.pushReplacementNamed(AppRoute.events.name);
               },
             );
           },

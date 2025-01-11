@@ -137,14 +137,16 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               ),
             ),
           ),
-          onPressed: () {
+          onPressed: () async {
             if (userSettingsNotifier.isCreateEventTooltipShown == false) {
               _disableTooltip();
             }
 //TODO: implement new method for permission
             if (ref.watch(permissionServiceProvider).canAddEvents) {
-              ref.read(eventNotifierProvider.notifier).createEmptyEvent();
-              context.pushNamed(AppRoute.addEvent.name);
+              await ref.read(eventNotifierProvider.notifier).createEmptyEvent();
+              if (mounted) {
+                unawaited(context.pushNamed(AppRoute.addEvent.name));
+              }
             } else {
               PaywallModal.show(
                 context: context,

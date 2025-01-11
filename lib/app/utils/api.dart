@@ -56,9 +56,6 @@ class API {
   static const String stagerByEventAndTeamMember =
       'stagers/getByEventAndTeamMember';
 
-  static const String getStagersV2 = 'stagers/v2';
-  static const String addStagersV2 = 'stagers/v2';
-
   static const String artists = 'artists';
 
   static const String reminders = 'reminders';

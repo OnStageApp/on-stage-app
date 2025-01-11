@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
+import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
@@ -40,6 +41,13 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final eventId = ref.watch(eventNotifierProvider).event?.id;
+      print('Event ID: $eventId');
+      if (eventId != null) {
+        ref.read(groupEventNotifierProvider.notifier).getGroupsEvent(eventId);
+      }
+    });
     super.initState();
   }
 
@@ -136,7 +144,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              ...ref.watch(eventControllerProvider).rehearsals.map(
+              ...ref.watch(eventNotifierProvider).rehearsals.map(
                 (rehearsal) {
                   return RehearsalTile(
                     title: rehearsal.name ?? '',
@@ -186,7 +194,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     }
 
     if (_isFormValid()) {
-      await ref.read(eventNotifierProvider.notifier).createEvent();
+      await ref.read(eventNotifierProvider.notifier).updateEventOnCreate();
 
       final eventId = ref.watch(eventNotifierProvider).event?.id;
       if (eventId == null) {
@@ -228,6 +236,9 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       onTap: () {
         CreateRehearsalModal.show(
           context: context,
+          onRehearsalCreated: (rehearsal) {
+            ref.read(eventNotifierProvider.notifier).addRehearsal(rehearsal);
+          },
         );
       },
       text: 'Create new Rehearsal',

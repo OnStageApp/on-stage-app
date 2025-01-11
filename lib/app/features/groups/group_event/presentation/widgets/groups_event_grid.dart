@@ -5,7 +5,7 @@ import 'package:on_stage_app/app/features/groups/group_event/presentation/widget
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
-class GroupsEventGrid extends ConsumerStatefulWidget {
+class GroupsEventGrid extends ConsumerWidget {
   const GroupsEventGrid({
     required this.eventId,
     super.key,
@@ -14,22 +14,7 @@ class GroupsEventGrid extends ConsumerStatefulWidget {
   final String eventId;
 
   @override
-  ConsumerState<GroupsEventGrid> createState() => _GroupsEventGridState();
-}
-
-class _GroupsEventGridState extends ConsumerState<GroupsEventGrid> {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(groupEventNotifierProvider.notifier)
-          .getGroupsEvent(widget.eventId);
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final groupState = ref.watch(groupEventNotifierProvider);
     return GridView.builder(
       shrinkWrap: true,
@@ -46,7 +31,7 @@ class _GroupsEventGridState extends ConsumerState<GroupsEventGrid> {
         final group = groupState.groupEvents.elementAt(index);
         return GroupEventCard(
           groupId: group.id,
-          eventId: widget.eventId,
+          eventId: eventId,
         );
       },
     );
