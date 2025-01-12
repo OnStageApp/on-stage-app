@@ -1,6 +1,6 @@
 name: on_stage_app
 description: On Stage App
-version: 1.2.4+18
+version: 1.2.5+19
 publish_to: none
 
 environment:
