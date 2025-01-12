@@ -228,12 +228,14 @@ class UninvitedPeopleModalState extends ConsumerState<UninvitedPeopleModal> {
       footerHeight: () => 64,
       buildFooter: () => Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 36),
-        child: ContinueButton(
-          text: 'Invite People to Event',
-          onPressed: () {
-            context.popDialog(selectedTeamMemberIds);
-          },
-          isEnabled: selectedTeamMemberIds.isNotEmpty,
+        child: ClipRect(
+          child: ContinueButton(
+            text: 'Invite People to Event',
+            onPressed: () {
+              context.popDialog(selectedTeamMemberIds);
+            },
+            isEnabled: selectedTeamMemberIds.isNotEmpty,
+          ),
         ),
       ),
       buildContent: () => Padding(

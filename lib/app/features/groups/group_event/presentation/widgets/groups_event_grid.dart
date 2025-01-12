@@ -16,26 +16,38 @@ class GroupsEventGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupState = ref.watch(groupEventNotifierProvider);
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 1.2,
-      ),
-      itemCount: groupState.isLoading ? 2 : groupState.groupEvents.length,
-      itemBuilder: (_, index) {
-        if (groupState.isLoading) return _buildShimmerGroupCard(context);
-        final group = groupState.groupEvents.elementAt(index);
-        return GroupEventCard(
-          groupId: group.id,
-          eventId: eventId,
+
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        print('maxWidth: ${constraints.maxWidth}');
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: getGridCount(constraints.maxWidth),
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 1.2,
+          ),
+          itemCount: groupState.isLoading ? 2 : groupState.groupEvents.length,
+          itemBuilder: (_, index) {
+            if (groupState.isLoading) return _buildShimmerGroupCard(context);
+            final group = groupState.groupEvents.elementAt(index);
+            return GroupEventCard(
+              groupId: group.id,
+              eventId: eventId,
+            );
+          },
         );
       },
     );
   }
+}
+
+int getGridCount(double maxWidth) {
+  if (maxWidth > 800) return 4;
+  if (maxWidth > 600) return 3;
+  return 2;
 }
 
 Widget _buildShimmerGroupCard(BuildContext context) {

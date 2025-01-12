@@ -32,8 +32,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterSecureStorageWindowsPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
-    SentryFlutterPluginRegisterWithRegistrar(
-            registry->GetRegistrarForPlugin("SentryFlutterPlugin"));
+  SentryFlutterPluginRegisterWithRegistrar(
+          registry->GetRegistrarForPlugin("SentryFlutterPlugin"));
   Sqlite3FlutterLibsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("Sqlite3FlutterLibsPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(

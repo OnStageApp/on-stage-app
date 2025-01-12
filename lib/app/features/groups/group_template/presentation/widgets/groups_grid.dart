@@ -14,25 +14,35 @@ class GroupsTemplateGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final groupTemplateState = ref.watch(groupTemplateNotifierProvider);
     final isLoading = groupTemplateState.isLoading;
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 1.2,
-      ),
-      itemCount: isLoading ? 2 : groupTemplateState.groups.length,
-      itemBuilder: (_, index) {
-        if (isLoading) {
-          return _buildShimmerGroupCard(context);
-        }
-        final group = groupTemplateState.groups[index];
-        return GroupTemplateCard(
-          groupId: group.id,
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: getGridCount(constraints.maxWidth),
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 1.2,
+          ),
+          itemCount: isLoading ? 2 : groupTemplateState.groups.length,
+          itemBuilder: (_, index) {
+            if (isLoading) {
+              return _buildShimmerGroupCard(context);
+            }
+            final group = groupTemplateState.groups[index];
+            return GroupTemplateCard(
+              groupId: group.id,
+            );
+          },
         );
       },
     );
   }
+}
+
+int getGridCount(double maxWidth) {
+  if (maxWidth > 800) return 4;
+  if (maxWidth > 600) return 3;
+  return 2;
 }
 
 Widget _buildShimmerGroupCard(BuildContext context) {
