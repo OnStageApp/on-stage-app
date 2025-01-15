@@ -139,17 +139,33 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> duplicateEvent(DateTime newDateTime, String eventName) async {
-    state = state.copyWith(isLoading: true);
-    final duplicateEventRequest = DuplicateEventRequest(
-      name: eventName,
-      dateTime: newDateTime.toIso8601String(),
-    );
+    try {
+      state = state.copyWith(isLoading: true);
 
-    final newEvent = await eventsRepository.duplicateEvent(
-      state.event!.id!,
-      duplicateEventRequest,
-    );
-    state = state.copyWith(event: newEvent, isLoading: false);
+      if (state.event?.id == null) {
+        throw Exception('No event selected for duplication');
+      }
+
+      final duplicateEventRequest = DuplicateEventRequest(
+        name: eventName,
+        dateTime: newDateTime.toIso8601String(),
+      );
+
+      final newEvent = await eventsRepository.duplicateEvent(
+        state.event!.id!,
+        duplicateEventRequest,
+      );
+
+      state = state.copyWith(
+        event: newEvent,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+      );
+      rethrow;
+    }
   }
 
   Future<void> deleteEventAndGetAll() async {
