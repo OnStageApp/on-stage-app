@@ -23,38 +23,53 @@ class PreferenceSelector<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormField<T>(
+    return FormField<T?>(
+      initialValue: selectedValue,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      builder: (state) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: Insets.small),
-          PreferencesActionTile(
-            title: selectedValue != null
-                ? displayValue(selectedValue)
-                : placeholder,
-            trailingIcon: Icons.keyboard_arrow_down_rounded,
-            onTap: onTap,
-          ),
-          if (state.hasError)
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: 4),
-              child: Text(
-                state.errorText!,
-                style: context.textTheme.bodySmall!.copyWith(
-                  color: context.colorScheme.error,
-                ),
+      builder: (state) {
+        // Update state when value changes
+        if (state.value != selectedValue) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            state.didChange(selectedValue);
+          });
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: context.textTheme.titleSmall!.copyWith(
+                color: context.colorScheme.onSurface,
               ),
             ),
-        ],
-      ),
+            const SizedBox(height: Insets.small),
+            PreferencesActionTile(
+              title: selectedValue != null
+                  ? displayValue(selectedValue)
+                  : placeholder,
+              trailingIcon: Icons.keyboard_arrow_down_rounded,
+              onTap: () {
+                onTap();
+                state.didChange(
+                  selectedValue,
+                );
+              },
+            ),
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 4),
+                child: Text(
+                  state.errorText!,
+                  style: context.textTheme.bodySmall!.copyWith(
+                    color: context.colorScheme.error,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

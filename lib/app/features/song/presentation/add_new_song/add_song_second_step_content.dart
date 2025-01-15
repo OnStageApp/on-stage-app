@@ -96,6 +96,7 @@ class AddSongSecondStepContentState
                 _onSavedSong(context);
               },
               isEnabled: true,
+              hasShadow: false,
             ),
           ),
         ],
