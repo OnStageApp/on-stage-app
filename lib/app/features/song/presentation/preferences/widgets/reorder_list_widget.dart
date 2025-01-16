@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
@@ -43,20 +44,22 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   Widget _buildList() {
     final cacheStructureItems =
         ref.watch(songPreferencesControllerProvider).structureItems.toList();
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: cacheStructureItems.length,
-      itemBuilder: (context, index) {
-        return ReordableListItem(
-          canSlide: false,
-          itemKey: '${cacheStructureItems[index].shortName}_$index',
-          itemId: cacheStructureItems[index].index,
-          color: cacheStructureItems[index].color,
-          shortName: cacheStructureItems[index].shortName,
-          name: cacheStructureItems[index].name,
-        );
-      },
+    return SlidableAutoCloseBehavior(
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: cacheStructureItems.length,
+        itemBuilder: (context, index) {
+          return ReordableListItem(
+            canSlide: false,
+            itemKey: '${cacheStructureItems[index].shortName}_$index',
+            itemId: cacheStructureItems[index].index,
+            color: cacheStructureItems[index].color,
+            shortName: cacheStructureItems[index].shortName,
+            name: cacheStructureItems[index].name,
+          );
+        },
+      ),
     );
   }
 
@@ -83,38 +86,40 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   Widget _buildReordableList() {
     final cacheStructureItems =
         ref.watch(songPreferencesControllerProvider).structureItems.toList();
-    return ReorderableListView.builder(
-      buildDefaultDragHandles: false,
-      onReorder: _onReorder,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: cacheStructureItems.length,
-      proxyDecorator: proxyDecorator,
-      itemBuilder: (context, index) {
-        return MyDragStartListener(
-          key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
-          index: index,
-          child: ClipRect(
-            child: ReordableListItem(
-              itemKey: '${cacheStructureItems[index].shortName}_$index',
-              itemId: cacheStructureItems[index].index,
-              color: cacheStructureItems[index].color,
-              shortName: cacheStructureItems[index].shortName,
-              name: cacheStructureItems[index].name,
-              onRemove: () {
-                ref
-                    .read(songPreferencesControllerProvider.notifier)
-                    .removeStructureItem(index);
-              },
-              onClone: () {
-                ref
-                    .read(songPreferencesControllerProvider.notifier)
-                    .addStructureItem(cacheStructureItems[index]);
-              },
+    return SlidableAutoCloseBehavior(
+      child: ReorderableListView.builder(
+        buildDefaultDragHandles: false,
+        onReorder: _onReorder,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: cacheStructureItems.length,
+        proxyDecorator: proxyDecorator,
+        itemBuilder: (context, index) {
+          return MyDragStartListener(
+            key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
+            index: index,
+            child: ClipRect(
+              child: ReordableListItem(
+                itemKey: '${cacheStructureItems[index].shortName}_$index',
+                itemId: cacheStructureItems[index].index,
+                color: cacheStructureItems[index].color,
+                shortName: cacheStructureItems[index].shortName,
+                name: cacheStructureItems[index].name,
+                onRemove: () {
+                  ref
+                      .read(songPreferencesControllerProvider.notifier)
+                      .removeStructureItem(index);
+                },
+                onClone: () {
+                  ref
+                      .read(songPreferencesControllerProvider.notifier)
+                      .addStructureItem(cacheStructureItems[index]);
+                },
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

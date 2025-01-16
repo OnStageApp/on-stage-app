@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -160,37 +161,41 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
               style: context.textTheme.titleSmall,
             ),
             if (rehearsals.isNotEmpty)
-              ...rehearsals.asMap().entries.map(
-                (entry) {
-                  final rehearsal = entry.value;
+              SlidableAutoCloseBehavior(
+                child: Column(
+                  children: rehearsals.asMap().entries.map(
+                        (entry) {
+                      final rehearsal = entry.value;
 
-                  return RehearsalTile(
-                    key: ValueKey(rehearsal.id),
-                    onDelete: () {
-                      ref
-                          .read(eventNotifierProvider.notifier)
-                          .deleteRehearsal(rehearsal.id!);
-
-                      setState(() {
-                        rehearsals.removeAt(entry.key);
-                      });
-                    },
-                    title: rehearsal.name ?? '',
-                    dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {
-                      CreateRehearsalModal.show(
-                        enabled: false,
-                        context: context,
-                        rehearsal: rehearsal,
-                        onRehearsalCreated: (RehearsalModel rehearsal) {
+                      return RehearsalTile(
+                        key: ValueKey(rehearsal.id),
+                        onDelete: () {
                           ref
                               .read(eventNotifierProvider.notifier)
-                              .updateRehearsal(rehearsal);
+                              .deleteRehearsal(rehearsal.id!);
+
+                          setState(() {
+                            rehearsals.removeAt(entry.key);
+                          });
+                        },
+                        title: rehearsal.name ?? '',
+                        dateTime: rehearsal.dateTime ?? DateTime.now(),
+                        onTap: () {
+                          CreateRehearsalModal.show(
+                            enabled: false,
+                            context: context,
+                            rehearsal: rehearsal,
+                            onRehearsalCreated: (RehearsalModel rehearsal) {
+                              ref
+                                  .read(eventNotifierProvider.notifier)
+                                  .updateRehearsal(rehearsal);
+                            },
+                          );
                         },
                       );
                     },
-                  );
-                },
+                  ).toList(),
+                ),
               )
             else if (!hasEditorRoles)
               Container(
@@ -357,31 +362,33 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
   Widget _buildParticipantsList() {
     final stagers = ref.watch(eventNotifierProvider).stagers;
     final currentUserId = ref.watch(userNotifierProvider).currentUser?.id;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...stagers.map(
-            (stager) => ParticipantListingItem(
-              userId: stager.userId ?? '',
-              canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
-                  stager.userId != currentUserId,
-              name: stager.name ?? '',
-              photo: stager.profilePicture,
-              status: stager.participationStatus,
-              onDelete: () {
-                ref
-                    .read(eventNotifierProvider.notifier)
-                    .removeStagerFromEvent(stager.id);
-              },
+    return SlidableAutoCloseBehavior(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: context.colorScheme.onSurfaceVariant,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...stagers.map(
+              (stager) => ParticipantListingItem(
+                userId: stager.userId ?? '',
+                canEdit: ref.watch(permissionServiceProvider).hasAccessToEdit &&
+                    stager.userId != currentUserId,
+                name: stager.name ?? '',
+                photo: stager.profilePicture,
+                status: stager.participationStatus,
+                onDelete: () {
+                  ref
+                      .read(eventNotifierProvider.notifier)
+                      .removeStagerFromEvent(stager.id);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

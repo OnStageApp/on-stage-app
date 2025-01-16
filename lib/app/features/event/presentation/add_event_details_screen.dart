@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
@@ -126,15 +127,30 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              ...ref.watch(eventControllerProvider).rehearsals.map(
-                (rehearsal) {
-                  return RehearsalTile(
-                    title: rehearsal.name ?? '',
-                    dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {},
-                    onDelete: () {},
-                  );
-                },
+              SlidableAutoCloseBehavior(
+                child: Column(
+                  children: ref
+                      .watch(eventControllerProvider)
+                      .rehearsals
+                      .asMap()
+                      .entries
+                      .map(
+                    (entry) {
+                      final index = entry.key;
+                      final rehearsal = entry.value;
+                      return RehearsalTile(
+                        title: rehearsal.name ?? '',
+                        dateTime: rehearsal.dateTime ?? DateTime.now(),
+                        onTap: () {},
+                        onDelete: () {
+                          ref
+                              .read(eventControllerProvider.notifier)
+                              .removeRehearsalAtIndex(index);
+                        },
+                      );
+                    },
+                  ).toList(),
+                ),
               ),
               _buildCreateRehearsalButton(),
               const SizedBox(height: 120),
