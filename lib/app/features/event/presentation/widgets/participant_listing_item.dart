@@ -30,8 +30,9 @@ class ParticipantListingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      enabled: canEdit,
+      groupTag: 'participant_listing_item',
       key: ValueKey(name),
+      enabled: canEdit,
       endActionPane: ActionPane(
         motion: const ScrollMotion(),
         extentRatio: 0.3,

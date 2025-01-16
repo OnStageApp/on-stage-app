@@ -71,8 +71,7 @@ class EventController extends _$EventController {
   }
 
   void removeRehearsalAtIndex(int index) {
-    final newRehearsals = List.of(state.rehearsals);
-    newRehearsals.removeAt(index);
+    final newRehearsals = List.of(state.rehearsals)..removeAt(index);
     state = state.copyWith(rehearsals: newRehearsals);
   }
 
