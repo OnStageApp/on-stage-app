@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_item_notifier/event_item_notifier.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
@@ -46,32 +47,34 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
           style: context.textTheme.titleSmall,
         ),
         if (leadVocalStagers.isNotNullOrEmpty)
-          Container(
-            margin: const EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(
-              color: context.colorScheme.onSurfaceVariant,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: leadVocalStagers.length,
-              itemBuilder: (context, index) {
-                return ParticipantListingItem(
-                  userId: leadVocalStagers[index].userId ?? '',
-                  name: leadVocalStagers[index].name ?? '',
-                  photo: leadVocalStagers[index].profilePicture,
-                  onDelete: () {
-                    if (eventItemId == null) return;
-                    ref
-                        .read(eventItemNotifierProvider.notifier)
-                        .removeLeadVocal(
-                          eventItemId,
-                          leadVocalStagers[index].id,
-                        );
-                  },
-                );
-              },
+          SlidableAutoCloseBehavior(
+            child: Container(
+              margin: const EdgeInsets.only(top: 12),
+              decoration: BoxDecoration(
+                color: context.colorScheme.onSurfaceVariant,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: leadVocalStagers.length,
+                itemBuilder: (context, index) {
+                  return ParticipantListingItem(
+                    userId: leadVocalStagers[index].userId ?? '',
+                    name: leadVocalStagers[index].name ?? '',
+                    photo: leadVocalStagers[index].profilePicture,
+                    onDelete: () {
+                      if (eventItemId == null) return;
+                      ref
+                          .read(eventItemNotifierProvider.notifier)
+                          .removeLeadVocal(
+                            eventItemId,
+                            leadVocalStagers[index].id,
+                          );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         const SizedBox(height: 12),

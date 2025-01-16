@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/moment_event_item_tile.dart';
@@ -66,19 +67,21 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
-      body: RefreshIndicator.adaptive(
-        onRefresh: _requestEventItems,
-        child: Padding(
-          padding: defaultScreenPadding,
-          child: _areEventItemsLoading
-              ? _buildShimmerList()
-              : hasEditorRights
-                  ? _buildReordableList(eventItemsState.eventItems)
-                  : eventItemsState.eventItems.isNotEmpty
-                      ? _buildStaticList(eventItemsState.eventItems)
-                      : const Center(
-                          child: Text('No items added yet'),
-                        ),
+      body: SlidableAutoCloseBehavior(
+        child: RefreshIndicator.adaptive(
+          onRefresh: _requestEventItems,
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: _areEventItemsLoading
+                ? _buildShimmerList()
+                : hasEditorRights
+                    ? _buildReordableList(eventItemsState.eventItems)
+                    : eventItemsState.eventItems.isNotEmpty
+                        ? _buildStaticList(eventItemsState.eventItems)
+                        : const Center(
+                            child: Text('No items added yet'),
+                          ),
+          ),
         ),
       ),
     );

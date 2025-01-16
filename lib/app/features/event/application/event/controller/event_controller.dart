@@ -70,6 +70,12 @@ class EventController extends _$EventController {
     );
   }
 
+  void removeRehearsalAtIndex(int index) {
+    final newRehearsals = List.of(state.rehearsals);
+    newRehearsals.removeAt(index);
+    state = state.copyWith(rehearsals: newRehearsals);
+  }
+
   void removeMemberFromCache(String teamMemberId) {
     state = state.copyWith(
       addedMembers:
