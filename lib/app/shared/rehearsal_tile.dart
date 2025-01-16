@@ -35,6 +35,7 @@ class _RehearsalTileState extends State<RehearsalTile> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Slidable(
+        groupTag: 'rehearsal_tile',
         key: ValueKey(widget.dateTime),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),

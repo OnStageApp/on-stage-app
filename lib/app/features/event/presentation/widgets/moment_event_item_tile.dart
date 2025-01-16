@@ -46,6 +46,7 @@ class _EventItemTileState extends State<EventItemTile> {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Slidable(
+          groupTag: 'moment_event_item_tile',
           key: ValueKey(widget.name),
           endActionPane: widget.isAdmin ? _buildActionPane(context) : null,
           child: Builder(

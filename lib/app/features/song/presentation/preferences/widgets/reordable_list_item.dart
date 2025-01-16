@@ -52,9 +52,10 @@ class _ReordableListItemState extends State<ReordableListItem>
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Slidable(
+        groupTag: 'reordable_list_item',
+        key: ValueKey(widget.itemKey),
         enabled: widget.canSlide,
         controller: _controller,
-        key: ValueKey(widget.itemKey),
         endActionPane: ActionPane(
           dragDismissible: false,
           motion: const ScrollMotion(),
