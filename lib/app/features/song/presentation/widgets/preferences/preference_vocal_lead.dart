@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participant_listing_item.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
@@ -110,22 +111,24 @@ class _PreferencesVocalLeadState extends ConsumerState<PreferencesVocalLead> {
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: stagers.length,
-        itemBuilder: (context, index) {
-          final currentStager = stagers[index];
-          return Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: ParticipantListingItem(
-              userId: currentStager.userId,
-              name: currentStager.name,
-              photo: currentStager.profilePicture,
-              onDelete: () => _handleStagerRemoved(currentStager),
-            ),
-          );
-        },
+      child: SlidableAutoCloseBehavior(
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: stagers.length,
+          itemBuilder: (context, index) {
+            final currentStager = stagers[index];
+            return Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: ParticipantListingItem(
+                userId: currentStager.userId,
+                name: currentStager.name,
+                photo: currentStager.profilePicture,
+                onDelete: () => _handleStagerRemoved(currentStager),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
