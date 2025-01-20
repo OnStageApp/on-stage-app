@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/schedule_settings_buttons.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
@@ -173,14 +172,16 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
 
   Widget _buildReordableList(List<EventItem> eventItems) {
     final canEdit = ref.watch(isEditModeAndHasAccessProvider);
-    return ReorderableListView.builder(
-      proxyDecorator: _proxyDecorator,
-      itemCount: eventItems.length,
-      onReorder: _onReorder,
-      itemBuilder: (context, index) => _buildEventItemTile(eventItems[index]),
-      footer: canEdit
-          ? _buildAddSongsOrMomentsButton()
-          : const SizedBox(height: 100),
+    return SlidableAutoCloseBehavior(
+      child: ReorderableListView.builder(
+        proxyDecorator: _proxyDecorator,
+        itemCount: eventItems.length,
+        onReorder: _onReorder,
+        itemBuilder: (context, index) => _buildEventItemTile(eventItems[index]),
+        footer: canEdit
+            ? _buildAddSongsOrMomentsButton()
+            : const SizedBox(height: 100),
+      ),
     );
   }
 

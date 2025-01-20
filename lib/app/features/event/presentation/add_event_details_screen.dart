@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
@@ -22,7 +23,6 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
-import 'package:shimmer/shimmer.dart';
 
 class AddEventDetailsScreen extends ConsumerStatefulWidget {
   const AddEventDetailsScreen({super.key});
@@ -173,36 +173,23 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              ...ref.watch(eventNotifierProvider).rehearsals.map(
-                (rehearsal) {
-                  return RehearsalTile(
-                    title: rehearsal.name ?? '',
-                    dateTime: rehearsal.dateTime ?? DateTime.now(),
-                    onTap: () {},
-                    onDelete: () {},
-                  );
-                },
+              SlidableAutoCloseBehavior(
+                child: Column(
+                  children: ref.watch(eventNotifierProvider).rehearsals.map(
+                    (rehearsal) {
+                      return RehearsalTile(
+                        title: rehearsal.name ?? '',
+                        dateTime: rehearsal.dateTime ?? DateTime.now(),
+                        onTap: () {},
+                        onDelete: () {},
+                      );
+                    },
+                  ).toList(),
+                ),
               ),
               _buildCreateRehearsalButton(),
               const SizedBox(height: 120),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShimmerGroupCard() {
-    return SizedBox(
-      height: 200,
-      width: 200,
-      child: Shimmer.fromColors(
-        baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
-        highlightColor: context.colorScheme.onSurfaceVariant,
-        child: Container(
-          decoration: BoxDecoration(
-            color: context.colorScheme.onSurfaceVariant,
-            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),

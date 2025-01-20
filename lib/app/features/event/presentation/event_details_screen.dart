@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
@@ -164,37 +165,41 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
               ),
               const SizedBox(height: 6),
               if (rehearsals.isNotEmpty)
-                ...rehearsals.asMap().entries.map(
-                  (entry) {
-                    final rehearsal = entry.value;
+                SlidableAutoCloseBehavior(
+                  child: Column(
+                    children: rehearsals.asMap().entries.map(
+                      (entry) {
+                        final rehearsal = entry.value;
 
-                    return RehearsalTile(
-                      key: ValueKey(rehearsal.id),
-                      onDelete: () {
-                        ref
-                            .read(eventNotifierProvider.notifier)
-                            .deleteRehearsal(rehearsal.id!);
-
-                        setState(() {
-                          rehearsals.removeAt(entry.key);
-                        });
-                      },
-                      title: rehearsal.name ?? '',
-                      dateTime: rehearsal.dateTime ?? DateTime.now(),
-                      onTap: () {
-                        CreateRehearsalModal.show(
-                          enabled: false,
-                          context: context,
-                          rehearsal: rehearsal,
-                          onRehearsalCreated: (RehearsalModel rehearsal) {
+                        return RehearsalTile(
+                          key: ValueKey(rehearsal.id),
+                          onDelete: () {
                             ref
                                 .read(eventNotifierProvider.notifier)
-                                .updateRehearsal(rehearsal);
+                                .deleteRehearsal(rehearsal.id!);
+
+                            setState(() {
+                              rehearsals.removeAt(entry.key);
+                            });
+                          },
+                          title: rehearsal.name ?? '',
+                          dateTime: rehearsal.dateTime ?? DateTime.now(),
+                          onTap: () {
+                            CreateRehearsalModal.show(
+                              enabled: false,
+                              context: context,
+                              rehearsal: rehearsal,
+                              onRehearsalCreated: (RehearsalModel rehearsal) {
+                                ref
+                                    .read(eventNotifierProvider.notifier)
+                                    .updateRehearsal(rehearsal);
+                              },
+                            );
                           },
                         );
                       },
-                    );
-                  },
+                    ).toList(),
+                  ),
                 )
               else if (!hasEditorRoles)
                 Container(
