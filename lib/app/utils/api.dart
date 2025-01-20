@@ -13,8 +13,9 @@ class API {
   //
   // // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
-  // static const String devDomain = 'dev.on-stage.app';
-  static const String devDomain = 'localhost:9001';
+  static const String devDomain = 'dev.on-stage.app';
+
+  // static const String devDomain = 'localhost:9001';
   static const String socketDevDomain = 'dev.on-stage.app';
 
   static const String prodDomain = 'on-stage.app/api';
