@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -16,16 +18,17 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
   ChooseStructureToAddModalState createState() =>
       ChooseStructureToAddModalState();
 
-  static Future<StructureItem?> show({
+  static Future<List<StructureItem>?> show({
     required BuildContext context,
     required WidgetRef ref,
   }) async {
-    return showModalBottomSheet<StructureItem>(
-      enableDrag: false,
+    return showModalBottomSheet<List<StructureItem>>(
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
+        maxHeight: MediaQuery.of(context).size.height * 0.95,
+        minHeight: MediaQuery.of(context).size.height * 0.95,
         maxWidth: context.isLargeScreen
             ? context.screenSize.width * 0.5
             : double.infinity,
@@ -38,13 +41,46 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
 
 class ChooseStructureToAddModalState
     extends ConsumerState<ChooseStructureToAddModal> {
-  StructureItem? _selectedStructureItem;
+  final List<StructureItem> _selectedStructureItems = [];
   late List<StructureItem> _structureItems;
+  late List<StructureItem> _filteredItems;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _updateStructureItems();
+    _filteredItems = _structureItems;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {
+      _filteredItems = _structureItems;
+    });
+  }
+
+  void _filterItems(String query) {
+    if (query.isEmpty) {
+      _clearSearch();
+      return;
+    }
+
+    setState(() {
+      _filteredItems = _structureItems
+          .where(
+            (item) => item.name.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
+    });
   }
 
   void _updateStructureItems() {
@@ -53,11 +89,13 @@ class ChooseStructureToAddModalState
         currentSong.rawSections?.map((e) => e.structureItem).toSet();
     if (usedStructures == null) {
       _structureItems = StructureItem.values;
+      _filteredItems = StructureItem.values;
       return;
     }
     _structureItems = StructureItem.values
         .where((item) => !usedStructures.contains(item))
         .toList();
+    _filteredItems = _structureItems;
   }
 
   @override
@@ -82,20 +120,25 @@ class ChooseStructureToAddModalState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 44),
+            child: StageSearchBar(
+              focusNode: _searchFocusNode,
+              controller: _searchController,
+              onClosed: _clearSearch,
+              onChanged: _filterItems,
+            ),
+          ),
+          const SizedBox(height: 16),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: _structureItems.length,
+            itemCount: _filteredItems.length,
             itemBuilder: (context, index) {
+              final item = _filteredItems[index];
               return InkWell(
                 onTap: () {
-                  setState(() {
-                    if (_isItemChecked(index)) {
-                      _selectedStructureItem = null;
-                    } else {
-                      _selectedStructureItem = _structureItems[index];
-                    }
-                  });
+                  _toggleItemSelection(item);
                 },
                 child: Container(
                   height: 52,
@@ -113,29 +156,13 @@ class ChooseStructureToAddModalState
                   child: Row(
                     children: [
                       const SizedBox(width: 12),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        key: ValueKey(_structureItems[index].index),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.onSurfaceVariant,
-                          border: Border.all(
-                            color: Color(_structureItems[index].color),
-                            width: 3,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          _structureItems[index].shortName,
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.titleSmall,
-                        ),
+                      StructureCircleWidget(
+                        structureItem: item, // Use item from filtered list
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),
                         child: Text(
-                          _structureItems[index].name,
+                          item.name, // Use item from filtered list
                           style: context.textTheme.titleSmall,
                         ),
                       ),
@@ -158,13 +185,24 @@ class ChooseStructureToAddModalState
               );
             },
           ),
+          const SizedBox(height: 32),
         ],
       ),
     );
   }
 
   bool _isItemChecked(int index) {
-    return _selectedStructureItem == _structureItems[index];
+    return _selectedStructureItems.contains(_filteredItems[index]);
+  }
+
+  void _toggleItemSelection(StructureItem item) {
+    setState(() {
+      if (_selectedStructureItems.contains(item)) {
+        _selectedStructureItems.remove(item);
+      } else {
+        _selectedStructureItems.add(item);
+      }
+    });
   }
 
   Widget _buildFooter(BuildContext context) {
@@ -172,11 +210,13 @@ class ChooseStructureToAddModalState
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: ContinueButton(
-          text: 'Add',
+          text: _selectedStructureItems.isEmpty
+              ? 'Add'
+              : 'Add (${_selectedStructureItems.length})',
           onPressed: () {
-            Navigator.of(context).pop(_selectedStructureItem);
+            Navigator.of(context).pop(_selectedStructureItems);
           },
-          isEnabled: _selectedStructureItem != null,
+          isEnabled: _selectedStructureItems.isNotEmpty,
         ),
       ),
     );

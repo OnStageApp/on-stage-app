@@ -1,5 +1,6 @@
 import 'package:on_stage_app/app/features/artist/domain/application/artists_state.dart';
 import 'package:on_stage_app/app/features/artist/domain/data/artist_repository.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,17 +18,7 @@ class ArtistNotifier extends _$ArtistNotifier {
     return const ArtistsState();
   }
 
-  Future<void> getArtists() async {
-    state = state.copyWith(isLoading: true);
-    final artists = await _artistRepository.getArtists();
-    state = state.copyWith(
-      isLoading: false,
-      artists: artists,
-      filteredArtists: artists,
-    );
-  }
-
-  Future<void> addArtist(String name) async {
-    await _artistRepository.addArtist(ArtistRequest(name: name));
+  Future<Artist?> addArtist(String name) async {
+    return _artistRepository.addArtist(ArtistRequest(name: name));
   }
 }

@@ -48,6 +48,7 @@ class CustomTextField extends StatelessWidget {
         const SizedBox(height: Insets.small),
         TextFormField(
           keyboardType: keyboardType,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           obscureText: obscureText,
           focusNode: focusNode,
           enabled: enabled ?? true,

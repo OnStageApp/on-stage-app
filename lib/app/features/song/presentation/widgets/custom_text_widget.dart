@@ -32,7 +32,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           contentPadding: EdgeInsets.zero,
-          hintText: 'Enter lyrics here...',
+          hintText: _getHintText(),
           hintStyle: context.textTheme.bodyLarge!.copyWith(
             color: context.colorScheme.outline,
           ),
@@ -41,6 +41,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
     );
   }
+
+  String _getHintText() => 'eg. [Dm]Burn the ships, cut the [Bb]ties...';
 }
 
 class CustomTextEditingController extends TextEditingController {

@@ -15,6 +15,7 @@ import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 part 'user_notifier.g.dart';
 
@@ -174,12 +175,14 @@ class UserNotifier extends _$UserNotifier {
   }
 
   void _setUserIdInAnalytics(String userId, String userName) {
-    ref.read(analyticsServiceProvider.notifier).setUserId(
+    Sentry.configureScope((scope) {
+      scope.setUser(
+        SentryUser(id: userId, name: userName),
+      );
+    });
+    ref.read(analyticsServiceProvider.notifier).setUserInfos(
           userId,
-        );
-    ref.read(analyticsServiceProvider.notifier).setUserProperty(
-          name: 'name',
-          value: userName,
+          userName,
         );
   }
 

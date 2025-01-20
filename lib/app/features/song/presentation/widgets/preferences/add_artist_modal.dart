@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/artist/domain/application/artist/artist_notifier.dart';
+import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -14,10 +15,10 @@ class AddArtistModal extends ConsumerStatefulWidget {
   @override
   AddArtistModalState createState() => AddArtistModalState();
 
-  static Future<Widget?> show({
+  static Future<Artist?> show({
     required BuildContext context,
   }) async {
-    return showModalBottomSheet<Widget>(
+    return showModalBottomSheet<Artist>(
       enableDrag: false,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
       constraints: BoxConstraints(
@@ -51,29 +52,30 @@ class AddArtistModalState extends ConsumerState<AddArtistModal> {
   @override
   Widget build(BuildContext context) {
     return NestedScrollModal(
-      headerHeight: () {
-        return 64;
-      },
-      footerHeight: () {
-        return 64;
-      },
+      headerHeight: () => 64,
+      footerHeight: () => 64,
       buildFooter: () => Padding(
-        padding: const EdgeInsets.only(bottom: 16, left: 12, right: 12),
+        padding: const EdgeInsets.only(bottom: 24, left: 12, right: 12),
         child: ContinueButton(
           text: 'Add Artist',
-          onPressed: () {
+          onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              ref.read(artistNotifierProvider.notifier).addArtist(
-                    _artistNameController.text,
-                  );
-              context.popDialog();
+              final newArtist = await ref
+                  .read(artistNotifierProvider.notifier)
+                  .addArtist(_artistNameController.text);
+
+              if (newArtist != null) {
+                if (context.mounted) {
+                  context.popDialog(newArtist);
+                }
+              }
             }
           },
           isEnabled: true,
         ),
       ),
       buildHeader: () => const ModalHeader(
-        title: 'Select an Artist',
+        title: 'Add New Artist',
       ),
       buildContent: () => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),

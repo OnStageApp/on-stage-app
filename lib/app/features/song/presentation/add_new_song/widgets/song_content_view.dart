@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/custom_text_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -53,10 +54,12 @@ class SongContentView extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: context.colorScheme.onSurfaceVariant,
                         ),
-                        child: Text(
-                          shortName,
-                          style: context.textTheme.labelMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
+                        child: Center(
+                          child: AutoSizeText(
+                            shortName,
+                            style: context.textTheme.labelSmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),

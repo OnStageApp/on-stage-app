@@ -42,8 +42,10 @@ extension PlanFeatures on Plan {
       PlanFeature('Create $maxEvents Events per month', true),
       PlanFeature('$maxMembers Members', true),
       PlanFeature('Add Your Own Songs', hasAddSong),
+      PlanFeature('Unlimited Groups', hasAddSong),
       PlanFeature('Add Reminders for Events', hasReminders),
-      PlanFeature('Sync Screens with your Team', hasScreensSync),
+      PlanFeature('MD Notes', hasReminders),
+      // PlanFeature('Sync Screens with your Team', hasScreensSync),
     ];
   }
 }

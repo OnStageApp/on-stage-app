@@ -22,7 +22,8 @@ abstract class TeamMemberRepository {
 
   @GET(API.uninvitedTeamMembers)
   Future<List<TeamMember>> getUninvitedTeamMembers({
-    @Query('eventId') String? eventId,
+    @Query('eventId') required String eventId,
+    @Query('positionId') required String positionId,
     @Query('includeCurrentUser') bool includeCurrentUser = false,
   });
 

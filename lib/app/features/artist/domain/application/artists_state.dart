@@ -1,33 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 
-class ArtistsState extends Equatable {
-  const ArtistsState({
-    this.artists = const [],
-    this.filteredArtists = const [],
-    this.isLoading = false,
-  });
+part 'artists_state.freezed.dart';
 
-  final List<Artist> artists;
-  final List<Artist> filteredArtists;
-
-  final bool isLoading;
-
-  @override
-  List<Object> get props => [
-    artists,
-    filteredArtists,
-  ];
-
-  ArtistsState copyWith({
-    List<Artist>? artists,
-    List<Artist>? filteredArtists,
-    bool? isLoading,
-  }) {
-    return ArtistsState(
-      artists: artists ?? this.artists,
-      filteredArtists: filteredArtists ?? this.filteredArtists,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
+@freezed
+class ArtistsState with _$ArtistsState {
+  const factory ArtistsState({
+    @Default([]) List<Artist> artists,
+    @Default([]) List<Artist> filteredArtists,
+    @Default(false) bool isLoading,
+    @Default(true) bool hasMore,
+    String? error,
+  }) = _ArtistsState;
 }

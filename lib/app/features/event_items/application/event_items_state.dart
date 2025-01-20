@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 
 part 'event_items_state.freezed.dart';

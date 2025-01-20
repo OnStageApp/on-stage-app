@@ -124,7 +124,9 @@ class PlanCard extends ConsumerWidget {
             const Spacer(),
             if (plan.price != 0)
               ContinueButton(
-                text: isCurrent ? 'Current Plan ' : 'Upgrade',
+                text: isCurrent
+                    ? 'Current Plan '
+                    : '${plan.entitlementId == 'solo' ? 'Try it Free' : 'Start 1-Month Free Trial'}',
                 textColor: isCurrent
                     ? context.colorScheme.onSurface
                     : context.colorScheme.onSurfaceVariant,

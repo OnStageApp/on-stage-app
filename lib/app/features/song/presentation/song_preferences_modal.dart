@@ -38,6 +38,12 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
       isScrollControlled: true,
       useRootNavigator: true,
       backgroundColor: context.colorScheme.surfaceContainerHigh,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.95,
+        maxWidth: context.isLargeScreen
+            ? context.screenSize.width * 0.5
+            : double.infinity,
+      ),
       context: context,
       builder: (context) => FractionallySizedBox(
         child: NestedScrollModal(

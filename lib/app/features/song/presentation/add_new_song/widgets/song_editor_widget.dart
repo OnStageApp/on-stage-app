@@ -53,28 +53,31 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   Future<void> _addNewSection() async {
     logger.d('Opening structure selection modal');
     try {
-      final addedStructureItem = await ChooseStructureToAddModal.show(
+      final addedStructureItems = await ChooseStructureToAddModal.show(
         context: context,
         ref: ref,
       );
 
-      if (addedStructureItem != null) {
-        logger.d('Selected structure: ${addedStructureItem.name}');
+      if (addedStructureItems != null && addedStructureItems.isNotEmpty) {
+        logger.d(
+            'Selected structures: ${addedStructureItems.map((item) => item.name).join(", ")}');
 
-        final newSection = SectionData(
-          rawSection: RawSection(
-            structureItem: addedStructureItem,
-            content: '',
-          ),
-          controller: CustomTextEditingController(text: ''),
-        );
+        for (final structureItem in addedStructureItems) {
+          final newSection = SectionData(
+            rawSection: RawSection(
+              structureItem: structureItem,
+              content: '',
+            ),
+            controller: CustomTextEditingController(text: ''),
+          );
 
-        ref.read(songEditorNotifierProvider.notifier).addSection(newSection);
+          ref.read(songEditorNotifierProvider.notifier).addSection(newSection);
+        }
       } else {
         logger.d('Structure selection cancelled');
       }
-    } catch (e, stack) {
-      logger.e('Error adding new section', e, stack);
+    } catch (e) {
+      logger.e('Error adding new section');
     }
   }
 
@@ -167,7 +170,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           margin: const EdgeInsets.only(bottom: 160),
           child: EventActionButton(
             onTap: _addNewSection,
-            text: 'Add New Section',
+            text: 'Add New Sections',
             icon: Icons.add,
           ),
         ),

@@ -16,6 +16,7 @@ class ParticipantListingItem extends StatelessWidget {
     this.status,
     this.trailing,
     this.canEdit = true,
+    this.canGoToProfile = true,
     super.key,
   });
 
@@ -26,60 +27,64 @@ class ParticipantListingItem extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback onDelete;
   final bool canEdit;
+  final bool canGoToProfile;
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      groupTag: 'participant_listing_item',
-      key: ValueKey(name),
-      enabled: canEdit,
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        extentRatio: 0.3,
-        dismissible: DismissiblePane(onDismissed: onDelete),
-        children: [
-          SlidableAction(
-            onPressed: (_) => onDelete(),
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            label: 'Delete',
+    return ClipRect(
+      child: Slidable(
+        enabled: canEdit,
+        key: ValueKey(name),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          extentRatio: 0.3,
+          dismissible: DismissiblePane(onDismissed: onDelete),
+          children: [
+            SlidableAction(
+              onPressed: (_) => onDelete(),
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              label: 'Delete',
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: ListTile(
+            dense: true,
+            minVerticalPadding: 0,
+            contentPadding: EdgeInsets.zero,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            leading: ImageWithPlaceholder(
+              photo: photo,
+              name: name,
+            ),
+            title: Text(
+              name,
+              style: context.textTheme.titleMedium,
+            ),
+            trailing: trailing ??
+                (status != null && status != StagerStatusEnum.UNINVINTED
+                    ? _statusIcon(context, status)
+                    : null),
+            splashColor: context.colorScheme.outline.withOpacity(0.1),
+            onTap: userId.isNotEmpty && canGoToProfile
+                ? () {
+                    if (context.canPop()) {
+                      context.popDialog();
+                    }
+                    context.pushNamed(
+                      AppRoute.userProfileInfo.name,
+                      queryParameters: {
+                        'userId': userId,
+                      },
+                    );
+                  }
+                : null,
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: ListTile(
-          dense: true,
-          minVerticalPadding: 0,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          leading: ImageWithPlaceholder(
-            photo: photo,
-            name: name,
-          ),
-          title: Text(
-            name,
-            style: context.textTheme.titleMedium,
-          ),
-          trailing: trailing ??
-              (status != null && status != StagerStatusEnum.UNINVINTED
-                  ? _statusIcon(context, status)
-                  : null),
-          splashColor: context.colorScheme.outline.withOpacity(0.1),
-          onTap: userId.isEmpty
-              ? null
-              : () {
-                  context.pushNamed(
-                    AppRoute.userProfileInfo.name,
-                    queryParameters: {
-                      'userId': userId,
-                    },
-                  );
-                },
         ),
       ),
     );
