@@ -24,7 +24,7 @@ enum AppRoute {
   onboarding,
   loading,
   signUp,
-  songDetailsWithPages,
+  eventItemsWithPages,
   createSongInfo,
   addStructureForSong,
   plans,
@@ -34,6 +34,8 @@ enum AppRoute {
   userProfileInfo,
   editSongInfo,
   editSongContent,
+  groups,
+  momentDetails,
 }
 
 extension GoRouterExtension on GoRouter {

@@ -47,18 +47,23 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     state = state.copyWith(teamMembers: teamMembersWithPhoto);
   }
 
-  Future<void> getUninvitedTeamMembers({String? eventId}) async {
+  Future<void> getUninvitedTeamMembers({
+    required String eventId,
+    required String positionId,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
-      final members =
-          await teamMemberRepository.getUninvitedTeamMembers(eventId: eventId);
+      final members = await teamMemberRepository.getUninvitedTeamMembers(
+        eventId: eventId,
+        positionId: positionId,
+        includeCurrentUser: true,
+      );
       final uninvitedMembersWithPhoto = await Future.wait(
         members.map(_getMemberWithPhotoFromLocalStorage),
       );
       state = state.copyWith(uninvitedTeamMembers: uninvitedMembersWithPhoto);
     } catch (e) {
       logger.e('Error getting uninvited team members: $e');
-      // Handle error (e.g., show an error message to the user)
     } finally {
       state = state.copyWith(isLoading: false);
     }

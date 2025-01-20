@@ -13,7 +13,8 @@ class API {
   //
   // // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
 
-  static const String devDomain = 'dev.on-stage.app';
+  // static const String devDomain = 'dev.on-stage.app';
+  static const String devDomain = 'localhost:9001';
   static const String socketDevDomain = 'dev.on-stage.app';
 
   static const String prodDomain = 'on-stage.app/api';
@@ -21,7 +22,7 @@ class API {
 
   static String get baseUrl =>
       EnvironmentManager.currentEnvironment == AppEnvironment.development
-          ? 'https://$devDomain/'
+          ? 'http://$devDomain/'
           : 'https://$prodDomain/';
 
   static String get socketUrl =>
@@ -43,18 +44,27 @@ class API {
   static const String events = 'events';
   static const String rehearsals = 'rehearsals';
   static const String rehearsalById = 'rehearsals/{id}';
-  static const String stagers = 'stagers';
-  static const String stagersById = 'stagers/{id}';
-  static const String editStagerById = 'stagers/{id}';
-  static const String stagerByEventAndTeamMember =
-      'stagers/getByEventAndTeamMember';
   static const String eventItems = 'event-items';
+  static const String updateEventItem = 'event-items/{id}';
+  static const String createEventItemMoment = 'event-items/moment';
+  static const String addSongToEventItem = 'event-items/songs';
+  static const String updateEventItemIndexes = 'event-items/indexes';
+  static const String deleteEventId = 'event-items/{id}';
+
   static const String leadVocalsByEventItemId = 'event-items/{id}/lead-vocals';
   static const String leadVocalsByEventItemIdAndStagerId =
       'event-items/{id}/lead-vocals/{stagerId}';
   static const String upcomingEvent = 'events/upcoming';
 
+  static const String stagers = 'stagers';
+
+  static const String stagersById = 'stagers/{id}';
+  static const String editStagerById = 'stagers/{id}';
+  static const String stagerByEventAndTeamMember =
+      'stagers/getByEventAndTeamMember';
+
   static const String artists = 'artists';
+  static const String artistsPaginated = 'artists/paginated';
 
   static const String reminders = 'reminders';
 
@@ -119,4 +129,25 @@ class API {
   static const String deviceLogin = 'devices/login';
 
   static const String plans = 'plans';
+
+  //positions
+  static const String groupsTemplate = 'groups/template';
+  static const String groupTemplate = 'groups/{id}/template';
+  static const String getGroupsForEvent = 'groups/events/{id}';
+  static const String createGroup = 'groups';
+  static const String updateGroup = 'groups/{id}';
+  static const String deleteGroup = 'groups/{id}';
+
+  static const String groupsForEvent = 'groups/events/{eventId}';
+  static const String groupEventById = 'groups/{groupId}/events/{eventId}';
+
+  static const String getPositions = 'positions/groups/{id}';
+  static const String createPositon = 'positions';
+  static const String updatePosition = 'positions/{id}';
+  static const String deletePosition = 'positions/{id}';
+
+  static const String getAllPositionsWithStagers = 'positions/stagers';
+
+  static const String moments = 'moments';
+  static const String momentById = 'moments/{id}';
 }

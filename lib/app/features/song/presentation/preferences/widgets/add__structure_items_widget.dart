@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/presentation/controller/add_structure_controller.dart';
+import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddStructureItemsWidget extends ConsumerStatefulWidget {
@@ -75,28 +76,8 @@ class AddStructureItemsWidgetState
                   child: Row(
                     children: [
                       const SizedBox(width: 12),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        key: ValueKey(
-                          _originalStructureItems[index].index,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.onSurfaceVariant,
-                          border: Border.all(
-                            color: Color(
-                              _originalStructureItems[index].color,
-                            ),
-                            width: 3,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          _originalStructureItems[index].shortName,
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.titleSmall,
-                        ),
+                      StructureCircleWidget(
+                        structureItem: _originalStructureItems[index],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 12),

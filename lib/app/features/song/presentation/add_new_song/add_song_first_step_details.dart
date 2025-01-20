@@ -99,8 +99,10 @@ class _AddSongFirstStepDetailsState
         child: ContinueButton(
           text: 'Save',
           isLoading: _isLoading,
-          onPressed: _onSave,
-          isEnabled: _isFormValid(),
+          onPressed: _isFormValid()
+              ? _onSave
+              : () => _formKey.currentState?.validate(),
+          isEnabled: true,
         ),
       ),
       appBar: const StageAppBar(
@@ -120,6 +122,12 @@ class _AddSongFirstStepDetailsState
                 icon: Icons.music_note,
                 keyboardType: TextInputType.text,
                 controller: _songNameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a song name';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: Insets.medium),
               CustomTextField(
@@ -128,6 +136,15 @@ class _AddSongFirstStepDetailsState
                 keyboardType: TextInputType.number,
                 icon: Icons.speed,
                 controller: _bpmController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a tempo';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid tempo';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: Insets.medium),
               PreferenceSelector<SongKey>(
@@ -135,13 +152,19 @@ class _AddSongFirstStepDetailsState
                 placeholder: 'Select Key',
                 selectedValue: _selectedKey,
                 displayValue: (key) => key?.name ?? '',
+                validator: (key) {
+                  if (key == null) {
+                    return 'Please select a valid key';
+                  }
+                  return null;
+                },
                 onTap: () {
                   ChangeKeyModal.show(
                     context: context,
                     title: 'Select Key',
                     songKey: _selectedKey ??
                         const SongKey(chord: ChordsWithoutSharp.C),
-                    onKeyChanged: (key) {
+                    onKeyChanged: (key) async {
                       setState(() {
                         _selectedKey = key;
                       });
@@ -155,6 +178,12 @@ class _AddSongFirstStepDetailsState
                 placeholder: 'Choose Artist',
                 selectedValue: _selectedArtist,
                 displayValue: (artist) => artist?.name ?? '',
+                validator: (artist) {
+                  if (artist?.id == null) {
+                    return 'Please select a valid artist';
+                  }
+                  return null;
+                },
                 onTap: () {
                   ArtistModal.show(
                     context: context,
@@ -172,6 +201,12 @@ class _AddSongFirstStepDetailsState
                 placeholder: 'Choose one or more themes',
                 selectedValue: _selectedTheme,
                 displayValue: (theme) => theme?.title ?? '',
+                validator: (theme) {
+                  if (theme == null) {
+                    return 'Please select a valid theme';
+                  }
+                  return null;
+                },
                 onTap: () {
                   ThemeModal.show(
                     context: context,
@@ -192,16 +227,16 @@ class _AddSongFirstStepDetailsState
     );
   }
 
-  void _onSave() {
+  Future<void> _onSave() async {
     setState(() {
       _isLoading = true;
     });
     if (_formKey.currentState?.validate() ?? false) {
       if (ref.watch(songNotifierProvider).song.id == null) {
         logger.i('Validation passed');
-        _saveSongToDb();
+        await _saveSongToDb();
       } else {
-        _updateSongToDb();
+        await _updateSongToDb();
       }
     } else {
       logger.i('Validation failed');
@@ -264,7 +299,9 @@ class _AddSongFirstStepDetailsState
         _bpmController.text.isNotEmpty &&
         int.tryParse(_bpmController.text) != null &&
         _selectedKey != null &&
+        _selectedArtist?.id != null &&
         _selectedArtist != null &&
-        _selectedTheme != null;
+        _selectedTheme != null &&
+        !_isLoading;
   }
 }

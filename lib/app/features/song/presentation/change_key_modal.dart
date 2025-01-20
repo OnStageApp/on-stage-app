@@ -21,7 +21,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
   });
 
   final SongKey songKey;
-  final void Function(SongKey) onKeyChanged;
+  final Future<void> Function(SongKey) onKeyChanged;
   final String title;
 
   @override
@@ -30,7 +30,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required SongKey songKey,
-    required void Function(SongKey) onKeyChanged,
+    required Future<void> Function(SongKey) onKeyChanged,
     String title = 'Change Key',
   }) {
     showModalBottomSheet<Widget>(
@@ -209,7 +209,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
   }
 
   Future<void> _submitForm() async {
-    widget.onKeyChanged(_songKey);
+    await widget.onKeyChanged(_songKey);
     if (mounted) {
       context.popDialog();
     }

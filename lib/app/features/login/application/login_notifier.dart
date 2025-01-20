@@ -20,6 +20,7 @@ import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 part 'login_notifier.g.dart';
@@ -252,6 +253,10 @@ class LoginNotifier extends _$LoginNotifier {
         ..invalidate(databaseProvider)
         ..invalidate(dioProvider)
         ..invalidate(currentTeamMemberNotifierProvider);
+
+      await Sentry.configureScope((scope) {
+        scope.setUser(null);
+      });
 
       logger.i('User signed out successfully');
       state = const LoginState();

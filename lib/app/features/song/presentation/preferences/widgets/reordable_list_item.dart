@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ReordableListItem extends StatefulWidget {
   const ReordableListItem({
+    required this.structureItem,
     required this.itemKey,
-    required this.itemId,
-    required this.color,
-    required this.shortName,
-    required this.name,
     this.canSlide = true,
     this.onRemove,
     this.onClone,
     super.key,
   });
 
+  final StructureItem structureItem;
   final String itemKey;
-  final int itemId;
-  final int color;
-  final String shortName;
-  final String name;
   final bool canSlide;
   final void Function()? onRemove;
   final void Function()? onClone;
@@ -140,29 +136,13 @@ class _ReordableListItemState extends State<ReordableListItem>
                       size: 20,
                     ),
                   ),
-                  Container(
-                    width: 30,
-                    height: 30,
-                    alignment: Alignment.center,
-                    key: ValueKey(widget.itemId),
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.onSurfaceVariant,
-                      border: Border.all(
-                        color: Color(widget.color),
-                        width: 3,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      widget.shortName,
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.titleSmall,
-                    ),
+                  StructureCircleWidget(
+                    structureItem: widget.structureItem,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 12),
                     child: Text(
-                      widget.name,
+                      widget.structureItem.name,
                       style: context.textTheme.titleSmall,
                     ),
                   ),

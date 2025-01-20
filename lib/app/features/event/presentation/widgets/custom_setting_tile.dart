@@ -10,6 +10,7 @@ class CustomSettingTile extends StatelessWidget {
     this.onTap,
     this.backgroundColor,
     this.headline,
+    this.placeholderColor,
   });
 
   final TextEditingController? controller;
@@ -18,6 +19,7 @@ class CustomSettingTile extends StatelessWidget {
   final void Function()? onTap;
   final Color? backgroundColor;
   final String placeholder;
+  final Color? placeholderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,7 @@ class CustomSettingTile extends StatelessWidget {
                       ),
                       hintText: placeholder,
                       hintStyle: context.textTheme.titleMedium!.copyWith(
-                        color: context.colorScheme.outline,
+                        color: placeholderColor ?? context.colorScheme.outline,
                       ),
                     ),
                   ),

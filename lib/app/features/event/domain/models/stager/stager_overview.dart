@@ -1,5 +1,6 @@
+import 'dart:typed_data';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 
 part 'stager_overview.freezed.dart';
 part 'stager_overview.g.dart';
@@ -8,10 +9,9 @@ part 'stager_overview.g.dart';
 class StagerOverview with _$StagerOverview {
   const factory StagerOverview({
     required String id,
-    required String firstName,
-    required String lastName,
-    required String picture,
-    required StagerStatusEnum status,
+    required String name,
+    required String userId,
+    @JsonKey(includeFromJson: false) Uint8List? profilePicture,
   }) = _StagerOverview;
 
   factory StagerOverview.fromJson(Map<String, dynamic> json) =>

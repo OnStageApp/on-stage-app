@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_items_to_event_modal.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/moment_event_item_tile.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/schedule_settings_buttons.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
+import 'package:on_stage_app/app/features/event_items/presentation/event_item_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
@@ -15,6 +19,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 final hasChangesProvider = StateProvider.autoDispose<bool>((ref) => false);
+
+final isEditModeProvider = StateProvider.autoDispose<bool>((ref) => false);
+
+final isEditModeAndHasAccessProvider = Provider.autoDispose<bool>((ref) {
+  final hasAccessToEdit = ref.watch(permissionServiceProvider).hasAccessToEdit;
+  final isEditMode = ref.watch(isEditModeProvider);
+  return hasAccessToEdit && isEditMode;
+});
 
 class AddEventMomentsScreen extends ConsumerStatefulWidget {
   const AddEventMomentsScreen({
@@ -54,19 +66,31 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     });
   }
 
+  void _toggleEditMode() {
+    ref.read(isEditModeProvider.notifier).update((state) => !state);
+    if (ref.watch(hasChangesProvider) && !ref.watch(isEditModeProvider)) {
+      _saveReorder();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
-    final hasEditorRights =
-        ref.watch(permissionServiceProvider).hasAccessToEdit;
+    final canEdit = ref.watch(isEditModeAndHasAccessProvider);
 
     return Scaffold(
-      appBar: const StageAppBar(
+      appBar: StageAppBar(
         title: 'Schedule',
         isBackButtonVisible: true,
+        trailing: ScheduleSettingsButtons(
+          onPlayTap: _goToEventItemsPageView,
+          onEditTap: _toggleEditMode,
+          isEditMode: canEdit,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: hasEditorRights ? _buildSaveButton() : null,
+      floatingActionButton: canEdit ? _buildSaveButton() : null,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
       body: SlidableAutoCloseBehavior(
         child: RefreshIndicator.adaptive(
           onRefresh: _requestEventItems,
@@ -74,7 +98,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
             padding: defaultScreenPadding,
             child: _areEventItemsLoading
                 ? _buildShimmerList()
-                : hasEditorRights
+                : canEdit
                     ? _buildReordableList(eventItemsState.eventItems)
                     : eventItemsState.eventItems.isNotEmpty
                         ? _buildStaticList(eventItemsState.eventItems)
@@ -84,6 +108,16 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _goToEventItemsPageView() {
+    context.pushNamed(
+      AppRoute.eventItemsWithPages.name,
+      queryParameters: {
+        'eventId': widget.eventId,
+        'fetchEventItems': 'false',
+      },
     );
   }
 
@@ -112,18 +146,18 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: ContinueButton(
-        text: 'Save Changes',
-        onPressed: hasChanges ? _createEventItemList : () {},
+        text: 'Save Schedule Order',
+        onPressed: hasChanges ? _saveReorder : () {},
         isEnabled: hasChanges,
       ),
     );
   }
 
-  void _createEventItemList() {
+  void _saveReorder() {
     final eventItems = ref.read(eventItemsNotifierProvider).eventItems;
     ref
         .read(eventItemsNotifierProvider.notifier)
-        .addEventItems(eventItems, widget.eventId);
+        .updateEventItemsIndexes(eventItems);
 
     widget.onSave?.call();
     ref.read(hasChangesProvider.notifier).state = false;
@@ -138,22 +172,34 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
   }
 
   Widget _buildReordableList(List<EventItem> eventItems) {
+    final canEdit = ref.watch(isEditModeAndHasAccessProvider);
     return ReorderableListView.builder(
       proxyDecorator: _proxyDecorator,
       itemCount: eventItems.length,
       onReorder: _onReorder,
       itemBuilder: (context, index) => _buildEventItemTile(eventItems[index]),
-      footer: ref.watch(permissionServiceProvider).hasAccessToEdit
+      footer: canEdit
           ? _buildAddSongsOrMomentsButton()
           : const SizedBox(height: 100),
     );
   }
 
   Widget _proxyDecorator(Widget child, int index, Animation<double> animation) {
-    return Material(
-      color: Colors.transparent,
-      elevation: 6,
-      shadowColor: Colors.black.withOpacity(0.1),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final animValue = Curves.easeIn.transform(animation.value);
+        final scale = lerpDouble(1, 1.02, animValue)!;
+        return Transform.scale(
+          scale: scale,
+          child: Card(
+            color: context.colorScheme.surface.withOpacity(0.2),
+            elevation: 6,
+            shadowColor: Colors.black.withOpacity(0.2),
+            child: child,
+          ),
+        );
+      },
       child: child,
     );
   }
@@ -169,8 +215,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
     final hasChanges = ref.watch(hasChangesProvider);
     return EventItemTile(
       key: ValueKey(eventItem.hashCode),
-      isSong: eventItem.song?.id != null,
-      name: eventItem.name ?? '',
+      eventItem: eventItem,
       artist: eventItem.song?.artist?.name ?? '',
       songKey: eventItem.song?.key?.name ?? '',
       onDelete: isStatic
@@ -178,27 +223,20 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           : () {
               ref
                   .read(eventItemsNotifierProvider.notifier)
-                  .removeEventItemCache(eventItem);
-              ref.read(hasChangesProvider.notifier).state = true;
+                  .deleteEventItem(eventItem.id);
             },
       onTap: hasChanges
           ? null
           : () {
-              if (eventItem.song == null) return;
               final eventItems =
                   ref.read(eventItemsNotifierProvider).eventItems;
               ref
                   .read(eventItemsNotifierProvider.notifier)
                   .setCurrentIndex(eventItems.indexOf(eventItem));
 
-              context.pushNamed(
-                AppRoute.songDetailsWithPages.name,
-                queryParameters: {
-                  'eventId': widget.eventId,
-                },
-              );
+              _goToEventItemsPageView();
             },
-      isAdmin: ref.watch(permissionServiceProvider).hasAccessToEdit,
+      isEditor: ref.watch(isEditModeAndHasAccessProvider),
     );
   }
 
@@ -214,7 +252,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
           text: 'Add Songs or Moments',
           icon: Icons.add,
         ),
-        const SizedBox(height: 100),
+        const SizedBox(height: 160),
       ],
     );
   }

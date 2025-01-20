@@ -1,4 +1,5 @@
 enum StructureItem {
+  IN,
   V1,
   V2,
   V3,
@@ -6,6 +7,8 @@ enum StructureItem {
   V5,
   V6,
   V7,
+  PC,
+  T,
   C,
   C1,
   C2,
@@ -64,6 +67,13 @@ StructureItem stringToEnum(String value) {
       return StructureItem.B3;
     case 'E':
       return StructureItem.E;
+    case 'T':
+      return StructureItem.T;
+    case 'PC':
+      return StructureItem.PC;
+    case 'IN':
+      return StructureItem.IN;
+
     default:
       return StructureItem.none;
   }
@@ -118,6 +128,12 @@ extension StructureItemExtension on StructureItem {
         return 'B3';
       case StructureItem.E:
         return 'E';
+      case StructureItem.PC:
+        return 'PC';
+      case StructureItem.T:
+        return 'T';
+      case StructureItem.IN:
+        return 'IN';
       case StructureItem.none:
         return '';
     }
@@ -165,6 +181,12 @@ extension StructureItemExtension on StructureItem {
         return 'Bridge 3';
       case StructureItem.E:
         return 'Ending';
+      case StructureItem.PC:
+        return 'Pre Chorus';
+      case StructureItem.T:
+        return 'Tag';
+      case StructureItem.IN:
+        return 'Intro';
       case StructureItem.none:
         return '';
     }
@@ -214,6 +236,12 @@ extension StructureItemExtension on StructureItem {
         return 0xFFB29FFF;
       case StructureItem.none:
         return 0xFFB29FFF;
+      case StructureItem.PC:
+        return 0xFFFFB7F5;
+      case StructureItem.T:
+        return 0xFFFFE69F;
+      case StructureItem.IN:
+        return 0xFFC6FFAD;
     }
   }
 }

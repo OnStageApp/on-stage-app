@@ -7,10 +7,9 @@ import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart'
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
-import 'package:on_stage_app/app/features/song_configuration/application/song_config_notifier.dart';
+import 'package:on_stage_app/app/features/song_configuration/data/song_config_repository.dart';
 import 'package:on_stage_app/app/features/song_configuration/domain/song_config_request/song_config_request.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
-import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,19 +18,15 @@ part 'song_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class SongNotifier extends _$SongNotifier {
-  SongRepository? _songRepository;
+  SongRepository get songRepository => ref.read(songRepositoryProvider);
 
-  SongRepository get songRepository {
-    _songRepository ??= SongRepository(ref.watch(dioProvider));
-    return _songRepository!;
-  }
+  SongConfigRepository get songConfigRepo => ref.read(songConfigRepository);
 
   bool isChorus = false;
 
   @override
   SongState build() {
-    final dio = ref.watch(dioProvider);
-    _songRepository = SongRepository(dio);
+    logger.i('building song notifier');
     return const SongState();
   }
 
@@ -52,23 +47,46 @@ class SongNotifier extends _$SongNotifier {
     logger.i('init song with title: ${state.song.title}');
   }
 
-  Future<void> getSongFromEventItem(String songId) async {
+  void updateSongKey(SongKey songKey) {
+    _updateSongConfiguration(
+      SongConfigRequest(
+        songId: state.song.id,
+        teamId: ref.read(teamNotifierProvider).currentTeam?.id,
+        isCustom: true,
+        key: songKey,
+      ),
+    );
+  }
+
+  Future<void> _updateSongConfiguration(SongConfigRequest songConfig) async {
+    if (songConfig.songId == null || songConfig.key == null) {
+      return;
+    }
+    await songConfigRepo.createSongConfig(songConfigRequest: songConfig);
+
+    final newSong = state.song.copyWith(
+      key: songConfig.key ?? state.song.key,
+      structure: songConfig.structure ?? state.song.structure,
+    );
+
+    state = state.copyWith(
+      song: newSong,
+    );
+  }
+
+  Future<void> setCurrentSong(String songId, SongModelV2 song) async {
     if (songId.isNullEmptyOrWhitespace) {
       return;
     }
-
-    var song = ref
-        .watch(eventItemsNotifierProvider)
-        .songsFromEvent
-        .firstWhere((element) => element.id == songId);
+    var newSong = song;
 
     if (song.id == null) {
       state = state.copyWith(isLoading: true);
-      song = await songRepository.getSong(songId: songId);
+      newSong = await songRepository.getSong(songId: songId);
     }
 
     state = state.copyWith(
-      song: song,
+      song: newSong,
       sections: [],
       originalSongSections: [],
       isLoading: false,
@@ -77,6 +95,7 @@ class SongNotifier extends _$SongNotifier {
   }
 
   void resetState() {
+    logger.i('resetting song state');
     state = const SongState();
   }
 
@@ -111,7 +130,14 @@ class SongNotifier extends _$SongNotifier {
     );
 
     if (state.song.teamId == null) {
-      _updateSongConfig();
+      _updateSongConfiguration(
+        SongConfigRequest(
+          songId: state.song.id,
+          teamId: ref.read(teamNotifierProvider).currentTeam?.id,
+          isCustom: true,
+          structure: state.song.structure,
+        ),
+      );
     } else {
       updateSongToDB(
         SongRequest(
@@ -121,21 +147,6 @@ class SongNotifier extends _$SongNotifier {
     }
 
     logger.i('updated song with structure: ${state.song.structure}');
-  }
-
-  void _updateSongConfig() {
-    final songId = state.song.id;
-    final teamId = ref.read(teamNotifierProvider).currentTeam?.id;
-    ref
-        .read(songConfigurationNotifierProvider.notifier)
-        .updateSongConfiguration(
-          SongConfigRequest(
-            songId: songId,
-            teamId: teamId,
-            isCustom: true,
-            structure: state.song.structure,
-          ),
-        );
   }
 
   void updateSongLocalCache(SongModelV2 newSong) {
@@ -247,6 +258,9 @@ class SongNotifier extends _$SongNotifier {
         song: songRequestModel,
         id: state.song.id!,
       );
+      ref
+          .read(eventItemsNotifierProvider.notifier)
+          .updateSongInEventItems(savedSong);
       state = state.copyWith(
         song: savedSong,
       );

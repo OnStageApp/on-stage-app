@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_item.dart';
-import 'package:on_stage_app/app/features/event/domain/models/event_items/event_items_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_item_create.dart';
+import 'package:on_stage_app/app/features/event_items/domain/event_items_request.dart';
+import 'package:on_stage_app/app/features/event_items/domain/update_event_item_index.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -16,12 +18,23 @@ abstract class EventItemsRepository {
     @Body() EventItemsRequest eventItemsRequest,
   );
 
+  @POST(API.createEventItemMoment)
+  Future<EventItem> addMomentItem(
+    @Body() EventItemCreate eventItemRequest,
+  );
+
   @GET(API.eventItems)
   Future<List<EventItem>> getEventItems(@Query('eventId') String eventId);
 
   @PUT(API.eventItems)
   Future<List<EventItem>> updateEventItems(
     @Body() EventItemsRequest eventItemsRequest,
+  );
+
+  @PUT(API.updateEventItem)
+  Future<EventItem> updateEventItem(
+    @Path('id') String id,
+    @Body() EventItemCreate eventItemRequest,
   );
 
   @GET(API.leadVocalsByEventItemId)
@@ -39,5 +52,15 @@ abstract class EventItemsRepository {
   Future<void> deleteLeadVocals(
     @Path('id') String id,
     @Path('stagerId') String stagerId,
+  );
+
+  @PUT(API.updateEventItemIndexes)
+  Future<void> updateEventItemIndexes(
+    @Body() List<UpdateEventItemIndex> updateEventItemIndex,
+  );
+
+  @DELETE(API.deleteEventId)
+  Future<void> deleteEventItem(
+    @Path('id') String id,
   );
 }

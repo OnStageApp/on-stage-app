@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
+import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 part 'song_overview_model.freezed.dart';
@@ -19,4 +20,13 @@ class SongOverview with _$SongOverview {
 
   factory SongOverview.fromJson(Map<String, dynamic> json) =>
       _$SongOverviewFromJson(json);
+
+  factory SongOverview.fromSong(SongModelV2 song) => SongOverview(
+        id: song.id ?? '',
+        title: song.title,
+        tempo: song.tempo,
+        key: song.key,
+        artist: song.artist,
+        teamId: song.teamId,
+      );
 }

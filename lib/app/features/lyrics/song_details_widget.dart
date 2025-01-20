@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -239,7 +240,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                       shape: BoxShape.circle,
                       color: context.colorScheme.onSurfaceVariant,
                     ),
-                    child: Text(
+                    child: AutoSizeText(
                       sections[index].structure.shortName,
                       style: context.textTheme.labelSmall,
                     ),

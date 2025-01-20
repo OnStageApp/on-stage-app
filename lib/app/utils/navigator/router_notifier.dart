@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/features/event/presentation/add_event_moments_s
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
+import 'package:on_stage_app/app/features/groups/group_template/presentation/groups_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
@@ -17,9 +18,9 @@ import 'package:on_stage_app/app/features/notifications/presentation/notificatio
 import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_first_step_details.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
+import 'package:on_stage_app/app/features/song/presentation/event_items_details_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
-import 'package:on_stage_app/app/features/song/presentation/song_details_with_pages_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
@@ -230,17 +231,22 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
-                      name: AppRoute.songDetailsWithPages.name,
-                      path: 'songDetailsWithPages',
+                      name: AppRoute.eventItemsWithPages.name,
+                      path: 'eventItemsWithPages',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId']!;
+                        final fetchEventItems =
+                            state.uri.queryParameters['fetchEventItems'] ==
+                                'true';
+
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(
-                              AppRoute.songDetailsWithPages.name,
+                              AppRoute.eventItemsWithPages.name,
                             );
-                        return SongDetailsWithPagesScreen(
+                        return EventItemsDetailsScreen(
                           eventId: eventId,
+                          fetchEventItems: fetchEventItems,
                         );
                       },
                     ),
@@ -369,6 +375,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                         );
                       },
                       routes: [
+                        GoRoute(
+                          name: AppRoute.groups.name,
+                          path: 'groups',
+                          builder: (context, state) {
+                            return const GroupsScreen();
+                          },
+                        ),
                         GoRoute(
                           name: AppRoute.addTeamMember.name,
                           path: 'addTeamMember',

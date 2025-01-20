@@ -21,9 +21,15 @@ class SongPreferencesController extends _$SongPreferencesController {
     state = state.copyWith(structureItems: structureItems);
   }
 
-  void addStructureItem(StructureItem structureItem) {
-    final structureItems = List<StructureItem>.from(state.structureItems)
-      ..add(structureItem);
+  void addStructureItem(StructureItem structureItem, {int? atIndex}) {
+    final structureItems = List<StructureItem>.from(state.structureItems);
+
+    if (atIndex != null) {
+      structureItems.insert(atIndex + 1, structureItem);
+    } else {
+      structureItems.add(structureItem);
+    }
+
     state = state.copyWith(structureItems: structureItems);
   }
 

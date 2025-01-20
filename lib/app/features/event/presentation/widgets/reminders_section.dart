@@ -110,11 +110,11 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
               cacheReminders: _reminders.map((e) => e.daysBefore).toList(),
               ref: ref,
               onSaved: (updatedReminders) {
-                if (event != null) {
-                  ref
-                      .read(reminderNotifierProvider.notifier)
-                      .createReminders(updatedReminders, event.id ?? '');
-                }
+                // if (event != null) {
+                //   ref
+                //       .read(reminderNotifierProvider.notifier)
+                //       .createReminders(updatedReminders, event.id ?? '');
+                // }
               },
             );
           },

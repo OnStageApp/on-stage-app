@@ -58,6 +58,7 @@ class AddSongSecondStepContentState
             return;
           }
           ref.read(songNotifierProvider.notifier).getSongById(songId);
+          context.pop();
         },
       ),
       body: EditorTabSwitch(tabController: _tabController),
@@ -91,6 +92,7 @@ class AddSongSecondStepContentState
             flex: 3,
             child: ContinueButton(
               text: 'Save Song',
+              hasShadow: false,
               onPressed: () {
                 _onSavedSong(context);
               },
