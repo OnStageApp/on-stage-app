@@ -33,10 +33,13 @@ class PositionCard extends _$PositionCard {
   void stopEditingAndSave(String newName) {
     if (newName.isEmpty || state.position == null) return;
 
-    final positionId = state.position!.id;
-    ref
-        .read(positionNotifierProvider.notifier)
-        .updatePosition(newName, positionId);
+    if (newName.trim() != state.position!.name.trim()) {
+      final positionId = state.position!.id;
+      ref
+          .read(positionNotifierProvider.notifier)
+          .updatePosition(newName, positionId);
+    }
+
     state = state.copyWith(isEditing: false);
   }
 

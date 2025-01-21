@@ -196,10 +196,14 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
   Widget _buildSongDetails(BuildContext context) {
     return Row(
       children: [
-        Text(
-          widget.artist,
-          style: context.textTheme.bodyMedium!.copyWith(
-            color: context.colorScheme.outline,
+        Flexible(
+          child: Text(
+            widget.artist,
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: context.colorScheme.outline,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
         const SizedBox(width: 12),

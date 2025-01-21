@@ -243,7 +243,10 @@ class StagersToAssignModalState extends ConsumerState<StagersToAssignModal> {
       );
       return;
     }
+
     _addedVocals.add(stager);
+
+    print('addedVocals: ${stager.name}');
     widget.onStagersSelected(_addedVocals);
   }
 

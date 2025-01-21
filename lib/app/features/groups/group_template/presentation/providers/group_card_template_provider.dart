@@ -37,9 +37,12 @@ class GroupTemplate extends _$GroupTemplate {
       return;
     }
 
-    ref
-        .read(groupTemplateNotifierProvider.notifier)
-        .updateGroup(state.group!.id, newName);
+    if (newName.trim() != state.group!.name.trim()) {
+      ref
+          .read(groupTemplateNotifierProvider.notifier)
+          .updateGroup(state.group!.id, newName);
+    }
+
     state = state.copyWith(isEditing: false);
   }
 

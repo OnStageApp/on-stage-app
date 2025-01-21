@@ -47,7 +47,7 @@ class EditDurationState extends State<EditDuration> {
               style: context.textTheme.titleMedium!.copyWith(
                 color: _currentDuration != null
                     ? context.colorScheme.onSurface
-                    : context.colorScheme.onSurface.withOpacity(0.5),
+                    : context.colorScheme.onSurface,
               ),
             ),
             const Spacer(),

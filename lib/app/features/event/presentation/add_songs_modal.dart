@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/load_more_button.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
@@ -79,14 +80,29 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
 
   Widget _buildSongsList() {
     final songs = ref.watch(songsNotifierProvider).songs;
+    final state = ref.watch(songsNotifierProvider);
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: songs.length,
+      itemCount: state.hasMore ? songs.length + 1 : songs.length,
       itemBuilder: (context, index) {
+        if (index == songs.length && state.hasMore) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: LoadMoreButton(
+              onPressed: () {
+                final searchState = ref.watch(searchNotifierProvider);
+                final songFilter = searchState.toSongFilter();
+                ref
+                    .read(songsNotifierProvider.notifier)
+                    .loadMoreSongs(songFilter);
+              },
+            ),
+          );
+        }
+
         final song = songs[index];
         final isSelected = _selectedSongs.contains(song);
-
         return InkWell(
           onTap: () => _toggleSongSelection(song),
           child: Container(
