@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ChooseStructureToAddModal extends ConsumerStatefulWidget {
@@ -22,19 +23,9 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required WidgetRef ref,
   }) async {
-    return showModalBottomSheet<List<StructureItem>>(
-      isScrollControlled: true,
-      useRootNavigator: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.95,
-        minHeight: MediaQuery.of(context).size.height * 0.95,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    return AdaptiveModal.show<List<StructureItem>>(
       context: context,
-      builder: (context) => const ChooseStructureToAddModal(),
+      child: const ChooseStructureToAddModal(),
     );
   }
 }

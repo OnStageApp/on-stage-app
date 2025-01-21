@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_background.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/controller/onboarding_fifth_controller.dart';
-import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_fifth_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_first_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_forth_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_second_step.dart';
@@ -33,7 +32,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  static const int _totalPages = 5;
+  static const int _totalPages = 4;
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -87,7 +86,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 OnboardingSecondStep(),
                 OnboardingThirdStep(),
                 OnboardingForthStep(),
-                OnboardingFifthStep(),
+                //TODO: Maybe add this step in the future
+                // OnboardingFifthStep(),
               ],
             ),
           ),

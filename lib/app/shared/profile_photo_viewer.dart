@@ -31,6 +31,9 @@ class ProfilePhotoViewer extends StatelessWidget {
             child: Hero(
               tag: 'profile-photo-$name',
               child: Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 400,
+                ),
                 width: MediaQuery.of(context).size.width * 0.85,
                 height: MediaQuery.of(context).size.width * 0.85,
                 decoration: BoxDecoration(

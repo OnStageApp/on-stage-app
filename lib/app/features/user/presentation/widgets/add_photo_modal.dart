@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/add_item_button_widget.dart';
-import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/utils.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:path/path.dart' as path;
@@ -25,6 +25,7 @@ class AddPhotoModal extends ConsumerWidget {
     return Padding(
       padding: defaultScreenPadding,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           AddItemButtonWidget(
             title: 'Add Photo From Library',
@@ -113,14 +114,11 @@ class AddPhotoModal extends ConsumerWidget {
   }
 
   static Future<File?> show({required BuildContext context}) async {
-    return showModalBottomSheet<File>(
-      backgroundColor: context.colorScheme.surface,
+    return AdaptiveModal.show<File>(
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildContent: () {
-          return const AddPhotoModal();
-        },
-      ),
+      isFloatingForLargeScreens: true,
+      expand: false,
+      child: const AddPhotoModal(),
     );
   }
 }

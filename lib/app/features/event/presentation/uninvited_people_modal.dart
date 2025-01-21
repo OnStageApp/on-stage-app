@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/placeholder_image_widget.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -31,22 +32,12 @@ class UninvitedPeopleModal extends ConsumerStatefulWidget {
     required String positionId,
     required String eventId,
   }) {
-    return showModalBottomSheet<List<TeamMember>>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.85,
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    return AdaptiveModal.show<List<TeamMember>>(
       context: context,
-      builder: (context) => UninvitedPeopleModal(
+      child: UninvitedPeopleModal(
         eventId: eventId,
-        positionId: positionId,
         positionName: positionName,
+        positionId: positionId,
       ),
     );
   }

@@ -12,10 +12,9 @@ class API {
   // static const String socketUrl = 'wss://$socketProdDomain/';
   //
   // // static const String baseUrl = 'http://fb72-86-127-188-157.ngrok-free.app/';
+  // static const String devDomain = 'localhost:9001';
 
   static const String devDomain = 'dev.on-stage.app';
-
-  // static const String devDomain = 'localhost:9001';
   static const String socketDevDomain = 'dev.on-stage.app';
 
   static const String prodDomain = 'on-stage.app/api';
@@ -23,7 +22,7 @@ class API {
 
   static String get baseUrl =>
       EnvironmentManager.currentEnvironment == AppEnvironment.development
-          ? 'http://$devDomain/'
+          ? 'https://$devDomain/'
           : 'https://$prodDomain/';
 
   static String get socketUrl =>

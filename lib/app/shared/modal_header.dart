@@ -13,14 +13,16 @@ class ModalHeader extends StatelessWidget {
   });
 
   final String title;
-  final Widget leadingButton;
+  final Widget? leadingButton;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(12),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -41,7 +43,7 @@ class ModalHeader extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                leadingButton,
+                leadingButton ?? const SizedBox(width: 80 - 12),
                 Expanded(
                   child: Text(
                     title,

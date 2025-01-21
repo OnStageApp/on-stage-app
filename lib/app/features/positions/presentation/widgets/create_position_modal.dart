@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 
@@ -19,37 +20,23 @@ class CreatePositionModal extends ConsumerStatefulWidget {
 
   final String groupId;
 
-  @override
-  CreatePositionModalState createState() => CreatePositionModalState();
-
   static void show({
     required BuildContext context,
     required String groupId,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'New Position'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: CreatePositionModal(
-              groupId: groupId,
-            ),
-          ),
-        ),
-      ),
+      child: CreatePositionModal(groupId: groupId),
     );
   }
+
+  @override
+  CreatePositionModalState createState() => CreatePositionModalState();
 }
 
 class CreatePositionModalState extends ConsumerState<CreatePositionModal> {
   final TextEditingController _positionNameController = TextEditingController();
   final FocusNode _positionNameFocus = FocusNode();
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -68,37 +55,59 @@ class CreatePositionModalState extends ConsumerState<CreatePositionModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            CustomTextField(
-              enabled: true,
-              label: 'Position Name',
-              hint: 'eg. Acoustic Guitar',
-              icon: null,
-              focusNode: _positionNameFocus,
-              controller: _positionNameController,
-              validator: (value) {
-                if (value.isNullEmptyOrWhitespace) {
-                  return 'Please enter a position name';
-                }
-                return null;
-              },
+    return Stack(
+      children: [
+        NestedScrollModal(
+          buildHeader: () => const ModalHeader(title: 'New Position'),
+          headerHeight: () => 64,
+          buildContent: () => SingleChildScrollView(
+            // Add this wrapper
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: defaultScreenPadding.left,
+                right: defaultScreenPadding.right,
+                top: defaultScreenPadding.top,
+                // Add bottom padding to ensure content isn't hidden behind the button
+                bottom: MediaQuery.of(context).viewInsets.bottom + 80,
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Add this
+                  children: [
+                    CustomTextField(
+                      enabled: true,
+                      label: 'Position Name',
+                      hint: 'eg. Acoustic Guitar',
+                      icon: null,
+                      focusNode: _positionNameFocus,
+                      controller: _positionNameController,
+                      validator: (value) {
+                        if (value.isNullEmptyOrWhitespace) {
+                          return 'Please enter a position name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 32),
-            ContinueButton(
-              isEnabled: true,
-              hasShadow: false,
-              text: 'Create',
-              onPressed: _addPosition,
-            ),
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          left: 12,
+          right: 12,
+          child: ContinueButton(
+            isEnabled: true,
+            hasShadow: false,
+            text: 'Create',
+            onPressed: _addPosition,
+          ),
+        ),
+      ],
     );
   }
 
@@ -111,6 +120,6 @@ class CreatePositionModalState extends ConsumerState<CreatePositionModal> {
           widget.groupId,
         );
 
-    context.popDialog();
+    if (context.mounted) context.popDialog();
   }
 }

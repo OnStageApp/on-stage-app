@@ -12,6 +12,7 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -33,20 +34,9 @@ class ArtistModal extends ConsumerStatefulWidget {
     required void Function(Artist) onArtistSelected,
     bool showAddArtistButton = true,
   }) {
-    showModalBottomSheet<Widget>(
-      enableDrag: false,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.95,
-        maxHeight: MediaQuery.of(context).size.height * 0.95,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => ArtistModal(
+      child: ArtistModal(
         onArtistSelected,
         showAddArtistButton: showAddArtistButton,
       ),
@@ -121,7 +111,7 @@ class ArtistModalState extends ConsumerState<ArtistModal> {
                   }
                 },
               )
-            : const SizedBox(),
+            : null,
       ),
       headerHeight: () => 64,
       footerHeight: () => 64,

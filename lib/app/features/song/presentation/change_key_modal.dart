@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ChangeKeyModal extends ConsumerStatefulWidget {
@@ -33,25 +34,11 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required Future<void> Function(SongKey) onKeyChanged,
     String title = 'Change Key',
   }) {
-    showModalBottomSheet<Widget>(
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      useRootNavigator: true,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => ModalHeader(title: title),
-        headerHeight: () {
-          return 64;
-        },
-        buildContent: () {
-          return SingleChildScrollView(
-            child: ChangeKeyModal(
-              songKey,
-              title: title,
-              onKeyChanged: onKeyChanged,
-            ),
-          );
-        },
-      ),
+      expand: false,
+      isFloatingForLargeScreens: true,
+      child: ChangeKeyModal(songKey, onKeyChanged: onKeyChanged, title: title),
     );
   }
 }
@@ -80,26 +67,39 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     });
   }
 
+  //TODO: Add constraints on width
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildKeys(),
-          const SizedBox(height: Insets.small),
-          _buildChordTypes(_songKey.isSharp),
-          const SizedBox(height: Insets.medium),
-          ContinueButton(
-            text: 'Save',
-            onPressed: _submitForm,
-            isEnabled: _hasChanged,
+    return NestedScrollModal(
+      buildHeader: () => ModalHeader(title: widget.title),
+      headerHeight: () {
+        return 64;
+      },
+      buildContent: () {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildKeys(),
+                const SizedBox(height: Insets.small),
+                _buildChordTypes(_songKey.isSharp),
+                const SizedBox(height: Insets.medium),
+                Center(
+                  child: ContinueButton(
+                    text: 'Save',
+                    onPressed: _submitForm,
+                    isEnabled: _hasChanged,
+                  ),
+                ),
+                const SizedBox(height: Insets.normal),
+              ],
+            ),
           ),
-          const SizedBox(height: Insets.normal),
-        ],
-      ),
+        );
+      },
     );
   }
 

@@ -135,7 +135,9 @@ class NavigationNotifier extends _$NavigationNotifier {
                     ref
                         .read(analyticsServiceProvider.notifier)
                         .logScreenView(AppRoute.home.name);
-                    return const NoTransitionPage(child: HomeScreen());
+                    return const NoTransitionPage(
+                      child: HomeScreen(),
+                    );
                   },
                   routes: [
                     GoRoute(

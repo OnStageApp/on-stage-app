@@ -66,7 +66,16 @@ class AddSongSecondStepContentState
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
-    return Padding(
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
@@ -91,8 +100,8 @@ class AddSongSecondStepContentState
           Flexible(
             flex: 3,
             child: ContinueButton(
-              text: 'Save Song',
               hasShadow: false,
+              text: 'Save Song',
               onPressed: () {
                 _onSavedSong(context);
               },

@@ -8,6 +8,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class CreateRehearsalModal extends ConsumerStatefulWidget {
@@ -22,35 +23,24 @@ class CreateRehearsalModal extends ConsumerStatefulWidget {
   final RehearsalModel? rehearsal;
   final bool enabled;
 
-  @override
-  CreateRehearsalModalState createState() => CreateRehearsalModalState();
-
   static void show({
     required BuildContext context,
     RehearsalModel? rehearsal,
     void Function(RehearsalModel)? onRehearsalCreated,
     bool enabled = true,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Rehearsal'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: CreateRehearsalModal(
-              onRehearsalCreated: onRehearsalCreated,
-              rehearsal: rehearsal,
-              enabled: enabled,
-            ),
-          ),
-        ),
+      child: CreateRehearsalModal(
+        onRehearsalCreated: onRehearsalCreated,
+        rehearsal: rehearsal,
+        enabled: enabled,
       ),
     );
   }
+
+  @override
+  CreateRehearsalModalState createState() => CreateRehearsalModalState();
 }
 
 class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
@@ -59,7 +49,6 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
       TextEditingController();
   final FocusNode _rehearsalNameFocus = FocusNode();
   DateTime? _selectedDateTime;
-
   final _formKey = GlobalKey<FormState>();
   String? _dateTimeError;
 
@@ -86,48 +75,66 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            CustomTextField(
-              enabled: widget.enabled,
-              label: 'Rehearsal Name',
-              hint: 'Sunday Morning',
-              icon: null,
-              focusNode: _rehearsalNameFocus,
-              controller: _rehearsalNameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a rehearsal name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-            DateTimeTextFieldWidget(
-              enabled: widget.enabled,
-              initialDateTime: widget.rehearsal?.dateTime,
-              dateErrorText: _dateTimeError,
-              onDateTimeChanged: (dateTime) {
-                _selectedDateTime = dateTime;
-              },
-            ),
-            const SizedBox(height: 32),
-            if (widget.enabled) ...[
-              ContinueButton(
-                isEnabled: true,
-                hasShadow: false,
-                text: widget.rehearsal != null ? 'Update' : 'Create',
-                onPressed: _createRehearsal,
+    return Stack(
+      children: [
+        NestedScrollModal(
+          buildHeader: () => const ModalHeader(title: 'Rehearsal'),
+          headerHeight: () => 64,
+          buildContent: () => SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: defaultScreenPadding.left,
+                right: defaultScreenPadding.right,
+                top: defaultScreenPadding.top,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 80,
               ),
-              const SizedBox(height: 24),
-            ],
-          ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      enabled: widget.enabled,
+                      label: 'Rehearsal Name',
+                      hint: 'Sunday Morning',
+                      icon: null,
+                      focusNode: _rehearsalNameFocus,
+                      controller: _rehearsalNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a rehearsal name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    DateTimeTextFieldWidget(
+                      enabled: widget.enabled,
+                      initialDateTime: widget.rehearsal?.dateTime,
+                      dateErrorText: _dateTimeError,
+                      onDateTimeChanged: (dateTime) {
+                        _selectedDateTime = dateTime;
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-      ),
+        if (widget.enabled)
+          Positioned(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            left: 12,
+            right: 12,
+            child: ContinueButton(
+              isEnabled: true,
+              hasShadow: false,
+              text: widget.rehearsal != null ? 'Update' : 'Create',
+              onPressed: _createRehearsal,
+            ),
+          ),
+      ],
     );
   }
 
@@ -136,11 +143,13 @@ class CreateRehearsalModalState extends ConsumerState<CreateRehearsalModal> {
     setState(() {
       _dateTimeError = null;
     });
+
     if (_isDateTimeInvalid()) {
       setState(() {
         _dateTimeError = 'Please select a valid date and time';
       });
     }
+
     if (!_formKey.currentState!.validate() ||
         _dateTimeError != null ||
         currentEvent?.id == null) {
