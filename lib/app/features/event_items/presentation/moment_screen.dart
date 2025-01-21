@@ -28,12 +28,11 @@ class _MomentScreenState extends ConsumerState<MomentScreen> {
   void initState() {
     super.initState();
     print('MomentScreen initState');
-
+    _titleController = TextEditingController(text: widget.eventItem.name);
+    _descriptionController =
+        TextEditingController(text: widget.eventItem.description);
+    _descriptionFocusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _titleController = TextEditingController(text: widget.eventItem.name);
-      _descriptionController =
-          TextEditingController(text: widget.eventItem.description);
-      _descriptionFocusNode = FocusNode();
       if (mounted) {
         ref
             .read(momentControllerProvider(widget.eventItem).notifier)

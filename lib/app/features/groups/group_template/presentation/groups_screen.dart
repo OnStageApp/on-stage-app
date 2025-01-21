@@ -48,7 +48,7 @@ class GroupsScreenState extends ConsumerState<GroupsScreen> {
       padding: getResponsivePadding(context),
       child: Scaffold(
         appBar: StageAppBar(
-          title: 'Groups',
+          title: 'Group Templates',
           isBackButtonVisible: true,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
