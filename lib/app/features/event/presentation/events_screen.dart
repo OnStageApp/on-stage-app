@@ -82,39 +82,42 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   Widget build(BuildContext context) {
     final eventsState = ref.watch(eventsNotifierProvider);
 
-    return Scaffold(
-      appBar: StageAppBar(
-        title: 'Events',
-        trailing: ref.watch(permissionServiceProvider).hasAccessToEdit
-            ? _buildTrailingButton(context)
-            : const SizedBox(),
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: _initializeEvents,
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            EventsSearchBar(
-              focusNode: _searchFocusNode,
-              controller: _searchController,
-              notifier: ref.read(eventsNotifierProvider.notifier),
-            ),
-            if (eventsState.isLoading && !_isSearchFocused)
-              const EventShimmerList()
-            else
-              SliverAnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _isSearchFocused
-                    ? SearchResultsList(
-                        key: const ValueKey('search'),
-                        events: eventsState.filteredEventsResponse.events,
-                      )
-                    : const EventsContent(
-                        key: ValueKey('content'),
-                      ),
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: StageAppBar(
+          title: 'Events',
+          trailing: ref.watch(permissionServiceProvider).hasAccessToEdit
+              ? _buildTrailingButton(context)
+              : const SizedBox(),
+        ),
+        body: RefreshIndicator.adaptive(
+          onRefresh: _initializeEvents,
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              EventsSearchBar(
+                focusNode: _searchFocusNode,
+                controller: _searchController,
+                notifier: ref.read(eventsNotifierProvider.notifier),
               ),
-          ],
+              if (eventsState.isLoading && !_isSearchFocused)
+                const EventShimmerList()
+              else
+                SliverAnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: _isSearchFocused
+                      ? SearchResultsList(
+                          key: const ValueKey('search'),
+                          events: eventsState.filteredEventsResponse.events,
+                        )
+                      : const EventsContent(
+                          key: ValueKey('content'),
+                        ),
+                ),
+            ],
+          ),
         ),
       ),
     );

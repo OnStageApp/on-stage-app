@@ -62,7 +62,8 @@ class MomentSettings extends ConsumerWidget {
                   isEditing ? LucideIcons.save : LucideIcons.pencil,
                   key: ValueKey(isEditing),
                   size: 16,
-                  color: context.colorScheme.onSurface,
+                  color:
+                      isEditing ? Colors.white : context.colorScheme.onSurface,
                 ),
               ),
             ),

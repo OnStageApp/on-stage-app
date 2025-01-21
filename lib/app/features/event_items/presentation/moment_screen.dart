@@ -27,14 +27,18 @@ class _MomentScreenState extends ConsumerState<MomentScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.eventItem.name);
-    _descriptionController =
-        TextEditingController(text: widget.eventItem.description);
-    _descriptionFocusNode = FocusNode();
+    print('MomentScreen initState');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(momentControllerProvider(widget.eventItem).notifier)
-          .toggleEditing(isEditing: false);
+      _titleController = TextEditingController(text: widget.eventItem.name);
+      _descriptionController =
+          TextEditingController(text: widget.eventItem.description);
+      _descriptionFocusNode = FocusNode();
+      if (mounted) {
+        ref
+            .read(momentControllerProvider(widget.eventItem).notifier)
+            .toggleEditing(isEditing: false);
+      }
     });
   }
 
@@ -55,6 +59,8 @@ class _MomentScreenState extends ConsumerState<MomentScreen> {
       ref.watch(momentControllerProvider(widget.eventItem)).isEditing;
 
   void _updateControllers(String title, String description) {
+    if (!mounted) return;
+
     if (_titleController.text != title) {
       _titleController.text = title;
     }

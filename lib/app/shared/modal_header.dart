@@ -17,9 +17,16 @@ class ModalHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if the screen is large and adjust text size dynamically
+    final isLargeScreen = MediaQuery.of(context).size.width > 1200;
+    final titleStyle = context.textTheme.headlineSmall?.copyWith(
+      fontSize: isLargeScreen ? 18.0 : 16.0,
+      fontWeight: FontWeight.bold,
+    );
+
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh,
+        color: context.colorScheme.surface,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(12),
         ),
@@ -37,7 +44,7 @@ class ModalHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.only(left: 12),
             child: Row(
@@ -47,7 +54,7 @@ class ModalHeader extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: context.textTheme.headlineSmall,
+                    style: titleStyle, // Apply the dynamic title style
                     textAlign: TextAlign.center,
                   ),
                 ),

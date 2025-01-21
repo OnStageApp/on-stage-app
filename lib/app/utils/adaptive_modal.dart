@@ -65,10 +65,11 @@ class AdaptiveModal {
       return showCupertinoModalBottomSheet<T>(
         context: context,
         useRootNavigator: !context.isLargeScreen && useRootNavigator,
-        // barrierColor: context.isLargeScreen ? Colors.transparent : null,
         backgroundColor: backgroundColor,
         expand: expand,
-        builder: (context) => Material(child: child),
+        builder: (context) => Material(
+          child: child,
+        ),
       );
     } else {
       return showMaterialModalBottomSheet<T>(

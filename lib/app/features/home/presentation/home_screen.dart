@@ -44,67 +44,72 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     _listenToOnboardingStatus();
     final songs = ref.watch(songsNotifierProvider).filteredSongs;
 
-    return Scaffold(
-      appBar: StageAppBar(
-        background: context.isLargeScreen
-            ? context.colorScheme.surfaceContainerHigh
-            : context.colorScheme.surface,
-        title: 'Dashboard',
-        trailing: const Padding(
-          padding: EdgeInsets.only(right: 16),
-          child: NotificationWidget(),
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: StageAppBar(
+          background: context.isLargeScreen
+              ? context.colorScheme.surfaceContainerHigh
+              : context.colorScheme.surface,
+          title: 'Dashboard',
+          trailing: const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: NotificationWidget(),
+          ),
         ),
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          await Future.wait([
-            ref.read(songsNotifierProvider.notifier).getSongs(),
-            ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
-            ref.read(notificationNotifierProvider.notifier).getNotifications(),
-          ]);
-        },
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: Insets.medium),
-                  _buildEnhanced(hasUpcomingEvent),
-                  const SizedBox(height: Insets.extraLarge),
-                ],
-              ),
-            ),
-            SliverPadding(
-              padding: defaultScreenHorizontalPadding,
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  'Recently Added',
-                  style: context.textTheme.titleMedium,
+        body: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await Future.wait([
+              ref.read(songsNotifierProvider.notifier).getSongs(),
+              ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
+              ref
+                  .read(notificationNotifierProvider.notifier)
+                  .getNotifications(),
+            ]);
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const SizedBox(height: Insets.medium),
+                    _buildEnhanced(hasUpcomingEvent),
+                    const SizedBox(height: Insets.extraLarge),
+                  ],
                 ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.only(top: Insets.smallNormal),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final song = songs[index];
-                    return Padding(
-                      padding: defaultScreenHorizontalPadding,
-                      child: Column(
-                        children: [
-                          SongTile(song: song),
-                          const SizedBox(height: Insets.smallNormal),
-                        ],
-                      ),
-                    );
-                  },
-                  childCount: songs.length,
+              SliverPadding(
+                padding: defaultScreenHorizontalPadding,
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Recently Added',
+                    style: context.textTheme.titleMedium,
+                  ),
                 ),
               ),
-            ),
-          ],
+              SliverPadding(
+                padding: const EdgeInsets.only(top: Insets.smallNormal),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final song = songs[index];
+                      return Padding(
+                        padding: defaultScreenHorizontalPadding,
+                        child: Column(
+                          children: [
+                            SongTile(song: song),
+                            const SizedBox(height: Insets.smallNormal),
+                          ],
+                        ),
+                      );
+                    },
+                    childCount: songs.length,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

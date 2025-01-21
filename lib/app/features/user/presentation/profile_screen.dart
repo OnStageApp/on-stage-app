@@ -62,52 +62,56 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
       ],
-      child: Scaffold(
-        appBar: const StageAppBar(
-          title: 'Profile',
-        ),
-        body: RefreshIndicator.adaptive(
-          displacement: 0,
-          onRefresh: () async {
-            await ref
-                .read(subscriptionNotifierProvider.notifier)
-                .getCurrentSubscription(forceUpdate: true);
-            await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
-            await ref
-                .read(currentTeamMemberNotifierProvider.notifier)
-                .initializeState();
-          },
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    const ProfileHeader(),
-                    const SizedBox(height: 24),
-                    Focus(
-                      focusNode: _songViewSettingsFocusNode,
-                      child: const SongViewSettings(),
-                    ),
-                    const SizedBox(height: 24),
-                    const TeamsSection(),
-                    const SizedBox(height: 24),
-                    const AppSettings(),
-                    const SizedBox(height: 24),
-                    const LibrarySection(),
-                    const SizedBox(height: 12),
-                    EnvSwitcher(
-                      child: Text(
-                        'Account',
-                        style: context.textTheme.titleSmall,
+      child: Padding(
+        padding: getResponsivePadding(context),
+        child: Scaffold(
+          appBar: const StageAppBar(
+            title: 'Profile',
+          ),
+          body: RefreshIndicator.adaptive(
+            displacement: 0,
+            onRefresh: () async {
+              await ref
+                  .read(subscriptionNotifierProvider.notifier)
+                  .getCurrentSubscription(forceUpdate: true);
+              await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
+              await ref
+                  .read(currentTeamMemberNotifierProvider.notifier)
+                  .initializeState();
+            },
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: Insets.normal),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      const ProfileHeader(),
+                      const SizedBox(height: 24),
+                      Focus(
+                        focusNode: _songViewSettingsFocusNode,
+                        child: const SongViewSettings(),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    const SignOutButton(),
-                    const SizedBox(height: 24),
-                  ],
+                      const SizedBox(height: 24),
+                      const TeamsSection(),
+                      const SizedBox(height: 24),
+                      const AppSettings(),
+                      const SizedBox(height: 24),
+                      const LibrarySection(),
+                      const SizedBox(height: 12),
+                      EnvSwitcher(
+                        child: Text(
+                          'Account',
+                          style: context.textTheme.titleSmall,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const SignOutButton(),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),

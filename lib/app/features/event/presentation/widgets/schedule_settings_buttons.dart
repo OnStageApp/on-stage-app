@@ -61,16 +61,16 @@ class _PlayButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   LucideIcons.play,
                   size: 16,
-                  color: context.colorScheme.onSurface,
+                  color: Colors.white,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   'Start',
                   style: context.textTheme.labelMedium!.copyWith(
-                    color: context.colorScheme.onSurface,
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -98,14 +98,15 @@ class _EditButton extends StatelessWidget {
       padding: const EdgeInsets.only(right: 16),
       child: InkWell(
         onTap: onTap,
-        overlayColor: WidgetStatePropertyAll(context.colorScheme.surfaceBright),
+        overlayColor:
+            WidgetStatePropertyAll(context.colorScheme.onSurfaceVariant),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isEditMode
-                ? context.colorScheme.outline
+                ? context.colorScheme.surfaceBright
                 : context.colorScheme.onSurfaceVariant,
             borderRadius: BorderRadius.circular(8),
           ),
