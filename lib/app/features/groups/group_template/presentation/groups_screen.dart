@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/groups/group_template/presentation/wid
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class GroupsScreen extends ConsumerStatefulWidget {
   const GroupsScreen({super.key});
@@ -43,28 +44,31 @@ class GroupsScreenState extends ConsumerState<GroupsScreen> {
   Widget build(BuildContext context) {
     _setupErrorListener();
 
-    return Scaffold(
-      appBar: StageAppBar(
-        title: 'Groups',
-        isBackButtonVisible: true,
-        trailing: Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: AddNewButton(
-            onPressed: () {
-              CreateGroupModal.show(context: context);
-            },
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: StageAppBar(
+          title: 'Groups',
+          isBackButtonVisible: true,
+          trailing: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: AddNewButton(
+              onPressed: () {
+                CreateGroupModal.show(context: context);
+              },
+            ),
           ),
         ),
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          await ref
-              .read(groupTemplateNotifierProvider.notifier)
-              .getGroupsTemplate();
-        },
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          child: GroupsTemplateGrid(),
+        body: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await ref
+                .read(groupTemplateNotifierProvider.notifier)
+                .getGroupsTemplate();
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: GroupsTemplateGrid(),
+          ),
         ),
       ),
     );

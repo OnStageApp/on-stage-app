@@ -76,6 +76,7 @@ class GroupEventNotifier extends _$GroupEventNotifier {
     final allPhotos = groups
         .expand((group) => group.profilePictures ?? [])
         .whereType<Uint8List>()
+        .toSet()
         .toList();
 
     return (totalMembers, allPhotos);

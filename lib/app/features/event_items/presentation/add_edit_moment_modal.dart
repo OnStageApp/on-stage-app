@@ -18,6 +18,7 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
+import 'package:on_stage_app/logger.dart';
 
 class AddEditMomentModal extends ConsumerStatefulWidget {
   const AddEditMomentModal({
@@ -41,25 +42,11 @@ class AddEditMomentModal extends ConsumerStatefulWidget {
     bool enabled = true,
   }) {
     AdaptiveModal.show(
-      isFloatingForLargeScreens: true,
-      expand: false,
       context: context,
-      child: SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => ModalHeader(
-            title: eventItem != null
-                ? eventItem.name ?? 'Edit Moment'
-                : 'New Moment',
-          ),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: AddEditMomentModal(
-              onMomentAdded: onMomentAdded,
-              eventItem: eventItem,
-              enabled: enabled,
-            ),
-          ),
-        ),
+      child: AddEditMomentModal(
+        eventItem: eventItem,
+        onMomentAdded: onMomentAdded,
+        enabled: enabled,
       ),
     );
   }
@@ -68,7 +55,7 @@ class AddEditMomentModal extends ConsumerStatefulWidget {
 class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final FocusNode _titleFocus = FocusNode();
+
   Duration? _selectedDuration;
 
   final _formKey = GlobalKey<FormState>();
@@ -83,7 +70,6 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
     _fillFieldsIfIsEditing();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(stagerSelectionProvider.notifier).clearStagers();
-      FocusScope.of(context).requestFocus(_titleFocus);
     });
   }
 
@@ -109,24 +95,19 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
 
   @override
   void dispose() {
-    _titleFocus.dispose();
     super.dispose();
   }
 
-  List<StagerOverview> get assignedStagersFromEventItem {
-    if (isNewMoment) {
-      return ref.watch(stagerSelectionProvider);
-    } else {
-      return ref
-              .watch(eventItemsNotifierProvider)
-              .eventItems[ref.read(eventItemsNotifierProvider).currentIndex]
-              .assignedTo ??
-          [];
-    }
-  }
-
   void _handleNewMomentStagers(List<StagerOverview> stagers) {
-    ref.read(stagerSelectionProvider.notifier).setStagers(stagers);
+    logger.i('Stagers selected: ${stagers.length}');
+
+    /// Clear existing stagers first
+    ref.read(stagerSelectionProvider.notifier).clearStagers();
+
+    /// Add new stagers one by one
+    for (var stager in stagers) {
+      ref.read(stagerSelectionProvider.notifier).addStager(stager);
+    }
   }
 
   void _handleEditMomentStagers(List<StagerOverview> stagers) {
@@ -145,7 +126,7 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
     final eventId = ref.watch(eventNotifierProvider).event?.id;
     if (eventId == null) return;
 
-    final selectedStagers = ref.read(stagerSelectionProvider);
+    final selectedStagers = ref.watch(stagerSelectionProvider);
     final request = EventItemCreate(
       name: _titleController.text,
       description: _descriptionController.text,
@@ -172,116 +153,140 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
 
   @override
   Widget build(BuildContext context) {
-    final assignedStagers = assignedStagersFromEventItem;
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isNewMoment) ...[
-              CustomTextField(
-                enabled: widget.enabled,
-                label: 'Title',
-                hint: 'Enter a title',
-                icon: null,
-                focusNode: _titleFocus,
-                controller: _titleController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a rehearsal name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              CustomTextField(
-                enabled: widget.enabled,
-                label: 'Description',
-                hint: 'Enter a description',
-                icon: null,
-                controller: _descriptionController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a rehearsal name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-            ],
-            Text('Duration', style: context.textTheme.titleSmall),
-            const SizedBox(height: 12),
-            EditDuration(
-              selectedDuration: _selectedDuration,
-              onDurationChanged: _editDurationOnEventItem,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Persons',
-              style: context.textTheme.titleSmall,
-            ),
-            const SizedBox(height: 12),
-            if (assignedStagers.isNotNullOrEmpty)
-              Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.onSurfaceVariant,
-                  borderRadius: BorderRadius.circular(10),
+    final selectedStagers = ref.watch(stagerSelectionProvider);
+    final assignedStagers = ref
+        .watch(eventItemsNotifierProvider)
+        .eventItems[ref.read(eventItemsNotifierProvider).currentIndex]
+        .assignedTo;
+    final assignedStagersFromEventItem =
+        isNewMoment ? selectedStagers : assignedStagers ?? [];
+
+    return SafeArea(
+      child: NestedScrollModal(
+        buildHeader: () => ModalHeader(
+          title: widget.eventItem != null
+              ? widget.eventItem?.name ?? 'Edit Moment'
+              : 'New Moment',
+        ),
+        headerHeight: () => 64,
+        footerHeight: () => 64,
+        buildFooter: () => (widget.enabled && isNewMoment)
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                child: ContinueButton(
+                  isEnabled: true,
+                  hasShadow: false,
+                  text: isNewMoment ? 'Create' : 'Save',
+                  onPressed: isNewMoment ? _addMoment : _editStagersOnEventItem,
                 ),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: assignedStagers.length,
-                  itemBuilder: (context, index) {
-                    final currentStager = assignedStagers[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: ParticipantListingItem(
-                        canGoToProfile: false,
-                        userId: currentStager.userId,
-                        name: currentStager.name,
-                        photo: currentStager.profilePicture,
-                        onDelete: () {
-                          _onDelete(
-                            currentStager,
-                            index,
-                            widget.eventItem?.id,
+              )
+            : const SizedBox(),
+        buildContent: () => SingleChildScrollView(
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isNewMoment) ...[
+                    CustomTextField(
+                      enabled: widget.enabled,
+                      label: 'Title',
+                      hint: 'Enter a title',
+                      icon: null,
+                      // focusNode: _titleFocus,
+                      controller: _titleController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a rehearsal name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      enabled: widget.enabled,
+                      label: 'Description',
+                      hint: 'Enter a description',
+                      icon: null,
+                      controller: _descriptionController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a rehearsal name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  Text('Duration', style: context.textTheme.titleSmall),
+                  const SizedBox(height: 12),
+                  EditDuration(
+                    selectedDuration: _selectedDuration,
+                    onDurationChanged: _editDurationOnEventItem,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Persons',
+                    style: context.textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 12),
+                  if (assignedStagersFromEventItem.isNotNullOrEmpty)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.onSurfaceVariant,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: ref.watch(stagerSelectionProvider).length,
+                        itemBuilder: (context, index) {
+                          logger.i('sss Assigned stagers: '
+                              '${ref.watch(stagerSelectionProvider)[index].name}');
+                          final currentStager =
+                              ref.watch(stagerSelectionProvider)[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: ParticipantListingItem(
+                              canGoToProfile: false,
+                              userId: currentStager.userId,
+                              name: currentStager.name,
+                              photo: currentStager.profilePicture,
+                              onDelete: () {
+                                _onDelete(
+                                  currentStager,
+                                  index,
+                                  widget.eventItem?.id,
+                                );
+                              },
+                            ),
                           );
                         },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  EventActionButton(
+                    onTap: () {
+                      StagersToAssignModal.show(
+                        context: context,
+                        eventItemId: widget.eventItem?.id,
+                        onStagersSelected:
+                            isNewMoment ? _handleNewMomentStagers : (_) {},
+                        maxParticipants: 4,
+                        onSave: isNewMoment
+                            ? _handleNewMomentStagers
+                            : _handleEditMomentStagers,
+                      );
+                    },
+                    text: 'Assign Persons',
+                    icon: Icons.add,
+                  ),
+                ],
               ),
-            EventActionButton(
-              onTap: () {
-                StagersToAssignModal.show(
-                  context: context,
-                  eventItemId: widget.eventItem?.id,
-                  onStagersSelected:
-                      isNewMoment ? _handleNewMomentStagers : (_) {},
-                  maxParticipants: 4,
-                  onSave: isNewMoment
-                      ? _handleNewMomentStagers
-                      : _handleEditMomentStagers,
-                );
-              },
-              text: 'Assign Persons',
-              icon: Icons.add,
             ),
-            const SizedBox(height: 32),
-            if (widget.enabled && isNewMoment) ...[
-              ContinueButton(
-                isEnabled: true,
-                hasShadow: false,
-                text: isNewMoment ? 'Create' : 'Save',
-                onPressed: isNewMoment ? _addMoment : _editStagersOnEventItem,
-              ),
-              const SizedBox(height: 24),
-            ],
-          ],
+          ),
         ),
       ),
     );
@@ -309,7 +314,7 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
         .eventItems[ref.read(eventItemsNotifierProvider).currentIndex];
 
     final updatedItem = currentItem.copyWith(
-      assignedTo: ref.read(stagerSelectionProvider),
+      assignedTo: ref.watch(stagerSelectionProvider),
     );
 
     ref.read(eventItemsNotifierProvider.notifier).updateMomentItem(updatedItem);

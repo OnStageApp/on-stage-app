@@ -15,6 +15,7 @@ class NotificationParams with _$NotificationParams {
     List<String>? usersWithPhoto,
     DateTime? date,
     int? stagerCount,
+    String? positionName,
   }) = _NotificationParams;
 
   factory NotificationParams.fromJson(Map<String, dynamic> json) =>

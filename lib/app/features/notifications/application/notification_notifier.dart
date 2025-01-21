@@ -153,9 +153,9 @@ class NotificationNotifier extends _$NotificationNotifier {
   }
 
   Future<Uint8List?> _getPhotoFromLocalStorage(String userId) async {
-    final photo =
-        await ref.read(databaseProvider).getUserProfilePicture(userId);
-    return photo;
+    final teamMemberPhoto =
+        await ref.read(databaseProvider).getTeamMemberPhoto(userId);
+    return teamMemberPhoto?.profilePicture;
   }
 
   Future<void> _savePhotoToLocalStorage(String userId, Uint8List photo) async {

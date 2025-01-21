@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/shared/invite_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
 class ActionNotificationTile extends NotificationTile {
@@ -28,12 +28,14 @@ class ActionNotificationTile extends NotificationTile {
       children: [
         const SizedBox(height: 3),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (notification.status == NotificationStatus.NEW)
                         _buildCircle(context.colorScheme.error),
@@ -51,16 +53,25 @@ class ActionNotificationTile extends NotificationTile {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: ParticipantsOnTile(
-                borderColor: context.colorScheme.onSurfaceVariant,
-                textColor: context.colorScheme.onSurface,
-                backgroundColor: context.colorScheme.secondary,
-                participantsLength: notification.params?.stagerCount ?? 1,
-                participantsProfileBytes: notification.profilePictures,
+            if (notification.params != null &&
+                notification.params!.positionName.isNotNullEmptyOrWhitespace)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: context.isDarkMode
+                      ? context.colorScheme.surfaceContainerHigh
+                          .withOpacity(0.5)
+                      : context.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  notification.params?.positionName ?? '',
+                  style: context.textTheme.titleSmall,
+                ),
               ),
-            ),
           ],
         ),
         Padding(
