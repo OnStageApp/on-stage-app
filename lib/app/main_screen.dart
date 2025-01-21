@@ -118,7 +118,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
     _listenForPermissionDeniedAndShowPaywall();
-    final horizontalPadding = context.screenSize.width > 1200 ? 132.0 : 23.0;
     return Scaffold(
       backgroundColor: context.isLargeScreen && !context.isDarkMode
           ? context.colorScheme.onSurfaceVariant
@@ -232,23 +231,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 ),
       body: context.isLargeScreen
           ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildNavigationRail(context),
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 32, bottom: 32, right: 23),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    padding: const EdgeInsets.all(32),
+                    child: DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(
                           Radius.circular(20),
                         ),
                         color: context.colorScheme.surfaceContainerHigh,
                       ),
-                      child: widget.navigationShell,
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: widget.navigationShell,
+                      ),
+                      // ),
                     ),
                   ),
                 ),

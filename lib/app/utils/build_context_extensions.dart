@@ -26,4 +26,16 @@ extension ObjectExt<T> on T? {
 
 extension ScreenExtension on BuildContext {
   bool get isLargeScreen => MediaQuery.of(this).size.width > 800;
+
+  bool get isExtraLargeScreen => MediaQuery.of(this).size.width > 1200;
+}
+
+EdgeInsets getResponsivePadding(BuildContext context) {
+  if (context.isExtraLargeScreen) {
+    return const EdgeInsets.symmetric(horizontal: 132);
+  } else if (context.isLargeScreen) {
+    return const EdgeInsets.symmetric(horizontal: 32);
+  } else {
+    return EdgeInsets.zero;
+  }
 }

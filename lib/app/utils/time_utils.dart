@@ -40,10 +40,10 @@ class TimeUtils {
   }
 
   String calculateTime(DateTime? dateTime, Duration? duration) {
-    if (duration == null) {
+    if (duration == null || dateTime == null) {
       return '';
     } else {
-      return formatOnlyTime(dateTime!.add(duration));
+      return formatOnlyTime(dateTime.add(duration));
     }
   }
 

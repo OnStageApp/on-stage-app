@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AdaptiveDurationPicker {
@@ -16,43 +17,35 @@ class AdaptiveDurationPicker {
     }
   }
 
+  //TODO: Show Adaptive on Android too
   static Future<Duration?> _showCupertinoPicker(
     BuildContext context,
     Duration initialDuration,
   ) async {
     Duration? selectedDuration;
 
-    await showCupertinoModalPopup<void>(
+    await AdaptiveModal.show<void>(
       context: context,
-      builder: (BuildContext context) => Container(
-        height: 320,
-        padding: const EdgeInsets.only(top: 6),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              Material(
-                child: Text(
-                  'Set Duration',
-                  style: context.textTheme.titleMedium,
-                ),
-              ),
-              const SizedBox(height: 12),
-              CupertinoTimerPicker(
-                mode: CupertinoTimerPickerMode.hm,
-                initialTimerDuration: initialDuration,
-                onTimerDurationChanged: (Duration newDuration) {
-                  selectedDuration = newDuration;
-                },
-              ),
-            ],
+      expand: false,
+      isFloatingForLargeScreens: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          Text(
+            'Set Duration',
+            style: context.textTheme.titleMedium,
           ),
-        ),
+          const SizedBox(height: 12),
+          CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.hm,
+            initialTimerDuration: initialDuration,
+            onTimerDurationChanged: (Duration newDuration) {
+              selectedDuration = newDuration;
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
 

@@ -46,96 +46,99 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
         }
       },
     );
-    return Scaffold(
-      appBar: StageAppBar(
-        titleWidget: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: songsState.songsCount.toString(),
-                style: context.textTheme.headlineLarge?.copyWith(
-                  fontSize: 28,
-                  color: context.colorScheme.surfaceDim,
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: StageAppBar(
+          titleWidget: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: songsState.songsCount.toString(),
+                  style: context.textTheme.headlineLarge?.copyWith(
+                    fontSize: 28,
+                    color: context.colorScheme.surfaceDim,
+                  ),
                 ),
-              ),
-              TextSpan(
-                text: ' Songs',
-                style: context.textTheme.headlineLarge!.copyWith(
-                  fontSize: 28,
-                  color: context.colorScheme.onSurface,
+                TextSpan(
+                  text: ' Songs',
+                  style: context.textTheme.headlineLarge!.copyWith(
+                    fontSize: 28,
+                    color: context.colorScheme.onSurface,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        title: '',
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          await ref.read(songsNotifierProvider.notifier).getSongs();
-        },
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverPadding(
-              padding: defaultScreenHorizontalPadding,
-              sliver: SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: Insets.small),
-                    Hero(
-                      tag: 'searchBar',
-                      child: StageSearchBar(
-                        focusNode: FocusNode(),
-                        controller: _searchController,
-                        showFilter: true,
-                        onClosed: () {
-                          if (context.canPop()) {
-                            context.pop();
-                          }
-                          _searchController.clear();
-                        },
-                        onChanged: (value) {
-                          final songFilter = searchState.toSongFilter();
-                          ref
-                              .read(searchNotifierProvider.notifier)
-                              .setText(value);
-                          ref.read(songsNotifierProvider.notifier).getSongs(
-                                songFilter: songFilter.copyWith(
-                                  search: value,
-                                ),
-                              );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: Insets.large),
-                  ],
-                ),
-              ),
+              ],
             ),
-            const SongsListView(),
-            if (songsState.hasMore)
+          ),
+          title: '',
+        ),
+        body: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await ref.read(songsNotifierProvider.notifier).getSongs();
+          },
+          child: CustomScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
               SliverPadding(
-                padding: const EdgeInsets.all(16),
+                padding: defaultScreenHorizontalPadding,
                 sliver: SliverToBoxAdapter(
-                  child: Center(
-                    child: LoadMoreButton(
-                      onPressed: songsState.isLoading
-                          ? () {}
-                          : () => ref
-                              .read(songsNotifierProvider.notifier)
-                              .loadMoreSongs(
-                                ref
-                                    .watch(searchNotifierProvider)
-                                    .toSongFilter(),
-                              ),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Insets.small),
+                      Hero(
+                        tag: 'searchBar',
+                        child: StageSearchBar(
+                          focusNode: FocusNode(),
+                          controller: _searchController,
+                          showFilter: true,
+                          onClosed: () {
+                            if (context.canPop()) {
+                              context.pop();
+                            }
+                            _searchController.clear();
+                          },
+                          onChanged: (value) {
+                            final songFilter = searchState.toSongFilter();
+                            ref
+                                .read(searchNotifierProvider.notifier)
+                                .setText(value);
+                            ref.read(songsNotifierProvider.notifier).getSongs(
+                                  songFilter: songFilter.copyWith(
+                                    search: value,
+                                  ),
+                                );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: Insets.large),
+                    ],
                   ),
                 ),
               ),
-          ],
+              const SongsListView(),
+              if (songsState.hasMore)
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverToBoxAdapter(
+                    child: Center(
+                      child: LoadMoreButton(
+                        onPressed: songsState.isLoading
+                            ? () {}
+                            : () => ref
+                                .read(songsNotifierProvider.notifier)
+                                .loadMoreSongs(
+                                  ref
+                                      .watch(searchNotifierProvider)
+                                      .toSongFilter(),
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
