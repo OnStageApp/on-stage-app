@@ -2,6 +2,7 @@ enum ErrorType {
   PERMISSION_DENIED,
   RESOURCE_NOT_FOUND,
   TEAM_MEMBER_ALREADY_EXISTS,
+  ARTIST_ALREADY_EXISTS,
   DUPLICATE_POSITION_NAME,
   DUPLICATE_GROUP_NAME,
   InternalServerError,
@@ -20,6 +21,8 @@ extension ErrorTypeX on ErrorType {
         return 'DUPLICATE_POSITION_NAME';
       case ErrorType.DUPLICATE_GROUP_NAME:
         return 'DUPLICATE_GROUP_NAME';
+      case ErrorType.ARTIST_ALREADY_EXISTS:
+        return 'ARTIST_ALREADY_EXISTS';
       case ErrorType.InternalServerError:
         return 'InternalServerError';
     }
@@ -37,6 +40,8 @@ extension ErrorTypeX on ErrorType {
         return 'Position with this name already exists';
       case ErrorType.DUPLICATE_GROUP_NAME:
         return 'Group with this name already exists';
+      case ErrorType.ARTIST_ALREADY_EXISTS:
+        return 'Artist already exists';
       case ErrorType.InternalServerError:
         return 'Internal server error';
     }

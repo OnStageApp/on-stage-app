@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class StagersToAssignModal extends ConsumerStatefulWidget {
@@ -34,18 +35,9 @@ class StagersToAssignModal extends ConsumerStatefulWidget {
     required void Function(List<StagerOverview>) onSave,
     int? maxParticipants = 12,
   }) {
-    showModalBottomSheet<Widget>(
-      enableDrag: false,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.85,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => StagersToAssignModal(
+      child: StagersToAssignModal(
         eventItemId: eventItemId,
         onStagersSelected: onStagersSelected,
         onSave: onSave,

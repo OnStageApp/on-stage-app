@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongStructureModal extends ConsumerStatefulWidget {
@@ -24,20 +25,9 @@ class SongStructureModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required WidgetRef ref,
   }) {
-    showModalBottomSheet<Widget>(
-      enableDrag: false,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.90,
-        minHeight: MediaQuery.of(context).size.height * 0.90,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => const SongStructureModal(),
+      child: const SongStructureModal(),
     );
   }
 }
@@ -86,6 +76,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       child: ContinueButton(
         text: buttonText,
+        hasShadow: true,
         onPressed: hasChanges ? _handleButtonPress : () {},
         isEnabled: hasChanges,
       ),

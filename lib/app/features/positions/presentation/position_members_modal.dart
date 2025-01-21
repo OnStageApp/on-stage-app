@@ -8,7 +8,7 @@ import 'package:on_stage_app/app/features/positions/presentation/position_member
 import 'package:on_stage_app/app/features/positions/presentation/widgets/position_tile_shimmer.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 
 class PositionMembersModal extends ConsumerStatefulWidget {
   const PositionMembersModal({
@@ -25,19 +25,9 @@ class PositionMembersModal extends ConsumerStatefulWidget {
     required String groupId,
     required String eventId,
   }) async {
-    return showModalBottomSheet<Widget>(
-      isScrollControlled: true,
-      useRootNavigator: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.95,
-        minHeight: MediaQuery.of(context).size.height * 0.95,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    return AdaptiveModal.show(
       context: context,
-      builder: (context) => PositionMembersModal(
+      child: PositionMembersModal(
         groupId: groupId,
         eventId: eventId,
       ),

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/title_widget.dart';
-import 'package:on_stage_app/app/features/onboarding/presentation/controller/onboarding_fifth_controller.dart';
-import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
-import 'package:on_stage_app/app/features/user/presentation/widgets/position_tile_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -55,17 +52,18 @@ class _OnboardingFifthStepState extends ConsumerState<OnboardingFifthStep> {
                   ),
                 ),
                 const SizedBox(height: Insets.small),
-                PositionTile(
-                  title: ref
-                      .watch(onboardingFifthControllerProvider)
-                      .position
-                      ?.title,
-                  onSaved: (position) {
-                    ref
-                        .read(onboardingFifthControllerProvider.notifier)
-                        .updatePosition(position: position);
-                  },
-                ),
+                //TODO: Maybe add this in future
+                // PositionTile(
+                //   title: ref
+                //       .watch(onboardingFifthControllerProvider)
+                //       .position
+                //       ?.title,
+                //   onSaved: (position) {
+                //     ref
+                //         .read(onboardingFifthControllerProvider.notifier)
+                //         .updatePosition(position: position);
+                //   },
+                // ),
               ],
             ),
           ),

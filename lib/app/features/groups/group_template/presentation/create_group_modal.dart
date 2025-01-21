@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 
@@ -18,38 +19,24 @@ class CreateGroupModal extends ConsumerStatefulWidget {
 
   final bool enabled;
 
-  @override
-  CreateGroupModalState createState() => CreateGroupModalState();
-
   static void show({
     required BuildContext context,
     RehearsalModel? rehearsal,
     bool enabled = true,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'New Group'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: CreateGroupModal(
-              enabled: enabled,
-            ),
-          ),
-        ),
-      ),
+      child: CreateGroupModal(enabled: enabled),
     );
   }
+
+  @override
+  CreateGroupModalState createState() => CreateGroupModalState();
 }
 
 class CreateGroupModalState extends ConsumerState<CreateGroupModal> {
   final TextEditingController _groupNameController = TextEditingController();
   final FocusNode _rehearsalNameFocus = FocusNode();
-
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -68,39 +55,58 @@ class CreateGroupModalState extends ConsumerState<CreateGroupModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            CustomTextField(
-              enabled: widget.enabled,
-              label: 'Group Name',
-              hint: 'eg. Vocals',
-              icon: null,
-              focusNode: _rehearsalNameFocus,
-              controller: _groupNameController,
-              validator: (value) {
-                if (value.isNullEmptyOrWhitespace) {
-                  return 'Please enter a group name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 32),
-            if (widget.enabled) ...[
-              ContinueButton(
-                isEnabled: true,
-                hasShadow: false,
-                text: 'Create',
-                onPressed: _createRehearsal,
+    return Stack(
+      children: [
+        NestedScrollModal(
+          buildHeader: () => const ModalHeader(title: 'New Group'),
+          headerHeight: () => 64,
+          buildContent: () => SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: defaultScreenPadding.left,
+                right: defaultScreenPadding.right,
+                top: defaultScreenPadding.top,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 80,
               ),
-              const SizedBox(height: 24),
-            ],
-          ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextField(
+                      enabled: widget.enabled,
+                      label: 'Group Name',
+                      hint: 'eg. Vocals',
+                      icon: null,
+                      focusNode: _rehearsalNameFocus,
+                      controller: _groupNameController,
+                      validator: (value) {
+                        if (value.isNullEmptyOrWhitespace) {
+                          return 'Please enter a group name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
-      ),
+        if (widget.enabled)
+          Positioned(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            left: 12,
+            right: 12,
+            child: ContinueButton(
+              isEnabled: true,
+              hasShadow: false,
+              text: 'Create',
+              onPressed: _createRehearsal,
+            ),
+          ),
+      ],
     );
   }
 

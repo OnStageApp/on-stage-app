@@ -5,7 +5,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 
 class EditFieldModal extends ConsumerStatefulWidget {
   const EditFieldModal({
@@ -28,12 +28,9 @@ class EditFieldModal extends ConsumerStatefulWidget {
     required String value,
     required void Function(String) onSubmitted,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
+      child: SafeArea(
         child: NestedScrollModal(
           buildHeader: () => const ModalHeader(title: 'Event Settings'),
           headerHeight: () => 64,

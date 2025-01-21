@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/team/domain/team.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 
@@ -25,27 +26,13 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
     required BuildContext context,
     void Function()? onSave,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        minHeight: MediaQuery.of(context).size.height * 0.4,
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Teams'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: TeamsSelectionModal(
-              onSave: onSave,
-            ),
-          ),
+      isFloatingForLargeScreens: true,
+      expand: false,
+      child: SingleChildScrollView(
+        child: TeamsSelectionModal(
+          onSave: onSave,
         ),
       ),
     );
@@ -72,103 +59,108 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
   @override
   Widget build(BuildContext context) {
     _teams = ref.watch(teamsNotifierProvider).teams;
+    return SafeArea(
+      child: NestedScrollModal(
+        buildHeader: () => const ModalHeader(title: 'Teams'),
+        headerHeight: () => 64,
+        buildContent: () => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              if (ref.watch(teamsNotifierProvider).isLoading)
+                const Center(
+                  child: SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: OnStageLoadingIndicator(),
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 42),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: ref.watch(teamsNotifierProvider).teams.length,
+                    itemBuilder: (context, index) {
+                      final team = _teams.elementAt(index);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          splashColor: context.colorScheme.surfaceBright,
+                          tileColor: context.colorScheme.onSurfaceVariant,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: _isItemChecked(index)
+                                  ? context.colorScheme.primary
+                                  : context.colorScheme.onSurfaceVariant,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          title: Text(
+                            team.name ?? '',
+                            style: context.textTheme.headlineMedium,
+                          ),
+                          subtitle: Text(
+                            (team.membersCount ?? 0) > 1
+                                ? '${team.membersCount} Members'
+                                : '${team.membersCount} Member',
+                            style: context.textTheme.bodyMedium!.copyWith(
+                              color: context.colorScheme.outline,
+                            ),
+                          ),
+                          trailing: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.surface,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              '${team.role}',
+                              style: context.textTheme.titleMedium!
+                                  .copyWith(color: context.colorScheme.outline),
+                            ),
+                          ),
+                          onTap: () async {
+                            if (_isItemChecked(index)) return;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          if (ref.watch(teamsNotifierProvider).isLoading)
-            const Center(
-              child: SizedBox(
-                height: 24,
-                width: 24,
-                child: OnStageLoadingIndicator(),
-              ),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.only(bottom: 42),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: ref.watch(teamsNotifierProvider).teams.length,
-                itemBuilder: (context, index) {
-                  final team = _teams.elementAt(index);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      splashColor: context.colorScheme.surfaceBright,
-                      tileColor: context.colorScheme.onSurfaceVariant,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: _isItemChecked(index)
-                              ? context.colorScheme.primary
-                              : context.colorScheme.onSurfaceVariant,
-                          width: 2,
+                            final teamsNotifier =
+                                ref.read(teamsNotifierProvider.notifier);
+                            final teamNotifier =
+                                ref.read(teamNotifierProvider.notifier);
+                            final eventsNotifier =
+                                ref.read(eventsNotifierProvider.notifier);
+                            final navigationNotifier =
+                                ref.read(navigationNotifierProvider.notifier);
+
+                            await teamsNotifier
+                                .setCurrentTeam(_teams.elementAt(index).id);
+
+                            if (!mounted) return;
+
+                            await teamNotifier.getCurrentTeam();
+
+                            if (!mounted) return;
+
+                            eventsNotifier.resetState();
+                            navigationNotifier.resetRouterAndState();
+                          },
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                      ),
-                      title: Text(
-                        team.name ?? '',
-                        style: context.textTheme.headlineMedium,
-                      ),
-                      subtitle: Text(
-                        (team.membersCount ?? 0) > 1
-                            ? '${team.membersCount} Members'
-                            : '${team.membersCount} Member',
-                        style: context.textTheme.bodyMedium!.copyWith(
-                          color: context.colorScheme.outline,
-                        ),
-                      ),
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '${team.role}',
-                          style: context.textTheme.titleMedium!
-                              .copyWith(color: context.colorScheme.outline),
-                        ),
-                      ),
-                      onTap: () async {
-                        if (_isItemChecked(index)) return;
-
-                        final teamsNotifier =
-                            ref.read(teamsNotifierProvider.notifier);
-                        final teamNotifier =
-                            ref.read(teamNotifierProvider.notifier);
-                        final eventsNotifier =
-                            ref.read(eventsNotifierProvider.notifier);
-                        final navigationNotifier =
-                            ref.read(navigationNotifierProvider.notifier);
-
-                        await teamsNotifier
-                            .setCurrentTeam(_teams.elementAt(index).id);
-
-                        if (!mounted) return;
-
-                        await teamNotifier.getCurrentTeam();
-
-                        if (!mounted) return;
-
-                        eventsNotifier.resetState();
-                        navigationNotifier.resetRouterAndState();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-        ],
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

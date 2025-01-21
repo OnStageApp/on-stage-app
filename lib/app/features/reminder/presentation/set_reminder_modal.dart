@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SetReminderModal extends ConsumerStatefulWidget {
@@ -30,41 +31,11 @@ class SetReminderModal extends ConsumerStatefulWidget {
     void Function(int)? onSelected,
     void Function(int)? onRemoved,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
-        minHeight: MediaQuery.of(context).size.height * 0.7,
-        maxWidth: MediaQuery.of(context).size.width,
-      ),
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Alert Options'),
-        buildFooter: () => Container(
-          margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-          child: ContinueButton(
-            text: 'Save',
-            onPressed: () {
-              onSaved.call(
-                ref.read(reminderControllerProvider).selectedReminders,
-              );
-              context.popDialog();
-            },
-            isEnabled: true,
-          ),
-        ),
-        headerHeight: () => 64,
-        footerHeight: () => 64,
-        buildContent: () {
-          return SingleChildScrollView(
-            child: SetReminderModal(
-              onSaved: onSaved,
-              cacheReminders: cacheReminders,
-            ),
-          );
-        },
+      child: SetReminderModal(
+        onSaved: onSaved,
+        cacheReminders: cacheReminders,
       ),
     );
   }
@@ -84,33 +55,58 @@ class SetReminderModalState extends ConsumerState<SetReminderModal> {
   @override
   Widget build(BuildContext context) {
     final reminders = ref.watch(reminderControllerProvider).selectedReminders;
-    return Padding(
-      padding: defaultScreenPadding,
-      child: ListView.builder(
-        itemCount: _defaultReminders.length,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              _buildAlert(
-                _defaultReminders[index].toString(),
-                () {
-                  _setReminders(_defaultReminders[index]);
-                },
-                isSelected: reminders.contains(_defaultReminders[index]),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: index == 0 ? 12 : 6),
-                child:
-                    index == 0 ? const DashedLineDivider() : const SizedBox(),
-              ),
-              if (index == _defaultReminders.length - 1)
-                const SizedBox(height: 24),
-            ],
-          );
-        },
+
+    return NestedScrollModal(
+      buildHeader: () => const ModalHeader(title: 'Reminders'),
+      buildFooter: () => Container(
+        margin: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+        child: ContinueButton(
+          text: 'Save',
+          onPressed: () {
+            widget.onSaved?.call(
+              ref.watch(reminderControllerProvider).selectedReminders,
+            );
+            context.popDialog();
+          },
+          isEnabled: true,
+        ),
       ),
+      headerHeight: () => 64,
+      footerHeight: () => 64,
+      buildContent: () {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: ListView.builder(
+              itemCount: _defaultReminders.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    _buildAlert(
+                      _defaultReminders[index].toString(),
+                      () {
+                        _setReminders(_defaultReminders[index]);
+                      },
+                      isSelected: reminders.contains(_defaultReminders[index]),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: index == 0 ? 12 : 6),
+                      child: index == 0
+                          ? const DashedLineDivider()
+                          : const SizedBox(),
+                    ),
+                    if (index == _defaultReminders.length - 1)
+                      const SizedBox(height: 24),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
-import 'package:on_stage_app/app/features/user/presentation/widgets/choose_position_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
@@ -45,18 +44,18 @@ class PositionTile extends ConsumerWidget {
         ),
       ),
       onTap: () {
-        ChoosePositionModal.show(
-          context: context,
-          onSaved: (position) {
-            if (onSaved != null) {
-              onSaved!(position);
-            } else {
-              ref
-                  .read(userNotifierProvider.notifier)
-                  .updatePositionOnUser(position);
-            }
-          },
-        );
+        // ChoosePositionModal.show(
+        //   context: context,
+        //   onSaved: (position) {
+        //     if (onSaved != null) {
+        //       onSaved!(position);
+        //     } else {
+        //       ref
+        //           .read(userNotifierProvider.notifier)
+        //           .updatePositionOnUser(position);
+        //     }
+        //   },
+        // );
       },
     );
   }

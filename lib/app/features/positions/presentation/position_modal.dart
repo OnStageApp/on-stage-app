@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PositionModal extends ConsumerStatefulWidget {
@@ -24,19 +25,9 @@ class PositionModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required String groupId,
   }) async {
-    return showModalBottomSheet<void>(
-      isScrollControlled: true,
-      useRootNavigator: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.95,
-        minHeight: MediaQuery.of(context).size.height * 0.95,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    return AdaptiveModal.show(
       context: context,
-      builder: (context) => PositionModal(groupId: groupId),
+      child: PositionModal(groupId: groupId),
     );
   }
 

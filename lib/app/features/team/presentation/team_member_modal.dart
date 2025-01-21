@@ -14,6 +14,7 @@ import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class TeamMemberModal extends ConsumerStatefulWidget {
@@ -34,22 +35,12 @@ class TeamMemberModal extends ConsumerStatefulWidget {
     required TeamMember teamMember,
     void Function(RehearsalModel)? onSave,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Team Member'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: TeamMemberModal(
-              onSave: onSave,
-              teamMember: teamMember,
-            ),
-          ),
-        ),
+      expand: false,
+      child: TeamMemberModal(
+        onSave: onSave,
+        teamMember: teamMember,
       ),
     );
   }
@@ -118,41 +109,49 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Column(
-        children: [
-          _buildContent(
-            teamMember.profilePicture,
-            teamMember.name ?? 'Name',
-            'Pian',
-            () {
-              context
-                ..popDialog()
-                ..pushNamed(
-                  AppRoute.userProfileInfo.name,
-                  queryParameters: {
-                    'userId': teamMember.userId,
+    return SafeArea(
+      child: NestedScrollModal(
+        buildHeader: () => const ModalHeader(title: 'Team Member'),
+        headerHeight: () => 64,
+        buildContent: () => SingleChildScrollView(
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: Column(
+              children: [
+                _buildContent(
+                  teamMember.profilePicture,
+                  teamMember.name ?? 'Name',
+                  'Pian',
+                  () {
+                    context
+                      ..popDialog()
+                      ..pushNamed(
+                        AppRoute.userProfileInfo.name,
+                        queryParameters: {
+                          'userId': teamMember.userId,
+                        },
+                      );
                   },
-                );
-            },
+                ),
+                const SizedBox(height: 12),
+                _buildContent(
+                  null,
+                  'Change permissions',
+                  teamMember.role?.title ?? 'None',
+                  handlePermissionChange,
+                ),
+                const SizedBox(height: 64),
+                if (teamMember.inviteStatus == InviteStatus.pending)
+                  _buildResendInvitation(context),
+                const SizedBox(height: 12),
+                RemoveMemberWidget(
+                  teamMemberId: teamMember.id,
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          _buildContent(
-            null,
-            'Change permissions',
-            teamMember.role?.title ?? 'None',
-            handlePermissionChange,
-          ),
-          const SizedBox(height: 64),
-          if (teamMember.inviteStatus == InviteStatus.pending)
-            _buildResendInvitation(context),
-          const SizedBox(height: 12),
-          RemoveMemberWidget(
-            teamMemberId: teamMember.id,
-          ),
-          const SizedBox(height: 24),
-        ],
+        ),
       ),
     );
   }

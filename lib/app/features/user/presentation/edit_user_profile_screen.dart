@@ -4,7 +4,6 @@ import 'package:on_stage_app/app/features/event/presentation/custom_text_field.d
 import 'package:on_stage_app/app/features/login/domain/user_request.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/add_photo_modal.dart';
-import 'package:on_stage_app/app/features/user/presentation/widgets/position_tile_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -169,16 +168,18 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Positions',
-                        style: context.textTheme.titleSmall,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const PositionTile(),
+                    //TODO: Maybe add this in the future
+                    // const SizedBox(height: 12),
+
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     'Positions',
+                    //     style: context.textTheme.titleSmall,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 12),
+                    // const PositionTile(),
                     const SizedBox(height: 12),
                     CustomTextField(
                       enabled: true,

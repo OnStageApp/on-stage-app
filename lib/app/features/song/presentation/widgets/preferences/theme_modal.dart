@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/search/application/search_notifier.dar
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ThemeModal extends ConsumerStatefulWidget {
@@ -22,26 +23,9 @@ class ThemeModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required void Function(ThemeEnum?) onSelected,
   }) {
-    showModalBottomSheet<Widget>(
-      enableDrag: false,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.85,
-        minHeight: MediaQuery.of(context).size.height * 0.85,
-        maxWidth: context.isLargeScreen
-            ? context.screenSize.width * 0.5
-            : double.infinity,
-      ),
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => NestedScrollModal(
-        buildHeader: () => const ModalHeader(
-          title: 'Select a Theme',
-        ),
-        headerHeight: () => 64,
-        footerHeight: () => 64,
-        buildContent: () => ThemeModal(onSelected: onSelected),
-      ),
+      child: ThemeModal(onSelected: onSelected),
     );
   }
 }
@@ -51,21 +35,28 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: _allThemes.length,
-            itemBuilder: (context, index) {
-              return _buildTile(_allThemes[index]);
-            },
-          ),
-        ],
+    return NestedScrollModal(
+      buildHeader: () => const ModalHeader(
+        title: 'Select a Theme',
+      ),
+      headerHeight: () => 64,
+      footerHeight: () => 64,
+      buildContent: () => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _allThemes.length,
+              itemBuilder: (context, index) {
+                return _buildTile(_allThemes[index]);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

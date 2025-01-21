@@ -40,6 +40,7 @@ class ContinueButton extends StatelessWidget {
                 BoxShadow(
                   color: context.isLargeScreen
                       ? context.colorScheme.surfaceContainerHigh
+                          .withOpacity(0.4)
                       : context.colorScheme.surface,
                   blurRadius: 24,
                   spreadRadius: 36,

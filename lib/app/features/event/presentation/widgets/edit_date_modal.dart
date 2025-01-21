@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -27,20 +28,9 @@ class DuplicateEventModal extends ConsumerStatefulWidget {
     RehearsalModel? rehearsal,
     void Function(RehearsalModel)? onRehearsalCreated,
   }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show(
       context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Duplicate Event'),
-          headerHeight: () => 64,
-          buildContent: () => const SingleChildScrollView(
-            child: DuplicateEventModal(),
-          ),
-        ),
-      ),
+      child: const DuplicateEventModal(),
     );
   }
 }
@@ -68,49 +58,57 @@ class EditDateModalState extends ConsumerState<DuplicateEventModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: defaultScreenPadding,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            CustomTextField(
-              label: 'Name',
-              hint: 'Sunday Morning Meeting',
-              icon: null,
-              focusNode: _focusNode,
-              controller: _nameController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an event name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-            DateTimeTextFieldWidget(
-              onDateTimeChanged: (dateTime) {
-                _selectedDateTime = dateTime;
-              },
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Your event will be created and saved in draft mode. '
-              'Participants will not be notified about this event'
-              ' until you will publish it.',
-              style: context.textTheme.bodySmall?.copyWith(
-                color: context.colorScheme.outline,
+    return SafeArea(
+      child: NestedScrollModal(
+        buildHeader: () => const ModalHeader(title: 'Duplicate Event'),
+        headerHeight: () => 64,
+        buildContent: () => SingleChildScrollView(
+          child: Padding(
+            padding: defaultScreenPadding,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  CustomTextField(
+                    label: 'Name',
+                    hint: 'Sunday Morning Meeting',
+                    icon: null,
+                    focusNode: _focusNode,
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an event name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  DateTimeTextFieldWidget(
+                    onDateTimeChanged: (dateTime) {
+                      _selectedDateTime = dateTime;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Your event will be created and saved in draft mode. '
+                    'Participants will not be notified about this event'
+                    ' until you will publish it.',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  ContinueButton(
+                    text: 'Duplicate',
+                    onPressed: _duplicateEvent,
+                    isEnabled: true,
+                    isLoading: _isLoading,
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
-            const SizedBox(height: 32),
-            ContinueButton(
-              text: 'Duplicate',
-              onPressed: _duplicateEvent,
-              isEnabled: true,
-              isLoading: _isLoading,
-            ),
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
       ),
     );
