@@ -80,10 +80,7 @@ class AdaptiveModal {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
         ),
-        builder: (context) => FractionallySizedBox(
-          heightFactor: 0.95,
-          child: Material(child: child),
-        ),
+        builder: (context) => Material(child: child),
       );
     }
   }

@@ -85,41 +85,116 @@ class AdaptiveDurationPicker {
     BuildContext context,
     Duration initialDuration,
   ) async {
-    final result = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(
-        hour: initialDuration.inHours,
-        minute: initialDuration.inMinutes % 60,
-      ),
-      initialEntryMode: TimePickerEntryMode.input,
-      builder: (context, child) {
-        return Column(
-          children: [
-            const SizedBox(height: 12),
-            Material(
-              child: Text(
-                'Set Duration',
-                style: context.textTheme.titleMedium,
-              ),
-            ),
-            const SizedBox(height: 12),
-            MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                alwaysUse24HourFormat: true,
-              ),
-              child: child!,
-            ),
-          ],
-        );
-      },
-    );
+    Duration? selectedDuration = initialDuration;
 
-    if (result != null) {
-      return Duration(
-        hours: result.hour,
-        minutes: result.minute,
-      );
-    }
-    return null;
+    return showDialog<Duration>(
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _NumberPicker(
+                    label: 'Hours',
+                    value: initialDuration.inHours,
+                    maxValue: 23,
+                    onChanged: (value) {
+                      selectedDuration = Duration(
+                        hours: value,
+                        minutes: selectedDuration?.inMinutes.remainder(60) ?? 0,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 32),
+                  _NumberPicker(
+                    label: 'Minutes',
+                    value: initialDuration.inMinutes.remainder(60),
+                    maxValue: 59,
+                    onChanged: (value) {
+                      selectedDuration = Duration(
+                        hours: selectedDuration?.inHours ?? 0,
+                        minutes: value,
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () => Navigator.pop(context, selectedDuration),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _NumberPicker({
+    required String label,
+    required int value,
+    required int maxValue,
+    required ValueChanged<int> onChanged,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label),
+        const SizedBox(height: 8),
+        Container(
+          height: 180,
+          width: 64,
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              ListWheelScrollView.useDelegate(
+                itemExtent: 40,
+                perspective: 0.005,
+                diameterRatio: 1.2,
+                physics: const FixedExtentScrollPhysics(),
+                controller: FixedExtentScrollController(initialItem: value),
+                childDelegate: ListWheelChildBuilderDelegate(
+                  childCount: maxValue + 1,
+                  builder: (context, index) => Center(
+                    child: Text(
+                      index.toString().padLeft(2, '0'),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: index == value
+                                ? Colors.blue
+                                : Colors.grey.shade600,
+                          ),
+                    ),
+                  ),
+                ),
+                onSelectedItemChanged: onChanged,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

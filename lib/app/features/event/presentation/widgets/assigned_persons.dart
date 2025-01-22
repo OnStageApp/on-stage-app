@@ -48,7 +48,10 @@ class AssignedPersons extends StatelessWidget {
                   .toList(),
               child: Row(
                 children: [
-                  Text(isSong ? 'Lead Vocalists' : 'Speakers'),
+                  Text(
+                    isSong ? 'Lead Vocalists' : 'Speakers',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(width: 4),
                   const Icon(
                     LucideIcons.chevron_down,

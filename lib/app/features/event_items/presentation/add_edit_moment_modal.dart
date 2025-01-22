@@ -153,11 +153,14 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
 
   @override
   Widget build(BuildContext context) {
+    final eventItemsState = ref.watch(eventItemsNotifierProvider);
     final selectedStagers = ref.watch(stagerSelectionProvider);
-    final assignedStagers = ref
-        .watch(eventItemsNotifierProvider)
-        .eventItems[ref.read(eventItemsNotifierProvider).currentIndex]
-        .assignedTo;
+
+    final currentItem = !isNewMoment && eventItemsState.eventItems.isNotEmpty
+        ? eventItemsState.eventItems[eventItemsState.currentIndex]
+        : null;
+
+    final assignedStagers = currentItem?.assignedTo;
     final assignedStagersFromEventItem =
         isNewMoment ? selectedStagers : assignedStagers ?? [];
 

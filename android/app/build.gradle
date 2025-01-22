@@ -47,7 +47,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.avtech.onstage"
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {

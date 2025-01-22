@@ -142,10 +142,13 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
 
   Widget _buildSaveButton() {
     final hasChanges = ref.watch(hasChangesProvider);
+    if (!hasChanges) {
+      return const SizedBox();
+    }
     return Padding(
       padding: const EdgeInsets.all(12),
       child: ContinueButton(
-        text: 'Save Schedule Order',
+        text: 'Save Order',
         onPressed: hasChanges ? _saveReorder : () {},
         isEnabled: hasChanges,
       ),

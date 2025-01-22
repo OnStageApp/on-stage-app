@@ -68,6 +68,9 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
         onTap: () {
           final newTheme = _isItemSelected(theme) ? null : theme;
           widget.onSelected(newTheme);
+          if (context.mounted) {
+            context.popDialog();
+          }
         },
         overlayColor:
             WidgetStateProperty.all(context.colorScheme.surfaceBright),

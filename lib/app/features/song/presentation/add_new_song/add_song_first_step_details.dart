@@ -18,7 +18,6 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
-import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class AddSongFirstStepDetails extends ConsumerStatefulWidget {
@@ -214,7 +213,6 @@ class _AddSongFirstStepDetailsState
                       setState(() {
                         _selectedTheme = theme;
                       });
-                      context.popDialog();
                     },
                   );
                 },
