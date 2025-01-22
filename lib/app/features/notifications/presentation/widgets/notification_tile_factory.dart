@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/notifications/domain/enums/notificatio
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/action_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/photo_message_notification_tile.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/team_action_notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 
 class NotificationTileFactory extends ConsumerWidget {
@@ -32,7 +33,7 @@ class NotificationTileFactory extends ConsumerWidget {
           onTap: () {},
         );
       case NotificationType.TEAM_INVITATION_REQUEST:
-        return ActionNotificationTile(
+        return TeamActionNotificationTile(
           notification: notification,
           onTap: () {},
           onConfirm: () {

@@ -245,12 +245,12 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: ref.watch(stagerSelectionProvider).length,
+                        itemCount: assignedStagersFromEventItem.length,
                         itemBuilder: (context, index) {
                           logger.i('sss Assigned stagers: '
-                              '${ref.watch(stagerSelectionProvider)[index].name}');
+                              '${assignedStagersFromEventItem[index].name}');
                           final currentStager =
-                              ref.watch(stagerSelectionProvider)[index];
+                              assignedStagersFromEventItem[index];
                           return Padding(
                             padding: const EdgeInsets.only(left: 12),
                             child: ParticipantListingItem(

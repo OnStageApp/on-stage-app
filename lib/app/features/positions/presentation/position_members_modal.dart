@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/presentation/uninvited_people_modal.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/positions/application/position_notifier.dart';
+import 'package:on_stage_app/app/features/positions/domain/position.dart';
 import 'package:on_stage_app/app/features/positions/presentation/position_members_card.dart';
 import 'package:on_stage_app/app/features/positions/presentation/widgets/position_tile_shimmer.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
@@ -79,6 +81,12 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
   Widget _getContent() {
     final eventState = ref.watch(eventNotifierProvider);
     final positionState = ref.watch(positionNotifierProvider);
+    final sortedPositions = getSortedPositions(
+      positions: positionState.positions,
+      stagers: ref.watch(
+        eventNotifierProvider.select((state) => state.stagers),
+      ),
+    );
     final content = switch ((
       eventState.isLoading || positionState.isLoading,
       positionState.positions.isEmpty
@@ -88,9 +96,9 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
       _ => ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: positionState.positions.length,
+          itemCount: sortedPositions.length,
           itemBuilder: (context, index) {
-            final position = positionState.positions[index];
+            final position = sortedPositions[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: PositionMembersCard(
@@ -114,6 +122,25 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
     };
 
     return content;
+  }
+
+  List<Position> getSortedPositions({
+    required List<Position> positions,
+    required List<Stager> stagers,
+  }) {
+    return positions.toList()
+      ..sort((a, b) {
+        final stagersInA = stagers.where((s) => s.positionId == a.id).length;
+        final stagersInB = stagers.where((s) => s.positionId == b.id).length;
+
+        if ((stagersInA > 0) != (stagersInB > 0)) {
+          return stagersInB.compareTo(
+            stagersInA,
+          );
+        }
+
+        return positions.indexOf(a).compareTo(positions.indexOf(b));
+      });
   }
 
   Widget _buildHeader(BuildContext context) {

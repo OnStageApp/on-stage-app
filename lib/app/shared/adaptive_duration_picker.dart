@@ -28,7 +28,7 @@ class AdaptiveDurationPicker {
       builder: (BuildContext context) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: 600,
