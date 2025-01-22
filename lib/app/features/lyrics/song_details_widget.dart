@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/widget_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -144,21 +145,103 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
       return const SizedBox();
     }
 
-    return ScrollablePositionedList.builder(
-      itemScrollController: _itemScrollController,
-      physics: const BouncingScrollPhysics(),
-      itemCount: sections.length,
-      itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: context.colorScheme.onSurfaceVariant,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildMDNotes(context),
+        Expanded(
+          child: ScrollablePositionedList.builder(
+            itemScrollController: _itemScrollController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: sections.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+                child: _buildLines(index, context),
+              );
+            },
           ),
-          child: _buildLines(index, context),
-        );
-      },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMDNotes(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Container(
+          //   width: 110,
+          //   margin: const EdgeInsets.only(bottom: 16, top: 8),
+          //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(50),
+          //     color: context.colorScheme.onSurfaceVariant,
+          //   ),
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Spacer(),
+          //       Icon(
+          //         LucideIcons.sticky_note,
+          //         color: context.colorScheme.onSurface,
+          //         size: 15,
+          //       ),
+          //       SizedBox(width: 5),
+          //       Text('Notes', style: context.textTheme.titleSmall),
+          //       SizedBox(width: 5),
+          //       Icon(
+          //         LucideIcons.chevron_up,
+          //         color: context.colorScheme.outline,
+          //         size: 15,
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          Container(
+            margin: const EdgeInsets.only(bottom: 16, top: 8),
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              color: context.colorScheme.onSurfaceVariant.withOpacity(0.8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Piano accent groove Four on the floor on 2nd half Build on last bar',
+                  style: context.textTheme.titleMedium!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                DashedLineDivider(
+                  color: context.colorScheme.outline,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Piano accent groov Four on the floor on 2nd half Build on last bar ',
+                  style: context.textTheme.bodyLarge!.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
