@@ -77,10 +77,9 @@ class AdaptiveModal {
         context: context,
         backgroundColor: backgroundColor,
         expand: expand,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+        builder: (context) => SafeArea(
+          child: Material(child: child),
         ),
-        builder: (context) => Material(child: child),
       );
     }
   }

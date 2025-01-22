@@ -128,7 +128,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return OnboardingButton(
       text: _currentPage < _totalPages - 1 ? 'Next' : 'Get Started',
       onPressed: _goToNextPage,
-      isEnabled: _currentPage == 4 ? _isFormValid() : true,
+      isEnabled: true,
     );
   }
 
@@ -140,8 +140,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   bool _isFormValid() {
     final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
-    final isPositionValid = onboardingProvider.position != null;
+    // final isPositionValid = onboardingProvider.position != null;
 
-    return isPositionValid;
+    return true;
   }
 }
