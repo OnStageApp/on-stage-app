@@ -229,7 +229,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 child: Row(
                   children: [
                     const Icon(
-                      LucideIcons.user_round_plus,
+                      Icons.add,
                       color: Colors.blue,
                       size: 24,
                     ),
