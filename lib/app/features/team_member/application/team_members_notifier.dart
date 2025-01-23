@@ -92,16 +92,18 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
   }
 
   Future<String?> inviteTeamMember(
-    String email,
+    String rawEmailOrUsername,
     TeamMemberRole role,
   ) async {
-    if (email.isNullEmptyOrWhitespace) {
+    if (rawEmailOrUsername.isNullEmptyOrWhitespace) {
       return 'Email is empty';
     }
 
+    final lowerCaseEmail = rawEmailOrUsername.toLowerCase();
+
     try {
       final createTeamMemberRequest = CreateTeamMemberRequest(
-        email: email,
+        email: lowerCaseEmail,
         newMemberRole: role,
       );
 

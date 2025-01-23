@@ -69,7 +69,7 @@ class TeamsSection extends ConsumerWidget {
         ),
         if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
           PreferencesActionTile(
-            title: 'Groups',
+            title: 'Group Templates',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
             leadingWidget: Icon(
               LucideIcons.users_round,
