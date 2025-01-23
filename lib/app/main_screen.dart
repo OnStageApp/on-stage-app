@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
-import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
@@ -80,10 +79,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> _initProviders() async {
     logger.i('Init providers');
+    final notificationNotifier =
+        ref.read(notificationNotifierProvider.notifier);
     await ref.read(databaseProvider).initDatabase();
     ref.read(socketIoServiceProvider.notifier);
-    ref.read(firebaseNotifierProvider.notifier);
-
     await Future.wait([
       ref.read(deviceServiceProvider).verifyDeviceId(),
       ref
@@ -98,12 +97,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           .read(planServiceProvider.notifier)
           .fetchAndSavePlans(forceRefresh: true),
     ]).then((_) {
-      ref.read(notificationNotifierProvider.notifier).getNotifications();
-
       logger.i('All providers initialized');
     }).catchError((error, s) {
       logger.e('Error during provider initialization: $error $s');
     });
+    await notificationNotifier.getNotifications();
   }
 
   bool _shouldHideBottomNav(String location) {

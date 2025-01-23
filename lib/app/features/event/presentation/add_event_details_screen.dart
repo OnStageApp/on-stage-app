@@ -122,7 +122,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               const SizedBox(height: Insets.medium),
               Text(
-                'Participants',
+                'Members',
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),

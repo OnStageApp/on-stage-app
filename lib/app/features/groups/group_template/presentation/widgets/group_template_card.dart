@@ -104,6 +104,7 @@ class _GroupTemplateCardState extends ConsumerState<GroupTemplateCard> {
                         : context.colorScheme.surface,
                   ),
                   AdaptiveMenuContext(
+                    width: 24,
                     items: [
                       MenuAction(
                         title: 'Rename',

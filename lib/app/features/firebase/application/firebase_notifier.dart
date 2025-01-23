@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
+import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 import 'package:on_stage_app/logger.dart';
@@ -37,7 +40,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class FirebaseNotifier extends _$FirebaseNotifier {
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -87,7 +90,9 @@ class FirebaseNotifier extends _$FirebaseNotifier {
     await _localNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (response) {
-        _handleNotificationResponse(response.payload);
+        if (response.payload != null) {
+          _handleScreenRoutesChange(response.payload!);
+        }
       },
     );
 
@@ -157,18 +162,46 @@ class FirebaseNotifier extends _$FirebaseNotifier {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _handleNotificationResponse(message.data['screen'] as String?);
+      _handleNotificationResponseData(message.data);
     });
   }
 
   /// Handles notification response when the notification is tapped.
-  void _handleNotificationResponse(String? screenName) {
-    if (screenName != null) {
-      _pendingRoute = screenName;
-      _processNavigation();
+
+  void _handleNotificationResponseData(Map<String, dynamic> data) {
+    final teamId = data['teamId'] as String?;
+    final screen = data['screen'] as String?;
+
+    if (screen != null) {
+      _handleScreenRoutesChange(screen);
+    } else if (teamId != null) {
+      _handleNotificationTeamChange(teamId);
     } else {
       ref.read(navigationNotifierProvider).goNamed(AppRoute.notification.name);
     }
+  }
+
+  void _handleScreenRoutesChange(String screenName) {
+    _pendingRoute = screenName;
+    _processNavigation();
+  }
+
+  Future<void> _handleNotificationTeamChange(String teamId) async {
+    final currentTeamId = ref.read(teamNotifierProvider).currentTeam?.id;
+
+    if (currentTeamId == null || teamId == currentTeamId) {
+      return;
+    }
+
+    final teamsNotifier = ref.read(teamsNotifierProvider.notifier);
+    final teamNotifier = ref.read(teamNotifierProvider.notifier);
+    final eventsNotifier = ref.read(eventsNotifierProvider.notifier);
+
+    await teamsNotifier.setCurrentTeam(teamId);
+
+    await teamNotifier.getCurrentTeam();
+
+    eventsNotifier.resetState();
   }
 
   /// Processes the pending navigation if any.

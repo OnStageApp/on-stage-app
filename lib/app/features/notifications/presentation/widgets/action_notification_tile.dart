@@ -35,16 +35,17 @@ class ActionNotificationTile extends NotificationTile {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (notification.status == NotificationStatus.NEW)
                         _buildCircle(context.colorScheme.error),
-                      Text(
-                        notification.title ?? 'Notification',
-                        style: context.textTheme.headlineMedium!
-                            .copyWith(color: context.colorScheme.onSurface),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Text(
+                          notification.title ?? 'Notification',
+                          style: context.textTheme.headlineMedium!
+                              .copyWith(color: context.colorScheme.onSurface),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -140,7 +141,7 @@ class ActionNotificationTile extends NotificationTile {
   Widget _buildCircle(Color backgroundColor) {
     return Container(
       alignment: Alignment.topRight,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.only(right: 4),
       child: Icon(
         Icons.circle,
         size: 12,

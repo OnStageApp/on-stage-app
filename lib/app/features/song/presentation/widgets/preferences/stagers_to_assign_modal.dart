@@ -72,7 +72,7 @@ class StagersToAssignModalState extends ConsumerState<StagersToAssignModal> {
     final stagersAsyncValue = ref.watch(stagersByEventProvider(eventId));
 
     return NestedScrollModal(
-      buildHeader: () => const ModalHeader(title: 'Select People'),
+      buildHeader: () => const ModalHeader(title: 'Select Members'),
       headerHeight: () => 64,
       buildFooter: () {
         return Padding(

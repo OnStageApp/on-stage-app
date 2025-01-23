@@ -134,7 +134,6 @@ class NotificationNotifier extends _$NotificationNotifier {
   Future<Uint8List?> _getPhotoBytes(String userId) async {
     final localPhoto = await _getPhotoFromLocalStorage(userId);
     if (localPhoto != null) {
-      logger.i('Loaded user photo from local storage ${DateTime.now()}');
       return localPhoto;
     }
 

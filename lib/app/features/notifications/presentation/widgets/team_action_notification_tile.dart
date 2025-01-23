@@ -38,12 +38,14 @@ class TeamActionNotificationTile extends NotificationTile {
                     children: [
                       if (notification.status == NotificationStatus.NEW)
                         _buildCircle(context.colorScheme.error),
-                      Text(
-                        notification.title ?? 'Notification',
-                        style: context.textTheme.headlineMedium!
-                            .copyWith(color: context.colorScheme.onSurface),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        child: Text(
+                          notification.title ?? 'Notification',
+                          style: context.textTheme.headlineMedium!
+                              .copyWith(color: context.colorScheme.onSurface),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
@@ -65,7 +67,21 @@ class TeamsSection extends ConsumerWidget {
             },
           ),
         ),
-        if (!ref.watch(permissionServiceProvider).isLeaderOnTeam)
+        if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+          PreferencesActionTile(
+            title: 'Groups',
+            trailingIcon: Icons.keyboard_arrow_right_rounded,
+            leadingWidget: Icon(
+              LucideIcons.users_round,
+              size: 20,
+              color: context.colorScheme.outline,
+            ),
+            height: 54,
+            onTap: () {
+              context.goNamed(AppRoute.groups.name);
+            },
+          ),
+        ] else if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
           CreateNewTeamButton(
             icon: Icons.group,
             title: 'Create Your Own Team',
@@ -77,6 +93,7 @@ class TeamsSection extends ConsumerWidget {
               );
             },
           ),
+        ],
       ],
     );
   }

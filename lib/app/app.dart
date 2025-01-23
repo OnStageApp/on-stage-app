@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:force_update_helper/force_update_helper.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
+import 'package:on_stage_app/app/features/firebase/application/firebase_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/token_manager.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
@@ -51,6 +52,7 @@ class _AppState extends ConsumerState<App> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(firebaseNotifierProvider.notifier);
     final router = ref.watch(navigationNotifierProvider);
     final userSettings = ref.watch(userSettingsNotifierProvider);
     final remoteConfig = ref.watch(remoteConfigProvider);

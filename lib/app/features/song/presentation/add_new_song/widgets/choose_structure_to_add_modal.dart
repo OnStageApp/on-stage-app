@@ -114,6 +114,7 @@ class ChooseStructureToAddModalState
           ConstrainedBox(
             constraints: const BoxConstraints(maxHeight: 44),
             child: StageSearchBar(
+              //todo: improvements
               focusNode: _searchFocusNode,
               controller: _searchController,
               onClosed: _clearSearch,

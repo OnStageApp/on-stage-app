@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
 import 'package:on_stage_app/logger.dart';
 
 class NotificationSwitchTeamButton extends ConsumerWidget {
@@ -49,17 +49,20 @@ class NotificationSwitchTeamButton extends ConsumerWidget {
         ),
       ),
       onPressed: () async {
+        final currentTeamId = ref.watch(teamNotifierProvider).currentTeam?.id;
+        if (teamId == currentTeamId) {
+          context.pop();
+          return;
+        }
         if (teamId == null) {
           logger.e('Team ID is null');
           return;
         }
-        logger.i('Switch to ${text}');
+        logger.i('Switch to $text');
 
         final teamsNotifier = ref.read(teamsNotifierProvider.notifier);
         final teamNotifier = ref.read(teamNotifierProvider.notifier);
         final eventsNotifier = ref.read(eventsNotifierProvider.notifier);
-        final navigationNotifier =
-            ref.read(navigationNotifierProvider.notifier);
 
         await teamsNotifier.setCurrentTeam(teamId!);
 
@@ -70,7 +73,6 @@ class NotificationSwitchTeamButton extends ConsumerWidget {
         if (!context.mounted) return;
 
         eventsNotifier.resetState();
-        navigationNotifier.resetRouterAndState();
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

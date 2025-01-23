@@ -220,7 +220,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Participants',
+                    'Members',
                     style: context.textTheme.titleSmall,
                   ),
                   Text(

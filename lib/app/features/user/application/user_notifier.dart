@@ -142,7 +142,6 @@ class UserNotifier extends _$UserNotifier {
     if (!forceUpdate) {
       final localPhoto = await _getPhotoFromLocalStorage();
       if (localPhoto != null) {
-        logger.i('Loaded user photo from local storage ${DateTime.now()}');
         return localPhoto;
       }
     }

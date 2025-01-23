@@ -21,10 +21,12 @@ class AdaptiveMenuContext extends StatelessWidget {
   const AdaptiveMenuContext({
     required this.items,
     required this.child,
+    this.width,
     super.key,
   });
 
   final List<MenuAction> items;
+  final double? width;
   final Widget child;
 
   @override
@@ -57,6 +59,7 @@ class AdaptiveMenuContext extends StatelessWidget {
 
     return SizedBox(
       height: 24,
+      width: width,
       child: PopupMenuButton<MenuAction>(
         padding: EdgeInsets.zero,
         icon: child,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/edit_field_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
@@ -15,7 +16,6 @@ import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -35,6 +35,8 @@ class TeamDetailsScreen extends ConsumerStatefulWidget {
 
 class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   final teamNameController = TextEditingController();
+  final searchController = TextEditingController();
+  final searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -44,6 +46,27 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    teamNameController.dispose();
+    searchController.dispose();
+    searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  List<TeamMember> _getFilteredMembers(List<TeamMember> members) {
+    final searchText = searchController.text.toLowerCase();
+    if (searchText.isEmpty) return members;
+
+    return members
+        .where((member) =>
+            (member.name?.toLowerCase() ?? '').contains(searchText) ||
+            (member.role?.title?.toLowerCase() ?? '').contains(searchText) ||
+            (member.inviteStatus?.name.toLowerCase() ?? '')
+                .contains(searchText))
+        .toList();
   }
 
   @override
@@ -66,7 +89,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                   const Text('Manage'),
                   const SizedBox(height: 8),
                   PreferencesActionTile(
-                    title: 'Groups',
+                    title: 'Group Templates',
                     trailingIcon: Icons.keyboard_arrow_right_rounded,
                     leadingWidget: Icon(
                       LucideIcons.users_round,
@@ -109,25 +132,13 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 const SizedBox(height: 16),
                 Text('Members', style: context.textTheme.titleSmall),
                 const SizedBox(height: 8),
+                StageSearchBar(
+                  focusNode: searchFocusNode,
+                  controller: searchController,
+                  onChanged: (value) => setState(() {}),
+                ),
+                const SizedBox(height: 16),
                 _buildParticipantsList(),
-                if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
-                  const SizedBox(height: 12),
-                  EventActionButton(
-                    onTap: () {
-                      ref
-                          .watch(permissionServiceProvider)
-                          .callMethodIfHasPermission(
-                            context: context,
-                            permissionType: PermissionType.addTeamMembers,
-                            onGranted: () {
-                              context.pushNamed(AppRoute.addTeamMember.name);
-                            },
-                          );
-                    },
-                    text: 'Invite People',
-                    icon: Icons.add,
-                  ),
-                ],
                 if (widget.isCreating) ...[
                   const Spacer(),
                   ContinueButton(
@@ -154,7 +165,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   }
 
   Widget _buildParticipantsList() {
-    final teamMembers = ref
+    final allTeamMembers = ref
         .watch(teamMembersNotifierProvider)
         .teamMembers
         .where(
@@ -163,46 +174,112 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
               member.inviteStatus == InviteStatus.confirmed,
         )
         .toList();
+
+    // Filter members based on search
+    final teamMembers = _getFilteredMembers(allTeamMembers);
+
     if (teamMembers.isEmpty) {
+      // Show different message if we have members but search returned no results
+      if (allTeamMembers.isNotEmpty && searchController.text.isNotEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'No members found matching "${searchController.text}"',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.outline,
+              ),
+            ),
+          ),
+        );
+      }
       return const SizedBox();
     }
+
     return Ink(
       decoration: BoxDecoration(
         color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: teamMembers.length,
-        itemBuilder: (context, index) {
-          return MemberTileWidget(
-            name: teamMembers[index].name ?? 'Name',
-            photo: teamMembers[index].profilePicture,
-            trailing: _getTrailingText(teamMembers[index], index),
-            onTap: () {
-              final currentTeamMemberId =
-                  ref.read(currentTeamMemberNotifierProvider).teamMember?.id;
-              final hasAccessToEdit =
-                  ref.watch(permissionServiceProvider).hasAccessToEdit;
-              if (currentTeamMemberId == teamMembers[index].id ||
-                  !hasAccessToEdit) {
-                context.pushNamed(
-                  AppRoute.userProfileInfo.name,
-                  queryParameters: {
-                    'userId': teamMembers[index].userId,
-                  },
-                );
-              } else {
-                TeamMemberModal.show(
-                  onSave: (model) {},
-                  context: context,
-                  teamMember: teamMembers[index],
-                );
-              }
+      child: Column(
+        children: [
+          if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: TextButton(
+                onPressed: () {
+                  ref
+                      .watch(permissionServiceProvider)
+                      .callMethodIfHasPermission(
+                        context: context,
+                        permissionType: PermissionType.addTeamMembers,
+                        onGranted: () {
+                          context.pushNamed(AppRoute.addTeamMember.name);
+                        },
+                      );
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(12),
+                  backgroundColor: context.colorScheme.onSurfaceVariant,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  foregroundColor: context.colorScheme.outline.withOpacity(0.1),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      LucideIcons.user_round_plus,
+                      color: Colors.blue,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 14),
+                    Text(
+                      'Invite Members',
+                      style: context.textTheme.titleMedium!.copyWith(
+                        color: context.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: teamMembers.length,
+            itemBuilder: (context, index) {
+              return MemberTileWidget(
+                name: teamMembers[index].name ?? 'Name',
+                photo: teamMembers[index].profilePicture,
+                trailing: _getTrailingText(teamMembers[index], index),
+                onTap: () {
+                  final currentTeamMemberId = ref
+                      .read(currentTeamMemberNotifierProvider)
+                      .teamMember
+                      ?.id;
+                  final hasAccessToEdit =
+                      ref.watch(permissionServiceProvider).hasAccessToEdit;
+                  if (currentTeamMemberId == teamMembers[index].id ||
+                      !hasAccessToEdit) {
+                    context.pushNamed(
+                      AppRoute.userProfileInfo.name,
+                      queryParameters: {
+                        'userId': teamMembers[index].userId,
+                      },
+                    );
+                  } else {
+                    TeamMemberModal.show(
+                      onSave: (model) {},
+                      context: context,
+                      teamMember: teamMembers[index],
+                    );
+                  }
+                },
+              );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }
