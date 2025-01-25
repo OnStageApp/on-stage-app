@@ -4,11 +4,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     required this.controller,
+    // required this.focusNode,
     required this.style,
     super.key,
   });
 
   final CustomTextEditingController controller;
+
+  // final FocusNode focusNode;
   final TextStyle style;
 
   @override
@@ -21,6 +24,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
+        // focusNode: widget.focusNode,
+        enableSuggestions: false,
+        autocorrect: false,
         controller: widget.controller,
         maxLines: null,
         minLines: 1,

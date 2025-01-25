@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
@@ -23,14 +24,17 @@ class AddSongSecondStepContent extends ConsumerStatefulWidget {
 
 class AddSongSecondStepContentState
     extends ConsumerState<AddSongSecondStepContent>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final TabController _tabController;
+  double _bottomInsets = 0;
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //See if it's needed
       ref.read(songEditorNotifierProvider.notifier).init();
     });
     _tabController = TabController(length: 2, vsync: this);
@@ -38,35 +42,101 @@ class AddSongSecondStepContentState
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _tabController.dispose();
     super.dispose();
   }
 
+  //
+  // @override
+  // void didChangeMetrics() {
+  //   final bottomInset = View.of(context).viewInsets.bottom;
+  //   setState(() {
+  //     _bottomInsets = bottomInset;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     final songTitle = ref.watch(songNotifierProvider).song.title ?? 'Untitled';
+    final isLargeScreen = context.isLargeScreen;
+
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _buildFloatingActionButton(context),
       appBar: StageAppBar(
         isBackButtonVisible: true,
         title: songTitle,
-        onBackButtonPressed: () {
-          final songId = ref.watch(songNotifierProvider).song.id;
-          if (songId == null) {
-            context.goNamed(AppRoute.home.name);
-            return;
-          }
-          ref.read(songNotifierProvider.notifier).getSongById(songId);
-          context.pop();
-        },
+        onBackButtonPressed: _handleBackPress,
+        trailing: isLargeScreen ? _buildTrailingButton(context) : null,
       ),
-      body: EditorTabSwitch(tabController: _tabController),
+      body: isLargeScreen
+          ? EditorTabSwitch(tabController: _tabController)
+          : Stack(
+              children: [
+                EditorTabSwitch(tabController: _tabController),
+                Positioned(
+                  bottom: -_bottomInsets,
+                  left: 0,
+                  right: 0,
+                  child: _buildFloatingActionButton(context),
+                ),
+              ],
+            ),
+    );
+  }
+
+  void _handleBackPress() {
+    final songId = ref.watch(songNotifierProvider).song.id;
+    if (songId == null) {
+      context.goNamed(AppRoute.home.name);
+      return;
+    }
+    ref.read(songNotifierProvider.notifier).getSongById(songId);
+    context.pop();
+  }
+
+  Widget _buildTrailingButton(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      constraints: const BoxConstraints(maxWidth: 300),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: SizedBox(
+                height: 42,
+                width: 100,
+                child: CustomAnimatedTabSwitch(
+                  tabController: _tabController,
+                  tabs: const ['Preview', 'Edit'],
+                  onSwitch: _handleTabSwitch,
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 3,
+            child: SizedBox(
+              height: 42,
+              width: 150,
+              child: ContinueButton(
+                hasShadow: false,
+                text: _isSaving ? 'Saving...' : 'Save Song',
+                onPressed: _isSaving ? () {} : () => _onSavedSong(context),
+                isEnabled: !_isSaving,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -78,6 +148,7 @@ class AddSongSecondStepContentState
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Flexible(
             flex: 2,
@@ -86,14 +157,7 @@ class AddSongSecondStepContentState
               child: CustomAnimatedTabSwitch(
                 tabController: _tabController,
                 tabs: const ['Preview', 'Edit'],
-                onSwitch: () {
-                  final newIndex = _tabController.index == 0 ? 1 : 0;
-                  if (newIndex == 1) {
-                    FocusScope.of(context).unfocus();
-                    ref.read(songEditorNotifierProvider.notifier).updateSong();
-                  }
-                  _tabController.animateTo(newIndex);
-                },
+                onSwitch: _handleTabSwitch,
               ),
             ),
           ),
@@ -101,11 +165,9 @@ class AddSongSecondStepContentState
             flex: 3,
             child: ContinueButton(
               hasShadow: false,
-              text: 'Save Song',
-              onPressed: () {
-                _onSavedSong(context);
-              },
-              isEnabled: true,
+              text: _isSaving ? 'Saving...' : 'Save Song',
+              onPressed: _isSaving ? () {} : () => _onSavedSong(context),
+              isEnabled: !_isSaving,
             ),
           ),
         ],
@@ -113,37 +175,61 @@ class AddSongSecondStepContentState
     );
   }
 
+  void _handleTabSwitch() {
+    final newIndex = _tabController.index == 0 ? 1 : 0;
+    if (newIndex == 1) {
+      FocusScope.of(context).unfocus();
+      ref.read(songEditorNotifierProvider.notifier).updateSong();
+    }
+    _tabController.animateTo(newIndex);
+  }
+
   Future<void> _onSavedSong(BuildContext context) async {
-    ref.read(songEditorNotifierProvider.notifier).updateSong();
-    final song = ref.watch(songNotifierProvider).song;
-    final songNotifier = ref.read(songNotifierProvider.notifier);
+    if (_isSaving) return;
 
-    if (song.id == null) {
-      songNotifier.setDefaultStructureLocally(song.availableStructureItems);
-    }
+    setState(() {
+      _isSaving = true;
+    });
 
-    final success = song.id == null
-        ? await songNotifier.saveSongToDB()
-        : await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
+    try {
+      ref.read(songEditorNotifierProvider.notifier).updateSong();
+      final song = ref.watch(songNotifierProvider).song;
+      final songNotifier = ref.read(songNotifierProvider.notifier);
 
-    if (!mounted) return;
+      if (song.id == null) {
+        songNotifier.setDefaultStructureLocally(song.availableStructureItems);
+      }
 
-    if (!success) {
-      TopFlushBar.show(
-        context,
-        'Error saving song, something went wrong.',
-        isError: true,
+      final success = song.id == null
+          ? await songNotifier.saveSongToDB()
+          : await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
+
+      if (!mounted) return;
+
+      if (!success) {
+        TopFlushBar.show(
+          context,
+          'Error saving song, something went wrong.',
+          isError: true,
+        );
+        return;
+      }
+
+      if (song.id == null) {
+        return;
+      }
+
+      context.goNamed(
+        AppRoute.song.name,
+        queryParameters: {'songId': song.id},
       );
-      return;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
-
-    if (song.id == null) {
-      return;
-    }
-    context.goNamed(
-      AppRoute.song.name,
-      queryParameters: {'songId': song.id},
-    );
   }
 }
 

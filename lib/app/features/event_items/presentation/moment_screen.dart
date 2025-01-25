@@ -27,10 +27,10 @@ class _MomentScreenState extends ConsumerState<MomentScreen> {
   @override
   void initState() {
     super.initState();
-    print('MomentScreen initState');
     _titleController = TextEditingController(text: widget.eventItem.name);
-    _descriptionController =
-        TextEditingController(text: widget.eventItem.description);
+    _descriptionController = TextEditingController(
+      text: widget.eventItem.description,
+    );
     _descriptionFocusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -76,40 +76,46 @@ class _MomentScreenState extends ConsumerState<MomentScreen> {
 
     if (event == null) return const SizedBox();
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(24),
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            MomentProfileSection(
-              assignedStagers: assignedStagers,
-              event: event,
-              eventItem: widget.eventItem,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: context.colorScheme.onSurfaceVariant,
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 24),
-            DashedLineDivider(
-              color: context.colorScheme.primaryContainer,
-              dashWidth: 1,
-              dashSpace: 8,
+            child: Column(
+              children: [
+                MomentProfileSection(
+                  assignedStagers: assignedStagers,
+                  event: event,
+                  eventItem: widget.eventItem,
+                ),
+                const SizedBox(height: 24),
+                DashedLineDivider(
+                  color: context.colorScheme.primaryContainer,
+                  dashWidth: 1,
+                  dashSpace: 8,
+                ),
+                const SizedBox(height: 24),
+                MomentContentSection(
+                  titleController: _titleController,
+                  descriptionController: _descriptionController,
+                  descriptionFocusNode: _descriptionFocusNode,
+                  isEditingEnabled: _isEditingEnabled,
+                  onContentChanged: (title, description) {
+                    ref
+                        .read(
+                            momentControllerProvider(widget.eventItem).notifier)
+                        .updateContent(title, description);
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            MomentContentSection(
-              titleController: _titleController,
-              descriptionController: _descriptionController,
-              descriptionFocusNode: _descriptionFocusNode,
-              isEditingEnabled: _isEditingEnabled,
-              onContentChanged: (title, description) {
-                ref
-                    .read(momentControllerProvider(widget.eventItem).notifier)
-                    .updateContent(title, description);
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
