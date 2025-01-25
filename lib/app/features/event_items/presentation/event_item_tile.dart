@@ -16,6 +16,7 @@ class EventItemTile extends ConsumerStatefulWidget {
     required this.eventItem,
     required this.artist,
     required this.songKey,
+    required this.tempo,
     required this.isEditor,
     this.onTap,
     this.onDelete,
@@ -25,6 +26,7 @@ class EventItemTile extends ConsumerStatefulWidget {
   final EventItem eventItem;
   final String artist;
   final String songKey;
+  final String tempo;
   final void Function()? onTap;
   final void Function()? onDelete;
   final bool isEditor;
@@ -118,6 +120,7 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            _buildSongDetails2(context),
                             Text(
                               widget.eventItem.name ?? '',
                               style: context.textTheme.titleMedium!.copyWith(
@@ -130,7 +133,7 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                               _buildDescription(context),
                             ],
                             if (isSong) ...[
-                              _buildSongDetails(context),
+                              // _buildSongArtist(context),
                             ],
                             if (widget.eventItem.assignedTo.isNotNullOrEmpty)
                               AssignedPersons(
@@ -193,7 +196,35 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
     );
   }
 
-  Widget _buildSongDetails(BuildContext context) {
+  Widget _buildSongDetails2(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 6,
+              vertical: 1,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: context.colorScheme.outline,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              '${widget.songKey} | ${widget.tempo} BPM',
+              style: context.textTheme.bodyMedium!.copyWith(
+                color: context.colorScheme.outline,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSongArtist(BuildContext context) {
     return Row(
       children: [
         Flexible(
@@ -204,23 +235,6 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
             ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 6,
-            vertical: 1,
-          ),
-          decoration: BoxDecoration(
-            color: context.colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            widget.songKey,
-            style: context.textTheme.bodyMedium!.copyWith(
-              color: context.colorScheme.outline,
-            ),
           ),
         ),
       ],
