@@ -292,6 +292,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   /// within the given section's controller.
   void _insertChord(String chord, SectionData sectionData) {
     final controller = sectionData.controller;
+    final focusNode = sectionData.focusNode;
     final selection = controller.selection;
 
     if (selection.start < 0 || selection.end < 0) return;
@@ -305,9 +306,16 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
 
     final newSelectionIndex = selection.start + chord.length;
 
-    controller.value = TextEditingValue(
+    // Preserve focus while updating text
+    controller.value = controller.value.copyWith(
       text: newText,
       selection: TextSelection.collapsed(offset: newSelectionIndex),
+      composing: TextRange.empty,
     );
+
+    // Request focus if needed
+    if (!focusNode.hasFocus) {
+      focusNode.requestFocus();
+    }
   }
 }

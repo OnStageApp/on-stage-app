@@ -25,6 +25,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
+        scribbleEnabled: false,
+        scrollPhysics: const NeverScrollableScrollPhysics(),
         focusNode: widget.focusNode,
         enableSuggestions: false,
         autocorrect: false,
