@@ -47,14 +47,13 @@ class AddSongSecondStepContentState
     super.dispose();
   }
 
-  //
-  // @override
-  // void didChangeMetrics() {
-  //   final bottomInset = View.of(context).viewInsets.bottom;
-  //   setState(() {
-  //     _bottomInsets = bottomInset;
-  //   });
-  // }
+  @override
+  void didChangeMetrics() {
+    final bottomInset = View.of(context).viewInsets.bottom;
+    setState(() {
+      _bottomInsets = bottomInset;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

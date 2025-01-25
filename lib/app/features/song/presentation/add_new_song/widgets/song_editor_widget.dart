@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song_editor/song_editor_notifier.dart';
@@ -9,6 +10,7 @@ import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/section_data_model.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/choose_structure_to_add_modal.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/chord_tool_bar.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/chords_for_key_helper.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/song_content_view.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/custom_text_widget.dart';
@@ -42,23 +44,23 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     final rawSections = song.rawSections ?? [];
 
     final sections = rawSections.map((rawSection) {
-      // final focusNode = FocusNode();
+      final focusNode = FocusNode();
       final section = SectionData(
         rawSection: rawSection,
-        // focusNode: focusNode,
+        focusNode: focusNode,
         controller: CustomTextEditingController(text: rawSection.content),
       );
 
-      // focusNode.addListener(() {
-      //   print('here');
-      //   if (focusNode.hasFocus) {
-      //     logger.i(
-      //         'Focus gained for section ${section.rawSection.structureItem?.name}');
-      //     setState(() {
-      //       _focusedSection = section;
-      //     });
-      //   }
-      // });
+      focusNode.addListener(() {
+        print('here');
+        if (focusNode.hasFocus) {
+          logger.i(
+              'Focus gained for section ${section.rawSection.structureItem?.name}');
+          setState(() {
+            _focusedSection = section;
+          });
+        }
+      });
 
       return section;
     }).toList();
@@ -86,7 +88,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
               structureItem: structureItem,
               content: '',
             ),
-            // focusNode: FocusNode(),
+            focusNode: FocusNode(),
             controller: CustomTextEditingController(text: ''),
           );
 
@@ -127,7 +129,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
         }
       },
       controller: sectionData.controller,
-      // focusNode: sectionData.focusNode,
+      focusNode: sectionData.focusNode,
     );
   }
 
@@ -137,26 +139,26 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     logger.d('Building SongEditorWidget with ${sections.length} sections');
     final bottomInsets = View.of(context).viewInsets.bottom;
     print('Bottom insets: $bottomInsets');
-    // if (context.isLargeScreen) {
-    //   return Stack(
-    //     children: [
-    //       _buildBody(sections),
-    //       if (sections.isNotEmpty)
-    //         ChordToolbar(
-    //           sectionData: _focusedSection,
-    //           bottomPadding: bottomInsets > 120 ? 32 : 32,
-    //           onChordSelected: _insertChord,
-    //         ),
-    //     ],
-    //   );
-    // } else {
-    // return KeyboardActions(
-    // config: _buildKeyboardActionsConfig(context, sections),
-    // disableScroll: true,
-    // autoScroll: false,
-    return _buildBody(sections);
-    // );
-    // }
+    if (context.isLargeScreen) {
+      return Stack(
+        children: [
+          _buildBody(sections),
+          if (sections.isNotEmpty)
+            ChordToolbar(
+              sectionData: _focusedSection,
+              bottomPadding: bottomInsets > 120 ? 32 : 32,
+              onChordSelected: _insertChord,
+            ),
+        ],
+      );
+    } else {
+      return KeyboardActions(
+        config: _buildKeyboardActionsConfig(context, sections),
+        disableScroll: true,
+        autoScroll: false,
+        child: _buildBody(sections),
+      );
+    }
   }
 
   Widget _buildBody(List<SectionData> sections) {
@@ -164,21 +166,28 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       margin: const EdgeInsets.only(bottom: 16),
       child: sections.isEmpty
           ? _buildEmptySections()
-          : SizedBox(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                shrinkWrap: true,
-                itemCount: sections.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == sections.length) {
-                    return _buildAddButton();
-                  }
-                  final section = sections[index];
-                  return _buildSongContentView(context, section, index);
-                },
-              ),
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      if (index == sections.length) {
+                        return _buildAddButton();
+                      }
+                      final section = sections[index];
+                      return _buildSongContentView(context, section, index);
+                    },
+                    childCount: sections.length + 1,
+                  ),
+                ),
+                // Add extra space at the bottom for keyboard
+                const SliverPadding(
+                  padding: EdgeInsets.only(bottom: 100),
+                  sliver: SliverToBoxAdapter(child: SizedBox()),
+                ),
+              ],
             ),
     );
   }
@@ -223,24 +232,24 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     );
   }
 
-  // KeyboardActionsConfig _buildKeyboardActionsConfig(
-  //   BuildContext context,
-  //   List<SectionData> sections,
-  // ) {
-  //   return KeyboardActionsConfig(
-  //     keyboardBarColor: const Color(0xFF343536),
-  //     nextFocus: false,
-  //     actions: sections.map((section) {
-  //       return KeyboardActionsItem(
-  //         displayArrows: false,
-  //         focusNode: section.focusNode,
-  //         toolbarButtons: [
-  //           (node) => _buildChordToolbar(section),
-  //         ],
-  //       );
-  //     }).toList(),
-  //   );
-  // }
+  KeyboardActionsConfig _buildKeyboardActionsConfig(
+    BuildContext context,
+    List<SectionData> sections,
+  ) {
+    return KeyboardActionsConfig(
+      keyboardBarColor: const Color(0xFF343536),
+      nextFocus: false,
+      actions: sections.map((section) {
+        return KeyboardActionsItem(
+          displayArrows: false,
+          focusNode: section.focusNode,
+          toolbarButtons: [
+            (node) => _buildChordToolbar(section),
+          ],
+        );
+      }).toList(),
+    );
+  }
 
   Widget _buildChordToolbar(SectionData sectionData) {
     final song = ref.watch(songNotifierProvider).song;

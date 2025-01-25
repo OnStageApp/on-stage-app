@@ -200,7 +200,6 @@ class _ChordData {
   final String name;
   final int rootIndex;
   final _ChordQuality quality;
-
   const _ChordData({
     required this.name,
     required this.rootIndex,
@@ -215,6 +214,5 @@ enum _ChordQuality { major, minor, dim }
 class _ChordFlavor {
   final String suffix;
   final int? slashOffset;
-
   const _ChordFlavor({required this.suffix, this.slashOffset});
 }
