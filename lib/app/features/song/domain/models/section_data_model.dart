@@ -4,10 +4,13 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/custom_text_
 class SectionData {
   SectionData({
     required this.rawSection,
+    // required this.focusNode,
     CustomTextEditingController? controller,
   }) : controller = controller ??
             CustomTextEditingController(text: rawSection.content ?? '');
   final RawSection rawSection;
+
+  // final FocusNode focusNode;
   final CustomTextEditingController controller;
 
   SectionData copyWith({
@@ -16,6 +19,7 @@ class SectionData {
   }) {
     return SectionData(
       rawSection: rawSection ?? this.rawSection,
+      // focusNode: focusNode,
       controller: controller ?? this.controller,
     );
   }

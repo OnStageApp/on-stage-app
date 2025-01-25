@@ -6,13 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
-import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
-import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
-import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -20,7 +17,6 @@ import 'package:on_stage_app/app/features/team_member/application/current_team_m
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
-import 'package:on_stage_app/app/features/user/presentation/profile_screen.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/adaptive_event_pop_dialog.dart';
 import 'package:on_stage_app/app/shared/custom_side_navigation.dart';
@@ -41,13 +37,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  List<Widget> screens = [
-    const HomeScreen(),
-    const SongsScreen(),
-    const EventsScreen(),
-    const ProfileScreen(),
-  ];
-
   bool _isNavigationExpanded = false;
 
   Future<void> _onChangedScreen(int index) async {

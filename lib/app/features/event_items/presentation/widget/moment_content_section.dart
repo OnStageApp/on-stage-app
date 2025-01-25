@@ -19,41 +19,41 @@ class MomentContentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: titleController,
-            style: context.textTheme.headlineLarge,
-            enabled: isEditingEnabled,
-            onChanged: (value) =>
-                onContentChanged(value, descriptionController.text),
-            decoration: const InputDecoration(
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          scrollPhysics: const NeverScrollableScrollPhysics(),
+          controller: titleController,
+          style: context.textTheme.headlineLarge,
+          enabled: isEditingEnabled,
+          onChanged: (value) =>
+              onContentChanged(value, descriptionController.text),
+          decoration: const InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.zero,
+            border: InputBorder.none,
           ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: descriptionController,
-            focusNode: descriptionFocusNode,
-            enabled: isEditingEnabled,
-            style: context.textTheme.bodyMedium!.copyWith(
-              color: context.colorScheme.outline,
-            ),
-            minLines: 5,
-            maxLines: 10,
-            onChanged: (value) => onContentChanged(titleController.text, value),
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              isDense: true,
-              border: InputBorder.none,
-            ),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          scrollPhysics: const NeverScrollableScrollPhysics(),
+          controller: descriptionController,
+          focusNode: descriptionFocusNode,
+          enabled: isEditingEnabled,
+          style: context.textTheme.bodyMedium!.copyWith(
+            color: context.colorScheme.outline,
           ),
-        ],
-      ),
+          minLines: 5,
+          maxLines: null,
+          onChanged: (value) => onContentChanged(titleController.text, value),
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.zero,
+            isDense: true,
+            border: InputBorder.none,
+          ),
+        ),
+      ],
     );
   }
 }
