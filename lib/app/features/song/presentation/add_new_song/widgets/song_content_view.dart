@@ -10,7 +10,7 @@ class SongContentView extends StatelessWidget {
     required this.name,
     required this.onDelete,
     required this.controller,
-    // required this.focusNode,
+    required this.focusNode,
     super.key,
   });
 
@@ -19,8 +19,7 @@ class SongContentView extends StatelessWidget {
   final String name;
   final void Function() onDelete;
   final CustomTextEditingController controller;
-
-  // final FocusNode focusNode;
+  final FocusNode focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,7 @@ class SongContentView extends StatelessWidget {
             ),
           ),
           CustomTextField(
-            // focusNode: focusNode,
+            focusNode: focusNode,
             controller: controller,
             style: const TextStyle(
               fontFamily: 'Courier',

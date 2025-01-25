@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     required this.controller,
-    // required this.focusNode,
+    required this.focusNode,
     required this.style,
     super.key,
   });
 
   final CustomTextEditingController controller;
-
-  // final FocusNode focusNode;
+  final FocusNode focusNode;
   final TextStyle style;
 
   @override
@@ -21,10 +21,11 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
+    logger.i('CustomTextField');
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
-        // focusNode: widget.focusNode,
+        focusNode: widget.focusNode,
         enableSuggestions: false,
         autocorrect: false,
         controller: widget.controller,
