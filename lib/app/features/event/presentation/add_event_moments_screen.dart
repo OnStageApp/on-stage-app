@@ -222,6 +222,7 @@ class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
       eventItem: eventItem,
       artist: eventItem.song?.artist?.name ?? '',
       songKey: eventItem.song?.key?.name ?? '',
+      tempo: eventItem.song?.tempo.toString() ?? '',
       onDelete: isStatic
           ? null
           : () {

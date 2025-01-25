@@ -95,7 +95,10 @@ class AddSongSecondStepContentState
 
   Widget _buildTrailingButton(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.only(
+        bottom: 6,
+        right: 12,
+      ),
       constraints: const BoxConstraints(maxWidth: 300),
       child: Row(
         mainAxisSize: MainAxisSize.min,
