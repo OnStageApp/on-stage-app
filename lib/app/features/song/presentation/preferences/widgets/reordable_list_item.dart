@@ -1,46 +1,198 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/structure_list_controller.dart';
 import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ReordableListItem extends StatefulWidget {
+class AnimatedStepper extends StatefulWidget {
+  final int value;
+  final VoidCallback? onAdd;
+  final VoidCallback? onRemove;
+  final int min;
+  final int max;
+
+  const AnimatedStepper({
+    super.key,
+    required this.value,
+    this.onAdd,
+    this.onRemove,
+    this.min = 1,
+    this.max = 10,
+  });
+
+  @override
+  State<AnimatedStepper> createState() => _AnimatedStepperState();
+}
+
+class _AnimatedStepperState extends State<AnimatedStepper>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.8,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  void _increment() {
+    if (widget.value < widget.max) {
+      _controller.forward().then((_) {
+        widget.onAdd?.call();
+        _controller.reverse();
+      });
+    }
+  }
+
+  void _decrement() {
+    if (widget.value > widget.min) {
+      _controller.forward().then((_) {
+        widget.onRemove?.call();
+        _controller.reverse();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 12),
+      height: 32,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildStepperButton(
+            icon: Icons.remove_rounded,
+            onTap: _decrement,
+            enabled: widget.value > widget.min,
+          ),
+          ScaleTransition(
+            scale: _scaleAnimation,
+            child: Container(
+              constraints: const BoxConstraints(minWidth: 32),
+              alignment: Alignment.center,
+              child: Text(
+                '×${widget.value}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+          ),
+          _buildStepperButton(
+            icon: Icons.add_rounded,
+            onTap: _increment,
+            enabled: widget.value < widget.max,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepperButton({
+    required IconData icon,
+    required VoidCallback onTap,
+    required bool enabled,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 32,
+          height: 32,
+          alignment: Alignment.center,
+          child: Icon(
+            icon,
+            size: 20,
+            color: enabled
+                ? Theme.of(context).colorScheme.outline
+                : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReordableListItem extends ConsumerStatefulWidget {
   const ReordableListItem({
     required this.structureItem,
     required this.itemKey,
+    required this.multiplier,
+    required this.groupIndex,
     this.canSlide = true,
     this.onRemove,
     this.onClone,
+    this.isEditingMode = true,
     super.key,
   });
 
   final StructureItem structureItem;
+  final int multiplier;
+  final int groupIndex;
   final String itemKey;
   final bool canSlide;
-  final void Function()? onRemove;
-  final void Function()? onClone;
+  final VoidCallback? onRemove;
+  final VoidCallback? onClone;
+  final bool isEditingMode;
 
   @override
-  _ReordableListItemState createState() => _ReordableListItemState();
+  ConsumerState<ReordableListItem> createState() => _ReordableListItemState();
 }
 
-class _ReordableListItemState extends State<ReordableListItem>
+class _ReordableListItemState extends ConsumerState<ReordableListItem>
     with SingleTickerProviderStateMixin {
   bool isSliding = false;
   late SlidableController _controller;
 
   @override
   void initState() {
-    _controller = SlidableController(
-      this,
-    );
     super.initState();
+    _controller = SlidableController(this);
   }
 
   void _setSliding(bool sliding) {
     setState(() {
       isSliding = sliding;
     });
+  }
+
+  void _handleAdd() {
+    ref
+        .read(structureListControllerProvider.notifier)
+        .addItemToGroup(widget.groupIndex);
+  }
+
+  void _handleRemove() {
+    ref
+        .read(structureListControllerProvider.notifier)
+        .removeItemFromGroup(widget.groupIndex);
   }
 
   @override
@@ -56,25 +208,26 @@ class _ReordableListItemState extends State<ReordableListItem>
           dragDismissible: false,
           motion: const ScrollMotion(),
           children: [
-            Expanded(
-              child: InkWell(
-                onTap: () async {
-                  await _controller.close();
-                  widget.onClone?.call();
-                },
-                child: Container(
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  color: Colors.blue,
-                  child: Text(
-                    'Clone',
-                    style: context.textTheme.bodyLarge!.copyWith(
-                      color: Colors.white,
+            if (widget.onClone != null)
+              Expanded(
+                child: InkWell(
+                  onTap: () async {
+                    await _controller.close();
+                    widget.onClone?.call();
+                  },
+                  child: Container(
+                    height: double.infinity,
+                    alignment: Alignment.center,
+                    color: Colors.blue,
+                    child: Text(
+                      'Clone',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: Colors.white,
+                          ),
                     ),
                   ),
                 ),
               ),
-            ),
             Expanded(
               child: InkWell(
                 onTap: () async {
@@ -92,9 +245,9 @@ class _ReordableListItemState extends State<ReordableListItem>
                   ),
                   child: Text(
                     'Delete',
-                    style: context.textTheme.bodyLarge!.copyWith(
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Colors.white,
+                        ),
                   ),
                 ),
               ),
@@ -118,7 +271,7 @@ class _ReordableListItemState extends State<ReordableListItem>
               curve: Curves.easeInOut,
               height: 52,
               decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 borderRadius: isSliding
                     ? const BorderRadius.only(
                         topLeft: Radius.circular(8),
@@ -128,11 +281,13 @@ class _ReordableListItemState extends State<ReordableListItem>
               ),
               child: Row(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Icon(
                       Icons.drag_indicator_rounded,
-                      color: Color(0xFF828282),
+                      color: widget.isEditingMode
+                          ? context.colorScheme.surfaceContainer
+                          : const Color(0x91828282),
                       size: 20,
                     ),
                   ),
@@ -143,9 +298,38 @@ class _ReordableListItemState extends State<ReordableListItem>
                     padding: const EdgeInsets.only(left: 12),
                     child: Text(
                       widget.structureItem.name,
-                      style: context.textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
+                  const Spacer(),
+                  if (widget.isEditingMode)
+                    AnimatedStepper(
+                      value: widget.multiplier,
+                      onAdd: _handleAdd,
+                      onRemove: _handleRemove,
+                      max: 99,
+                    )
+                  else
+                    Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        // shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      child: Text(
+                        '×${widget.multiplier}',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.outline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ),
                 ],
               ),
             );

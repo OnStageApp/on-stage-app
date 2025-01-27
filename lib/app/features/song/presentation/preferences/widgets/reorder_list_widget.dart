@@ -6,12 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
-import 'package:on_stage_app/app/features/song/presentation/controller/song_preferences_controller.dart';
+import 'package:on_stage_app/app/features/song/presentation/controller/structure_list_controller.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reordable_list_item.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ReorderListWidget extends ConsumerStatefulWidget {
-  const ReorderListWidget({super.key});
+  final bool isEditingMode;
+
+  const ReorderListWidget({
+    required this.isEditingMode,
+    super.key,
+  });
 
   @override
   OrderStructureItemsWidgetState createState() =>
@@ -33,27 +38,33 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
-          if (hasEditorsRight) _buildReorderableList() else _buildList(),
-          const SizedBox(height: 42),
+          const SizedBox(height: 8),
+          if (hasEditorsRight && widget.isEditingMode)
+            _buildReorderableList()
+          else
+            _buildList(),
         ],
       ),
     );
   }
 
   Widget _buildList() {
-    final cacheStructureItems =
-        ref.watch(songPreferencesControllerProvider).structureItems.toList();
+    final state = ref.watch(structureListControllerProvider);
+
     return SlidableAutoCloseBehavior(
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: cacheStructureItems.length,
+        itemCount: state.groupedItems.length,
         itemBuilder: (context, index) {
+          final group = state.groupedItems[index];
           return ReordableListItem(
-            structureItem: cacheStructureItems[index],
+            isEditingMode: false,
+            multiplier: group.multiplier,
+            groupIndex: group.originalIndex,
+            structureItem: group.item,
             canSlide: false,
-            itemKey: '${cacheStructureItems[index].shortName}_$index',
+            itemKey: '${group.item.shortName}_$index',
           );
         },
       ),
@@ -81,59 +92,36 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
   }
 
   Widget _buildReorderableList() {
-    final cacheStructureItems =
-        ref.watch(songPreferencesControllerProvider).structureItems.toList();
-    return ReorderableListView.builder(
-      buildDefaultDragHandles: false,
-      onReorder: _onReorder,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: cacheStructureItems.length,
-      proxyDecorator: _proxyDecorator,
-      itemBuilder: (context, index) {
-        return MyDragStartListener(
-          key: ValueKey('${cacheStructureItems[index].shortName}_$index'),
-          index: index,
-          child: ClipRect(
-            child: ReordableListItem(
-              structureItem: cacheStructureItems[index],
-              itemKey: '${cacheStructureItems[index].shortName}_$index',
-              onRemove: () {
-                ref
-                    .read(songPreferencesControllerProvider.notifier)
-                    .removeStructureItem(index);
-              },
-              onClone: () {
-                ref
-                    .read(songPreferencesControllerProvider.notifier)
-                    .addStructureItem(
-                      cacheStructureItems[index],
-                      atIndex: index,
-                    );
-              },
+    final state = ref.watch(structureListControllerProvider);
+    final controller = ref.read(structureListControllerProvider.notifier);
+
+    return SlidableAutoCloseBehavior(
+      child: ReorderableListView.builder(
+        buildDefaultDragHandles: false,
+        onReorder: controller.reorderGroup,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: state.groupedItems.length,
+        proxyDecorator: _proxyDecorator,
+        itemBuilder: (context, index) {
+          final group = state.groupedItems[index];
+          return MyDragStartListener(
+            key: ValueKey('${group.item.shortName}_$index'),
+            index: index,
+            child: ClipRect(
+              child: ReordableListItem(
+                structureItem: group.item,
+                groupIndex: index,
+                multiplier: group.multiplier,
+                itemKey: '${group.item.shortName}_$index',
+                onRemove: () => controller.removeGroup(index),
+                onClone: null,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
-  }
-
-  void _onReorder(int oldIndex, int index) {
-    final cacheStructureItems =
-        ref.watch(songPreferencesControllerProvider).structureItems.toList();
-    var newIndex = index;
-    if (newIndex > oldIndex) {
-      newIndex = newIndex - 1;
-    }
-
-    setState(() {
-      final old = cacheStructureItems.removeAt(oldIndex);
-      cacheStructureItems.insert(newIndex, old);
-    });
-
-    ref
-        .read(songPreferencesControllerProvider.notifier)
-        .addAllStructureItems(cacheStructureItems);
   }
 }
 
