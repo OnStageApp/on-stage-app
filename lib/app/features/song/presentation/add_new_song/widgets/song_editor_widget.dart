@@ -83,14 +83,26 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
         );
 
         for (final structureItem in addedStructureItems) {
+          final focusNode = FocusNode();
+
           final newSection = SectionData(
             rawSection: RawSection(
               structureItem: structureItem,
               content: '',
             ),
-            focusNode: FocusNode(),
+            focusNode: focusNode,
             controller: CustomTextEditingController(text: ''),
           );
+
+          // Set up the focus listener
+          focusNode.addListener(() {
+            if (focusNode.hasFocus) {
+              logger.i('Focus gained for new section ${structureItem.name}');
+              setState(() {
+                _focusedSection = newSection;
+              });
+            }
+          });
 
           ref.read(songEditorNotifierProvider.notifier).addSection(newSection);
         }
@@ -197,23 +209,25 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(height: 64),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: 'No sections added, ',
-                style: context.textTheme.titleSmall?.copyWith(
-                  color: context.colorScheme.surfaceDim,
+        Center(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'No sections added, ',
+                  style: context.textTheme.titleSmall?.copyWith(
+                    color: context.colorScheme.surfaceDim,
+                  ),
                 ),
-              ),
-              TextSpan(
-                text: 'add sections',
-                style: context.textTheme.titleSmall?.copyWith(
-                  color: context.colorScheme.primary,
+                TextSpan(
+                  text: 'add sections',
+                  style: context.textTheme.titleSmall?.copyWith(
+                    color: context.colorScheme.primary,
+                  ),
+                  recognizer: TapGestureRecognizer()..onTap = _addNewSection,
                 ),
-                recognizer: TapGestureRecognizer()..onTap = _addNewSection,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 16),

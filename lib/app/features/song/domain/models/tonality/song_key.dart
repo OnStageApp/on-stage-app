@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 
 part 'song_key.freezed.dart';
 part 'song_key.g.dart';
@@ -8,7 +9,7 @@ part 'song_key.g.dart';
 class SongKey with _$SongKey {
   const factory SongKey({
     ChordsWithoutSharp? chord,
-    @Default(false) bool isSharp,
+    @Default(ChordTypeEnum.natural) ChordTypeEnum keyType,
     @Default(true) bool isMajor,
   }) = _SongKey;
 
@@ -18,19 +19,15 @@ class SongKey with _$SongKey {
       _$SongKeyFromJson(json);
 
   String get name {
-    if (chord == null) {
-      return 'Key not found';
-    }
+    if (chord == null) return 'Key not found';
 
-    var result = chord!.name;
-    if (isSharp) {
-      result += '#';
-    }
-    if (!isMajor) {
-      result += ' minor';
-    } else {
-      result += ' major';
-    }
-    return result;
+    final suffix = isMajor ? ' major' : ' minor';
+    final accidental = switch (keyType) {
+      ChordTypeEnum.sharp => '♯',
+      ChordTypeEnum.flat => 'b',
+      ChordTypeEnum.natural => '',
+    };
+
+    return '${chord!.name}$accidental$suffix';
   }
 }

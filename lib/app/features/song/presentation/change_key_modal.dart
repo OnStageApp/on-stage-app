@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/chord_type_widget.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -85,7 +86,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               children: [
                 _buildKeys(),
                 const SizedBox(height: Insets.small),
-                _buildChordTypes(_songKey.isSharp),
+                _buildChordTypes(),
                 const SizedBox(height: Insets.medium),
                 Center(
                   child: ContinueButton(
@@ -145,11 +146,43 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     );
   }
 
+  Widget _buildChordTypes() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: context.colorScheme.onSurfaceVariant,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: ChordTypeEnum.values.map((type) {
+          final isSelected = _songKey.keyType == type;
+          final isEnabled = _isChordTypeEnabled(type);
+
+          return ChordTypeWidget(
+            chordType: type.name,
+            isSelected: isSelected,
+            isEnabled: isEnabled,
+            onTap: isEnabled
+                ? () {
+                    _updateSongKey(_songKey.copyWith(keyType: type));
+                  }
+                : null,
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   Widget _buildChordLabel(ChordsWithoutSharp chord, {bool isSelected = false}) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          _updateSongKey(_songKey.copyWith(chord: chord, isSharp: false));
+          _updateSongKey(
+            _songKey.copyWith(
+              chord: chord,
+              keyType: ChordTypeEnum.natural,
+            ),
+          );
         },
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
@@ -166,40 +199,16 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     );
   }
 
-  Widget _buildChordTypes(bool isSharp) {
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        color: context.colorScheme.onSurfaceVariant,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          ChordTypeWidget(
-            isEnabled: _getInactiveForEAndB(),
-            chordType: 'natural',
-            isSharp: _songKey.isSharp == false,
-            onTap: () {
-              _updateSongKey(_songKey.copyWith(isSharp: false));
-            },
-          ),
-          ChordTypeWidget(
-            chordType: '♯',
-            isSharp: _songKey.isSharp == true,
-            onTap: _getInactiveForEAndB()
-                ? () {
-                    _updateSongKey(_songKey.copyWith(isSharp: true));
-                  }
-                : () {},
-          ),
-        ],
-      ),
-    );
-  }
+  bool _isChordTypeEnabled(ChordTypeEnum type) {
+    if (_songKey.chord == null) return false;
 
-  bool _getInactiveForEAndB() {
-    return _songKey.chord!.name != ChordsWithoutSharp.E.name &&
-        _songKey.chord!.name != ChordsWithoutSharp.B.name;
+    return switch (_songKey.chord!) {
+      ChordsWithoutSharp.E => type != ChordTypeEnum.sharp,
+      ChordsWithoutSharp.B => type != ChordTypeEnum.sharp,
+      ChordsWithoutSharp.F => type != ChordTypeEnum.flat,
+      ChordsWithoutSharp.C => type != ChordTypeEnum.flat,
+      _ => true,
+    };
   }
 
   TextStyle _getStyling({bool isSelected = false}) {

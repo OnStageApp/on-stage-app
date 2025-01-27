@@ -1,9 +1,12 @@
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 class ChordTransposer {
   ChordTransposer(
     this.chordNotation, {
-    required this.key,
+    required this.songKeyToBeUpdated,
+    required this.originalSongKey,
     this.transpose = 0,
     this.isRomanStyle = false,
   }) {
@@ -23,7 +26,9 @@ class ChordTransposer {
   late List<String> cycle;
   int transpose;
   bool isRomanStyle;
-  String key;
+  final SongKey songKeyToBeUpdated;
+
+  final SongKey originalSongKey;
 
   static const List<String> defaultCycle = [
     'C',
@@ -124,28 +129,27 @@ class ChordTransposer {
 
   String _processChord(String chord) {
     if (chordNotation == SongViewMode.numeric) {
-      return _toNumeric(chord, key);
+      return _toNumeric(chord, originalSongKey.name);
     }
 
-    // Extract the root note and the rest of the chord
     final match = RegExp(r'^([A-G][#b]?)(.*)$').firstMatch(chord);
     if (match == null) return chord;
 
     final rootNote = match.group(1)!;
     final remainder = match.group(2) ?? '';
 
-    // Get semitone value for the root note
     final semitone = noteToSemitone[rootNote];
     if (semitone == null) return chord;
 
-    // Determine if the original chord used flats or sharps
-    final usesFlat = rootNote.contains('b');
+    // Determine accidental style from song key
+    final useFlatStyle = songKeyToBeUpdated.keyType == ChordTypeEnum.flat;
 
     // Calculate new semitone after transposition
     final newSemitone = (semitone + transpose + 12) % 12;
 
-    // Get the new note preserving the original accidental style
-    final newNote = semitoneToNote[newSemitone]![usesFlat ? 'flat' : 'sharp']!;
+    // Get the new note maintaining song key's accidental style
+    final newNote =
+        semitoneToNote[newSemitone]![useFlatStyle ? 'flat' : 'sharp']!;
 
     return newNote + remainder;
   }

@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/structure_item.dart';
 import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
+import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,8 +39,9 @@ class ChordProcessor extends _$ChordProcessor {
     final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
     final chordTransposer = ChordTransposer(
       songViewMode,
+      originalSongKey: originalSongKey,
       transpose: transposeIncrement,
-      key: originalSongKey.name,
+      songKeyToBeUpdated: updateSongKey,
     );
 
     _textScaleFactor = scaleFactor;
@@ -259,13 +261,13 @@ class ChordProcessor extends _$ChordProcessor {
 
   int differenceFrom(SongKey oldKey, SongKey newKey) {
     if (oldKey.chord == null || newKey.chord == null) {
-      return 0; // or throw an exception
+      return 0;
     }
 
-    final thisIndex = _getIndex(oldKey);
-    final otherIndex = _getIndex(newKey);
+    final oldIndex = _getSemitone(oldKey);
+    final newIndex = _getSemitone(newKey);
 
-    var difference = otherIndex - thisIndex;
+    var difference = newIndex - oldIndex;
     if (difference < 0) {
       difference += 12;
     }
@@ -273,26 +275,36 @@ class ChordProcessor extends _$ChordProcessor {
     return difference;
   }
 
-  static int _getIndex(SongKey key) {
-    var noteName = key.chord!.name;
-    if (key.isSharp == true) {
-      noteName += '#';
-    }
-    return _chromaticScale.indexOf(noteName);
+  static int _getSemitone(SongKey key) {
+    if (key.chord == null) return 0;
+
+    final baseNote = key.chord!.name;
+    final noteName = switch (key.keyType) {
+      ChordTypeEnum.sharp => '$baseNote#',
+      ChordTypeEnum.flat => '${baseNote}b',
+      ChordTypeEnum.natural => baseNote,
+    };
+
+    return noteToSemitone[noteName] ?? 0;
   }
 
-  static const List<String> _chromaticScale = [
-    'C',
-    'C#',
-    'D',
-    'D#',
-    'E',
-    'F',
-    'F#',
-    'G',
-    'G#',
-    'A',
-    'A#',
-    'B',
-  ];
+  static const Map<String, int> noteToSemitone = {
+    'C': 0,
+    'C#': 1,
+    'Db': 1,
+    'D': 2,
+    'D#': 3,
+    'Eb': 3,
+    'E': 4,
+    'F': 5,
+    'F#': 6,
+    'Gb': 6,
+    'G': 7,
+    'G#': 8,
+    'Ab': 8,
+    'A': 9,
+    'A#': 10,
+    'Bb': 10,
+    'B': 11,
+  };
 }
