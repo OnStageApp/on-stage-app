@@ -98,7 +98,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                     ),
                     height: 54,
                     onTap: () {
-                      context.goNamed(AppRoute.groups.name);
+                      context.pushNamed(AppRoute.groups.name);
                     },
                   ),
                 ],

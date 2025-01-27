@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
@@ -49,6 +50,15 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
     super.initState();
     _focusNode = FocusNode();
     _controller = TextEditingController(text: widget.notes);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.addListener(() {
+        if (!_focusNode.hasFocus) {
+          if (ref.read(editingStateProvider)) {
+            _handleEditingToggle(true);
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -168,6 +178,11 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
                   ? widget.notes!
                   : 'No MD notes added...',
               style: textTheme.titleLarge?.copyWith(
+                fontSize: ref
+                        .watch(userSettingsNotifierProvider)
+                        .textSize
+                        ?.size(context) ??
+                    (TextSize.normal.size(context)),
                 color: widget.notes.isNotNullEmptyOrWhitespace
                     ? colorScheme.surfaceContainer
                     : colorScheme.surfaceContainer.withOpacity(0.5),
@@ -209,39 +224,46 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
     final displaySongDetails =
         ref.watch(userSettingsNotifierProvider).displaySongDetails ?? false;
     if (!displayMdNotes && !displaySongDetails) return const SizedBox();
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: colorScheme.onSurfaceVariant.withOpacity(0.8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (displayMdNotes)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildMDNotesSection(isEditing, textTheme, colorScheme),
-                    ],
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (ref.read(editingStateProvider)) {
+          _handleEditingToggle(true);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (displayMdNotes)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildMDNotesSection(isEditing, textTheme, colorScheme),
+                      ],
+                    ),
                   ),
-                ),
-                if (ref.watch(permissionServiceProvider).hasAccessToEdit)
-                  _buildContextMenu(isEditing, colorScheme),
-              ],
-            ),
-          if (displaySongDetails && displayMdNotes) ...[
-            const SizedBox(height: 8),
-            DashedLineDivider(color: colorScheme.outline),
-            const SizedBox(height: 8),
+                  if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+                    _buildContextMenu(isEditing, colorScheme),
+                ],
+              ),
+            if (displaySongDetails && displayMdNotes) ...[
+              const SizedBox(height: 8),
+              DashedLineDivider(color: colorScheme.outline),
+              const SizedBox(height: 8),
+            ],
+            if (displaySongDetails) _buildInfoSection(textTheme, colorScheme),
           ],
-          if (displaySongDetails) _buildInfoSection(textTheme, colorScheme),
-        ],
+        ),
       ),
     );
   }

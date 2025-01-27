@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_list.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class NotificationPage extends ConsumerStatefulWidget {
   const NotificationPage({super.key});
@@ -39,25 +40,28 @@ class NotificationPageState extends ConsumerState<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const StageAppBar(
-        isBackButtonVisible: true,
-        title: 'Notifications',
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: _refreshNotifications,
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: defaultScreenHorizontalPadding,
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => const NotificationList(),
-                  childCount: 1,
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: const StageAppBar(
+          isBackButtonVisible: true,
+          title: 'Notifications',
+        ),
+        body: RefreshIndicator.adaptive(
+          onRefresh: _refreshNotifications,
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: defaultScreenHorizontalPadding,
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const NotificationList(),
+                    childCount: 1,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

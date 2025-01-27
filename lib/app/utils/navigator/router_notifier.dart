@@ -378,13 +378,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                       routes: [
                         GoRoute(
-                          name: AppRoute.groups.name,
-                          path: 'groups',
-                          builder: (context, state) {
-                            return const GroupsScreen();
-                          },
-                        ),
-                        GoRoute(
                           name: AppRoute.addTeamMember.name,
                           path: 'addTeamMember',
                           builder: (context, state) {
@@ -395,6 +388,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                           },
                         ),
                       ],
+                    ),
+                    GoRoute(
+                      name: AppRoute.groups.name,
+                      path: 'groups',
+                      builder: (context, state) {
+                        return const GroupsScreen();
+                      },
                     ),
                     GoRoute(
                       name: AppRoute.favorites.name,

@@ -74,14 +74,18 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   void _getTextStyles() {
     _textStyle = WidgetUtils.getLyricsStyle(context).copyWith(
-      fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size ?? 18,
+      fontSize:
+          ref.watch(userSettingsNotifierProvider).textSize?.size(context) ??
+              (TextSize.normal.size(context)),
       color: ref.watch(userSettingsNotifierProvider).songView ==
               SongViewMode.lyrics
           ? context.colorScheme.onSurface
           : context.colorScheme.surfaceDim,
     );
     _chordStyle = WidgetUtils.getChordsStyle(context).copyWith(
-      fontSize: ref.watch(userSettingsNotifierProvider).textSize?.size ?? 18,
+      fontSize:
+          ref.watch(userSettingsNotifierProvider).textSize?.size(context) ??
+              (TextSize.normal.size(context)),
     );
   }
 
