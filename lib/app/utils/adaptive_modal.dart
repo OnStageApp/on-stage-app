@@ -41,10 +41,12 @@ class AdaptiveModal {
     bool useRootNavigator = true,
     bool isFloatingForLargeScreens = false,
     Color? backgroundColor,
+    bool enableDrag = true,
   }) async {
     if (isFloatingForLargeScreens && context.isLargeScreen) {
       return showCustomModalBottomSheet(
         context: context,
+        enableDrag: enableDrag,
         builder: (context) => child,
         containerWidget: (_, animation, child) => Align(
           alignment: Alignment.bottomCenter,
@@ -64,6 +66,7 @@ class AdaptiveModal {
     if (Platform.isIOS) {
       return showCupertinoModalBottomSheet<T>(
         context: context,
+        enableDrag: enableDrag,
         useRootNavigator: !context.isLargeScreen && useRootNavigator,
         backgroundColor: backgroundColor,
         expand: expand,
@@ -75,6 +78,7 @@ class AdaptiveModal {
       return showMaterialModalBottomSheet<T>(
         useRootNavigator: !context.isLargeScreen && useRootNavigator,
         context: context,
+        enableDrag: enableDrag,
         backgroundColor: backgroundColor,
         expand: expand,
         builder: (context) => SafeArea(

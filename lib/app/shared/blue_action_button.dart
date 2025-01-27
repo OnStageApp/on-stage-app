@@ -7,6 +7,7 @@ class EventActionButton extends StatelessWidget {
     required this.text,
     super.key,
     this.icon,
+    this.padding,
     this.textColor,
   });
 
@@ -14,13 +15,14 @@ class EventActionButton extends StatelessWidget {
   final String text;
   final IconData? icon;
   final Color? textColor;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(
-        padding: const EdgeInsets.all(12),
+        padding: padding ?? const EdgeInsets.all(12),
         backgroundColor: context.colorScheme.onSurfaceVariant,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
