@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/uninvited_people_modal.dart';
@@ -80,29 +81,31 @@ class PositionMembersCard extends ConsumerWidget {
           else
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
-              child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: stagersByPosition.length,
-                itemBuilder: (context, index) {
-                  final stager = stagersByPosition.elementAt(index);
-                  return ParticipantListingItem(
-                    key: ValueKey(stager.id),
-                    userId: stager.userId ?? '',
-                    name: stager.name ?? '',
-                    photo: stager.profilePicture ?? Uint8List(0),
-                    status: currentEventStatus == EventStatus.published
-                        ? stager.participationStatus
-                        : null,
-                    canEdit:
-                        ref.watch(permissionServiceProvider).hasAccessToEdit,
-                    onDelete: () {
-                      ref
-                          .read(eventNotifierProvider.notifier)
-                          .removeStagerFromEvent(stager.id);
-                    },
-                  );
-                },
+              child: SlidableAutoCloseBehavior(
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: stagersByPosition.length,
+                  itemBuilder: (context, index) {
+                    final stager = stagersByPosition.elementAt(index);
+                    return ParticipantListingItem(
+                      key: ValueKey(stager.id),
+                      userId: stager.userId ?? '',
+                      name: stager.name ?? '',
+                      photo: stager.profilePicture ?? Uint8List(0),
+                      status: currentEventStatus == EventStatus.published
+                          ? stager.participationStatus
+                          : null,
+                      canEdit:
+                          ref.watch(permissionServiceProvider).hasAccessToEdit,
+                      onDelete: () {
+                        ref
+                            .read(eventNotifierProvider.notifier)
+                            .removeStagerFromEvent(stager.id);
+                      },
+                    );
+                  },
+                ),
               ),
             ),
         ],

@@ -152,10 +152,11 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
       return const SizedBox();
     }
 
+    final length = shouldShowDetails ? sections.length + 1 : sections.length;
     return ScrollablePositionedList.builder(
       itemScrollController: _itemScrollController,
       physics: const BouncingScrollPhysics(),
-      itemCount: shouldShowDetails ? sections.length + 1 : sections.length,
+      itemCount: length,
       itemBuilder: (context, index) {
         var sectionIndex = index;
         if (shouldShowDetails) {
@@ -166,7 +167,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         }
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: EdgeInsets.only(bottom: index == length - 1 ? 64 : 16),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
