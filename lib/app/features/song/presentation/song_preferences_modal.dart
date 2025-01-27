@@ -9,6 +9,9 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_tempo.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/song_view_settings.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/features/user_settings/presentation/chord_preference_view.dart';
+import 'package:on_stage_app/app/features/user_settings/presentation/chord_preference_view_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -78,6 +81,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                 ),
                 const SizedBox(height: Insets.medium),
                 const SongViewSettings(),
+                ..._buildChordsPreferenceView(),
                 if (widget.isFromEvent) ...[
                   const SizedBox(height: Insets.medium),
                   const PreferencesVocalLead(),
@@ -140,5 +144,37 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
         );
       },
     );
+  }
+
+  List<Widget> _buildChordsPreferenceView() {
+    return [
+      const SizedBox(height: 24),
+      Text(
+        'Chords View',
+        style: context.textTheme.titleSmall,
+      ),
+      const SizedBox(height: 12),
+      ChordPreferenceView(
+        icon: LucideIcons.music_3,
+        selectedValue: ref.watch(userSettingsNotifierProvider).chordViewPref,
+        validator: (chordType) {
+          if (chordType == null) {
+            return 'Please select a valid theme';
+          }
+          return null;
+        },
+        onTap: () {
+          ChordPreferenceViewModal.show(
+            context: context,
+            onSelected: (pref) {
+              if (pref == null) return;
+              ref
+                  .read(userSettingsNotifierProvider.notifier)
+                  .seChordViewPref(pref);
+            },
+          );
+        },
+      ),
+    ];
   }
 }

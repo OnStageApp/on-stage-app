@@ -113,6 +113,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
               SongViewMode.american,
           originalSongKey: ref.watch(songNotifierProvider).song.originalKey ??
               const SongKey(),
+          chordViewPref: ref.watch(userSettingsNotifierProvider).chordViewPref,
         );
   }
 
@@ -193,7 +194,8 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     ref
       ..listen(userSettingsNotifierProvider, (previous, next) {
         if (previous?.songView != next.songView ||
-            previous?.textSize != next.textSize) {
+            previous?.textSize != next.textSize ||
+            previous?.chordViewPref != next.chordViewPref) {
           logger.i('user settings changed');
           setState(_getTextStyles);
           _processTextAndSetSections();

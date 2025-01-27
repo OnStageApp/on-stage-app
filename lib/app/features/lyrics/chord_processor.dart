@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/song/domain/models/raw_section.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
+import 'package:on_stage_app/app/features/user_settings/domain/chord_type_view_enum.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chord_processor.g.dart';
@@ -35,13 +36,16 @@ class ChordProcessor extends _$ChordProcessor {
     double scaleFactor = 1.0,
     int widgetPadding = 0,
     SongViewMode songViewMode = SongViewMode.american,
+    ChordViewPref? chordViewPref,
   }) {
     final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
+
     final chordTransposer = ChordTransposer(
       songViewMode,
       originalSongKey: originalSongKey,
       transpose: transposeIncrement,
       songKeyToBeUpdated: updateSongKey,
+      chordViewPref: chordViewPref,
     );
 
     _textScaleFactor = scaleFactor;

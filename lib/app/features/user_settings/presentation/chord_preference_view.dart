@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/features/user_settings/domain/chord_type_view_enum.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class PreferenceSelector<T> extends StatelessWidget {
-  const PreferenceSelector({
-    required this.label,
-    required this.placeholder,
+class ChordPreferenceView extends StatelessWidget {
+  const ChordPreferenceView({
     required this.selectedValue,
-    required this.displayValue,
     required this.onTap,
     super.key,
     this.validator,
     this.icon,
   });
 
-  final String label;
-  final String placeholder;
-  final T? selectedValue;
-  final String Function(T?) displayValue;
+  final ChordViewPref? selectedValue;
   final VoidCallback onTap;
-  final FormFieldValidator<T?>? validator;
+  final FormFieldValidator<ChordViewPref?>? validator;
   final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
-    return FormField<T?>(
+    return FormField<ChordViewPref?>(
       initialValue: selectedValue,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       builder: (state) {
-        // Update state when value changes
         if (state.value != selectedValue) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             state.didChange(selectedValue);
@@ -40,23 +33,13 @@ class PreferenceSelector<T> extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: context.textTheme.titleSmall!.copyWith(
-                color: context.colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: Insets.small),
             PreferencesActionTile(
-              leadingWidget: icon != null
-                  ? Icon(
-                      icon,
-                      color: context.colorScheme.outline,
-                    )
-                  : null,
-              title: selectedValue != null
-                  ? displayValue(selectedValue)
-                  : placeholder,
+              leadingWidget: Text(
+                '${selectedValue?.icon}',
+                style: context.textTheme.titleLarge,
+              ),
+              title: selectedValue?.description ?? '',
+              color: context.colorScheme.onSurface,
               trailingIcon: Icons.keyboard_arrow_down_rounded,
               onTap: () {
                 onTap();
