@@ -21,30 +21,27 @@ class EventItemTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Material(
-        color: context.colorScheme.surface,
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        overlayColor: WidgetStateProperty.all(
+          context.colorScheme.surfaceBright,
+        ),
         borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          overlayColor: WidgetStateProperty.all(
-            context.colorScheme.surfaceBright,
+        onTap: canEdit ? () => _showDurationPicker(context) : null,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: canEdit
+                ? Border.all(color: context.colorScheme.outline)
+                : const Border(),
           ),
-          borderRadius: BorderRadius.circular(20),
-          onTap: canEdit ? () => _showDurationPicker(context) : null,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: canEdit
-                  ? Border.all(color: context.colorScheme.outline)
-                  : const Border(),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              TimeUtils().calculateTime(eventStartDate, cumulatedDuration),
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: context.colorScheme.outline,
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Text(
+            TimeUtils().calculateTime(eventStartDate, cumulatedDuration),
+            style: context.textTheme.labelLarge!.copyWith(
+              color: context.colorScheme.surfaceContainer,
             ),
           ),
         ),

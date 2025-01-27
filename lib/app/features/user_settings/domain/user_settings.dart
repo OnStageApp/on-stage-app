@@ -13,6 +13,8 @@ class UserSettings with _$UserSettings {
     SongViewMode? songView,
     TextSize? textSize,
     bool? isDarkMode,
+    bool? displayMdNotes,
+    bool? displaySongDetails,
     bool? isNotificationsEnabled,
     bool? isOnboardingDone,
     bool? isCreateEventTooltipShown,

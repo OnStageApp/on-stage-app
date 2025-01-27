@@ -23,6 +23,7 @@ class SongModelV2 with _$SongModelV2 {
     String? updatedAt,
     Artist? artist,
     String? teamId,
+    String? songMdNotes,
   }) = _SongModelV2;
 
   factory SongModelV2.fromJson(Map<String, dynamic> json) =>

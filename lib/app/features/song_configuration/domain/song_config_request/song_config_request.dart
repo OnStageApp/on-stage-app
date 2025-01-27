@@ -13,6 +13,7 @@ class SongConfigRequest with _$SongConfigRequest {
     SongKey? key,
     bool? isCustom,
     List<StructureItem>? structure,
+    String? songMdNotes,
   }) = _SongConfigRequest;
 
   factory SongConfigRequest.fromJson(Map<String, dynamic> json) =>

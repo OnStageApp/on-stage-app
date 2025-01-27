@@ -67,7 +67,7 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
   Widget build(BuildContext context) {
     final eventStartDate = ref.watch(eventNotifierProvider).event?.dateTime;
     return InkWell(
-      onTap: widget.onTap,
+      onTap: widget.isEditor ? null : widget.onTap,
       borderRadius: BorderRadius.circular(8),
       highlightColor: Theme.of(context).colorScheme.surfaceBright,
       child: Padding(
@@ -111,16 +111,32 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Align(
+                        alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: _buildIcon(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              EventItemTime(
+                                canEdit: widget.isEditor,
+                                eventStartDate: eventStartDate,
+                                cumulatedDuration: _getCumulatedDuration(
+                                  widget.eventItem.index,
+                                ),
+                                onDurationChanged: _updateDurationOnEventItem,
+                                currentDuration: widget.eventItem.duration,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildSongDetails2(context),
+                            if (isSong) _buildSongDetails(context),
+                            const SizedBox(height: 4),
                             Text(
                               widget.eventItem.name ?? '',
                               style: context.textTheme.titleMedium!.copyWith(
@@ -133,7 +149,7 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                               _buildDescription(context),
                             ],
                             if (isSong) ...[
-                              // _buildSongArtist(context),
+                              _buildSongDescription(context),
                             ],
                             if (widget.eventItem.assignedTo.isNotNullOrEmpty)
                               AssignedPersons(
@@ -152,17 +168,10 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                           ],
                         ),
                       ),
-                      Column(
-                        children: [
-                          EventItemTime(
-                            canEdit: widget.isEditor,
-                            eventStartDate: eventStartDate,
-                            cumulatedDuration:
-                                _getCumulatedDuration(widget.eventItem.index),
-                            onDurationChanged: _updateDurationOnEventItem,
-                            currentDuration: widget.eventItem.duration,
-                          ),
-                        ],
+                      Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        alignment: Alignment.center,
+                        child: _buildIcon(),
                       ),
                     ],
                   ),
@@ -196,70 +205,67 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
     );
   }
 
-  Widget _buildSongDetails2(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 1,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: context.colorScheme.outline,
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '${widget.songKey} | ${widget.tempo} BPM',
-              style: context.textTheme.bodyMedium!.copyWith(
-                color: context.colorScheme.outline,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSongArtist(BuildContext context) {
+  Widget _buildSongDetails(BuildContext context) {
     return Row(
       children: [
-        Flexible(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: context.colorScheme.surfaceBright,
+          ),
           child: Text(
-            widget.artist,
+            widget.songKey,
             style: context.textTheme.bodyMedium!.copyWith(
               color: context.colorScheme.outline,
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: context.colorScheme.surfaceBright,
+          ),
+          child: Text(
+            '${widget.tempo} BPM',
+            style: context.textTheme.bodyMedium!.copyWith(
+              color: context.colorScheme.outline,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Icon _buildIcon() {
+  Widget _buildSongDescription(BuildContext context) {
+    final songMdNotes = widget.eventItem.song?.songMdNotes;
+    if (songMdNotes.isNullEmptyOrWhitespace) return const SizedBox();
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '${widget.eventItem.song?.songMdNotes}',
+        style: context.textTheme.bodyMedium!.copyWith(
+          color: context.colorScheme.outline,
+        ),
+        maxLines: 6,
+        overflow: TextOverflow.fade,
+      ),
+    );
+  }
+
+  Widget _buildIcon() {
     if (widget.isEditor) {
       return const Icon(
         Icons.drag_indicator_rounded,
         color: Color(0xFF828282),
-        size: 20,
-      );
-    } else if (isSong) {
-      return Icon(
-        Icons.music_note,
-        color: context.colorScheme.error,
-        size: 20,
+        size: 24,
       );
     } else {
-      return Icon(
-        Icons.mic,
-        color: context.colorScheme.primary,
-        size: 20,
-      );
+      return const SizedBox();
     }
   }
 

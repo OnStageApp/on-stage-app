@@ -49,7 +49,7 @@ class AssignedPersons extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    isSong ? 'Lead Vocalists' : 'Speakers',
+                    isSong ? 'Lead Vocals' : 'Speakers',
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(width: 4),

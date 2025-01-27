@@ -98,30 +98,33 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
                       ),
                     ),
                     const Spacer(),
-                    ContinueButton(
-                      text: 'Invite',
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final errorMessage = await ref
-                              .read(teamMembersNotifierProvider.notifier)
-                              .inviteTeamMember(
-                                _emailUsernameController.text,
-                                _selectedRole,
+                    Center(
+                      child: ContinueButton(
+                        text: 'Invite',
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            final errorMessage = await ref
+                                .read(teamMembersNotifierProvider.notifier)
+                                .inviteTeamMember(
+                                  _emailUsernameController.text,
+                                  _selectedRole,
+                                );
+                            if (errorMessage.isNullEmptyOrWhitespace &&
+                                mounted) {
+                              context.pop();
+                              return;
+                            }
+                            if (mounted) {
+                              TopFlushBar.show(
+                                context,
+                                errorMessage ?? 'Error inviting team member',
+                                isError: true,
                               );
-                          if (errorMessage.isNullEmptyOrWhitespace && mounted) {
-                            context.pop();
-                            return;
+                            }
                           }
-                          if (mounted) {
-                            TopFlushBar.show(
-                              context,
-                              errorMessage ?? 'Error inviting team member',
-                              isError: true,
-                            );
-                          }
-                        }
-                      },
-                      isEnabled: true,
+                        },
+                        isEnabled: true,
+                      ),
                     ),
                   ],
                 ),
