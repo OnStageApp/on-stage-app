@@ -29,7 +29,6 @@ class SongStructureModal extends ConsumerStatefulWidget {
   }) {
     AdaptiveModal.show(
       context: context,
-      enableDrag: false,
       child: const SongStructureModal(),
     );
   }
