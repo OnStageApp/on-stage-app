@@ -77,7 +77,7 @@ class PreferencesTextSizeState extends ConsumerState<PreferencesTextSize> {
             color: ref.watch(userSettingsNotifierProvider).textSize == textSize
                 ? Colors.white
                 : context.colorScheme.onSurface,
-            fontSize: textSize.size,
+            fontSize: textSize.size(context),
           ),
         ),
       ),
