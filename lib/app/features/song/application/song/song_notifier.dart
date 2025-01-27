@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_document.dart';
 import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
@@ -58,8 +60,39 @@ class SongNotifier extends _$SongNotifier {
     );
   }
 
+  Future<void> updateSongMdNotes(String mdNotes) async {
+    final previousState = state;
+
+    try {
+      final newSongConfig = SongConfigRequest(
+        songId: state.song.id,
+        teamId: ref.read(teamNotifierProvider).currentTeam?.id,
+        isCustom: true,
+        songMdNotes: mdNotes,
+      );
+
+      state = state.copyWith(
+        song: state.song.copyWith(
+          songMdNotes: mdNotes,
+        ),
+      );
+
+      unawaited(
+        ref
+            .read(eventItemsNotifierProvider.notifier)
+            .updateSongInEventItems(state.song),
+      );
+
+      await songConfigRepo.createSongConfig(songConfigRequest: newSongConfig);
+    } catch (e) {
+      state = previousState;
+      logger.e('Error updating song md notes', e);
+      rethrow;
+    }
+  }
+
   Future<void> _updateSongConfiguration(SongConfigRequest songConfig) async {
-    if (songConfig.songId == null || songConfig.key == null) {
+    if (songConfig.songId == null) {
       return;
     }
     await songConfigRepo.createSongConfig(songConfigRequest: songConfig);
@@ -67,6 +100,7 @@ class SongNotifier extends _$SongNotifier {
     final newSong = state.song.copyWith(
       key: songConfig.key ?? state.song.key,
       structure: songConfig.structure ?? state.song.structure,
+      songMdNotes: songConfig.songMdNotes ?? state.song.songMdNotes,
     );
 
     state = state.copyWith(
@@ -249,6 +283,12 @@ class SongNotifier extends _$SongNotifier {
       logger.e('Error saving song to DB', e);
       return false;
     }
+  }
+
+  Future<void> updateMdNotes(String mdNotes) async {
+    final updatedSong = state.song.copyWith(songMdNotes: mdNotes);
+    state = state.copyWith(song: updatedSong);
+    // await songConfigRepo.updateMdNotes(updatedSong;)
   }
 
   Future<bool> updateSongToDB(SongRequest songRequest) async {

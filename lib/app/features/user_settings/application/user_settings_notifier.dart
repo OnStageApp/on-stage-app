@@ -98,11 +98,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     try {
       state = state.copyWith(songView: songView);
       final userSettings = UserSettings(songView: songView);
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error updating song view: $e');
     }
@@ -112,11 +108,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     try {
       state = state.copyWith(isDarkMode: isDarkMode);
       final userSettings = UserSettings(isDarkMode: isDarkMode);
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
       _updateSystemOverlay(isDarkMode);
     } catch (e) {
       logger.e('Error toggling dark mode: $e');
@@ -130,11 +122,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         isNotificationsEnabled: isActive,
       );
 
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error setting notification: $e');
     }
@@ -147,11 +135,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         textSize: textSize,
       );
 
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error setting text size: $e');
     }
@@ -164,11 +148,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         songView: songView,
       );
 
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error setting song view mode: $e');
     }
@@ -181,23 +161,49 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         isOnboardingDone: true,
       );
 
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
-      );
-
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error setting onboarding done: $e');
     }
   }
 
-  Future<void> updateUserSettings(UserSettings userSettings) async {
+  Future<void> setDisplayMdNotes({required bool displayMdNotes}) async {
     try {
-      await userSettingsRepository.updateUserSettings(
-        userSettings: userSettings,
+      final userSettings = UserSettings(displayMdNotes: displayMdNotes);
+      state = state.copyWith(
+        displayMdNotes: displayMdNotes,
       );
 
-      _saveSettingsToPrefs(userSettings);
+      await _saveUserSettings(userSettings);
+    } catch (e) {
+      logger.e('Error setting display md notes: $e');
+    }
+  }
+
+  Future<void> _saveUserSettings(UserSettings userSettings) async {
+    await userSettingsRepository.updateUserSettings(
+      userSettings: userSettings,
+    );
+
+    _saveSettingsToPrefs(userSettings);
+  }
+
+  Future<void> setDisplaySongDetails({required bool displaySongDetails}) async {
+    try {
+      final userSettings = UserSettings(displaySongDetails: displaySongDetails);
+      state = state.copyWith(
+        displaySongDetails: displaySongDetails,
+      );
+
+      await _saveUserSettings(userSettings);
+    } catch (e) {
+      logger.e('Error setting display song details: $e');
+    }
+  }
+
+  Future<void> updateUserSettings(UserSettings userSettings) async {
+    try {
+      await _saveUserSettings(userSettings);
     } catch (e) {
       logger.e('Error updating user settings: $e');
     }
@@ -210,6 +216,8 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     final isOnboardingDone =
         ref.read(sharedPreferencesProvider).getBool(_isOnboardingDone);
     final textSizeIndex = prefs.getInt(_textSizeKey);
+    final displayMdNotes = prefs.getBool('displayMdNotes');
+    final displaySongDetails = prefs.getBool('displaySongDetails');
 
     state = state.copyWith(
       isDarkMode: isDarkMode,
@@ -221,6 +229,8 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       textSize: textSizeIndex != null
           ? TextSize.values[textSizeIndex]
           : TextSize.normal,
+      displayMdNotes: displayMdNotes,
+      displaySongDetails: displaySongDetails,
     );
 
     await getUserSettings();
@@ -255,6 +265,12 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
         'isAddRemindersTooltipShown',
         settings.isAddRemindersTooltipShown!,
       );
+    }
+    if (settings.displayMdNotes != null) {
+      prefs.setBool('displayMdNotes', settings.displayMdNotes!);
+    }
+    if (settings.displaySongDetails != null) {
+      prefs.setBool('displaySongDetails', settings.displaySongDetails!);
     }
   }
 

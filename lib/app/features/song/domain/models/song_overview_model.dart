@@ -16,6 +16,7 @@ class SongOverview with _$SongOverview {
     Artist? artist,
     @Default(false) bool isFavorite,
     String? teamId,
+    String? songMdNotes,
   }) = _SongOverview;
 
   factory SongOverview.fromJson(Map<String, dynamic> json) =>
@@ -28,5 +29,6 @@ class SongOverview with _$SongOverview {
         key: song.key,
         artist: song.artist,
         teamId: song.teamId,
+        songMdNotes: song.songMdNotes,
       );
 }
