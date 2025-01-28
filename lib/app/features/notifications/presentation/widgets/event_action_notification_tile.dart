@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
 import 'package:on_stage_app/app/shared/invite_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
 
-class ActionNotificationTile extends NotificationTile {
-  const ActionNotificationTile({
+class EventActionNotificationTile extends NotificationTile {
+  const EventActionNotificationTile({
     required super.onTap,
     required this.notification,
     this.onDecline,
@@ -22,7 +25,7 @@ class ActionNotificationTile extends NotificationTile {
   final StageNotification notification;
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget buildContent(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,20 +99,34 @@ class ActionNotificationTile extends NotificationTile {
                     isConfirm: true,
                   ),
                 ),
-              ] else ...[
+              ] else
                 Expanded(
                   child: InviteButton(
-                    text: notification.actionStatus?.title ?? 'Declined',
-                    isConfirm: notification.actionStatus ==
-                        NotificationActionStatus.ACCEPTED,
+                    icon: _isAccepted()
+                        ? LucideIcons.calendar_check_2
+                        : LucideIcons.calendar_x_2,
+                    onPressed: _isAccepted()
+                        ? () {
+                            final eventId = notification.params?.eventId;
+                            context.goNamed(
+                              AppRoute.eventDetails.name,
+                              queryParameters: {'eventId': eventId},
+                            );
+                          }
+                        : null,
+                    text: _isAccepted() ? 'Go to Event' : 'Declined',
+                    isConfirm: _isAccepted(),
                   ),
                 ),
-              ],
             ],
           ),
         ),
       ],
     );
+  }
+
+  bool _isAccepted() {
+    return notification.actionStatus == NotificationActionStatus.ACCEPTED;
   }
 
   Row _buildDateTime(BuildContext context) {

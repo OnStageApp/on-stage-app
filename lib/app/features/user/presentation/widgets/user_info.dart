@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/application/current_plan_provider.dart';
-import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
-import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class UserInfo extends ConsumerWidget {
@@ -12,13 +10,6 @@ class UserInfo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        Text(
-          '${ref.watch(userNotifierProvider).currentUser?.position?.title}',
-          style: context.textTheme.bodyMedium!.copyWith(
-            color: context.colorScheme.outline,
-          ),
-        ),
-        const SizedBox(width: 12),
         Ink(
           padding: const EdgeInsets.symmetric(
             horizontal: 6,

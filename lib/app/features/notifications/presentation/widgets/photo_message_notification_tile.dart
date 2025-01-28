@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
@@ -27,7 +28,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
   final NotificationStatus status;
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget buildContent(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         const SizedBox(height: 3),

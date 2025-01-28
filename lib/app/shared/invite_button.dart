@@ -9,6 +9,7 @@ class InviteButton extends StatelessWidget {
     this.onPressed,
     this.backgroundColor,
     this.textColor,
+    this.icon,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class InviteButton extends StatelessWidget {
   final bool isConfirm;
   final Color? backgroundColor;
   final Color? textColor;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class InviteButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isConfirm ? LucideIcons.circle_check : Icons.cancel,
+            icon ?? (isConfirm ? LucideIcons.circle_check : Icons.cancel),
             size: 20,
             color: textColor ??
                 (isConfirm ? Colors.white : context.colorScheme.error),

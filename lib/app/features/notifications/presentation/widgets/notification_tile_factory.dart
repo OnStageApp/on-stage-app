@@ -1,4 +1,3 @@
-// notification_tile_factory.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +6,7 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_type.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
-import 'package:on_stage_app/app/features/notifications/presentation/widgets/action_notification_tile.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/event_action_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/photo_message_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/team_action_notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
@@ -29,7 +28,7 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.bell,
+          icon: LucideIcons.calendar_sync,
           onTap: () {},
         );
       case NotificationType.TEAM_INVITATION_REQUEST:
@@ -50,7 +49,7 @@ class NotificationTileFactory extends ConsumerWidget {
           },
         );
       case NotificationType.EVENT_INVITATION_REQUEST:
-        return ActionNotificationTile(
+        return EventActionNotificationTile(
           notification: notification,
           onTap: () {
             if (notification.actionStatus ==

@@ -35,7 +35,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required Future<void> Function(SongKey) onKeyChanged,
     String title = 'Change Key',
   }) {
-    AdaptiveModal.show(
+    AdaptiveModal.show<void>(
       context: context,
       expand: false,
       isFloatingForLargeScreens: true,
@@ -164,7 +164,8 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
             isEnabled: isEnabled,
             onTap: isEnabled
                 ? () {
-                    _updateSongKey(_songKey.copyWith(keyType: type));
+                    final songKey = _songKey.copyWith(keyType: type);
+                    _updateSongKey(songKey);
                   }
                 : null,
           );
@@ -177,12 +178,9 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          _updateSongKey(
-            _songKey.copyWith(
-              chord: chord,
-              keyType: ChordTypeEnum.natural,
-            ),
-          );
+          final songKey =
+              _songKey.copyWith(chord: chord, keyType: ChordTypeEnum.natural);
+          _updateSongKey(songKey);
         },
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),

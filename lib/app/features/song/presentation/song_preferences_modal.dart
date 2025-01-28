@@ -150,7 +150,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
     return [
       const SizedBox(height: 24),
       Text(
-        'Chords View',
+        'Chords View Preference',
         style: context.textTheme.titleSmall,
       ),
       const SizedBox(height: 12),
@@ -159,7 +159,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
         selectedValue: ref.watch(userSettingsNotifierProvider).chordViewPref,
         validator: (chordType) {
           if (chordType == null) {
-            return 'Please select a valid theme';
+            return 'Please select a valid choice';
           }
           return null;
         },
