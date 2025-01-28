@@ -86,7 +86,7 @@ class EventTile extends StatelessWidget {
                 ),
               )
             else
-              _buildParticipantsTile(),
+              _buildParticipantsTile(context),
             const Divider(),
           ],
         ),
@@ -94,10 +94,11 @@ class EventTile extends StatelessWidget {
     );
   }
 
-  Widget _buildParticipantsTile() {
+  Widget _buildParticipantsTile(BuildContext context) {
     return ParticipantsOnTile(
       participantsProfileBytes: participantsProfile,
       participantsLength: stagersCount,
+      backgroundColor: context.colorScheme.tertiary,
     );
   }
 

@@ -36,8 +36,8 @@ class ImageWithPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor ??
             (context.isDarkMode
-                ? context.colorScheme.secondary
-                : context.colorScheme.secondary),
+                ? context.colorScheme.tertiary
+                : context.colorScheme.tertiary),
         border: Border.all(
           color: borderColor ?? context.colorScheme.onSurfaceVariant,
           width: borderWidth,

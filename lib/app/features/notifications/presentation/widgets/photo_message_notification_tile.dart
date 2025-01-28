@@ -52,6 +52,7 @@ class PhotoMessageNotificationTile extends NotificationTile {
                         else
                           ImageWithPlaceholder(
                             photo: profilePicture,
+                            backgroundColor: context.colorScheme.tertiary,
                           ),
                         const SizedBox(width: 8),
                         Expanded(

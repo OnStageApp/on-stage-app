@@ -52,7 +52,7 @@ class ParticipantsOnTile extends StatelessWidget {
 
   Color _getRandomBackgroundColor(BuildContext context, int index) {
     if (useRandomColors == false) {
-      return backgroundColor ?? context.colorScheme.secondary;
+      return backgroundColor ?? context.colorScheme.tertiary;
     }
     final colorIndex = index % _backgroundColors.length;
     return _backgroundColors[colorIndex];
@@ -113,7 +113,7 @@ class ParticipantsOnTile extends StatelessWidget {
                   // Use last color from backgroundColors for overflow indicator
                   color: useRandomColors
                       ? _backgroundColors.last
-                      : (backgroundColor ?? context.colorScheme.secondary),
+                      : (backgroundColor ?? context.colorScheme.tertiary),
                 ),
                 child: Center(
                   child: Text(

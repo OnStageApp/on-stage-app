@@ -55,7 +55,6 @@ class TeamsSection extends ConsumerWidget {
                 : _buildShimmer(context, height: 14),
             trailing: (currentTeam != null)
                 ? ParticipantsOnTile(
-                    backgroundColor: context.colorScheme.secondary,
                     participantsProfileBytes: currentTeam.memberPhotos,
                     participantsLength: currentTeam.membersCount,
                   )
