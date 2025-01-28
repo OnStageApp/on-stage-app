@@ -152,8 +152,9 @@ class ChordTransposer {
     final semitone = noteToSemitone[rootNote];
     if (semitone == null) return chord;
 
-    final useFlatStyle =
-        keySignatureStyle[songKeyToBeUpdated.chord] == ChordTypeEnum.flat;
+    final useFlatStyle = songKeyToBeUpdated.keyType == ChordTypeEnum.flat ||
+        (songKeyToBeUpdated.keyType == ChordTypeEnum.natural &&
+            keySignatureStyle[songKeyToBeUpdated.chord] == ChordTypeEnum.flat);
     final newSemitone = (semitone + transpose + 12) % 12;
     final newNote =
         semitoneToNote[newSemitone]![useFlatStyle ? 'flat' : 'sharp']!;

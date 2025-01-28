@@ -30,6 +30,7 @@ class SongsNotifier extends _$SongsNotifier {
   }
 
   Future<void> _getSongsCount() async {
+    //TODO: we need BE to support filtering
     final songsCount = await songRepository.getSongsCount();
     state = state.copyWith(songsCount: songsCount);
   }

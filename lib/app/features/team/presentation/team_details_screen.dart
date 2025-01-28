@@ -20,6 +20,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class TeamDetailsScreen extends ConsumerStatefulWidget {
   const TeamDetailsScreen({
@@ -57,15 +58,14 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   }
 
   List<TeamMember> _getFilteredMembers(List<TeamMember> members) {
-    final searchText = searchController.text.toLowerCase();
+    final searchText = searchController.text.toLowerCase().removeDiacritics;
     if (searchText.isEmpty) return members;
 
     return members
-        .where((member) =>
-            (member.name?.toLowerCase() ?? '').contains(searchText) ||
-            (member.role?.title?.toLowerCase() ?? '').contains(searchText) ||
-            (member.inviteStatus?.name.toLowerCase() ?? '')
-                .contains(searchText))
+        .where(
+          (member) => (member.name?.toLowerCase().removeDiacritics ?? '')
+              .contains(searchText),
+        )
         .toList();
   }
 
@@ -79,6 +79,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
           isBackButtonVisible: true,
         ),
         body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
@@ -224,7 +226,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  foregroundColor: context.colorScheme.outline.withOpacity(0.1),
+                  foregroundColor:
+                      context.colorScheme.outline.withValues(alpha: 0.1),
                 ),
                 child: Row(
                   children: [

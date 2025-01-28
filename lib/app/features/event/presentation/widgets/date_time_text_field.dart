@@ -52,7 +52,7 @@ class _DateTimeTextFieldWidgetState extends State<DateTimeTextFieldWidget> {
       _selectedTime = null;
     }
 
-    _minimumDateTime = _now.subtract(const Duration(days: 40));
+    _minimumDateTime = _now.subtract(Duration.zero);
     _maximumDateTime = _now.add(const Duration(days: 365));
   }
 

@@ -98,7 +98,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: ContinueButton(
-          text: 'Save Order',
+          text: 'Save',
           onPressed: _reorderPageHasChanges() ? _changeOrder : () {},
           isEnabled: _reorderPageHasChanges(),
         ),

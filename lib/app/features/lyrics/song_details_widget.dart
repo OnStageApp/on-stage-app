@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
@@ -154,29 +155,39 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     }
 
     final length = shouldShowDetails ? sections.length + 1 : sections.length;
-    return ScrollablePositionedList.builder(
-      itemScrollController: _itemScrollController,
-      physics: const BouncingScrollPhysics(),
-      itemCount: length,
-      itemBuilder: (context, index) {
-        var sectionIndex = index;
-        if (shouldShowDetails) {
-          sectionIndex = index - 1;
-          if (sectionIndex == -1) {
-            return _buildSongNotes();
-          }
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        // Dismiss the keyboard when the user starts dragging
+        if (scrollInfo is UserScrollNotification &&
+            scrollInfo.direction != ScrollDirection.idle) {
+          FocusScope.of(context).unfocus();
         }
-
-        return Container(
-          margin: EdgeInsets.only(bottom: index == length - 1 ? 64 : 16),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: context.colorScheme.onSurfaceVariant,
-          ),
-          child: _buildLines(sectionIndex, context),
-        );
+        return false; // Return false to allow the notification to continue propagating
       },
+      child: ScrollablePositionedList.builder(
+        itemScrollController: _itemScrollController,
+        physics: const BouncingScrollPhysics(),
+        itemCount: length,
+        itemBuilder: (context, index) {
+          var sectionIndex = index;
+          if (shouldShowDetails) {
+            sectionIndex = index - 1;
+            if (sectionIndex == -1) {
+              return _buildSongNotes();
+            }
+          }
+
+          return Container(
+            margin: EdgeInsets.only(bottom: index == length - 1 ? 64 : 16),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+            child: _buildLines(sectionIndex, context),
+          );
+        },
+      ),
     );
   }
 

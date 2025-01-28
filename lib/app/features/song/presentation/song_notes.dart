@@ -176,7 +176,7 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
           : Text(
               widget.notes.isNotNullEmptyOrWhitespace
                   ? widget.notes!
-                  : 'No MD notes added...',
+                  : 'No MD notes added',
               style: textTheme.titleLarge?.copyWith(
                 fontSize: ref
                         .watch(userSettingsNotifierProvider)

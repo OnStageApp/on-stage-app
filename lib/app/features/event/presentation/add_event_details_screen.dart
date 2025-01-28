@@ -113,6 +113,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
               ),
               const SizedBox(height: Insets.medium),
               DateTimeTextFieldWidget(
+                initialDateTime: _selectedDateTime,
                 onDateTimeChanged: (dateTime) {
                   setState(() {
                     _selectedDateTime = dateTime;
