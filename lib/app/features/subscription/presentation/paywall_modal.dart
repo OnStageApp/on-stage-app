@@ -132,7 +132,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           TitleWidget(
             title: widget.permissionType.title,
             subtitle: '${widget.permissionType.paywallDescription}\n '
-                'Get ${upgradePlan?.entitlementId.toUpperCase() ?? 'N/A'} '
+                'Get ${upgradePlan?.entitlementId.toUpperCase() ?? 'N/A'} Plan '
                 'to unlock this feature.',
             subtitleFontSize: 18,
           ),
@@ -153,8 +153,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ContinueButton(
-                text:
-                    'Go ${upgradePlan!.entitlementId.toUpperCase()} - 1 Month Free',
+                text: 'Try Free for 30-days',
                 isLoading: ref.watch(subscriptionNotifierProvider).isLoading,
                 borderColor: context.colorScheme.primary,
                 backgroundColor: context.isDarkMode
@@ -298,15 +297,27 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
 
   Future<Plan> getUpgradePlan(WidgetRef ref, Plan currentPlan) async {
     final allPlans = ref.watch(planServiceProvider).plans;
+    final memberTiers = [
+      'starter',
+      '20members',
+      '50members',
+      '150members',
+      '400members',
+      '1000members',
+    ];
 
-    if (currentPlan.entitlementId == 'starter') {
-      return allPlans.firstWhere(
-        (plan) => plan.entitlementId == 'pro' && !plan.isYearly,
-      );
-    } else {
-      return allPlans.firstWhere(
-        (plan) => plan.entitlementId == 'ultimate' && !plan.isYearly,
-      );
+    final currentTierIndex = memberTiers.indexOf(currentPlan.entitlementId);
+    if (currentTierIndex == -1 || currentTierIndex == memberTiers.length - 1) {
+      throw Exception('No upgrade available');
     }
+
+    final nextTier = memberTiers[currentTierIndex + 1];
+
+    return allPlans.firstWhere(
+      (plan) =>
+          plan.entitlementId == nextTier &&
+          plan.isYearly == currentPlan.isYearly,
+      orElse: () => throw Exception('Upgrade plan not found'),
+    );
   }
 }

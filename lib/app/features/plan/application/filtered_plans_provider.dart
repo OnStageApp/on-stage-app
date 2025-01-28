@@ -8,10 +8,11 @@ final filteredPlansProvider = Provider<List<Plan>>((ref) {
       ref.watch(planControllerProvider.select((state) => state.isYearlyPlan));
   final plans = ref.watch(planServiceProvider.select((state) => state.plans));
 
-  return [
-    ...plans.where(
-      (plan) =>
-          plan.entitlementId == 'starter' || plan.isYearly == isYearlyPlan,
-    ),
-  ];
+  final excludedEntitlements = {'pro', 'solo', 'ultimate'};
+
+  return plans
+      .where((plan) =>
+          !excludedEntitlements.contains(plan.entitlementId) &&
+          (plan.entitlementId == 'starter' || plan.isYearly == isYearlyPlan))
+      .toList();
 });
