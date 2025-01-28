@@ -51,12 +51,12 @@ class PlanCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  plan.name,
+                  '${plan.name} Members',
                   style: context.textTheme.headlineLarge!.copyWith(
                     color: context.colorScheme.onSecondary,
                   ),
                 ),
-                if (plan.name == 'Pro')
+                if (plan.name == '50')
                   Container(
                     padding: const EdgeInsets.fromLTRB(3, 3, 8, 3),
                     decoration: BoxDecoration(
@@ -100,7 +100,7 @@ class PlanCard extends ConsumerWidget {
               plan.price == 0
                   ? 'Free'
                   : plan.isYearly
-                      ? '${(plan.price / 12).toStringAsFixed(2)} RON/month'
+                      ? '${(plan.price / 12).toStringAsFixed(0)} RON/month'
                       : '${plan.price} ${plan.currency}/month',
               style: context.textTheme.headlineMedium!.copyWith(
                 color: context.colorScheme.onSecondary,
