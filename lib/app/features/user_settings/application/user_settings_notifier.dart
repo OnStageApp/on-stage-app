@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/user_settings/data/user_settings_repository.dart';
-import 'package:on_stage_app/app/features/user_settings/domain/chord_type_view_enum.dart';
 import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/shared/utils.dart';
@@ -202,19 +201,6 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
-  Future<void> seChordViewPref(ChordViewPref chordViewPref) async {
-    try {
-      final userSettings = UserSettings(chordViewPref: chordViewPref);
-      state = state.copyWith(
-        chordViewPref: chordViewPref,
-      );
-
-      await _saveUserSettings(userSettings);
-    } catch (e) {
-      logger.e('Error setting chord type view: $e');
-    }
-  }
-
   Future<void> updateUserSettings(UserSettings userSettings) async {
     try {
       await _saveUserSettings(userSettings);
@@ -232,13 +218,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     final textSizeIndex = prefs.getInt(_textSizeKey);
     final displayMdNotes = prefs.getBool('displayMdNotes');
     final displaySongDetails = prefs.getBool('displaySongDetails');
-    final chordViewPrefString = prefs.getString('chordViewPref');
-    final chordViewPref = chordViewPrefString != null
-        ? ChordViewPref.values.firstWhere(
-            (e) => e.name == chordViewPrefString,
-            orElse: () => ChordViewPref.flat,
-          )
-        : ChordViewPref.sharp;
+
     state = state.copyWith(
       isDarkMode: isDarkMode,
       songView: songViewIndex != null
@@ -251,7 +231,6 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
           : TextSize.normal,
       displayMdNotes: displayMdNotes,
       displaySongDetails: displaySongDetails,
-      chordViewPref: chordViewPref,
     );
 
     await getUserSettings();
@@ -292,9 +271,6 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
     if (settings.displaySongDetails != null) {
       prefs.setBool('displaySongDetails', settings.displaySongDetails!);
-    }
-    if (settings.chordViewPref != null) {
-      prefs.setString('chordViewPref', settings.chordViewPref.name);
     }
   }
 

@@ -1,7 +1,7 @@
+import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
-import 'package:on_stage_app/app/features/user_settings/domain/chord_type_view_enum.dart';
 
 class ChordTransposer {
   ChordTransposer(
@@ -9,7 +9,6 @@ class ChordTransposer {
     required this.songKeyToBeUpdated,
     required this.originalSongKey,
     this.transpose = 0,
-    this.chordViewPref = ChordViewPref.flat,
     this.isRomanStyle = false,
   }) {
     cycle = defaultCycle;
@@ -24,7 +23,6 @@ class ChordTransposer {
     }
   }
 
-  final ChordViewPref? chordViewPref;
   final SongViewMode chordNotation;
   late List<String> cycle;
   int transpose;
@@ -130,6 +128,16 @@ class ChordTransposer {
     return result;
   }
 
+  final keySignatureStyle = {
+    ChordsWithoutSharp.A: ChordTypeEnum.sharp, // F#, C#, G#
+    ChordsWithoutSharp.B: ChordTypeEnum.sharp, // F#, C#, G#, D#, A#
+    ChordsWithoutSharp.C: ChordTypeEnum.natural, // No accidentals
+    ChordsWithoutSharp.D: ChordTypeEnum.sharp, // F#, C#
+    ChordsWithoutSharp.E: ChordTypeEnum.sharp, // F#, C#, G#, D#
+    ChordsWithoutSharp.F: ChordTypeEnum.flat, // B♭
+    ChordsWithoutSharp.G: ChordTypeEnum.sharp, // F#
+  };
+
   String _processChord(String chord) {
     if (chordNotation == SongViewMode.numeric) {
       return _toNumeric(chord, originalSongKey.name);
@@ -144,14 +152,9 @@ class ChordTransposer {
     final semitone = noteToSemitone[rootNote];
     if (semitone == null) return chord;
 
-    // Determine accidental style from song key
-    final useFlatStyle = songKeyToBeUpdated.keyType == ChordTypeEnum.natural
-        ? chordViewPref == ChordViewPref.flat
-        : songKeyToBeUpdated.keyType == ChordTypeEnum.flat;
-
+    final useFlatStyle =
+        keySignatureStyle[songKeyToBeUpdated.chord] == ChordTypeEnum.flat;
     final newSemitone = (semitone + transpose + 12) % 12;
-
-    // Get the new note maintaining song key's accidental style
     final newNote =
         semitoneToNote[newSemitone]![useFlatStyle ? 'flat' : 'sharp']!;
 
