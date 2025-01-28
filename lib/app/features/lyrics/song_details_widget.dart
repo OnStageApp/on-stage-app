@@ -141,8 +141,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   @override
   Widget build(BuildContext context) {
     final userSettings = ref.watch(userSettingsNotifierProvider);
-    final shouldShowDetails = (userSettings.displayMdNotes ?? false) ||
-        (userSettings.displaySongDetails ?? false);
+    final shouldShowDetails = widget.showContentByStructure &&
+        ((userSettings.displayMdNotes ?? false) ||
+            (userSettings.displaySongDetails ?? false));
     final sections = ref.watch(songNotifierProvider).sections;
     final chordLyricsDocument = ref.watch(chordProcessorProvider).document;
     _listens();
@@ -231,8 +232,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   Future<void> _scrollToIndex() async {
     final indexToScroll = ref.read(songNotifierProvider).selectedStructureIndex;
     final userSettings = ref.watch(userSettingsNotifierProvider);
-    final shouldShowDetails = (userSettings.displaySongDetails ?? false) ||
-        (userSettings.displayMdNotes ?? false);
+    final shouldShowDetails = widget.showContentByStructure &&
+        ((userSettings.displayMdNotes ?? false) ||
+            (userSettings.displaySongDetails ?? false));
     if (indexToScroll == null) return;
 
     if (_itemScrollController.isAttached) {
