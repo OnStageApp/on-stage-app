@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/song/application/song/song_notifier.da
 import 'package:on_stage_app/app/features/song/application/song_editor/song_editor_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/song_editor_widget.dart';
+import 'package:on_stage_app/app/features/song/presentation/preferences/song_structure_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -14,8 +15,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
+    this.isNewSong = false,
     super.key,
   });
+
+  final bool isNewSong;
 
   @override
   AddSongSecondStepContentState createState() =>
@@ -225,6 +229,16 @@ class AddSongSecondStepContentState
         AppRoute.song.name,
         queryParameters: {'songId': song.id},
       );
+      if (widget.isNewSong) {
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (!mounted) return;
+
+        SongStructureModal.show(
+          context: context,
+          ref: ref,
+          closeAfterSave: true,
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {

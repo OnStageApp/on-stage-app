@@ -260,6 +260,7 @@ class _AddSongFirstStepDetailsState
         AppRoute.editSongContent.name,
         queryParameters: {
           'songId': ref.watch(songNotifierProvider).song.id,
+          'isNewSong': 'true',
         },
       ),
     );

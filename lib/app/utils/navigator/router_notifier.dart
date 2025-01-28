@@ -190,10 +190,17 @@ class NavigationNotifier extends _$NavigationNotifier {
                           name: AppRoute.editSongContent.name,
                           path: 'editSongContent',
                           builder: (context, state) {
+                            final isNewSong = bool.tryParse(
+                                  state.uri.queryParameters['isNewSong']
+                                      .toString(),
+                                ) ??
+                                false;
                             ref
                                 .read(analyticsServiceProvider.notifier)
                                 .logScreenView(AppRoute.editSongContent.name);
-                            return const AddSongSecondStepContent();
+                            return AddSongSecondStepContent(
+                              isNewSong: isNewSong,
+                            );
                           },
                         ),
                       ],

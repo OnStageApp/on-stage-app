@@ -17,8 +17,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongStructureModal extends ConsumerStatefulWidget {
   const SongStructureModal({
+    this.closeAfterSave = false,
     super.key,
   });
+
+  final bool closeAfterSave;
 
   @override
   SongStructureModalState createState() => SongStructureModalState();
@@ -26,10 +29,11 @@ class SongStructureModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required WidgetRef ref,
+    bool? closeAfterSave,
   }) {
     AdaptiveModal.show(
       context: context,
-      child: const SongStructureModal(),
+      child: SongStructureModal(closeAfterSave: closeAfterSave ?? false),
     );
   }
 }
@@ -228,5 +232,8 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
     setState(() {
       _isEditingMode = false;
     });
+    if (widget.closeAfterSave) {
+      context.popDialog();
+    }
   }
 }
