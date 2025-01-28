@@ -45,7 +45,6 @@ class ChordProcessor extends _$ChordProcessor {
       originalSongKey: originalSongKey,
       transpose: transposeIncrement,
       songKeyToBeUpdated: updateSongKey,
-      chordViewPref: chordViewPref,
     );
 
     _textScaleFactor = scaleFactor;
