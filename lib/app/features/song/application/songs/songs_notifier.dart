@@ -20,19 +20,11 @@ class SongsNotifier extends _$SongsNotifier {
     return _songRepository!;
   }
 
-  static const String _userId = '9zNhTEXqVXdbXZoUczUtWK3OJq63';
-
   @override
   SongsState build() {
     final dio = ref.watch(dioProvider);
     _songRepository = SongRepository(dio);
     return const SongsState();
-  }
-
-  Future<void> _getSongsCount() async {
-    //TODO: we need BE to support filtering
-    final songsCount = await songRepository.getSongsCount();
-    state = state.copyWith(songsCount: songsCount);
   }
 
   Future<void> getSongs({
@@ -46,7 +38,6 @@ class SongsNotifier extends _$SongsNotifier {
     );
 
     try {
-      unawaited(_getSongsCount());
       await Future.wait([
         _fetchSongs(songFilter),
         _fetchFavoriteSongs(),
@@ -94,7 +85,6 @@ class SongsNotifier extends _$SongsNotifier {
       _updateSongFavoriteStatus(id, true);
       await songRepository.saveFavoriteSong(
         songId: id,
-        userId: _userId,
       );
     } catch (error) {
       final appError =
@@ -111,7 +101,6 @@ class SongsNotifier extends _$SongsNotifier {
       _updateSongFavoriteStatus(id, false);
       await songRepository.removeSavedSong(
         songId: id,
-        userId: _userId,
       );
     } catch (error) {
       final appError =

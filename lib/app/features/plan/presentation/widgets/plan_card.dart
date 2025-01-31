@@ -56,43 +56,43 @@ class PlanCard extends ConsumerWidget {
                     color: context.colorScheme.onSecondary,
                   ),
                 ),
-                if (plan.name == '50')
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(3, 3, 8, 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        colors: [Colors.blue[100]!, Colors.blue[500]!],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: const [0.1, 0.6],
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.blue[500],
-                            size: 14,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Most Popular',
-                          style: context.textTheme.titleSmall!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                // if (plan.name == '50')
+                // Container(
+                //   padding: const EdgeInsets.fromLTRB(3, 3, 8, 3),
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(15),
+                //     gradient: LinearGradient(
+                //       colors: [Colors.blue[100]!, Colors.blue[500]!],
+                //       begin: Alignment.topLeft,
+                //       end: Alignment.bottomRight,
+                //       stops: const [0.1, 0.6],
+                //     ),
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       Container(
+                //         padding: const EdgeInsets.all(5),
+                //         decoration: const BoxDecoration(
+                //           color: Colors.white,
+                //           shape: BoxShape.circle,
+                //         ),
+                //         child: Icon(
+                //           Icons.star,
+                //           color: Colors.blue[500],
+                //           size: 14,
+                //         ),
+                //       ),
+                //       const SizedBox(width: 5),
+                //       Text(
+                //         'Most Popular',
+                //         style: context.textTheme.titleSmall!.copyWith(
+                //           color: Colors.white,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             const SizedBox(height: 10),

@@ -45,6 +45,10 @@ class SearchNotifier extends _$SearchNotifier {
     );
   }
 
+  void setLibraryFilter({required bool isLibrary}) {
+    state = state.copyWith(isLibrary: isLibrary);
+  }
+
   void resetAllFilters() {
     state = state.copyWith(
       artistFilter: null,
@@ -66,70 +70,5 @@ class SearchNotifier extends _$SearchNotifier {
         state = state.copyWith(tempoFilter: null);
       case SearchFilterEnum.all:
     }
-  }
-
-  List<SearchFilter?> getAllFilters() {
-    final filters = <SearchFilter?>[];
-    if (state.artistFilter != null) {
-      filters.add(
-        SearchFilter(
-          type: SearchFilterEnum.artist,
-          value: state.artistFilter!.name,
-        ),
-      );
-    }
-    if (state.themeFilter != null) {
-      filters.add(
-        SearchFilter(
-          type: SearchFilterEnum.theme,
-          value: state.themeFilter!.title,
-        ),
-      );
-    }
-    if (state.teamFilter != null) {
-      filters.add(
-        SearchFilter(
-          type: SearchFilterEnum.team,
-          value: state.teamFilter! ? 'Team Songs' : 'All Songs',
-        ),
-      );
-    }
-
-    if (state.tempoFilter != null) {
-      final minValue = state.tempoFilter!.min;
-      final maxValue = state.tempoFilter!.max;
-
-      if (minValue == null && maxValue == null) {
-        return filters;
-      }
-
-      if (minValue == null) {
-        filters.add(
-          SearchFilter(
-            type: SearchFilterEnum.tempo,
-            value: 'Up to $maxValue',
-          ),
-        );
-        return filters;
-      }
-      if (maxValue == null) {
-        filters.add(
-          SearchFilter(
-            type: SearchFilterEnum.tempo,
-            value: 'From $minValue',
-          ),
-        );
-        return filters;
-      }
-
-      filters.add(
-        SearchFilter(
-          type: SearchFilterEnum.tempo,
-          value: '${state.tempoFilter!.min} - ${state.tempoFilter!.max}',
-        ),
-      );
-    }
-
-    return filters;
   }
 }

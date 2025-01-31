@@ -121,7 +121,7 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
                 _buildContent(
                   teamMember.profilePicture,
                   teamMember.name ?? 'Name',
-                  'Pian',
+                  '',
                   () {
                     context
                       ..popDialog()

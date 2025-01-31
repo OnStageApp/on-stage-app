@@ -12,17 +12,20 @@ import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongFilterModal extends ConsumerStatefulWidget {
-  const SongFilterModal({super.key});
+  const SongFilterModal({this.expand = false, super.key});
+
+  final bool expand;
 
   @override
   SongFilterModalState createState() => SongFilterModalState();
 
   static void show({
     required BuildContext context,
+    bool expand = false,
   }) {
     AdaptiveModal.show(
       isFloatingForLargeScreens: true,
-      expand: false,
+      expand: expand,
       context: context,
       child: const SingleChildScrollView(
         child: SongFilterModal(),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
-import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/models/profile/user_profile.dart';
 import 'package:on_stage_app/app/shared/profile_image_widget.dart';
@@ -101,15 +100,6 @@ class UserProfileInfoScreenState extends ConsumerState<UserProfileInfoScreen> {
                       icon: Icons.church,
                       controller: _nameController,
                     ),
-                    const SizedBox(height: 12),
-                    CustomTextField(
-                      enabled: false,
-                      label: 'Position',
-                      hint: user?.position?.title ?? '',
-                      icon: Icons.church,
-                      controller: _nameController,
-                    ),
-                    const SizedBox(height: 12),
                     const SizedBox(
                       height: 100,
                     ),

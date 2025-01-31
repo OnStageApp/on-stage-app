@@ -13,6 +13,7 @@ class SongFilter with _$SongFilter {
     ThemeEnum? theme,
     TempoFilter? tempoRange,
     bool? includeOnlyTeamSongs,
+    bool? isLibrary,
   }) = _SongFilter;
 
   factory SongFilter.fromJson(Map<String, dynamic> json) =>

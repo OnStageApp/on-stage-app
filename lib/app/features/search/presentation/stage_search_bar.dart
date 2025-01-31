@@ -18,6 +18,7 @@ class StageSearchBar extends ConsumerStatefulWidget {
     this.onClosed,
     this.onTap,
     this.showFilter = false,
+    this.expandFilterModal = false,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class StageSearchBar extends ConsumerStatefulWidget {
   final void Function()? onClosed;
   final void Function()? onTap;
   final bool showFilter;
+  final bool expandFilterModal;
   final TextEditingController? controller;
 
   @override
@@ -88,8 +90,8 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
 
   void _updateFilteringState() {
     _isFilteringActive = ref
-            .watch(searchNotifierProvider.notifier)
-            .getAllFilters()
+            .watch(
+                searchNotifierProvider.select((state) => state.activeFilters))
             .isNotNullOrEmpty &&
         widget.showFilter;
 
@@ -199,7 +201,10 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
         child: InkWell(
           overlayColor:
               WidgetStateProperty.all(context.colorScheme.surfaceBright),
-          onTap: () => SongFilterModal.show(context: context),
+          onTap: () => SongFilterModal.show(
+            context: context,
+            expand: widget.expandFilterModal,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -272,18 +277,16 @@ class _StageSearchBarState extends ConsumerState<StageSearchBar>
   }
 
   List<Widget> _buildFilterChipsList() {
+    final activeFilters = ref
+        .watch(searchNotifierProvider.select((state) => state.activeFilters));
+
     return List.generate(
-      ref.watch(searchNotifierProvider.notifier).getAllFilters().length,
+      activeFilters.length,
       (index) {
-        final filter =
-            ref.watch(searchNotifierProvider.notifier).getAllFilters()[index];
-        if (filter != null) {
-          return IntrinsicWidth(
-            child: _buildAddedFilter(filter),
-          );
-        } else {
-          return const SizedBox();
-        }
+        final filter = activeFilters[index];
+        return IntrinsicWidth(
+          child: _buildAddedFilter(filter),
+        );
       },
     );
   }

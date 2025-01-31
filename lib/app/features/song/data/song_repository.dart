@@ -44,7 +44,6 @@ abstract class SongRepository {
   @POST(API.savedSongsWithUserId)
   Future<String> saveFavoriteSong({
     @Path('songId') required String songId,
-    @Path('userId') required String userId,
   });
 
   @POST(API.addSong)
@@ -61,7 +60,6 @@ abstract class SongRepository {
   @DELETE(API.savedSongsWithUserId)
   Future<String> removeSavedSong({
     @Path('songId') required String songId,
-    @Path('userId') required String userId,
   });
 
   @POST(API.addSongToEventItem)
