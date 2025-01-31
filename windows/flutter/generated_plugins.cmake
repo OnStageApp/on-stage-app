@@ -10,7 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_localization
   flutter_secure_storage_windows
   permission_handler_windows
-        sentry_flutter
+  sentry_flutter
   sqlite3_flutter_libs
   url_launcher_windows
 )
