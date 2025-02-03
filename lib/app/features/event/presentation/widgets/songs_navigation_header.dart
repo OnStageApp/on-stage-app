@@ -13,26 +13,23 @@ class NavigationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 6, top: 16),
-        child: Row(
-          children: [
-            NavigationButton(
-              label: 'Songs',
-              isSelected: !isLibrarySelected,
-              onTap: () => onSelectionChanged(false),
-            ),
-            const SizedBox(width: 14),
-            NavigationButton(
-              label: 'My Library',
-              hasInfo: true,
-              isSelected: isLibrarySelected,
-              onTap: () => onSelectionChanged(true),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 6, top: 16),
+      child: Row(
+        children: [
+          NavigationButton(
+            label: 'Songs',
+            isSelected: !isLibrarySelected,
+            onTap: () => onSelectionChanged(false),
+          ),
+          const SizedBox(width: 14),
+          NavigationButton(
+            label: 'My Library',
+            hasInfo: true,
+            isSelected: isLibrarySelected,
+            onTap: () => onSelectionChanged(true),
+          ),
+        ],
       ),
     );
   }

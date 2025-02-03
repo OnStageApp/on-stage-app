@@ -154,22 +154,41 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        children: ChordTypeEnum.values.map((type) {
-          final isSelected = _songKey.keyType == type;
-          final isEnabled = _isChordTypeEnabled(type);
+        children: [
+          ...ChordTypeEnum.values
+              .where((type) => type != ChordTypeEnum.natural)
+              .map((type) {
+            final isSelected = _songKey.keyType == type;
+            final isEnabled = _isChordTypeEnabled(type);
 
-          return ChordTypeWidget(
-            chordType: type.name,
-            isSelected: isSelected,
-            isEnabled: isEnabled,
-            onTap: isEnabled
-                ? () {
-                    final songKey = _songKey.copyWith(keyType: type);
-                    _updateSongKey(songKey);
-                  }
-                : null,
-          );
-        }).toList(),
+            return Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ChordTypeWidget(
+                      chordType: type.name,
+                      isSelected: isSelected,
+                      isEnabled: isEnabled,
+                      onTap: () {
+                        final songKey = isSelected
+                            ? _songKey.copyWith(keyType: ChordTypeEnum.natural)
+                            : _songKey.copyWith(keyType: type);
+                        _updateSongKey(songKey);
+                      },
+                    ),
+                  ),
+                  if (type == ChordTypeEnum.flat)
+                    Container(
+                      height: 24,
+                      width: 1,
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      color: context.colorScheme.onSurface.withOpacity(0.2),
+                    ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }
