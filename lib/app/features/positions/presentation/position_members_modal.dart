@@ -4,6 +4,7 @@ import 'package:on_stage_app/app/features/event/application/event/event_notifier
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/presentation/uninvited_people_modal.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/positions/application/position_notifier.dart';
 import 'package:on_stage_app/app/features/positions/domain/position.dart';
 import 'package:on_stage_app/app/features/positions/presentation/position_members_card.dart';
@@ -56,6 +57,7 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
 
   @override
   Widget build(BuildContext context) {
+
     return NestedScrollModal(
       buildHeader: () => _buildHeader(context),
       headerHeight: () => 64,
@@ -81,11 +83,13 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
   Widget _getContent() {
     final eventState = ref.watch(eventNotifierProvider);
     final positionState = ref.watch(positionNotifierProvider);
+    final hasEditorRoles = ref.watch(permissionServiceProvider).hasAccessToEdit;
+
     final sortedPositions = getSortedPositions(
       positions: positionState.positions,
       stagers: ref.watch(
         eventNotifierProvider.select((state) => state.stagers),
-      ),
+      ), hasEditorRoles: hasEditorRoles,
     );
     final content = switch ((
       eventState.isLoading || positionState.isLoading,
@@ -127,8 +131,13 @@ class _PositionMembersModalState extends ConsumerState<PositionMembersModal> {
   List<Position> getSortedPositions({
     required List<Position> positions,
     required List<Stager> stagers,
+    required bool hasEditorRoles,
   }) {
-    return positions.toList()
+    final filteredPositions = !hasEditorRoles
+        ? positions.where((p) => stagers.any((s) => s.positionId == p.id)).toList()
+        : positions.toList();
+
+    return filteredPositions
       ..sort((a, b) {
         final stagersInA = stagers.where((s) => s.positionId == a.id).length;
         final stagersInB = stagers.where((s) => s.positionId == b.id).length;
