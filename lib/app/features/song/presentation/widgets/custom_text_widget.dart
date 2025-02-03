@@ -1,59 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/chord_deletion_input_formatter.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/logger.dart';
 
-class CustomTextField extends StatefulWidget {
-  const CustomTextField({
-    required this.controller,
-    required this.focusNode,
-    required this.style,
-    super.key,
-  });
-
-  final CustomTextEditingController controller;
-  final FocusNode focusNode;
-  final TextStyle style;
-
-  @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
-}
-
-class _CustomTextFieldState extends State<CustomTextField> {
-  @override
-  Widget build(BuildContext context) {
-    logger.i('CustomTextField');
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: TextField(
-        scribbleEnabled: false,
-        scrollPhysics: const NeverScrollableScrollPhysics(),
-        focusNode: widget.focusNode,
-        enableSuggestions: false,
-        autocorrect: false,
-        controller: widget.controller,
-        maxLines: null,
-        minLines: 1,
-        keyboardType: TextInputType.multiline,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          contentPadding: EdgeInsets.zero,
-          hintText: _getHintText(),
-          hintStyle: context.textTheme.bodyLarge!.copyWith(
-            color: context.colorScheme.outline,
-          ),
-        ),
-        style: context.textTheme.bodyLarge,
-      ),
-    );
-  }
-
-  String _getHintText() => 'eg. [Dm]Burn the ships, cut the [Bb]ties...';
-}
-
+/// A custom TextEditingController that only customizes text styling.
 class CustomTextEditingController extends TextEditingController {
   CustomTextEditingController({super.text});
 
@@ -66,8 +15,7 @@ class CustomTextEditingController extends TextEditingController {
     final children = <InlineSpan>[];
     final tagRegex = RegExp(r'(<[^>]+>|\[[^\]]+\])');
     final matches = tagRegex.allMatches(text);
-
-    var lastMatchEnd = 0;
+    int lastMatchEnd = 0;
     for (final match in matches) {
       if (match.start > lastMatchEnd) {
         children.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
@@ -93,11 +41,63 @@ class CustomTextEditingController extends TextEditingController {
       }
       lastMatchEnd = match.end;
     }
-
     if (lastMatchEnd < text.length) {
       children.add(TextSpan(text: text.substring(lastMatchEnd)));
     }
-
     return TextSpan(style: style, children: children);
   }
+}
+
+class CustomTextField extends StatefulWidget {
+  const CustomTextField({
+    required this.controller,
+    required this.focusNode,
+    required this.style,
+    super.key,
+  });
+
+  final CustomTextEditingController controller;
+  final FocusNode focusNode;
+  final TextStyle style;
+
+  @override
+  _CustomTextFieldState createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        scribbleEnabled: false,
+        scrollPhysics: const NeverScrollableScrollPhysics(),
+        focusNode: widget.focusNode,
+        enableSuggestions: false,
+        autocorrect: false,
+        controller: widget.controller,
+        maxLines: null,
+        minLines: 1,
+        inputFormatters: [
+          ChordDeletionInputFormatter(),
+        ],
+        keyboardType: TextInputType.multiline,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+          hintText: _getHintText(),
+          hintStyle: context.textTheme.bodyLarge!.copyWith(
+            color: context.colorScheme.outline,
+          ),
+        ),
+        style: context.textTheme.bodyLarge,
+      ),
+    );
+  }
+
+  String _getHintText() => 'eg. [Dm]Burn the ships, cut the [Bb]ties...';
 }

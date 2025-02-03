@@ -185,7 +185,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
