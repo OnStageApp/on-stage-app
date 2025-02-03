@@ -27,8 +27,8 @@ final isEditModeAndHasAccessProvider = Provider.autoDispose<bool>((ref) {
   return hasAccessToEdit && isEditMode;
 });
 
-class AddEventMomentsScreen extends ConsumerStatefulWidget {
-  const AddEventMomentsScreen({
+class ScheduleScreen extends ConsumerStatefulWidget {
+  const ScheduleScreen({
     required this.eventId,
     this.onSave,
     super.key,
@@ -38,10 +38,10 @@ class AddEventMomentsScreen extends ConsumerStatefulWidget {
   final void Function()? onSave;
 
   @override
-  AddEventMomentsScreenState createState() => AddEventMomentsScreenState();
+  ScheduleScreenState createState() => ScheduleScreenState();
 }
 
-class AddEventMomentsScreenState extends ConsumerState<AddEventMomentsScreen> {
+class ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   bool _areEventItemsLoading = false;
 
   @override

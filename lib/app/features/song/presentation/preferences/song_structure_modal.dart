@@ -130,7 +130,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                   child: _buildLeadingTile(context),
                 )
               : const SizedBox(width: 80 - 12),
-      title: 'Song Structure',
+      title: 'Edit Structure',
     );
   }
 

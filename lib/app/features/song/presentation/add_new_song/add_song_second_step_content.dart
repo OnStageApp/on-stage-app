@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_dark_dropdwon.dart';
@@ -5,6 +7,7 @@ import 'package:on_stage_app/app/features/lyrics/song_details_widget.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song_editor/song_editor_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/song_editor_widget.dart';
 import 'package:on_stage_app/app/features/song/presentation/preferences/song_structure_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -62,6 +65,7 @@ class AddSongSecondStepContentState
   @override
   Widget build(BuildContext context) {
     final songTitle = ref.watch(songNotifierProvider).song.title ?? 'Untitled';
+    print('AddSongSecondStepContentState.build: $songTitle');
     final isLargeScreen = context.isLargeScreen;
 
     return Scaffold(
@@ -87,14 +91,20 @@ class AddSongSecondStepContentState
     );
   }
 
-  void _handleBackPress() {
-    final songId = ref.watch(songNotifierProvider).song.id;
-    if (songId == null) {
-      context.goNamed(AppRoute.home.name);
-      return;
+  Future<void> _handleBackPress() async {
+    final shouldPop = await AdaptiveDialogOnPop.show(
+      context: context,
+    );
+
+    if (shouldPop ?? true && mounted) {
+      final songId = ref.watch(songNotifierProvider).song.id;
+      if (songId == null) {
+        if (context.mounted) context.goNamed(AppRoute.home.name);
+        return;
+      }
+      unawaited(ref.read(songNotifierProvider.notifier).getSongById(songId));
+      if (context.mounted) context.pop();
     }
-    ref.read(songNotifierProvider.notifier).getSongById(songId);
-    context.pop();
   }
 
   Widget _buildTrailingButton(BuildContext context) {
@@ -142,13 +152,15 @@ class AddSongSecondStepContentState
 
   Widget _buildFloatingActionButton(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 36),
+      alignment: Alignment.bottomCenter,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: context.colorScheme.surface.withAlpha(220),
+            blurRadius: 12,
+            spreadRadius: 32,
+            offset: const Offset(0, 24),
           ),
         ],
       ),

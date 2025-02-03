@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/editable_str
 import 'package:on_stage_app/app/features/song/presentation/widgets/loading_overlay.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/page_indicator.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar_leading.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -112,6 +113,10 @@ class _EventItemsDetailsScreenState
       child: Scaffold(
         appBar: StageAppBar(
           isBackButtonVisible: true,
+          onBackButtonPressed: () {
+            context.pop();
+            ref.read(eventItemsNotifierProvider.notifier).unsetCurrentIndex();
+          },
           title: _isSong(_currentIndex)
               ? songState.song.title ?? ''
               : items[_currentIndex].name ?? '',

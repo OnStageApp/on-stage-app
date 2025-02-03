@@ -125,7 +125,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                       height: 54,
                       onTap: () {
                         context.pushNamed(
-                          AppRoute.addEventSongs.name,
+                          AppRoute.schedule.name,
                           queryParameters: {
                             'eventId': widget.eventId,
                           },

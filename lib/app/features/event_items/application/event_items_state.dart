@@ -10,6 +10,6 @@ class EventItemsState with _$EventItemsState {
     @Default(false) bool isLoading,
     @Default([]) List<EventItem> eventItems,
     @Default([]) List<SongModelV2> songsFromEvent,
-    @Default(0) int currentIndex,
+    @Default(-1) int currentIndex,
   }) = _EventItemsState;
 }

@@ -216,7 +216,7 @@ class ChooseStructureToAddModalState
 
   Widget _buildHeader(BuildContext context) {
     return const ModalHeader(
-      title: 'Song Structure',
+      title: 'Edit Structure',
     );
   }
 }

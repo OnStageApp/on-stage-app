@@ -15,7 +15,7 @@ enum AppRoute {
   notification,
   favorites,
   vocalModal,
-  addEventSongs,
+  schedule,
   eventSettings,
   editUserProfile,
   teamDetails,

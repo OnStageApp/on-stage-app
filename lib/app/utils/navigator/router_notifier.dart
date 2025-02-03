@@ -4,10 +4,10 @@ import 'package:on_stage_app/app/features/about/presentation/about_screen.dart';
 import 'package:on_stage_app/app/features/about/presentation/privacy_policy_screen.dart';
 import 'package:on_stage_app/app/features/about/presentation/terms_of_conditions_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/add_event_details_screen.dart';
-import 'package:on_stage_app/app/features/event/presentation/add_event_moments_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_details_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
+import 'package:on_stage_app/app/features/event/presentation/schedule_screen.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/groups_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
@@ -260,16 +260,16 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                     ),
                     GoRoute(
-                      name: AppRoute.addEventSongs.name,
-                      path: 'addEventSongs',
+                      name: AppRoute.schedule.name,
+                      path: 'schedule',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId']!;
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(
-                              '${AppRoute.addEventSongs.name}/$eventId',
+                              '${AppRoute.schedule.name}/$eventId',
                             );
-                        return AddEventMomentsScreen(eventId: eventId);
+                        return ScheduleScreen(eventId: eventId);
                       },
                     ),
                     GoRoute(
