@@ -21,7 +21,8 @@ class ChordToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final song = ref.watch(songNotifierProvider).song;
-    final songKey = song.key ?? const SongKey(chord: ChordsWithoutSharp.C);
+    final songKey =
+        song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
     final chords = ChordsForKeyHelper.getDiatonicChordsForKey(songKey);
 
     if (sectionData == null) return Container();
