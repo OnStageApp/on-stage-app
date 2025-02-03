@@ -88,6 +88,8 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
   Future<void> purchasePackage(String packageId) async {
     try {
+      state = state.copyWith(isLoading: true);
+
       final List<StoreProduct> products;
       if (Platform.isAndroid) {
         ///This is a workaround until RevenueCat fix the issue with the subscription group
@@ -106,7 +108,6 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       }
 
       logger.i('Products fetched: $products');
-      state = state.copyWith(isLoading: true);
 
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
 
