@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/plan/domain/plan.dart';
@@ -10,9 +12,13 @@ final filteredPlansProvider = Provider<List<Plan>>((ref) {
 
   final excludedEntitlements = {'pro', 'solo', 'ultimate'};
 
-  return plans
-      .where((plan) =>
-          !excludedEntitlements.contains(plan.entitlementId) &&
-          (plan.entitlementId == 'starter' || plan.isYearly == isYearlyPlan))
-      .toList();
+  return plans.where((plan) {
+    final hasValidProductId = Platform.isAndroid
+        ? plan.googleProductId.isNotEmpty
+        : plan.appleProductId.isNotEmpty;
+
+    return hasValidProductId &&
+        !excludedEntitlements.contains(plan.entitlementId) &&
+        (plan.entitlementId == 'starter' || plan.isYearly == isYearlyPlan);
+  }).toList();
 });
