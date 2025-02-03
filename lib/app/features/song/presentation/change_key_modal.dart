@@ -164,18 +164,16 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
             return Expanded(
               child: Row(
                 children: [
-                  Expanded(
-                    child: ChordTypeWidget(
-                      chordType: type.name,
-                      isSelected: isSelected,
-                      isEnabled: isEnabled,
-                      onTap: () {
-                        final songKey = isSelected
-                            ? _songKey.copyWith(keyType: ChordTypeEnum.natural)
-                            : _songKey.copyWith(keyType: type);
-                        _updateSongKey(songKey);
-                      },
-                    ),
+                  ChordTypeWidget(
+                    chordType: type.name,
+                    isSelected: isSelected,
+                    isEnabled: isEnabled,
+                    onTap: () {
+                      final songKey = isSelected
+                          ? _songKey.copyWith(keyType: ChordTypeEnum.natural)
+                          : _songKey.copyWith(keyType: type);
+                      _updateSongKey(songKey);
+                    },
                   ),
                   if (type == ChordTypeEnum.flat)
                     Container(
