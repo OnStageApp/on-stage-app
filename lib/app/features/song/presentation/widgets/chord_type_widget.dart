@@ -17,6 +17,10 @@ class ChordTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (chordType == 'natural') {
+      return const SizedBox.shrink();
+    }
+
     return Expanded(
       child: Opacity(
         opacity: isEnabled ? 1.0 : 0.5,
@@ -46,7 +50,7 @@ class ChordTypeWidget extends StatelessWidget {
   }
 
   TextStyle _getStyling(BuildContext context) {
-    return context.textTheme.bodyMedium!.copyWith(
+    return context.textTheme.titleMedium!.copyWith(
       fontWeight: FontWeight.w600,
       color: isSelected ? Colors.white : context.colorScheme.onSurface,
     );
