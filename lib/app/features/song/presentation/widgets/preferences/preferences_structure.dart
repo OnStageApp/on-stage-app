@@ -28,7 +28,7 @@ class PreferencesSongStructure extends ConsumerWidget {
               BlendMode.srcIn,
             ),
           ),
-          title: 'Song Structure',
+          title: 'Edit Structure',
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
             SongStructureModal.show(

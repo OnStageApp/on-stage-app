@@ -143,7 +143,7 @@ class _$EventItemsStateImpl implements _EventItemsState {
       {this.isLoading = false,
       final List<EventItem> eventItems = const [],
       final List<SongModelV2> songsFromEvent = const [],
-      this.currentIndex = 0})
+      this.currentIndex = -1})
       : _eventItems = eventItems,
         _songsFromEvent = songsFromEvent;
 

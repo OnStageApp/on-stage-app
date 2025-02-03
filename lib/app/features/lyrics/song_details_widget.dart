@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/lyrics/chord_processor.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_lyrics_line.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
@@ -173,7 +174,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           if (shouldShowDetails) {
             sectionIndex = index - 1;
             if (sectionIndex == -1) {
-              return _buildSongNotes();
+              return _buildNotesAndInfo();
             }
           }
 
@@ -191,11 +192,22 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     );
   }
 
-  SongNotesCard _buildSongNotes() {
+  List<String>? get currentStagersNames {
+    final index = ref.watch(eventItemsNotifierProvider).currentIndex;
+    if (index == -1) return null;
+    final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
+    final eventItemsLength = eventItems.length;
+    if (eventItemsLength <= 0) return null;
+
+    return eventItems[index].assignedTo?.map((stager) => stager.name).toList();
+  }
+
+  SongNotesCard _buildNotesAndInfo() {
     final song = ref.watch(songNotifierProvider).song;
+    final leads = currentStagersNames;
     return SongNotesCard(
       tempo: song.tempo.toString(),
-      leads: null,
+      leads: leads,
       notes: song.songMdNotes,
       onNotesChanged: (String s) {},
     );

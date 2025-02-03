@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -12,9 +14,9 @@ import 'package:on_stage_app/app/features/groups/group_event/presentation/widget
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/adaptive_event_pop_dialog.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/dash_divider.dart';
@@ -73,12 +75,13 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
       appBar: StageAppBar(
         isBackButtonVisible: true,
         onBackButtonPressed: () async {
-          final shouldPop = await AdaptiveEventPopDialog.show(
+          final shouldPop = await AdaptiveDialogOnPop.show(
             context: context,
           );
 
-          if (shouldPop ?? true && mounted) {
-            context.pop();
+          if (shouldPop ?? true) {
+            unawaited(ref.read(eventNotifierProvider.notifier).deleteEvent());
+            if (mounted) context.pop();
           }
         },
         title: 'Create Event',

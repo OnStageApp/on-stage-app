@@ -46,6 +46,7 @@ class _CustomAnimatedTabSwitchState extends State<CustomAnimatedTabSwitch> {
       text: buttonText,
       onPressed: widget.onSwitch,
       isEnabled: true,
+      hasShadow: false,
       backgroundColor: context.colorScheme.onSurfaceVariant,
       textColor: context.colorScheme.onSurface,
     );

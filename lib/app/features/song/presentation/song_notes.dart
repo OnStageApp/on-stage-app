@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/enums/text_size.dart';
@@ -35,15 +34,6 @@ class SongNotesCard extends ConsumerStatefulWidget {
 class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
-
-  List<String>? get currentStagersNames {
-    final index = ref.watch(eventItemsNotifierProvider).currentIndex;
-    final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
-    final eventItemsLength = eventItems.length;
-    if (eventItemsLength <= 0) return null;
-
-    return eventItems[index].assignedTo?.map((stager) => stager.name).toList();
-  }
 
   @override
   void initState() {
@@ -201,10 +191,10 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
             color: colorScheme.surfaceContainer,
           ),
         ),
-        if (currentStagersNames.isNotNullOrEmpty) ...[
+        if (widget.leads.isNotNullOrEmpty) ...[
           const SizedBox(height: 4),
           Text(
-            'Leads: ${currentStagersNames!.join(', ')}',
+            'Leads: ${widget.leads!.join(', ')}',
             style: textTheme.titleLarge?.copyWith(
               color: colorScheme.surfaceContainer,
             ),

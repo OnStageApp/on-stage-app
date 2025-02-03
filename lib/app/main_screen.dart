@@ -6,10 +6,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
+import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -18,10 +20,10 @@ import 'package:on_stage_app/app/features/team_member/application/team_members_n
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
-import 'package:on_stage_app/app/shared/adaptive_event_pop_dialog.dart';
 import 'package:on_stage_app/app/shared/custom_side_navigation.dart';
 import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/tab_navigation_info.dart';
 import 'package:on_stage_app/logger.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -42,20 +44,63 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   Future<void> _onChangedScreen(int index) async {
     final currentPath =
         widget.navigationShell.shellRouteContext.routerState.fullPath;
-    final isAddEventScreen = currentPath == '/events/addEvent';
-    final isNavigatingToEvents = index == 2;
+    final navigationInfo = _getNavigationInfo(currentPath, index);
 
-    if (isAddEventScreen && isNavigatingToEvents) {
+    if (navigationInfo != null) {
       if (!mounted) return;
 
-      final shouldPop = await AdaptiveEventPopDialog.show(context: context);
-      if (!(shouldPop ?? false) || !mounted) return;
+      final shouldPop = await AdaptiveDialogOnPop.show(
+        context: context,
+        title: navigationInfo.modalTitle,
+        description: navigationInfo.modalDescription,
+      );
+      if ((shouldPop == null || shouldPop == false) || !mounted) return;
+
+      if (shouldPop) {
+        await navigationInfo.onConfirm?.call();
+      }
     }
 
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
     );
+  }
+
+  NavigationInfo? _getNavigationInfo(String? currentPath, int targetIndex) {
+    if (currentPath == null) return null;
+    final navigationRules = {
+      '/events/addEvent': NavigationInfo(
+        unsafeIndices: {2},
+        onConfirm: () async {
+          await ref.read(eventNotifierProvider.notifier).deleteEvent();
+        },
+      ),
+      // '/songs/song/editSongContent': NavigationInfo(
+      //   unsafeIndices: {0, 1, 2, 3},
+      //   onConfirm: () async {},
+      // ),
+      // '/songs/song/editSongInfo': NavigationInfo(
+      //   unsafeIndices: {0, 1, 2, 3},
+      //   onConfirm: () async {},
+      // ),
+      // '/songs/createSongInfo': NavigationInfo(
+      //   unsafeIndices: {0, 1, 2, 3},
+      //   onConfirm: () async {},
+      // ),
+      // '/events/eventItemsWithPages': NavigationInfo(
+      //   unsafeIndices: {0, 1, 3},
+      //   onConfirm: () async {},
+      //   modalTitle: 'Leave',
+      //   modalDescription: 'Are you sure you want to leave this page?',
+      // ),
+    };
+
+    final navigationInfo = navigationRules[currentPath];
+    if (navigationInfo?.unsafeIndices.contains(targetIndex) ?? false) {
+      return navigationInfo;
+    }
+    return null;
   }
 
   @override
@@ -95,8 +140,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   bool _shouldHideBottomNav(String location) {
     return [
-      '/events/songDetailsWithPages',
+      '/events/eventItemsWithPages',
       '/events/addEvent',
+      '/songs/song/editSongContent',
+      '/songs/song/editSongInfo',
+      '/songs/createSongInfo',
     ].any((route) => location.startsWith(route));
   }
 
@@ -219,7 +267,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       body: context.isLargeScreen
           ? Row(
               children: [
-                _buildNavigationRail(context),
+                if (_shouldHideBottomNav(currentLocation))
+                  const SizedBox()
+                else
+                  _buildNavigationRail(context),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(32),

@@ -271,6 +271,10 @@ class EventItemsNotifier extends _$EventItemsNotifier {
     state = state.copyWith(currentIndex: index);
   }
 
+  void unsetCurrentIndex() {
+    state = state.copyWith(currentIndex: -1);
+  }
+
   Future<void> removeLeadVocal(
     String eventItemId,
     String stagerId,
