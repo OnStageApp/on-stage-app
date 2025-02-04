@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/shared/circle_info.dart';
 
 class NavigationHeader extends ConsumerWidget {
   const NavigationHeader({
@@ -125,14 +126,13 @@ class _NavigationButtonState extends State<NavigationButton>
                     ),
                     child: Text(widget.label),
                   ),
-                  //TODO: Enable this at build time
-                  // if (widget.hasInfo) ...[
-                  //   const SizedBox(width: 6),
-                  //   const InfoIcon(
-                  //     message: 'All songs your team added or '
-                  //         'customized will be kept here.',
-                  //   ),
-                  // ]
+                  if (widget.hasInfo) ...[
+                    const SizedBox(width: 6),
+                    const InfoIcon(
+                      message: 'All songs your team added or '
+                          'customized will be kept here.',
+                    ),
+                  ]
                 ],
               ),
             ),
