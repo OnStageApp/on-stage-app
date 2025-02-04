@@ -13,7 +13,6 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/
 import 'package:on_stage_app/app/features/user/presentation/widgets/song_view_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
-import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -147,8 +146,14 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                   ),
                 ],
                 const SizedBox(height: Insets.smallNormal),
-                if (hasEditorRights)
-                  EventActionButton(
+                if (isSongAddedByCurrentTeam && hasEditorRights)
+                  PreferencesActionTile(
+                    leadingWidget: Icon(
+                      LucideIcons.file_x_2,
+                      color: context.colorScheme.error,
+                    ),
+                    title: 'Remove Song',
+                    color: context.colorScheme.error,
                     onTap: () {
                       AdaptiveDialog.show(
                         context: context,
@@ -165,8 +170,6 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                         },
                       );
                     },
-                    text: 'Delete Song',
-                    textColor: context.colorScheme.error,
                   ),
                 const SizedBox(height: Insets.medium),
               ],
