@@ -18,7 +18,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'song_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class SongNotifier extends _$SongNotifier {
   SongRepository get songRepository => ref.read(songRepositoryProvider);
 
@@ -27,8 +27,22 @@ class SongNotifier extends _$SongNotifier {
   bool isChorus = false;
 
   @override
-  SongState build() {
-    logger.i('building song notifier');
+  SongState build(String? songId) {
+    if (songId.isNullEmptyOrWhitespace) {
+      return const SongState();
+    } else {
+      final eventItems =
+          ref.read(eventItemsNotifierProvider.select((s) => s.songsFromEvent));
+      try {
+        final songFromEvent =
+            eventItems.firstWhere((song) => song.id == songId);
+
+        return SongState(song: songFromEvent);
+      } catch (e) {
+        logger.i('Song not found in event items, using empty state');
+      }
+    }
+
     return const SongState();
   }
 
@@ -106,26 +120,6 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(
       song: newSong,
     );
-  }
-
-  Future<void> setCurrentSong(String songId, SongModelV2 song) async {
-    if (songId.isNullEmptyOrWhitespace) {
-      return;
-    }
-    var newSong = song;
-
-    if (song.id == null) {
-      state = state.copyWith(isLoading: true);
-      newSong = await songRepository.getSong(songId: songId);
-    }
-
-    state = state.copyWith(
-      song: newSong,
-      sections: [],
-      originalSongSections: [],
-      isLoading: false,
-    );
-    logger.i('init song with title: ${state.song.title}');
   }
 
   void resetState() {
@@ -271,17 +265,17 @@ class SongNotifier extends _$SongNotifier {
     state = state.copyWith(selectedStructureItem: item);
   }
 
-  Future<bool> saveSongToDB() async {
+  Future<String?> saveSongToDB() async {
     try {
       final songRequestModel = SongRequest.fromSongModel(state.song);
       final savedSong = await songRepository.addSong(song: songRequestModel);
       state = state.copyWith(
         song: savedSong,
       );
-      return true;
+      return savedSong.id;
     } catch (e) {
       logger.e('Error saving song to DB', e);
-      return false;
+      return null;
     }
   }
 
@@ -291,7 +285,7 @@ class SongNotifier extends _$SongNotifier {
     // await songConfigRepo.updateMdNotes(updatedSong;)
   }
 
-  Future<bool> updateSongToDB(SongRequest songRequest) async {
+  Future<String?> updateSongToDB(SongRequest songRequest) async {
     try {
       final songRequestModel = songRequest;
       final savedSong = await songRepository.updateSong(
@@ -304,10 +298,10 @@ class SongNotifier extends _$SongNotifier {
       state = state.copyWith(
         song: savedSong,
       );
-      return true;
+      return savedSong.id;
     } catch (e) {
       logger.e('Error updating song in DB', e);
-      return false;
+      return null;
     }
   }
 }

@@ -20,6 +20,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class SongDetailWidget extends ConsumerStatefulWidget {
   const SongDetailWidget({
+    required this.songId,
     required this.onTapChord,
     super.key,
     this.scaleFactor = 1.0,
@@ -30,8 +31,11 @@ class SongDetailWidget extends ConsumerStatefulWidget {
     this.leadingWidget,
     this.trailingWidget,
     this.showContentByStructure = true,
+    this.useOriginalKeyForRendering = false,
   });
 
+  final bool useOriginalKeyForRendering;
+  final String songId;
   final void Function(String chord) onTapChord;
 
   final int widgetPadding;
@@ -94,27 +98,34 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   Future<void> _processTextAndSetSections() async {
     _processText();
 
-    ref
-        .read(songNotifierProvider.notifier)
-        .setSections(ref.watch(chordProcessorProvider).document);
+    ref.read(songNotifierProvider(widget.songId).notifier).setSections(
+          ref.watch(chordProcessorProvider).document,
+        );
   }
 
   void _processText() {
+    final originalKey =
+        ref.watch(songNotifierProvider(widget.songId)).song.originalKey;
+    final key = ref.watch(songNotifierProvider(widget.songId)).song.key;
     final structures = _getStructure();
     ref.read(chordProcessorProvider.notifier).processText(
-          rawSections: ref.watch(songNotifierProvider).song.rawSections ?? [],
+          rawSections:
+              ref.watch(songNotifierProvider(widget.songId)).song.rawSections ??
+                  [],
           structures: structures,
           lyricsStyle: _textStyle,
           chordStyle: _chordStyle,
           widgetPadding: widget.widgetPadding,
           scaleFactor: widget.scaleFactor,
           updateSongKey:
-              ref.watch(songNotifierProvider).song.key ?? const SongKey(),
+              (widget.useOriginalKeyForRendering ? originalKey : key) ??
+                  const SongKey(),
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
               SongViewMode.american,
-          originalSongKey: ref.watch(songNotifierProvider).song.originalKey ??
-              const SongKey(),
+          originalSongKey:
+              ref.watch(songNotifierProvider(widget.songId)).song.originalKey ??
+                  const SongKey(),
         );
   }
 
@@ -122,10 +133,11 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     List<StructureItem> structures;
     logger.i('showContentByStructure: ${widget.showContentByStructure}');
     if (widget.showContentByStructure) {
-      structures = ref.watch(songNotifierProvider).song.structure ?? [];
+      structures =
+          ref.watch(songNotifierProvider(widget.songId)).song.structure ?? [];
     } else {
       structures = ref
-              .watch(songNotifierProvider)
+              .watch(songNotifierProvider(widget.songId))
               .song
               .rawSections
               ?.map((e) => e.structureItem ?? StructureItem.none)
@@ -146,7 +158,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     final shouldShowDetails = widget.showContentByStructure &&
         ((userSettings.displayMdNotes ?? false) ||
             (userSettings.displaySongDetails ?? false));
-    final sections = ref.watch(songNotifierProvider).sections;
+    final sections = ref.watch(songNotifierProvider(widget.songId)).sections;
     final chordLyricsDocument = ref.watch(chordProcessorProvider).document;
     _listens();
     if (chordLyricsDocument == null ||
@@ -194,18 +206,18 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
 
   List<String>? get currentStagersNames {
     final index = ref.watch(eventItemsNotifierProvider).currentIndex;
-    if (index == -1) return null;
     final eventItems = ref.watch(eventItemsNotifierProvider).eventItems;
     final eventItemsLength = eventItems.length;
-    if (eventItemsLength <= 0) return null;
+    if (eventItemsLength == 0) return null;
 
     return eventItems[index].assignedTo?.map((stager) => stager.name).toList();
   }
 
   SongNotesCard _buildNotesAndInfo() {
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider(widget.songId)).song;
     final leads = currentStagersNames;
     return SongNotesCard(
+      songId: widget.songId,
       tempo: song.tempo.toString(),
       leads: leads,
       notes: song.songMdNotes,
@@ -224,36 +236,38 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         }
       })
       ..listen(
-          songNotifierProvider.select((state) => state.selectedStructureIndex),
+          songNotifierProvider(widget.songId)
+              .select((state) => state.selectedStructureIndex),
           (previous, next) {
         if (next != -1) {
           logger.i('scrolling to index');
           _scrollToIndex();
         }
       })
-      ..listen(songNotifierProvider, (previous, next) {
-        /// Need to reprocess text if text changed
-        if (previous?.song.rawSections != next.song.rawSections) {
-          logger.i('raw sections changed ');
-          _processTextAndSetSections();
-        }
-      })
-      ..listen(songNotifierProvider, (previous, next) {
-        if (!listEquals(previous?.song.structure, next.song.structure)) {
-          logger.i('song structure changed ');
-          _processTextAndSetSections();
-        }
-      })
-      ..listen(songNotifierProvider, (previous, next) {
-        if (previous?.song.key != next.song.key) {
-          logger.i('transpose increment changed');
-          _processTextAndSetSections();
-        }
-      });
+      ..listen(
+        songNotifierProvider(widget.songId),
+        (previous, next) {
+          if (previous == null) {
+            _processTextAndSetSections();
+
+            return;
+          }
+
+          final shouldReprocess =
+              previous.song.rawSections != next.song.rawSections ||
+                  !listEquals(previous.song.structure, next.song.structure) ||
+                  previous.song.key != next.song.key;
+
+          if (shouldReprocess) {
+            _processTextAndSetSections();
+          }
+        },
+      );
   }
 
   Future<void> _scrollToIndex() async {
-    final indexToScroll = ref.read(songNotifierProvider).selectedStructureIndex;
+    final indexToScroll =
+        ref.read(songNotifierProvider(widget.songId)).selectedStructureIndex;
     final userSettings = ref.watch(userSettingsNotifierProvider);
     final shouldShowDetails = widget.showContentByStructure &&
         ((userSettings.displayMdNotes ?? false) ||
@@ -270,7 +284,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
   }
 
   Widget _buildLines(int index, BuildContext context) {
-    final sections = ref.watch(songNotifierProvider).sections;
+    final sections = ref.watch(songNotifierProvider(widget.songId)).sections;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,8 +354,10 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
           ),
           itemCount: sections[index].lines.length,
           itemBuilder: (context, index2) {
-            final line =
-                ref.watch(songNotifierProvider).sections[index].lines[index2];
+            final line = ref
+                .watch(songNotifierProvider(widget.songId))
+                .sections[index]
+                .lines[index2];
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

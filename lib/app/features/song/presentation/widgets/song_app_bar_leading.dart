@@ -14,17 +14,20 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongAppBarLeading extends ConsumerWidget {
   const SongAppBarLeading({
+    required this.songId,
     this.isFromEvent = false,
     this.eventItemId,
     super.key,
   });
 
+  final String songId;
   final bool isFromEvent;
   final String? eventItemId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final key = ref.watch(songNotifierProvider).song.originalKey;
+    final key = ref.watch(songNotifierProvider(songId)).song.originalKey;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -41,14 +44,17 @@ class SongAppBarLeading extends ConsumerWidget {
             ),
             onPressed: () {
               ChangeKeyModal.show(
+                songId: songId,
                 context: context,
                 title: ref.watch(permissionServiceProvider).hasAccessToEdit
                     ? 'Change Key'
                     : 'Preview Key',
-                songKey:
-                    ref.watch(songNotifierProvider).song.key ?? const SongKey(),
+                songKey: ref.watch(songNotifierProvider(songId)).song.key ??
+                    const SongKey(),
                 onKeyChanged: (key) async {
-                  ref.read(songNotifierProvider.notifier).transpose(key);
+                  ref
+                      .read(songNotifierProvider(songId).notifier)
+                      .transpose(key);
                   if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
                     if (isFromEvent) await _updateSongOnDB(context, ref, key);
                     return;
@@ -59,7 +65,7 @@ class SongAppBarLeading extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                ref.watch(songNotifierProvider).song.key?.name ?? '',
+                ref.watch(songNotifierProvider(songId)).song.key?.name ?? '',
                 style: context.textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
@@ -71,9 +77,10 @@ class SongAppBarLeading extends ConsumerWidget {
         SettingsTrailingAppBarButton(
           onTap: () {
             SongPreferencesModal.show(
+              songId: songId,
               context: context,
-              tonality:
-                  ref.watch(songNotifierProvider).song.key ?? const SongKey(),
+              tonality: ref.watch(songNotifierProvider(songId)).song.key ??
+                  const SongKey(),
               isFromEvent: isFromEvent,
             );
           },
@@ -87,8 +94,8 @@ class SongAppBarLeading extends ConsumerWidget {
     WidgetRef ref,
     SongKey songKey,
   ) async {
-    final songNotifierState = ref.watch(songNotifierProvider);
-    final songNotifier = ref.read(songNotifierProvider.notifier);
+    final songNotifierState = ref.watch(songNotifierProvider(songId));
+    final songNotifier = ref.read(songNotifierProvider(songId).notifier);
     final eventItemsNotifier = ref.read(eventItemsNotifierProvider.notifier);
     songNotifier.updateSongKey(songKey);
     await eventItemsNotifier.updateSongInEventItems(songNotifierState.song);

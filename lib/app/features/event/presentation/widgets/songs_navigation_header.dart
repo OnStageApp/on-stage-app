@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavigationHeader extends StatelessWidget {
+class NavigationHeader extends ConsumerWidget {
   const NavigationHeader({
     super.key,
     required this.isLibrarySelected,
@@ -12,36 +13,33 @@ class NavigationHeader extends StatelessWidget {
   final ValueChanged<bool> onSelectionChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 6, top: 16),
-      child: Row(
-        children: [
-          NavigationButton(
-            label: 'Songs',
-            isSelected: !isLibrarySelected,
-            onTap: () => onSelectionChanged(false),
-          ),
-          const SizedBox(width: 14),
-          NavigationButton(
-            label: 'My Library',
-            hasInfo: true,
-            isSelected: isLibrarySelected,
-            onTap: () => onSelectionChanged(true),
-          ),
-        ],
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        NavigationButton(
+          label: 'Songs',
+          isSelected: !isLibrarySelected,
+          onTap: () => onSelectionChanged(false),
+        ),
+        const SizedBox(width: 14),
+        NavigationButton(
+          label: 'My Library',
+          hasInfo: true,
+          isSelected: isLibrarySelected,
+          onTap: () => onSelectionChanged(true),
+        ),
+      ],
     );
   }
 }
 
 class NavigationButton extends StatefulWidget {
   const NavigationButton({
-    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
     this.hasInfo = false,
+    super.key,
   });
 
   final String label;
@@ -66,7 +64,7 @@ class _NavigationButtonState extends State<NavigationButton>
       duration: const Duration(milliseconds: 200),
     );
     _scaleAnimation = Tween<double>(
-      begin: 1.0,
+      begin: 1,
       end: 0.95,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -106,8 +104,7 @@ class _NavigationButtonState extends State<NavigationButton>
           HapticFeedback.lightImpact();
         },
         borderRadius: BorderRadius.circular(8),
-        overlayColor:
-            MaterialStateProperty.all(theme.colorScheme.surfaceBright),
+        overlayColor: WidgetStateProperty.all(theme.colorScheme.surfaceBright),
         child: AnimatedScale(
           scale: widget.isSelected ? 1.0 : 0.95,
           duration: const Duration(milliseconds: 200),
@@ -120,11 +117,11 @@ class _NavigationButtonState extends State<NavigationButton>
                 children: [
                   AnimatedDefaultTextStyle(
                     duration: const Duration(milliseconds: 200),
-                    style: theme.textTheme.headlineLarge!.copyWith(
+                    style: theme.textTheme.labelLarge!.copyWith(
+                      fontSize: 28,
                       color: widget.isSelected
                           ? theme.colorScheme.onSurface
                           : theme.colorScheme.outline,
-                      fontWeight: FontWeight.w600,
                     ),
                     child: Text(widget.label),
                   ),

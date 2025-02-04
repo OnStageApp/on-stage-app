@@ -7,7 +7,9 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class PreferencesSongStructure extends ConsumerWidget {
-  const PreferencesSongStructure({super.key});
+  const PreferencesSongStructure({required this.songId, super.key});
+
+  final String songId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +34,7 @@ class PreferencesSongStructure extends ConsumerWidget {
           trailingIcon: Icons.keyboard_arrow_right_rounded,
           onTap: () {
             SongStructureModal.show(
+              songId: songId,
               context: context,
               ref: ref,
             );

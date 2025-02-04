@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/load_more_button.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/songs_navigation_header.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/songs_list_view.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -58,7 +59,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
       },
     );
 
-    return Padding(
+    return Container(
       padding: getResponsivePadding(context),
       child: Scaffold(
         appBar: StageAppBar(
@@ -79,6 +80,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               );
             },
           ),
+          trailing: _buildAddSongsButton(context, ref),
         ),
         body: Column(
           children: [
@@ -136,6 +138,30 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildAddSongsButton(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(permissionServiceProvider).hasAccessToEdit) {
+      return const SizedBox();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: IconButton(
+        style: IconButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          highlightColor: context.colorScheme.surfaceBright,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+        ),
+        onPressed: () {
+          context.goNamed(AppRoute.createSongInfo.name);
+        },
+        icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
       ),
     );
   }

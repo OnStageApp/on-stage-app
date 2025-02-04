@@ -29,30 +29,45 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songNotifierProvider.notifier).getSongById(widget.songId);
+      ref.read(songNotifierProvider(widget.songId).notifier).getSongById(
+            widget.songId,
+          );
     });
   }
 
   bool _isSongNull() =>
-      ref.watch(songNotifierProvider).song.id.isNullEmptyOrWhitespace ||
-      ref.watch(songNotifierProvider).isLoading ||
-      ref.watch(songNotifierProvider).processingSong == true;
+      ref
+          .watch(songNotifierProvider(widget.songId))
+          .song
+          .id
+          .isNullEmptyOrWhitespace ||
+      ref.watch(songNotifierProvider(widget.songId)).isLoading ||
+      ref.watch(songNotifierProvider(widget.songId)).processingSong == true;
 
   bool _isSongEmpty() =>
-      ref.watch(songNotifierProvider).song.rawSections?.isEmpty ?? true;
+      ref
+          .watch(songNotifierProvider(widget.songId))
+          .song
+          .rawSections
+          ?.isEmpty ??
+      true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StageAppBar(
         isBackButtonVisible: true,
-        title: ref.watch(songNotifierProvider).song.title ?? '',
-        trailing: const SongAppBarLeading(),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(52),
+        title: ref.watch(songNotifierProvider(widget.songId)).song.title ?? '',
+        trailing: SongAppBarLeading(
+          songId: widget.songId,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(52),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: EditableStructureList(),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: EditableStructureList(
+              songId: widget.songId,
+            ),
           ),
         ),
       ),
@@ -76,6 +91,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
             : _isSongEmpty()
                 ? _buildEmptySections()
                 : SongDetailWidget(
+                    songId: widget.songId,
                     widgetPadding: 64,
                     onTapChord: (chord) {},
                   ),
@@ -93,14 +109,14 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'No content added yet',
+                  text: 'No content added yet, ',
                   style: context.textTheme.titleSmall?.copyWith(
                     color: context.colorScheme.surfaceDim,
                   ),
                 ),
                 if (ref.watch(permissionServiceProvider).hasAccessToEdit)
                   TextSpan(
-                    text: ', add now.',
+                    text: 'add now.',
                     style: context.textTheme.titleSmall?.copyWith(
                       color: context.colorScheme.primary,
                     ),
@@ -109,7 +125,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
                         context.pushNamed(
                           AppRoute.editSongContent.name,
                           queryParameters: {
-                            'songId': ref.watch(songNotifierProvider).song.id,
+                            'songId': widget.songId,
                           },
                         );
                       },

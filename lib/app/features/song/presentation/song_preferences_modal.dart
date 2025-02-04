@@ -20,10 +20,12 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 class SongPreferencesModal extends ConsumerStatefulWidget {
   const SongPreferencesModal(
     this.tonality, {
+    required this.songId,
     this.isFromEvent = false,
     super.key,
   });
 
+  final String songId;
   final SongKey tonality;
   final bool isFromEvent;
 
@@ -33,11 +35,16 @@ class SongPreferencesModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
     required SongKey tonality,
+    required String songId,
     bool isFromEvent = false,
   }) {
-    AdaptiveModal.show(
+    AdaptiveModal.show<void>(
       context: context,
-      child: SongPreferencesModal(tonality, isFromEvent: isFromEvent),
+      child: SongPreferencesModal(
+        songId: songId,
+        tonality,
+        isFromEvent: isFromEvent,
+      ),
     );
   }
 }
@@ -51,11 +58,12 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
   @override
   Widget build(BuildContext context) {
     final isSongAddedByCurrentTeam = ref
-            .watch(songNotifierProvider)
+            .watch(songNotifierProvider(widget.songId))
             .song
             .teamId
             ?.isNotNullEmptyOrWhitespace ??
         false;
+
     return NestedScrollModal(
       buildHeader: () => const ModalHeader(title: 'Preferences'),
       headerHeight: () {
@@ -69,11 +77,11 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Row(
+                Row(
                   children: [
-                    PreferencesTempo(),
-                    SizedBox(width: Insets.medium),
-                    PreferencesTextSize(),
+                    PreferencesTempo(songId: widget.songId),
+                    const SizedBox(width: Insets.medium),
+                    const PreferencesTextSize(),
                   ],
                 ),
                 const SizedBox(height: Insets.medium),
@@ -84,7 +92,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                 ],
                 if (widget.isFromEvent || isSongAddedByCurrentTeam) ...[
                   const SizedBox(height: Insets.medium),
-                  const PreferencesSongStructure(),
+                  PreferencesSongStructure(songId: widget.songId),
                 ],
                 if (isSongAddedByCurrentTeam) ...[
                   const SizedBox(height: Insets.medium),
@@ -101,13 +109,13 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                     title: 'Lyrics And Chords',
                     trailingIcon: Icons.keyboard_arrow_right_rounded,
                     onTap: () {
+                      final songId = widget.songId;
                       context
                         ..popDialog()
                         ..pushNamed(
                           AppRoute.editSongContent.name,
                           queryParameters: {
-                            'songId':
-                                ref.watch(songNotifierProvider).song.id ?? '',
+                            'songId': songId,
                           },
                         );
                     },
@@ -126,8 +134,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                         ..pushNamed(
                           AppRoute.editSongInfo.name,
                           queryParameters: {
-                            'songId':
-                                ref.watch(songNotifierProvider).song.id ?? '',
+                            'songId': widget.songId,
                           },
                         );
                     },

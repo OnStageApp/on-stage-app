@@ -15,13 +15,17 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class AddSongSecondStepContent extends ConsumerStatefulWidget {
   const AddSongSecondStepContent({
+    required this.songId,
     this.isNewSong = false,
     super.key,
   });
 
+  final String songId;
   final bool isNewSong;
 
   @override
@@ -64,8 +68,9 @@ class AddSongSecondStepContentState
 
   @override
   Widget build(BuildContext context) {
-    final songTitle = ref.watch(songNotifierProvider).song.title ?? 'Untitled';
-    print('AddSongSecondStepContentState.build: $songTitle');
+    final songTitle =
+        ref.watch(songNotifierProvider(widget.songId)).song.title ?? 'Untitled';
+
     final isLargeScreen = context.isLargeScreen;
 
     return Scaffold(
@@ -76,10 +81,16 @@ class AddSongSecondStepContentState
         trailing: isLargeScreen ? _buildTrailingButton(context) : null,
       ),
       body: isLargeScreen
-          ? EditorTabSwitch(tabController: _tabController)
+          ? EditorTabSwitch(
+              songId: widget.songId,
+              tabController: _tabController,
+            )
           : Stack(
               children: [
-                EditorTabSwitch(tabController: _tabController),
+                EditorTabSwitch(
+                  songId: widget.songId,
+                  tabController: _tabController,
+                ),
                 Positioned(
                   bottom: -_bottomInsets,
                   left: 0,
@@ -97,12 +108,8 @@ class AddSongSecondStepContentState
     );
 
     if (shouldPop ?? true && mounted) {
-      final songId = ref.watch(songNotifierProvider).song.id;
-      if (songId == null) {
-        if (context.mounted) context.goNamed(AppRoute.home.name);
-        return;
-      }
-      unawaited(ref.read(songNotifierProvider.notifier).getSongById(songId));
+      final songId = widget.songId;
+      await ref.read(songNotifierProvider(songId).notifier).getSongById(songId);
       if (context.mounted) context.pop();
     }
   }
@@ -197,37 +204,30 @@ class AddSongSecondStepContentState
     final newIndex = _tabController.index == 0 ? 1 : 0;
     if (newIndex == 1) {
       FocusScope.of(context).unfocus();
-      ref.read(songEditorNotifierProvider.notifier).updateSong();
+      ref.read(songEditorNotifierProvider.notifier).updateSong(widget.songId);
     }
     _tabController.animateTo(newIndex);
   }
 
   Future<void> _onSavedSong(BuildContext context) async {
     if (_isSaving) return;
-
-    setState(() {
-      _isSaving = true;
-    });
+    setState(() => _isSaving = true);
 
     try {
-      ref.read(songEditorNotifierProvider.notifier).updateSong();
-      final song = ref.watch(songNotifierProvider).song;
-      final songNotifier = ref.read(songNotifierProvider.notifier);
+      ref.read(songEditorNotifierProvider.notifier).updateSong(widget.songId);
+      final song = ref.watch(songNotifierProvider(widget.songId)).song;
+      final songNotifier =
+          ref.read(songNotifierProvider(widget.songId).notifier);
 
-      if (song.id == null) {
-        songNotifier.setDefaultStructureLocally(song.availableStructureItems);
-      }
-
-      final success = song.id == null
-          ? await songNotifier.saveSongToDB()
-          : await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
+      final songId =
+          await songNotifier.updateSongToDB(SongRequest.fromSongModel(song));
 
       if (!mounted) return;
 
-      if (!success) {
+      if (songId!.isNullEmptyOrWhitespace) {
         TopFlushBar.show(
           context,
-          'Error saving song, something went wrong.',
+          'Error updating song, something went wrong.',
           isError: true,
         );
         return;
@@ -237,15 +237,16 @@ class AddSongSecondStepContentState
         return;
       }
 
-      context.goNamed(
-        AppRoute.song.name,
-        queryParameters: {'songId': song.id},
-      );
-      if (widget.isNewSong) {
+      if (context.canPop()) {
+        context.pop();
+      }
+
+      if (widget.isNewSong && song.rawSections.isNotNullOrEmpty) {
         await Future.delayed(const Duration(milliseconds: 300));
         if (!mounted) return;
 
         SongStructureModal.show(
+          songId: song.id!,
           context: context,
           ref: ref,
           closeAfterSave: true,
@@ -253,16 +254,17 @@ class AddSongSecondStepContentState
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
+        setState(() => _isSaving = false);
       }
     }
   }
 }
 
 class EditorTabSwitch extends ConsumerWidget {
+  final String songId;
+
   const EditorTabSwitch({
+    required this.songId,
     required this.tabController,
     super.key,
   });
@@ -277,10 +279,12 @@ class EditorTabSwitch extends ConsumerWidget {
         physics: const NeverScrollableScrollPhysics(),
         controller: tabController,
         children: [
-          const SongEditorWidget(),
+          SongEditorWidget(songId: songId),
           Container(
             margin: const EdgeInsets.only(bottom: 80),
             child: SongDetailWidget(
+              useOriginalKeyForRendering: true,
+              songId: songId,
               widgetPadding: 64,
               onTapChord: (chord) {},
               showContentByStructure: false,

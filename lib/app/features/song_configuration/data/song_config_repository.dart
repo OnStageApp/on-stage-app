@@ -12,11 +12,6 @@ part 'song_config_repository.g.dart';
 abstract class SongConfigRepository {
   factory SongConfigRepository(Dio dio) = _SongConfigRepository;
 
-  @GET(API.songConfigBySongId)
-  Future<SongConfig> getSongConfig({
-    @Path('songId') String? songId,
-  });
-
   @POST(API.songConfig)
   Future<SongConfig> createSongConfig({
     @Body() SongConfigRequest? songConfigRequest,

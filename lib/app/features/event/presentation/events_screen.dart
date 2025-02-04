@@ -125,7 +125,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   Widget _buildTrailingButton(BuildContext context) {
     final userSettingsNotifier = ref.watch(userSettingsNotifierProvider);
-    return Container(
+    return Padding(
       padding: const EdgeInsets.only(right: 12),
       child: StageTooltip(
         message: 'Add your first Event',
@@ -144,7 +144,6 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
             if (userSettingsNotifier.isCreateEventTooltipShown == false) {
               _disableTooltip();
             }
-//TODO: implement new method for permission
             if (ref.watch(permissionServiceProvider).canAddEvents) {
               await ref.read(eventNotifierProvider.notifier).createEmptyEvent();
               if (mounted) {

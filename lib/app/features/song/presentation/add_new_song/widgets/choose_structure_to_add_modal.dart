@@ -12,8 +12,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ChooseStructureToAddModal extends ConsumerStatefulWidget {
   const ChooseStructureToAddModal({
+    required this.songId,
     super.key,
   });
+
+  final String? songId;
 
   @override
   ChooseStructureToAddModalState createState() =>
@@ -22,10 +25,13 @@ class ChooseStructureToAddModal extends ConsumerStatefulWidget {
   static Future<List<StructureItem>?> show({
     required BuildContext context,
     required WidgetRef ref,
+    required String? songId,
   }) async {
     return AdaptiveModal.show<List<StructureItem>>(
       context: context,
-      child: const ChooseStructureToAddModal(),
+      child: ChooseStructureToAddModal(
+        songId: songId,
+      ),
     );
   }
 }
@@ -75,7 +81,7 @@ class ChooseStructureToAddModalState
   }
 
   void _updateStructureItems() {
-    final currentSong = ref.read(songNotifierProvider).song;
+    final currentSong = ref.read(songNotifierProvider(widget.songId)).song;
     final usedStructures =
         currentSong.rawSections?.map((e) => e.structureItem).toSet();
     if (usedStructures == null) {
@@ -91,7 +97,7 @@ class ChooseStructureToAddModalState
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(songNotifierProvider, (previous, next) {
+    ref.listen(songNotifierProvider(widget.songId), (previous, next) {
       _updateStructureItems();
     });
 

@@ -30,7 +30,7 @@ class SongEditorNotifier extends _$SongEditorNotifier {
     }
   }
 
-  void addSection(SectionData section) {
+  void addSection(String? songId, SectionData section) {
     logger.d('Adding new section: ${section.rawSection.structureItem?.name}');
     try {
       final newSections = [...state, section];
@@ -38,13 +38,13 @@ class SongEditorNotifier extends _$SongEditorNotifier {
       logger.i('Successfully added section. Total sections: ${state.length}');
 
       logger.d('Updating song after adding section');
-      updateSong();
+      updateSong(songId);
     } catch (e, stack) {
       logger.e('Error adding section', e, stack);
     }
   }
 
-  void removeSection(int index) {
+  void removeSection(String? songId, int index) {
     logger.d('Attempting to remove section at index $index');
 
     if (index < 0 || index >= state.length) {
@@ -68,13 +68,13 @@ class SongEditorNotifier extends _$SongEditorNotifier {
         'Successfully removed section. Remaining sections: ${state.length}',
       );
 
-      updateSong();
+      updateSong(songId);
     } catch (e, stack) {
       logger.e('Error removing section at index $index', e, stack);
     }
   }
 
-  void updateSong() {
+  void updateSong(String? songIdForNotifier) {
     logger.d('Starting song update with ${state.length} sections');
     try {
       final rawSections = state
@@ -87,7 +87,11 @@ class SongEditorNotifier extends _$SongEditorNotifier {
           .toList();
 
       final song = SongModelV2(rawSections: rawSections);
-      ref.read(songNotifierProvider.notifier).updateSongLocalCache(song);
+      ref
+          .read(
+            songNotifierProvider(songIdForNotifier).notifier,
+          )
+          .updateSongLocalCache(song);
 
       logger.i('Successfully updated song with ${rawSections.length} sections');
     } catch (e, stack) {

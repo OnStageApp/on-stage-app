@@ -18,10 +18,11 @@ import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 
 class AddSongFirstStepDetails extends ConsumerStatefulWidget {
-  const AddSongFirstStepDetails({this.songId, super.key});
+  const AddSongFirstStepDetails({required this.songId, super.key});
 
   final String? songId;
 
@@ -66,9 +67,10 @@ class _AddSongFirstStepDetailsState
   }
 
   Future<void> _initSong() async {
-    ref.read(songNotifierProvider.notifier).resetState();
-    if (widget.songId != null) {
-      await ref.read(songNotifierProvider.notifier).getSongById(widget.songId!);
+    if (widget.songId.isNotNullEmptyOrWhitespace) {
+      await ref
+          .read(songNotifierProvider(widget.songId).notifier)
+          .getSongById(widget.songId!);
       _prefillValuesIfEditing();
     } else {
       _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
@@ -76,7 +78,7 @@ class _AddSongFirstStepDetailsState
   }
 
   void _prefillValuesIfEditing() {
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider(widget.songId)).song;
     if (song.id != null) {
       _songNameController.text = song.title ?? '';
       _bpmController.text = song.tempo.toString();
@@ -159,6 +161,7 @@ class _AddSongFirstStepDetailsState
                 },
                 onTap: () {
                   ChangeKeyModal.show(
+                    songId: widget.songId,
                     context: context,
                     title: 'Select Key',
                     songKey: _selectedKey ??
@@ -230,7 +233,7 @@ class _AddSongFirstStepDetailsState
       _isLoading = true;
     });
     if (_formKey.currentState?.validate() ?? false) {
-      if (ref.watch(songNotifierProvider).song.id == null) {
+      if (ref.watch(songNotifierProvider(widget.songId)).song.id == null) {
         logger.i('Validation passed');
         await _saveSongToDb();
       } else {
@@ -246,28 +249,21 @@ class _AddSongFirstStepDetailsState
 
   Future<void> _saveSongToDb() async {
     _setFieldsOnController();
-    final isSuccess =
-        await ref.read(songNotifierProvider.notifier).saveSongToDB();
-    if (!context.mounted || !isSuccess) return;
+    final newSongId = await ref
+        .read(songNotifierProvider(widget.songId).notifier)
+        .saveSongToDB();
+    if (!context.mounted || newSongId.isNullEmptyOrWhitespace) return;
     context.goNamed(
-      AppRoute.song.name,
+      AppRoute.editSongContent.name,
       queryParameters: {
-        'songId': ref.watch(songNotifierProvider).song.id,
+        'songId': newSongId,
+        'isNewSong': 'true',
       },
-    );
-    unawaited(
-      context.pushNamed(
-        AppRoute.editSongContent.name,
-        queryParameters: {
-          'songId': ref.watch(songNotifierProvider).song.id,
-          'isNewSong': 'true',
-        },
-      ),
     );
   }
 
   Future<void> _updateSongToDb() async {
-    await ref.read(songNotifierProvider.notifier).updateSongToDB(
+    await ref.read(songNotifierProvider(widget.songId).notifier).updateSongToDB(
           SongRequest(
             title: _songNameController.text,
             tempo: int.tryParse(_bpmController.text) ?? 0,
@@ -281,7 +277,7 @@ class _AddSongFirstStepDetailsState
   }
 
   void _setFieldsOnController() {
-    ref.read(songNotifierProvider.notifier).updateSongLocalCache(
+    ref.read(songNotifierProvider(widget.songId).notifier).updateSongLocalCache(
           SongModelV2(
             title: _songNameController.text,
             tempo: int.tryParse(_bpmController.text) ?? 0,

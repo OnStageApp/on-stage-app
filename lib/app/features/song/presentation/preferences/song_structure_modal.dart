@@ -17,23 +17,29 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongStructureModal extends ConsumerStatefulWidget {
   const SongStructureModal({
+    required this.songId,
     this.closeAfterSave = false,
     super.key,
   });
 
+  final String songId;
   final bool closeAfterSave;
 
   @override
   SongStructureModalState createState() => SongStructureModalState();
 
   static void show({
+    required String songId,
     required BuildContext context,
     required WidgetRef ref,
     bool? closeAfterSave,
   }) {
     AdaptiveModal.show(
       context: context,
-      child: SongStructureModal(closeAfterSave: closeAfterSave ?? false),
+      child: SongStructureModal(
+        songId: songId,
+        closeAfterSave: closeAfterSave ?? false,
+      ),
     );
   }
 }
@@ -51,7 +57,12 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   void _initCacheStructure() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(songPreferencesControllerProvider.notifier).addAllStructureItems(
-            ref.watch(songNotifierProvider).song.structure?.toList() ?? [],
+            ref
+                    .watch(songNotifierProvider(widget.songId))
+                    .song
+                    .structure
+                    ?.toList() ??
+                [],
           );
     });
   }
@@ -90,7 +101,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
                   const SizedBox(height: 42),
                 ],
               )
-          : () => const AddStructureItemsWidget(),
+          : () => AddStructureItemsWidget(songId: widget.songId),
     );
   }
 
@@ -209,7 +220,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
     return isReorderPage &&
         !listEquals(
           ref.watch(songPreferencesControllerProvider).structureItems,
-          ref.watch(songNotifierProvider).song.structure,
+          ref.watch(songNotifierProvider(widget.songId)).song.structure,
         );
   }
 
@@ -226,7 +237,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
 
   void _changeOrder() {
     final songPrefsController = ref.watch(songPreferencesControllerProvider);
-    final songNotifier = ref.read(songNotifierProvider.notifier);
+    final songNotifier = ref.read(songNotifierProvider(widget.songId).notifier);
     final reorderedStructure = songPrefsController.structureItems;
     songNotifier.updateStructureOnSong(reorderedStructure);
     setState(() {
