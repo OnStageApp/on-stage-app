@@ -209,7 +209,13 @@ class SongsNotifier extends _$SongsNotifier {
     try {
       await songRepository.deleteSong(songId: id);
 
-      _removeDeletedSongFromState(id);
+      final updatedSongs = state.songs.where((song) => song.id != id).toList();
+
+      state = state.copyWith(
+        songs: updatedSongs,
+        filteredSongs: updatedSongs,
+        savedSongs: updatedSongs.where((song) => song.isFavorite).toList(),
+      );
 
     } catch (error) {
       final appError =
@@ -218,15 +224,5 @@ class SongsNotifier extends _$SongsNotifier {
     } finally {
       state = state.copyWith(isLoading: false);
     }
-  }
-
-  void _removeDeletedSongFromState(String id) {
-    final updatedSongs = state.songs.where((song) => song.id != id).toList();
-
-    state = state.copyWith(
-      songs: updatedSongs,
-      filteredSongs: updatedSongs,
-      savedSongs: updatedSongs.where((song) => song.isFavorite).toList(),
-    );
   }
 }
