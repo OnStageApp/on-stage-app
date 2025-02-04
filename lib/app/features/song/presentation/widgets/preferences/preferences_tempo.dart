@@ -28,11 +28,14 @@ class PreferencesTempo extends ConsumerWidget {
               vertical: 6,
             ),
             decoration: BoxDecoration(
+              color: context.colorScheme.surfaceBright,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              '${ref.watch(songNotifierProvider(songId)).song.tempo} BPM',
-              style: context.textTheme.titleMedium,
+              '${ref.watch(songNotifierProvider(songId)).song.tempo} bpm',
+              style: context.textTheme.titleMedium!.copyWith(
+                color: context.colorScheme.outline,
+              ),
             ),
           ),
         ],
