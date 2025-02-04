@@ -216,10 +216,9 @@ class SongsNotifier extends _$SongsNotifier {
         filteredSongs: updatedSongs,
         savedSongs: updatedSongs.where((song) => song.isFavorite).toList(),
       );
-
     } catch (error) {
       final appError =
-      ErrorHandler.handleError(error, 'Error removing song from favorites');
+          ErrorHandler.handleError(error, 'Error removing song from favorites');
       state = state.copyWith(error: appError.message);
     } finally {
       state = state.copyWith(isLoading: false);

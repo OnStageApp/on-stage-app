@@ -51,7 +51,7 @@ class PlanCard extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${plan.name} Members',
+                  '${plan.name}',
                   style: context.textTheme.headlineLarge!.copyWith(
                     color: context.colorScheme.onSecondary,
                   ),

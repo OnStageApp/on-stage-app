@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_vocal_lead.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
@@ -10,6 +12,8 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_text_size.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/song_view_settings.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
+import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -57,6 +61,8 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
 
   @override
   Widget build(BuildContext context) {
+    final hasEditorRights =
+        ref.watch(permissionServiceProvider).hasAccessToEdit;
     final isSongAddedByCurrentTeam = ref
             .watch(songNotifierProvider(widget.songId))
             .song
@@ -140,6 +146,28 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                     },
                   ),
                 ],
+                const SizedBox(height: Insets.smallNormal),
+                if (hasEditorRights)
+                  EventActionButton(
+                    onTap: () {
+                      AdaptiveDialog.show(
+                        context: context,
+                        title: 'Remove Song',
+                        description: 'Do you really want to remove this song?',
+                        actionText: 'Delete',
+                        onAction: () async {
+                          await ref
+                              .read(songsNotifierProvider.notifier)
+                              .deleteSong(widget.songId);
+                          if (context.mounted) {
+                            context.goNamed(AppRoute.songs.name);
+                          }
+                        },
+                      );
+                    },
+                    text: 'Delete Song',
+                    textColor: context.colorScheme.error,
+                  ),
                 const SizedBox(height: Insets.medium),
               ],
             ),
