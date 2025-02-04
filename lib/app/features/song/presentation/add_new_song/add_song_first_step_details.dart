@@ -228,7 +228,7 @@ class _AddSongFirstStepDetailsState
                 },
               ),
               const SizedBox(height: Insets.medium),
-              if (hasEditorRights)
+              if (widget.songId != null && hasEditorRights)
                 EventActionButton(
                   onTap: () {
                     AdaptiveDialog.show(
@@ -237,16 +237,11 @@ class _AddSongFirstStepDetailsState
                       description: 'Are you sure you want to delete this song?',
                       actionText: 'Delete',
                       onAction: () async {
-                        // Delete logic
-                        // await ref
-                        //     .read(eventNotifierProvider.notifier)
-                        //     .deleteEventAndGetAll();
-
                         await ref
                             .read(songsNotifierProvider.notifier)
                             .deleteSong(widget.songId!);
 
-                        context.pushReplacementNamed(AppRoute.song.name);
+                        context.goNamed(AppRoute.songs.name);
                       },
                     );
                   },
