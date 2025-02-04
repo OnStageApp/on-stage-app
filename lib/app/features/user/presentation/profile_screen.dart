@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_but
 import 'package:on_stage_app/app/features/user/presentation/widgets/team_section.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/app_version.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/env_switcher_widget.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart'; // Import the package
@@ -110,6 +111,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const SizedBox(height: 12),
                       const SignOutButton(),
                       const SizedBox(height: 24),
+                      const Align(
+                        alignment: Alignment.bottomRight,
+                        child: VersionDisplay(),
+                      ),
                     ],
                   ),
                 ),
