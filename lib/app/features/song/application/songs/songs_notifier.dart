@@ -207,10 +207,10 @@ class SongsNotifier extends _$SongsNotifier {
   Future<void> deleteSong(String id) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      _updateSongFavoriteStatus(id, false);
-      await songRepository.deleteSong(
-        songId: id,
-      );
+      await songRepository.deleteSong(songId: id);
+
+      _removeDeletedSongFromState(id);
+
     } catch (error) {
       final appError =
       ErrorHandler.handleError(error, 'Error removing song from favorites');
@@ -218,5 +218,15 @@ class SongsNotifier extends _$SongsNotifier {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  void _removeDeletedSongFromState(String id) {
+    final updatedSongs = state.songs.where((song) => song.id != id).toList();
+
+    state = state.copyWith(
+      songs: updatedSongs,
+      filteredSongs: updatedSongs,
+      savedSongs: updatedSongs.where((song) => song.isFavorite).toList(),
+    );
   }
 }

@@ -67,7 +67,7 @@ abstract class SongRepository {
     @Body() CreateAllSongItemsRequest createSongItemsRequest,
   );
 
-  @DELETE(API.savedSongsWithUserId)
+  @DELETE(API.deleteSong)
   Future<String> deleteSong({
     @Path('songId') required String songId,
   });

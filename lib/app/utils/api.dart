@@ -77,7 +77,7 @@ class API {
   static const String getSongsById = 'songs/{id}';
   static const String savedSongs = 'songs/favorites';
   static const String savedSongsWithUserId = 'songs/favorites/{songId}';
-  static const String deleteSong = 'songs/favorites/{songId}';
+  static const String deleteSong = 'songs/{songId}';
 
   static const String verifyToken = 'verifyToken';
   static const String login = 'auth/login';
