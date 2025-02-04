@@ -203,4 +203,20 @@ class SongsNotifier extends _$SongsNotifier {
       savedSongs: updatedSavedSongs,
     );
   }
+
+  Future<void> deleteSong(String id) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      _updateSongFavoriteStatus(id, false);
+      await songRepository.deleteSong(
+        songId: id,
+      );
+    } catch (error) {
+      final appError =
+      ErrorHandler.handleError(error, 'Error removing song from favorites');
+      state = state.copyWith(error: appError.message);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 }
