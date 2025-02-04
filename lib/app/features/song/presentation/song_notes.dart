@@ -15,6 +15,7 @@ final editingStateProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class SongNotesCard extends ConsumerStatefulWidget {
   const SongNotesCard({
+    required this.songId,
     required this.tempo,
     required this.leads,
     required this.notes,
@@ -22,6 +23,7 @@ class SongNotesCard extends ConsumerStatefulWidget {
     super.key,
   });
 
+  final String? songId;
   final String tempo;
   final List<String>? leads;
   final String? notes;
@@ -68,14 +70,18 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
 
   void _handleOnDelete() {
     logger.i('deleting notes');
-    ref.read(songNotifierProvider.notifier).updateSongMdNotes('');
+    ref
+        .read(songNotifierProvider(widget.songId).notifier)
+        .updateSongMdNotes('');
   }
 
   void _handleEditingToggle(bool currentEditingState) {
-    if (currentEditingState && _controller.text.isNotEmpty) {
+    if (currentEditingState) {
       final mdNotes = _controller.text;
       logger.i('saving notes $mdNotes');
-      ref.read(songNotifierProvider.notifier).updateSongMdNotes(mdNotes);
+      ref
+          .read(songNotifierProvider(widget.songId).notifier)
+          .updateSongMdNotes(mdNotes);
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _focusNode.requestFocus();
@@ -154,7 +160,7 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
           ? TextField(
               focusNode: _focusNode,
               controller: _controller,
-              style: textTheme.titleLarge,
+              style: _getFontSize(textTheme),
               decoration: const InputDecoration(
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
@@ -181,21 +187,28 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
     );
   }
 
+  TextStyle _getFontSize(TextTheme textTheme) {
+    return textTheme.titleLarge!.copyWith(
+      fontSize:
+          ref.watch(userSettingsNotifierProvider).textSize?.size(context) ??
+              (TextSize.normal.size(context)),
+    );
+  }
+
   Widget _buildInfoSection(TextTheme textTheme, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Tempo: ${widget.tempo}',
-          style: textTheme.titleLarge?.copyWith(
-            color: colorScheme.surfaceContainer,
-          ),
+          style: _getFontSize(textTheme)
+              .copyWith(color: colorScheme.surfaceContainer),
         ),
         if (widget.leads.isNotNullOrEmpty) ...[
           const SizedBox(height: 4),
           Text(
             'Leads: ${widget.leads!.join(', ')}',
-            style: textTheme.titleLarge?.copyWith(
+            style: _getFontSize(textTheme).copyWith(
               color: colorScheme.surfaceContainer,
             ),
           ),

@@ -19,7 +19,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_items_notifier.g.dart';
 
-@Riverpod(keepAlive: false)
+@Riverpod()
 class EventItemsNotifier extends _$EventItemsNotifier {
   EventItemsRepository? _eventItemsRepository;
   SongRepository? _songRepository;
@@ -269,10 +269,6 @@ class EventItemsNotifier extends _$EventItemsNotifier {
 
   void setCurrentIndex(int index) {
     state = state.copyWith(currentIndex: index);
-  }
-
-  void unsetCurrentIndex() {
-    state = state.copyWith(currentIndex: -1);
   }
 
   Future<void> removeLeadVocal(

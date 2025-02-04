@@ -17,11 +17,13 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ChangeKeyModal extends ConsumerStatefulWidget {
   const ChangeKeyModal(
     this.songKey, {
+    required this.songId,
     required this.onKeyChanged,
     this.title = 'Change Key',
     super.key,
   });
 
+  final String? songId;
   final SongKey songKey;
   final Future<void> Function(SongKey) onKeyChanged;
   final String title;
@@ -30,6 +32,7 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
   ChangeKeyModalState createState() => ChangeKeyModalState();
 
   static void show({
+    required String? songId,
     required BuildContext context,
     required SongKey songKey,
     required Future<void> Function(SongKey) onKeyChanged,
@@ -39,7 +42,8 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
       context: context,
       expand: false,
       isFloatingForLargeScreens: true,
-      child: ChangeKeyModal(songKey, onKeyChanged: onKeyChanged, title: title),
+      child: ChangeKeyModal(
+          songId: songId, songKey, onKeyChanged: onKeyChanged, title: title),
     );
   }
 }
@@ -55,7 +59,8 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     _songKey = widget.songKey;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _songKey = ref.read(songNotifierProvider).song.key ?? _songKey;
+        _songKey =
+            ref.watch(songNotifierProvider(widget.songId)).song.key ?? _songKey;
         _initialSongKey = _songKey;
       });
     });
@@ -115,10 +120,14 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               'Key',
               style: context.textTheme.titleSmall,
             ),
-            if (ref.watch(songNotifierProvider).song.originalKey != null)
+            if (ref
+                    .watch(songNotifierProvider(widget.songId))
+                    .song
+                    .originalKey !=
+                null)
               Text(
                 'Original '
-                '${ref.watch(songNotifierProvider).song.originalKey?.name}',
+                '${ref.watch(songNotifierProvider(widget.songId)).song.originalKey?.name}',
                 style: context.textTheme.titleSmall!.copyWith(
                   color: context.colorScheme.primary,
                 ),

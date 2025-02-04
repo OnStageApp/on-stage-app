@@ -285,8 +285,10 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: context.colorScheme.surface,
-                  blurRadius: 30,
+                  color: context.isLargeScreen
+                      ? context.colorScheme.surface.withAlpha(100)
+                      : context.colorScheme.surface,
+                  blurRadius: 50,
                   spreadRadius: 35,
                   offset: const Offset(0, 24),
                 ),

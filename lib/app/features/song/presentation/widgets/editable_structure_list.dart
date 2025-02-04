@@ -7,7 +7,13 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class EditableStructureList extends ConsumerWidget {
-  const EditableStructureList({this.isEditing = false, super.key});
+  const EditableStructureList({
+    required this.songId,
+    this.isEditing = false,
+    super.key,
+  });
+
+  final String songId;
 
   final bool isEditing;
 
@@ -15,7 +21,7 @@ class EditableStructureList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var sections = <Section>[];
 
-    sections = ref.watch(songNotifierProvider).sections;
+    sections = ref.watch(songNotifierProvider(songId)).sections;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -28,13 +34,16 @@ class EditableStructureList extends ConsumerWidget {
             final structure = sections[index].structure;
             final count = sections[index].count;
             return AnimatedTile(
+              songId: songId,
               key: ValueKey('${structure.shortName}_'
                   '${structure.index}'),
               structureItem: structure,
               index: index,
               xTimes: count,
               onTap: () {
-                ref.read(songNotifierProvider.notifier).selectSection(index);
+                ref
+                    .read(songNotifierProvider(songId).notifier)
+                    .selectSection(index);
                 logger.i('selected ${structure.name}');
               },
             );
@@ -47,6 +56,7 @@ class EditableStructureList extends ConsumerWidget {
 
 class AnimatedTile extends ConsumerStatefulWidget {
   const AnimatedTile({
+    required this.songId,
     required this.structureItem,
     required this.xTimes,
     required this.onTap,
@@ -58,6 +68,7 @@ class AnimatedTile extends ConsumerStatefulWidget {
   final int xTimes;
   final VoidCallback onTap;
   final int index;
+  final String songId;
 
   @override
   _AnimatedTileState createState() => _AnimatedTileState();
@@ -146,7 +157,7 @@ class _AnimatedTileState extends ConsumerState<AnimatedTile>
                       color: context.colorScheme.onSurfaceVariant,
                       border: Border.all(
                         color: ref
-                                    .watch(songNotifierProvider)
+                                    .watch(songNotifierProvider(widget.songId))
                                     .selectedStructureIndex ==
                                 widget.index
                             ? Colors.white

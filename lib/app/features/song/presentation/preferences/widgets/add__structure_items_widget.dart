@@ -7,7 +7,9 @@ import 'package:on_stage_app/app/shared/circle_structure_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class AddStructureItemsWidget extends ConsumerStatefulWidget {
-  const AddStructureItemsWidget({super.key});
+  final String songId;
+
+  const AddStructureItemsWidget({required this.songId, super.key});
 
   @override
   AddStructureItemsWidgetState createState() => AddStructureItemsWidgetState();
@@ -22,8 +24,10 @@ class AddStructureItemsWidgetState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _originalStructureItems =
-            ref.read(songNotifierProvider).song.availableStructureItems;
+        _originalStructureItems = ref
+            .read(songNotifierProvider(widget.songId))
+            .song
+            .availableStructureItems;
       });
     });
   }

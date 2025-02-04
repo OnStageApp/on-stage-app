@@ -7,20 +7,22 @@ import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.d
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/widgets/chords_for_key_helper.dart';
 
 class ChordToolbar extends ConsumerWidget {
+  const ChordToolbar({
+    required this.songId,
+    required this.sectionData,
+    required this.bottomPadding,
+    required this.onChordSelected,
+    super.key,
+  });
+
+  final String? songId;
   final SectionData? sectionData;
   final double bottomPadding;
   final void Function(String chord, SectionData section) onChordSelected;
 
-  const ChordToolbar({
-    Key? key,
-    required this.sectionData,
-    required this.bottomPadding,
-    required this.onChordSelected,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider(songId)).song;
     final songKey =
         song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
     final chords = ChordsForKeyHelper.getDiatonicChordsForKey(songKey);

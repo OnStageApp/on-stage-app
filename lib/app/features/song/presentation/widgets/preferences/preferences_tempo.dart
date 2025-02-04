@@ -5,7 +5,9 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PreferencesTempo extends ConsumerWidget {
-  const PreferencesTempo({super.key});
+  const PreferencesTempo({required this.songId, super.key});
+
+  final String songId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +31,7 @@ class PreferencesTempo extends ConsumerWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              '${ref.watch(songNotifierProvider).song.tempo} BPM',
+              '${ref.watch(songNotifierProvider(songId)).song.tempo} BPM',
               style: context.textTheme.titleMedium,
             ),
           ),

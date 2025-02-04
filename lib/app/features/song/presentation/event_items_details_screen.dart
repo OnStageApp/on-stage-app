@@ -11,17 +11,17 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/editable_str
 import 'package:on_stage_app/app/features/song/presentation/widgets/loading_overlay.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/page_indicator.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar_leading.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
-import 'package:on_stage_app/logger.dart';
 
 class EventItemsDetailsScreen extends ConsumerStatefulWidget {
   const EventItemsDetailsScreen({
+    // required this.songId,
     required this.eventId,
     required this.fetchEventItems,
     super.key,
   });
 
+  // final String songId;
   final String eventId;
   final bool fetchEventItems;
 
@@ -34,6 +34,7 @@ class _EventItemsDetailsScreenState
     extends ConsumerState<EventItemsDetailsScreen> {
   late final PageController _pageController;
   int _currentIndex = 0;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -41,40 +42,27 @@ class _EventItemsDetailsScreenState
     _currentIndex = ref.read(eventItemsNotifierProvider).currentIndex;
     _pageController = PageController(initialPage: _currentIndex);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.fetchEventItems) {
-        await ref
-            .read(eventItemsNotifierProvider.notifier)
-            .getEventItems(widget.eventId);
-      }
-      await ref
-          .read(eventItemsNotifierProvider.notifier)
-          .fetchSongForEachEventItem();
-      await _initSongAtIndex();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initEventItems();
     });
   }
 
-  Future<void> _initSongAtIndex() async {
-    if (!_isSong(_currentIndex)) {
-      ref.read(songNotifierProvider.notifier).resetState();
-    }
-
-    final itemsState = ref.watch(eventItemsNotifierProvider);
-    final currentItem = itemsState.eventItems[_currentIndex];
-
-    final songId = currentItem.song?.id;
-    if (songId == null) return;
-
-    try {
-      final song =
-          itemsState.songsFromEvent.firstWhere((song) => song.id == songId);
-
+  Future<void> _initEventItems() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (widget.fetchEventItems) {
       await ref
-          .read(songNotifierProvider.notifier)
-          .setCurrentSong(songId, song);
-    } catch (e) {
-      logger.e('Song with id $songId not found in event songs');
+          .read(eventItemsNotifierProvider.notifier)
+          .getEventItems(widget.eventId);
     }
+    await ref
+        .read(eventItemsNotifierProvider.notifier)
+        .fetchSongForEachEventItem();
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -92,9 +80,8 @@ class _EventItemsDetailsScreenState
   Widget build(BuildContext context) {
     final eventItemsState = ref.watch(eventItemsNotifierProvider);
     final items = eventItemsState.eventItems;
-    final songState = ref.watch(songNotifierProvider);
 
-    if (songState.isLoading || eventItemsState.isLoading) {
+    if (_isLoading || eventItemsState.isLoading) {
       return const LoadingOverlay();
     } else if (items.isEmpty) {
       return const Scaffold(
@@ -107,28 +94,30 @@ class _EventItemsDetailsScreenState
         ),
       );
     }
-
+    final songId = items[_currentIndex].song?.id ?? '';
+    final songState = ref.watch(songNotifierProvider(songId));
     return PopScope(
       canPop: false,
       child: Scaffold(
         appBar: StageAppBar(
           isBackButtonVisible: true,
-          onBackButtonPressed: () {
-            context.pop();
-            ref.read(eventItemsNotifierProvider.notifier).unsetCurrentIndex();
-          },
           title: _isSong(_currentIndex)
               ? songState.song.title ?? ''
               : items[_currentIndex].name ?? '',
           trailing: _isSong(_currentIndex)
-              ? const SongAppBarLeading(isFromEvent: true)
+              ? SongAppBarLeading(
+                  songId: songState.song.id ?? '',
+                  isFromEvent: true,
+                )
               : MomentSettings(moment: items[_currentIndex]),
           bottom: _isSong(_currentIndex)
-              ? const PreferredSize(
-                  preferredSize: Size.fromHeight(52),
+              ? PreferredSize(
+                  preferredSize: const Size.fromHeight(52),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: EditableStructureList(),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: EditableStructureList(
+                      songId: songState.song.id ?? '',
+                    ),
                   ),
                 )
               : null,
@@ -149,6 +138,7 @@ class _EventItemsDetailsScreenState
                     scale: 1,
                     child: _isSong(index)
                         ? SongDetailWidget(
+                            songId: items[index].song?.id ?? '',
                             key: ValueKey(
                               '$index - ${items[index].song!.id}',
                             ),
@@ -173,6 +163,5 @@ class _EventItemsDetailsScreenState
   Future<void> _onPageChanged(int pageIndex) async {
     setState(() => _currentIndex = pageIndex);
     ref.read(eventItemsNotifierProvider.notifier).setCurrentIndex(pageIndex);
-    await _initSongAtIndex();
   }
 }

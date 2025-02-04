@@ -19,7 +19,12 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class SongEditorWidget extends ConsumerStatefulWidget {
-  const SongEditorWidget({Key? key}) : super(key: key);
+  final String songId;
+
+  const SongEditorWidget({
+    required this.songId,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _SongEditorWidgetState createState() => _SongEditorWidgetState();
@@ -40,7 +45,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
 
   void _initializeSections() {
     logger.d('Starting sections initialization');
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider(widget.songId)).song;
     final rawSections = song.rawSections ?? [];
 
     final sections = rawSections.map((rawSection) {
@@ -52,7 +57,6 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       );
 
       focusNode.addListener(() {
-        print('here');
         if (focusNode.hasFocus) {
           logger.i(
               'Focus gained for section ${section.rawSection.structureItem?.name}');
@@ -73,6 +77,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
     logger.d('Opening structure selection modal');
     try {
       final addedStructureItems = await ChooseStructureToAddModal.show(
+        songId: widget.songId,
         context: context,
         ref: ref,
       );
@@ -104,7 +109,9 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
             }
           });
 
-          ref.read(songEditorNotifierProvider.notifier).addSection(newSection);
+          ref
+              .read(songEditorNotifierProvider.notifier)
+              .addSection(widget.songId, newSection);
         }
       } else {
         logger.d('Structure selection cancelled');
@@ -130,7 +137,9 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
           '${sectionData.rawSection.structureItem?.name} at index $index',
         );
         try {
-          ref.read(songEditorNotifierProvider.notifier).removeSection(index);
+          ref
+              .read(songEditorNotifierProvider.notifier)
+              .removeSection(widget.songId, index);
         } catch (e, stackTrace) {
           logger.e('Error deleting section at index $index', e, stackTrace);
           if (mounted) {
@@ -148,15 +157,14 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   @override
   Widget build(BuildContext context) {
     final sections = ref.watch(songEditorNotifierProvider);
-    logger.d('Building SongEditorWidget with ${sections.length} sections');
     final bottomInsets = View.of(context).viewInsets.bottom;
-    print('Bottom insets: $bottomInsets');
     if (context.isLargeScreen) {
       return Stack(
         children: [
           _buildBody(sections),
           if (sections.isNotEmpty)
             ChordToolbar(
+              songId: widget.songId,
               sectionData: _focusedSection,
               bottomPadding: bottomInsets > 120 ? 32 : 32,
               onChordSelected: _insertChord,
@@ -266,7 +274,7 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
   }
 
   Widget _buildChordToolbar(SectionData sectionData) {
-    final song = ref.watch(songNotifierProvider).song;
+    final song = ref.watch(songNotifierProvider(widget.songId)).song;
     final songKey = song.key ?? const SongKey(chord: ChordsWithoutSharp.C);
     final chords = ChordsForKeyHelper.getDiatonicChordsForKey(songKey);
 

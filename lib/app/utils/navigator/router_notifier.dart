@@ -190,15 +190,17 @@ class NavigationNotifier extends _$NavigationNotifier {
                           name: AppRoute.editSongContent.name,
                           path: 'editSongContent',
                           builder: (context, state) {
-                            final isNewSong = bool.tryParse(
-                                  state.uri.queryParameters['isNewSong']
-                                      .toString(),
-                                ) ??
-                                false;
+                            final songId = state.uri.queryParameters['songId'];
+                            final isNewSong =
+                                state.uri.queryParameters['isNewSong'] ==
+                                    'true';
+
                             ref
                                 .read(analyticsServiceProvider.notifier)
                                 .logScreenView(AppRoute.editSongContent.name);
+
                             return AddSongSecondStepContent(
+                              songId: songId!,
                               isNewSong: isNewSong,
                             );
                           },
@@ -209,10 +211,12 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.createSongInfo.name,
                       path: 'createSongInfo',
                       builder: (context, state) {
+                        /// songId null means we are creating a new song
+                        const String? songId = null;
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(AppRoute.createSongInfo.name);
-                        return const AddSongFirstStepDetails();
+                        return const AddSongFirstStepDetails(songId: songId);
                       },
                     ),
                   ],
@@ -244,6 +248,7 @@ class NavigationNotifier extends _$NavigationNotifier {
                       path: 'eventItemsWithPages',
                       builder: (context, state) {
                         final eventId = state.uri.queryParameters['eventId']!;
+                        // final songId = state.uri.queryParameters['songId']!;
                         final fetchEventItems =
                             state.uri.queryParameters['fetchEventItems'] ==
                                 'true';
@@ -254,6 +259,7 @@ class NavigationNotifier extends _$NavigationNotifier {
                               AppRoute.eventItemsWithPages.name,
                             );
                         return EventItemsDetailsScreen(
+                          // songId: songId,
                           eventId: eventId,
                           fetchEventItems: fetchEventItems,
                         );
