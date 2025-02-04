@@ -145,8 +145,8 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                     },
                   ),
                 ],
-                const SizedBox(height: Insets.smallNormal),
-                if (isSongAddedByCurrentTeam && hasEditorRights)
+                if (isSongAddedByCurrentTeam && hasEditorRights) ...[
+                  const SizedBox(height: Insets.smallNormal),
                   PreferencesActionTile(
                     leadingWidget: Icon(
                       LucideIcons.file_x_2,
@@ -171,6 +171,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                       );
                     },
                   ),
+                ],
                 const SizedBox(height: Insets.medium),
               ],
             ),
