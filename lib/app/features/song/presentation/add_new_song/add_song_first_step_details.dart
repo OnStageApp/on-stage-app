@@ -240,8 +240,9 @@ class _AddSongFirstStepDetailsState
                         await ref
                             .read(songsNotifierProvider.notifier)
                             .deleteSong(widget.songId!);
-
-                        context.goNamed(AppRoute.songs.name);
+                        if (context.mounted) {
+                          context.goNamed(AppRoute.songs.name);
+                        }
                       },
                     );
                   },
