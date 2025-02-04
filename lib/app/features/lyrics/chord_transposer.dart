@@ -173,8 +173,13 @@ class ChordTransposer {
 
     // Get semitones for both chord and key
     final chordSemitone = noteToSemitone[root];
-    final keySemitone = noteToSemitone[key.replaceAll(RegExp('[^A-G#b]'), '')];
 
+    /// Clean speacial chars like ♯ and ♭, replace them with # and b
+    final cleanedKey = key
+        .replaceAll('♯', '#')
+        .replaceAll('♭', 'b')
+        .replaceAll(RegExp('[^A-G#b]'), '');
+    final keySemitone = noteToSemitone[cleanedKey];
     if (chordSemitone == null || keySemitone == null) return chord;
 
     // Calculate interval
