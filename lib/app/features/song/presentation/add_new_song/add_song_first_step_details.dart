@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/artist/domain/models/artist_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_request/song_request.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
@@ -15,10 +17,13 @@ import 'package:on_stage_app/app/features/song/presentation/change_key_modal.dar
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/artist_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/theme_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
+import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class AddSongFirstStepDetails extends ConsumerStatefulWidget {
@@ -93,6 +98,8 @@ class _AddSongFirstStepDetailsState
 
   @override
   Widget build(BuildContext context) {
+    final hasEditorRights =
+        ref.watch(permissionServiceProvider).hasAccessToEdit;
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
@@ -220,6 +227,32 @@ class _AddSongFirstStepDetailsState
                   );
                 },
               ),
+              const SizedBox(height: Insets.medium),
+              if (hasEditorRights)
+                EventActionButton(
+                  onTap: () {
+                    AdaptiveDialog.show(
+                      context: context,
+                      title: 'Delete Song',
+                      description: 'Are you sure you want to delete this song?',
+                      actionText: 'Delete',
+                      onAction: () async {
+                        // Delete logic
+                        // await ref
+                        //     .read(eventNotifierProvider.notifier)
+                        //     .deleteEventAndGetAll();
+
+                        await ref
+                            .read(songsNotifierProvider.notifier)
+                            .deleteSong(widget.songId!);
+
+                        context.pushReplacementNamed(AppRoute.song.name);
+                      },
+                    );
+                  },
+                  text: 'Delete Song',
+                  textColor: context.colorScheme.error,
+                ),
               const SizedBox(height: 120),
             ],
           ),

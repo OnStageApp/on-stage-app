@@ -66,6 +66,11 @@ abstract class SongRepository {
   Future<List<EventItem>> addSongsToEventItems(
     @Body() CreateAllSongItemsRequest createSongItemsRequest,
   );
+
+  @DELETE(API.savedSongsWithUserId)
+  Future<String> deleteSong({
+    @Path('songId') required String songId,
+  });
 }
 
 final songRepositoryProvider = Provider<SongRepository>((ref) {
