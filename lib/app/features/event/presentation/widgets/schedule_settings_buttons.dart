@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/shared/edit_save_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ScheduleSettingsButtons extends ConsumerWidget {
@@ -27,7 +28,7 @@ class ScheduleSettingsButtons extends ConsumerWidget {
             const SizedBox(width: 8),
           ],
           if (ref.watch(permissionServiceProvider).hasAccessToEdit)
-            _EditButton(
+            EditSaveButton(
               onTap: onEditTap,
               isEditMode: isEditMode,
             ),
@@ -74,54 +75,6 @@ class _PlayButton extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _EditButton extends StatelessWidget {
-  const _EditButton({
-    required this.onTap,
-    required this.isEditMode,
-  });
-
-  final VoidCallback onTap;
-  final bool isEditMode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 32,
-      padding: const EdgeInsets.only(right: 16),
-      child: InkWell(
-        onTap: onTap,
-        overlayColor:
-            WidgetStatePropertyAll(context.colorScheme.onSurfaceVariant),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: isEditMode
-                ? context.colorScheme.surfaceBright
-                : context.colorScheme.onSurfaceVariant,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-            child: Icon(
-              LucideIcons.pencil,
-              size: 16,
-              color: context.colorScheme.onSurface,
             ),
           ),
         ),

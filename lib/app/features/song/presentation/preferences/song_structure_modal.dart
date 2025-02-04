@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
+import 'package:on_stage_app/app/shared/edit_save_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
@@ -146,56 +147,23 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildLeadingTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: InkWell(
-        onTap: () {
-          if (_isEditingMode) {
-            if (_reorderPageHasChanges()) {
-              _changeOrder();
-            } else {
-              setState(() {
-                _isEditingMode = false;
-              });
-            }
+    return EditSaveButton(
+      onTap: () {
+        if (_isEditingMode) {
+          if (_reorderPageHasChanges()) {
+            _changeOrder();
           } else {
             setState(() {
-              _isEditingMode = true;
+              _isEditingMode = false;
             });
           }
-        },
-        overlayColor: WidgetStatePropertyAll(context.colorScheme.surfaceBright),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _isEditingMode
-                ? context.colorScheme.primary
-                : context.colorScheme.onSurfaceVariant,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) {
-              return ScaleTransition(
-                scale: animation,
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-              );
-            },
-            child: Icon(
-              LucideIcons.pencil,
-              key: ValueKey(_isEditingMode),
-              size: 16,
-              color:
-                  _isEditingMode ? Colors.white : context.colorScheme.onSurface,
-            ),
-          ),
-        ),
-      ),
+        } else {
+          setState(() {
+            _isEditingMode = true;
+          });
+        }
+      },
+      isEditMode: _isEditingMode,
     );
   }
 
