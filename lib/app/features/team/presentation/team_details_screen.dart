@@ -90,7 +90,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 if (canEdit) ...[
                   const SizedBox(height: 16),
                   const Text('Manage'),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   PreferencesActionTile(
                     title: 'Group Templates',
                     trailingIcon: Icons.keyboard_arrow_right_rounded,
@@ -102,6 +102,20 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                     height: 54,
                     onTap: () {
                       context.pushNamed(AppRoute.groups.name);
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  PreferencesActionTile(
+                    title: 'Event Templates',
+                    trailingIcon: Icons.keyboard_arrow_right_rounded,
+                    leadingWidget: Icon(
+                      LucideIcons.calendar_range,
+                      size: 20,
+                      color: context.colorScheme.outline,
+                    ),
+                    height: 54,
+                    onTap: () {
+                      context.pushNamed(AppRoute.eventTemplates.name);
                     },
                   ),
                 ],
@@ -139,7 +153,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text('Members', style: context.textTheme.titleSmall),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 StageSearchBar(
                   focusNode: searchFocusNode,
                   controller: searchController,
