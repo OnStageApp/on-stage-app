@@ -145,7 +145,9 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                     },
                   ),
                 ],
-                if (isSongAddedByCurrentTeam && hasEditorRights) ...[
+                if (isSongAddedByCurrentTeam &&
+                    hasEditorRights &&
+                    !widget.isFromEvent) ...[
                   const SizedBox(height: Insets.smallNormal),
                   PreferencesActionTile(
                     leadingWidget: Icon(
