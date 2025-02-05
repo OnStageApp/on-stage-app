@@ -152,4 +152,7 @@ class API {
 
   static const String moments = 'moments';
   static const String momentById = 'moments/{id}';
+
+  //event-templates
+  static const String getEventTemplates = 'event-templates';
 }

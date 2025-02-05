@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'event_template.freezed.dart';
+part 'event_template.g.dart';
 
 @Freezed()
 class EventTemplate with _$EventTemplate {
