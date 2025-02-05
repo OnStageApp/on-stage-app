@@ -1,18 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/login/domain/user_request.dart';
-import 'package:on_stage_app/app/features/team_member/domain/position_enum/position.dart';
 import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/features/user/domain/models/profile/user_profile.dart';
+import 'package:on_stage_app/app/shared/data/api_error_handler/api_error_handler.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -127,15 +129,34 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  Future<void> updatePositionOnUser(Position? position) async {
-    final userId = state.currentUser?.id;
+  Future<bool> updateUsernameOnUser(String? username) async {
+    if (username.isNullEmptyOrWhitespace) {
+      state = state.copyWith(error: 'Username cannot be empty');
+      return false;
+    }
 
-    if (userId == null || position == null) return;
-    state = state.copyWith(
-      currentUser: state.currentUser?.copyWith(position: position),
-    );
-    final request = UserRequest(position: position);
-    unawaited(usersRepository.editUser(request));
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      final request = UserRequest(username: username);
+      await usersRepository.editUser(request);
+
+      state = state.copyWith(
+        currentUser: state.currentUser?.copyWith(username: username),
+        isLoading: false,
+      );
+      return true;
+    } catch (e) {
+      final errorMessage = e is DioException
+          ? ApiErrorHandler.handleDioException(e)
+          : 'An unexpected error occurred';
+
+      state = state.copyWith(
+          isLoading: false,
+          error: errorMessage,
+          currentUser: state.currentUser);
+      return false;
+    }
   }
 
   Future<Uint8List?> _getPhotoBytes(bool forceUpdate) async {
@@ -188,5 +209,11 @@ class UserNotifier extends _$UserNotifier {
   Future<void> deleteAccount() {
     final id = state.currentUser?.id;
     return usersRepository.deleteUser(id ?? '');
+  }
+
+  void clearError() {
+    if (state.error != null) {
+      state = state.copyWith(error: null);
+    }
   }
 }

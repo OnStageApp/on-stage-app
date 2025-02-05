@@ -21,6 +21,8 @@ mixin _$UserState {
   UserModel? get currentUser => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
 
+  String? get error => throw _privateConstructorUsedError;
+
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -37,7 +39,8 @@ abstract class $UserStateCopyWith<$Res> {
       {List<UserModel>? users,
       List<UserModel> uninvitedUsers,
       UserModel? currentUser,
-      bool isLoading});
+      bool isLoading,
+      String? error});
 
   $UserModelCopyWith<$Res>? get currentUser;
 }
@@ -61,6 +64,7 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
     Object? isLoading = null,
+    Object? error = freezed,
   }) {
     return _then(_value.copyWith(
       users: freezed == users
@@ -79,6 +83,10 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      error: freezed == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -109,7 +117,8 @@ abstract class _$$UserStateImplCopyWith<$Res>
       {List<UserModel>? users,
       List<UserModel> uninvitedUsers,
       UserModel? currentUser,
-      bool isLoading});
+      bool isLoading,
+      String? error});
 
   @override
   $UserModelCopyWith<$Res>? get currentUser;
@@ -132,6 +141,7 @@ class __$$UserStateImplCopyWithImpl<$Res>
     Object? uninvitedUsers = null,
     Object? currentUser = freezed,
     Object? isLoading = null,
+    Object? error = freezed,
   }) {
     return _then(_$UserStateImpl(
       users: freezed == users
@@ -150,6 +160,10 @@ class __$$UserStateImplCopyWithImpl<$Res>
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      error: freezed == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -161,7 +175,8 @@ class _$UserStateImpl implements _UserState {
       {final List<UserModel>? users,
       final List<UserModel> uninvitedUsers = const [],
       this.currentUser,
-      this.isLoading = false})
+      this.isLoading = false,
+      this.error})
       : _users = users,
         _uninvitedUsers = uninvitedUsers;
 
@@ -189,10 +204,12 @@ class _$UserStateImpl implements _UserState {
   @override
   @JsonKey()
   final bool isLoading;
+  @override
+  final String? error;
 
   @override
   String toString() {
-    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, isLoading: $isLoading)';
+    return 'UserState(users: $users, uninvitedUsers: $uninvitedUsers, currentUser: $currentUser, isLoading: $isLoading, error: $error)';
   }
 
   @override
@@ -206,7 +223,8 @@ class _$UserStateImpl implements _UserState {
             (identical(other.currentUser, currentUser) ||
                 other.currentUser == currentUser) &&
             (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading));
+                other.isLoading == isLoading) &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
@@ -215,7 +233,8 @@ class _$UserStateImpl implements _UserState {
       const DeepCollectionEquality().hash(_users),
       const DeepCollectionEquality().hash(_uninvitedUsers),
       currentUser,
-      isLoading);
+      isLoading,
+      error);
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.
@@ -231,7 +250,8 @@ abstract class _UserState implements UserState {
       {final List<UserModel>? users,
       final List<UserModel> uninvitedUsers,
       final UserModel? currentUser,
-      final bool isLoading}) = _$UserStateImpl;
+      final bool isLoading,
+      final String? error}) = _$UserStateImpl;
 
   @override
   List<UserModel>? get users;
@@ -241,6 +261,9 @@ abstract class _UserState implements UserState {
   UserModel? get currentUser;
   @override
   bool get isLoading;
+
+  @override
+  String? get error;
 
   /// Create a copy of UserState
   /// with the given fields replaced by the non-null parameter values.

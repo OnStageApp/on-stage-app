@@ -6,7 +6,7 @@ part of 'user_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userNotifierHash() => r'2ccaedfedfae90e131356505ff5a777e6787ca11';
+String _$userNotifierHash() => r'e3820d6114da5a7a7d62758f3f1d91f4d240523a';
 
 /// See also [UserNotifier].
 @ProviderFor(UserNotifier)

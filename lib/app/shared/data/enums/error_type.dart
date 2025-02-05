@@ -5,6 +5,7 @@ enum ErrorType {
   ARTIST_ALREADY_EXISTS,
   DUPLICATE_POSITION_NAME,
   DUPLICATE_GROUP_NAME,
+  DUPLICATE_USERNAME,
   InternalServerError,
 }
 
@@ -23,6 +24,8 @@ extension ErrorTypeX on ErrorType {
         return 'DUPLICATE_GROUP_NAME';
       case ErrorType.ARTIST_ALREADY_EXISTS:
         return 'ARTIST_ALREADY_EXISTS';
+      case ErrorType.DUPLICATE_USERNAME:
+        return 'DUPLICATE_USERNAME';
       case ErrorType.InternalServerError:
         return 'InternalServerError';
     }
@@ -42,6 +45,8 @@ extension ErrorTypeX on ErrorType {
         return 'Group with this name already exists';
       case ErrorType.ARTIST_ALREADY_EXISTS:
         return 'Artist already exists';
+      case ErrorType.DUPLICATE_USERNAME:
+        return 'Username already exists';
       case ErrorType.InternalServerError:
         return 'Internal server error';
     }

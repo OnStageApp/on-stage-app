@@ -10,5 +10,6 @@ class UserState with _$UserState {
     @Default([]) List<UserModel> uninvitedUsers,
     UserModel? currentUser,
     @Default(false) bool isLoading,
+    String? error,
   }) = _UserState;
 }
