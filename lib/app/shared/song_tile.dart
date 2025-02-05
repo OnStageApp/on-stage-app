@@ -95,8 +95,8 @@ class _SongTileState extends ConsumerState<SongTile> {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () {
+              IconButton(
+                onPressed: () {
                   if (widget.song.isFavorite) {
                     ref.read(songsNotifierProvider.notifier).removeFavorite(
                           widget.song.id,
@@ -107,7 +107,7 @@ class _SongTileState extends ConsumerState<SongTile> {
                         );
                   }
                 },
-                child: Icon(
+                icon: Icon(
                   widget.song.isFavorite
                       ? Icons.favorite
                       : Icons.favorite_border,

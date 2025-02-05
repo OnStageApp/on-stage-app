@@ -146,7 +146,7 @@ class AddSongSecondStepContentState
               width: 150,
               child: ContinueButton(
                 hasShadow: false,
-                text: _isSaving ? 'Saving...' : 'Save Song',
+                text: _isSaving ? 'Saving...' : 'Save',
                 onPressed: _isSaving ? () {} : () => _onSavedSong(context),
                 isEnabled: !_isSaving,
               ),
@@ -159,7 +159,7 @@ class AddSongSecondStepContentState
 
   Widget _buildFloatingActionButton(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 36),
+      margin: const EdgeInsets.only(bottom: 52),
       alignment: Alignment.bottomCenter,
       decoration: BoxDecoration(
         boxShadow: [
@@ -190,7 +190,7 @@ class AddSongSecondStepContentState
             flex: 3,
             child: ContinueButton(
               hasShadow: false,
-              text: _isSaving ? 'Saving...' : 'Save Song',
+              text: _isSaving ? 'Saving...' : 'Save',
               onPressed: _isSaving ? () {} : () => _onSavedSong(context),
               isEnabled: !_isSaving,
             ),

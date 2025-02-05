@@ -20,7 +20,6 @@ mixin _$UserState {
   List<UserModel> get uninvitedUsers => throw _privateConstructorUsedError;
   UserModel? get currentUser => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
-
   String? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of UserState
@@ -261,7 +260,6 @@ abstract class _UserState implements UserState {
   UserModel? get currentUser;
   @override
   bool get isLoading;
-
   @override
   String? get error;
 

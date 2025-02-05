@@ -96,7 +96,7 @@ class _AddSongFirstStepDetailsState
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ContinueButton(
           text: 'Save',
           isLoading: _isLoading,
@@ -108,7 +108,7 @@ class _AddSongFirstStepDetailsState
       ),
       appBar: const StageAppBar(
         isBackButtonVisible: true,
-        title: 'Song Info',
+        title: 'Song Details',
       ),
       body: Padding(
         padding: defaultScreenPadding,

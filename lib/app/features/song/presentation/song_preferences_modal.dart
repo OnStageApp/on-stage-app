@@ -131,7 +131,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                       LucideIcons.tags,
                       color: context.colorScheme.outline,
                     ),
-                    title: 'Song Info',
+                    title: 'Song Details',
                     trailingIcon: Icons.keyboard_arrow_right_rounded,
                     onTap: () {
                       context

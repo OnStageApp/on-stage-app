@@ -114,14 +114,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
               child: PageView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                  ref.read(searchNotifierProvider.notifier).setLibraryFilter(
-                        isLibrary: index == 1,
-                      );
-                },
+                onPageChanged: (index) {},
                 children: [
                   _SongsListContent(
                     isLibrary: false,
