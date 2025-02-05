@@ -16,6 +16,7 @@ import 'package:on_stage_app/app/features/login/presentation/login_screen.dart';
 import 'package:on_stage_app/app/features/login/presentation/sign_up_screen.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/notification_page.dart';
 import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_first_step_details.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/add_song_second_step_content.dart';
 import 'package:on_stage_app/app/features/song/presentation/event_items_details_screen.dart';
@@ -413,10 +414,16 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.favorites.name,
                       path: 'favorites',
                       builder: (context, state) {
+                        final songTabScope = SongTabScopeExtension.fromName(
+                          state.uri.queryParameters['songTabScope'] ?? 'songs',
+                        );
+
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(AppRoute.favorites.name);
-                        return const SavedSongsScreen();
+                        return SavedSongsScreen(
+                          tabScope: songTabScope,
+                        );
                       },
                     ),
                   ],

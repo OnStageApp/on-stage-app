@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
@@ -9,7 +10,9 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SavedSongsScreen extends ConsumerStatefulWidget {
-  const SavedSongsScreen({super.key});
+  const SavedSongsScreen({required this.tabScope, super.key});
+
+  final SongTabScope tabScope;
 
   @override
   SavedSongsScreenState createState() => SavedSongsScreenState();
@@ -21,14 +24,14 @@ class SavedSongsScreenState extends ConsumerState<SavedSongsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songsNotifierProvider.notifier).getSavedSongs();
+      ref.read(songsNotifierProvider(widget.tabScope).notifier).getSavedSongs();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final songsState = ref.watch(songsNotifierProvider);
+    final songsState = ref.watch(songsNotifierProvider(widget.tabScope));
 
     return Scaffold(
       appBar: const StageAppBar(
@@ -37,7 +40,9 @@ class SavedSongsScreenState extends ConsumerState<SavedSongsScreen> {
       ),
       body: RefreshIndicator.adaptive(
         onRefresh: () async {
-          await ref.read(songsNotifierProvider.notifier).getSavedSongs();
+          await ref
+              .read(songsNotifierProvider(widget.tabScope).notifier)
+              .getSavedSongs();
         },
         child: CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -92,7 +97,8 @@ class SavedSongsScreenState extends ConsumerState<SavedSongsScreen> {
                     final song = songsState.savedSongs[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: SongTile(song: song),
+                      child:
+                          SongTile(songTabScope: widget.tabScope, song: song),
                     );
                   },
                   childCount: songsState.savedSongs.length,

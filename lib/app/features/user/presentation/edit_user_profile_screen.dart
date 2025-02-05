@@ -92,15 +92,17 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-      floatingActionButton: Padding(
-        padding: defaultScreenHorizontalPadding,
-        child: ContinueButton(
-          text: 'Edit Profile',
-          onPressed: _hasChanges ? _editProfile : () {},
-          isEnabled: _hasChanges,
-          hasShadow: false,
-        ),
-      ),
+      floatingActionButton: _hasChanges
+          ? Padding(
+              padding: defaultScreenHorizontalPadding,
+              child: ContinueButton(
+                text: 'Save',
+                onPressed: _hasChanges ? _editProfile : () {},
+                isEnabled: _hasChanges,
+                hasShadow: false,
+              ),
+            )
+          : const SizedBox(),
       appBar: const StageAppBar(
         title: 'Edit Profile',
         isBackButtonVisible: true,

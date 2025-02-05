@@ -304,4 +304,15 @@ class SongNotifier extends _$SongNotifier {
       return null;
     }
   }
+
+  Future<void> deleteSong() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      if (songId == null) return;
+      await songRepository.deleteSong(songId: songId!);
+    } catch (error) {
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 }

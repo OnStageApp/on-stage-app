@@ -112,7 +112,7 @@ class AppSettingsState extends ConsumerState<AppSettings>
               horizontal: 12,
             ),
             title: Text(
-              'Membership Plan',
+              "Team's Subscription",
               style: context.textTheme.titleMedium,
             ),
             trailing: Text(

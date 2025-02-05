@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -17,7 +18,12 @@ class SavedSongsTile extends ConsumerWidget {
     return InkWell(
       overlayColor: WidgetStateProperty.all(const Color(0x33FFFFFF)),
       onTap: () {
-        context.pushNamed(AppRoute.favorites.name);
+        context.pushNamed(
+          AppRoute.favorites.name,
+          queryParameters: {
+            'songTabScope': SongTabScope.home.name,
+          },
+        );
       },
       child: Ink(
         padding: const EdgeInsets.all(16),
@@ -48,7 +54,11 @@ class SavedSongsTile extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  ref.watch(songsNotifierProvider).savedSongs.length.toString(),
+                  ref
+                      .watch(songsNotifierProvider(SongTabScope.home))
+                      .savedSongs
+                      .length
+                      .toString(),
                   style: context.textTheme.headlineLarge,
                 ),
                 Container(

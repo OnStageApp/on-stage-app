@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preference_vocal_lead.dart';
@@ -163,12 +166,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                         description: 'Do you really want to remove this song?',
                         actionText: 'Delete',
                         onAction: () async {
-                          await ref
-                              .read(songsNotifierProvider.notifier)
-                              .deleteSong(widget.songId);
-                          if (context.mounted) {
-                            context.goNamed(AppRoute.songs.name);
-                          }
+                          await _deleteSongAndNavigate(context);
                         },
                       );
                     },
@@ -181,5 +179,21 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
         );
       },
     );
+  }
+
+  Future<void> _deleteSongAndNavigate(BuildContext context) async {
+    await ref
+        .read(
+          songNotifierProvider(widget.songId).notifier,
+        )
+        .deleteSong();
+    unawaited(
+      ref.read(songsNotifierProvider(SongTabScope.songs).notifier).getSongs(),
+    );
+    if (context.mounted) {
+      context
+        ..popDialog()
+        ..goNamed(AppRoute.songs.name);
+    }
   }
 }

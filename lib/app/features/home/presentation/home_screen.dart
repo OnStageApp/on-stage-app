@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/home/presentation/widgets/saved_songs_
 import 'package:on_stage_app/app/features/home/presentation/widgets/upcoming_event_enhanced.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -35,14 +36,15 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void initializeNotifiers() {
-    ref.read(songsNotifierProvider.notifier).getSongs();
+    ref.read(songsNotifierProvider(SongTabScope.home).notifier).getSongs();
     ref.read(eventsNotifierProvider.notifier).getUpcomingEvent();
   }
 
   @override
   Widget build(BuildContext context) {
     _listenToOnboardingStatus();
-    final songs = ref.watch(songsNotifierProvider).filteredSongs;
+    final songs =
+        ref.watch(songsNotifierProvider(SongTabScope.home)).filteredSongs;
 
     return Padding(
       padding: getResponsivePadding(context),
@@ -60,7 +62,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         body: RefreshIndicator.adaptive(
           onRefresh: () async {
             await Future.wait([
-              ref.read(songsNotifierProvider.notifier).getSongs(),
+              ref
+                  .read(songsNotifierProvider(SongTabScope.home).notifier)
+                  .getSongs(),
               ref.read(eventsNotifierProvider.notifier).getUpcomingEvent(),
               ref
                   .read(notificationNotifierProvider.notifier)
@@ -98,7 +102,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                         padding: defaultScreenHorizontalPadding,
                         child: Column(
                           children: [
-                            SongTile(song: song),
+                            SongTile(
+                              song: song,
+                              songTabScope: SongTabScope.home,
+                            ),
                             const SizedBox(height: Insets.smallNormal),
                           ],
                         ),

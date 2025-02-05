@@ -111,7 +111,10 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                       ref.watch(teamNotifierProvider).currentTeam?.name ??
                           'Enter Team Name',
                   headline: 'Team Name',
-                  suffix: const SizedBox(),
+                  suffix: Icon(
+                    LucideIcons.pencil,
+                    color: context.colorScheme.outline,
+                  ),
                   onTap: () {
                     if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
                       return;

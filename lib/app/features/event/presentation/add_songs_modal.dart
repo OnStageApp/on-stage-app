@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/event_items/application/event_items_no
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -44,7 +45,7 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songsNotifierProvider.notifier).getSongs(
+      ref.read(songsNotifierProvider(SongTabScope.events).notifier).getSongs(
             isLoadingWithShimmer: true,
           );
     });
@@ -63,7 +64,9 @@ class AddSongsModalState extends ConsumerState<AddSongsModal> {
       searchNotifierProvider,
       (previous, next) {
         if (previous != next) {
-          ref.read(songsNotifierProvider.notifier).getSongs(
+          ref
+              .read(songsNotifierProvider(SongTabScope.events).notifier)
+              .getSongs(
                 songFilter: next.toSongFilter(),
               );
         }
@@ -175,7 +178,7 @@ class _SongsSelectionContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final songsState = ref.watch(songsNotifierProvider);
+    final songsState = ref.watch(songsNotifierProvider(SongTabScope.events));
     final searchState = ref.watch(searchNotifierProvider);
 
     return ListView.builder(
@@ -187,7 +190,7 @@ class _SongsSelectionContent extends ConsumerWidget {
             hasMore: songsState.hasMore,
             isLoading: songsState.isLoading,
             onLoadMore: () => ref
-                .read(songsNotifierProvider.notifier)
+                .read(songsNotifierProvider(SongTabScope.events).notifier)
                 .loadMoreSongs(searchState.toSongFilter()),
           );
         }

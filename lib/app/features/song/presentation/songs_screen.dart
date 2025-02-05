@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/permission/application/permission_noti
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/application/search_state.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/songs_list_view.dart';
@@ -29,7 +30,7 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songsNotifierProvider.notifier).getSongs(
+      ref.read(songsNotifierProvider(SongTabScope.songs).notifier).getSongs(
             isLoadingWithShimmer: true,
           );
     });
@@ -45,14 +46,14 @@ class SongsScreenState extends ConsumerState<SongsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final songsState = ref.watch(songsNotifierProvider);
+    final songsState = ref.watch(songsNotifierProvider(SongTabScope.songs));
     final searchState = ref.watch(searchNotifierProvider);
 
     ref.listen<SearchState>(
       searchNotifierProvider,
       (previous, next) {
         if (previous != next) {
-          ref.read(songsNotifierProvider.notifier).getSongs(
+          ref.read(songsNotifierProvider(SongTabScope.songs).notifier).getSongs(
                 songFilter: next.toSongFilter(),
               );
         }
@@ -175,7 +176,9 @@ class _SongsListContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return RefreshIndicator.adaptive(
       onRefresh: () async {
-        await ref.read(songsNotifierProvider.notifier).getSongs(
+        await ref
+            .read(songsNotifierProvider(SongTabScope.songs).notifier)
+            .getSongs(
               songFilter: searchState.toSongFilter(),
             );
       },
@@ -193,7 +196,10 @@ class _SongsListContent extends ConsumerWidget {
                     onPressed: songsState.isLoading
                         ? () {}
                         : () => ref
-                            .read(songsNotifierProvider.notifier)
+                            .read(
+                              songsNotifierProvider(SongTabScope.songs)
+                                  .notifier,
+                            )
                             .loadMoreSongs(
                               searchState.toSongFilter(),
                             ),

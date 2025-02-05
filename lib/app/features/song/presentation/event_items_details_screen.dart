@@ -15,13 +15,11 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 
 class EventItemsDetailsScreen extends ConsumerStatefulWidget {
   const EventItemsDetailsScreen({
-    // required this.songId,
     required this.eventId,
     required this.fetchEventItems,
     super.key,
   });
 
-  // final String songId;
   final String eventId;
   final bool fetchEventItems;
 

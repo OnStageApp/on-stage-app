@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -11,10 +12,12 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 class SongTile extends ConsumerStatefulWidget {
   const SongTile({
     required this.song,
+    required this.songTabScope,
     super.key,
   });
 
   final SongOverview song;
+  final SongTabScope songTabScope;
 
   @override
   ConsumerState<SongTile> createState() => _SongTileState();
@@ -98,11 +101,19 @@ class _SongTileState extends ConsumerState<SongTile> {
               IconButton(
                 onPressed: () {
                   if (widget.song.isFavorite) {
-                    ref.read(songsNotifierProvider.notifier).removeFavorite(
+                    ref
+                        .read(
+                          songsNotifierProvider(widget.songTabScope).notifier,
+                        )
+                        .removeFavorite(
                           widget.song.id,
                         );
                   } else {
-                    ref.read(songsNotifierProvider.notifier).addToFavorite(
+                    ref
+                        .read(
+                          songsNotifierProvider(widget.songTabScope).notifier,
+                        )
+                        .addToFavorite(
                           widget.song.id,
                         );
                   }

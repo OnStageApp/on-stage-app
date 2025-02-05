@@ -1,29 +1,23 @@
 import 'dart:async';
 
+import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_state.dart';
 import 'package:on_stage_app/app/features/song/data/song_repository.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_filter/song_filter.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
-import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/error_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'songs_notifier.g.dart';
 
-@Riverpod()
+@riverpod
 class SongsNotifier extends _$SongsNotifier {
-  SongRepository? _songRepository;
   static const int _pageSize = 25;
 
-  SongRepository get songRepository {
-    _songRepository ??= SongRepository(ref.watch(dioProvider));
-    return _songRepository!;
-  }
+  SongRepository get songRepository => ref.read(songRepositoryProvider);
 
   @override
-  SongsState build() {
-    final dio = ref.watch(dioProvider);
-    _songRepository = SongRepository(dio);
+  SongsState build(SongTabScope scope) {
     return const SongsState();
   }
 
@@ -202,26 +196,5 @@ class SongsNotifier extends _$SongsNotifier {
       filteredSongs: updatedSongs,
       savedSongs: updatedSavedSongs,
     );
-  }
-
-  Future<void> deleteSong(String id) async {
-    state = state.copyWith(isLoading: true, error: null);
-    try {
-      await songRepository.deleteSong(songId: id);
-
-      final updatedSongs = state.songs.where((song) => song.id != id).toList();
-
-      state = state.copyWith(
-        songs: updatedSongs,
-        filteredSongs: updatedSongs,
-        savedSongs: updatedSongs.where((song) => song.isFavorite).toList(),
-      );
-    } catch (error) {
-      final appError =
-          ErrorHandler.handleError(error, 'Error removing song from favorites');
-      state = state.copyWith(error: appError.message);
-    } finally {
-      state = state.copyWith(isLoading: false);
-    }
   }
 }
