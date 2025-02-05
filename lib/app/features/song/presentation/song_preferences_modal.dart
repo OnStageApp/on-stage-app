@@ -164,7 +164,7 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                         context: context,
                         title: 'Remove Song',
                         description: 'Do you really want to remove this song?',
-                        actionText: 'Delete',
+                        actionText: 'Remove',
                         onAction: () async {
                           await _deleteSongAndNavigate(context);
                         },
