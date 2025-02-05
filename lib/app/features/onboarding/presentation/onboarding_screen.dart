@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/login/presentation/widgets/gradient_background.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/controller/onboarding_fifth_controller.dart';
+import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_fifth_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_first_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_forth_step.dart';
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_second_step.dart';
@@ -11,6 +12,7 @@ import 'package:on_stage_app/app/features/onboarding/presentation/widgets/onboar
 import 'package:on_stage_app/app/features/plan/presentation/plans_screen.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -32,9 +34,22 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  static const int _totalPages = 4;
+  static const int _totalPages = 5;
+  static const _onboardingSteps = [
+    OnboardingFirstStep(),
+    OnboardingSecondStep(),
+    OnboardingThirdStep(),
+    OnboardingForthStep(),
+    OnboardingFifthStep(),
+  ];
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -44,10 +59,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _goToNextPage() {
     if (_currentPage == _totalPages - 1) {
-      if (!_isFormValid()) return;
       _updateUser();
-      _finishOnboarding();
-      showPlanUpgrades(context);
       return;
     }
 
@@ -64,6 +76,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _setupErrorListener();
+
     return Material(
       child: Stack(
         children: [
@@ -81,14 +95,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               onPageChanged: (page) {
                 setState(() => _currentPage = page);
               },
-              children: const [
-                OnboardingFirstStep(),
-                OnboardingSecondStep(),
-                OnboardingThirdStep(),
-                OnboardingForthStep(),
-                //TODO: Maybe add this step in the future
-                // OnboardingFifthStep(),
-              ],
+              children: _onboardingSteps,
             ),
           ),
           SafeArea(
@@ -132,16 +139,30 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  void _updateUser() {
-    ref.read(userNotifierProvider.notifier).updatePositionOnUser(
-          ref.watch(onboardingFifthControllerProvider).position,
-        );
+  Future<void> _updateUser() async {
+    final username = ref.watch(onboardingFifthControllerProvider).username;
+    final success = await ref
+        .read(userNotifierProvider.notifier)
+        .updateUsernameOnUser(username);
+
+    if (success) {
+      _finishOnboarding();
+      showPlanUpgrades(context);
+    }
   }
 
-  bool _isFormValid() {
-    final onboardingProvider = ref.watch(onboardingFifthControllerProvider);
-    // final isPositionValid = onboardingProvider.position != null;
-
-    return true;
+  void _setupErrorListener() {
+    ref.listen(
+      userNotifierProvider.select((state) => state.error),
+      (previous, next) {
+        if (next != null && mounted) {
+          TopFlushBar.show(
+            context,
+            next,
+            isError: true,
+          );
+        }
+      },
+    );
   }
 }
