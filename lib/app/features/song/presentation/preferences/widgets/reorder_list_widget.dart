@@ -36,31 +36,8 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          if (hasEditorsRight) _buildReorderableList() else _buildList(),
+          if (hasEditorsRight) _buildReorderableList(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildList() {
-    final state = ref.watch(structureListControllerProvider);
-
-    return SlidableAutoCloseBehavior(
-      child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: state.groupedItems.length,
-        itemBuilder: (context, index) {
-          final group = state.groupedItems[index];
-          return ReordableListItem(
-            isEditingMode: false,
-            multiplier: group.multiplier,
-            groupIndex: group.originalIndex,
-            structureItem: group.item,
-            canSlide: false,
-            itemKey: '${group.item.shortName}_$index',
-          );
-        },
       ),
     );
   }
@@ -109,7 +86,6 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
                 multiplier: group.multiplier,
                 itemKey: '${group.item.shortName}_$index',
                 onRemove: () => controller.removeGroup(index),
-                onClone: null,
               ),
             ),
           );

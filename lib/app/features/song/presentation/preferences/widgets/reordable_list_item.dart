@@ -149,7 +149,6 @@ class ReordableListItem extends ConsumerStatefulWidget {
     this.canSlide = true,
     this.onRemove,
     this.onClone,
-    this.isEditingMode = true,
     super.key,
   });
 
@@ -160,7 +159,6 @@ class ReordableListItem extends ConsumerStatefulWidget {
   final bool canSlide;
   final VoidCallback? onRemove;
   final VoidCallback? onClone;
-  final bool isEditingMode;
 
   @override
   ConsumerState<ReordableListItem> createState() => _ReordableListItemState();
@@ -285,9 +283,7 @@ class _ReordableListItemState extends ConsumerState<ReordableListItem>
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Icon(
                       Icons.drag_indicator_rounded,
-                      color: widget.isEditingMode
-                          ? context.colorScheme.surfaceContainer
-                          : const Color(0x91828282),
+                      color: context.colorScheme.surfaceContainer,
                       size: 20,
                     ),
                   ),
@@ -302,34 +298,12 @@ class _ReordableListItemState extends ConsumerState<ReordableListItem>
                     ),
                   ),
                   const Spacer(),
-                  if (widget.isEditingMode)
-                    AnimatedStepper(
-                      value: widget.multiplier,
-                      onAdd: _handleAdd,
-                      onRemove: _handleRemove,
-                      max: 99,
-                    )
-                  else
-                    Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        // shape: BoxShape.circle,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      child: Text(
-                        '×${widget.multiplier}',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.outline,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ),
+                  AnimatedStepper(
+                    value: widget.multiplier,
+                    onAdd: _handleAdd,
+                    onRemove: _handleRemove,
+                    max: 99,
+                  ),
                 ],
               ),
             );
