@@ -11,10 +11,7 @@ import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class ReorderListWidget extends ConsumerStatefulWidget {
-  final bool isEditingMode;
-
   const ReorderListWidget({
-    required this.isEditingMode,
     super.key,
   });
 
@@ -39,10 +36,7 @@ class OrderStructureItemsWidgetState extends ConsumerState<ReorderListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          if (hasEditorsRight && widget.isEditingMode)
-            _buildReorderableList()
-          else
-            _buildList(),
+          if (hasEditorsRight) _buildReorderableList() else _buildList(),
         ],
       ),
     );

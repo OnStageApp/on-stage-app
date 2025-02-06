@@ -25,7 +25,7 @@ class ScheduleSettingsButtons extends ConsumerWidget {
         children: [
           if (!isEditMode) ...[
             _PlayButton(onTap: onPlayTap),
-            const SizedBox(width: 8),
+            const SizedBox(width: 16),
           ],
           if (ref.watch(permissionServiceProvider).hasAccessToEdit)
             EditSaveButton(

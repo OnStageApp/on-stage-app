@@ -10,7 +10,6 @@ import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/
 import 'package:on_stage_app/app/features/song/presentation/preferences/widgets/reorder_list_widget.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
-import 'package:on_stage_app/app/shared/edit_save_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
@@ -35,7 +34,7 @@ class SongStructureModal extends ConsumerStatefulWidget {
     required WidgetRef ref,
     bool? closeAfterSave,
   }) {
-    AdaptiveModal.show(
+    AdaptiveModal.show<void>(
       context: context,
       child: SongStructureModal(
         songId: songId,
@@ -47,7 +46,6 @@ class SongStructureModal extends ConsumerStatefulWidget {
 
 class SongStructureModalState extends ConsumerState<SongStructureModal> {
   bool isReorderPage = true;
-  bool _isEditingMode = false;
 
   @override
   void initState() {
@@ -82,23 +80,20 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
       buildContent: isReorderPage
           ? () => Column(
                 children: [
-                  ReorderListWidget(
-                    isEditingMode: _isEditingMode,
-                  ),
-                  if (_isEditingMode)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: EventActionButton(
-                        text: 'Add New Structures',
-                        icon: LucideIcons.plus,
-                        onTap: () {
-                          if (_addItemsPageHasChanges()) {
-                            _addStructureItems();
-                          }
-                          setState(() => isReorderPage = false);
-                        },
-                      ),
+                  const ReorderListWidget(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: EventActionButton(
+                      text: 'Add New Structures',
+                      icon: LucideIcons.plus,
+                      onTap: () {
+                        if (_addItemsPageHasChanges()) {
+                          _addStructureItems();
+                        }
+                        setState(() => isReorderPage = false);
+                      },
                     ),
+                  ),
                   const SizedBox(height: 42),
                 ],
               )
@@ -110,7 +105,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
     final hasEditRights = ref.watch(permissionServiceProvider).hasAccessToEdit;
 
     if (!hasEditRights) return const SizedBox();
-    if (isReorderPage && _isEditingMode) {
+    if (isReorderPage) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: ContinueButton(
@@ -120,7 +115,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
         ),
       );
     }
-    if (!isReorderPage && _isEditingMode) {
+    if (!isReorderPage) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         child: ContinueButton(
@@ -134,36 +129,8 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return ModalHeader(
-      leadingButton:
-          ref.watch(permissionServiceProvider).hasAccessToEdit && isReorderPage
-              ? Container(
-                  padding: const EdgeInsets.only(right: 28),
-                  child: _buildLeadingTile(context),
-                )
-              : const SizedBox(width: 80 - 12),
+    return const ModalHeader(
       title: 'Edit Structure',
-    );
-  }
-
-  Widget _buildLeadingTile(BuildContext context) {
-    return EditSaveButton(
-      onTap: () {
-        if (_isEditingMode) {
-          if (_reorderPageHasChanges()) {
-            _changeOrder();
-          } else {
-            setState(() {
-              _isEditingMode = false;
-            });
-          }
-        } else {
-          setState(() {
-            _isEditingMode = true;
-          });
-        }
-      },
-      isEditMode: _isEditingMode,
     );
   }
 
@@ -208,9 +175,7 @@ class SongStructureModalState extends ConsumerState<SongStructureModal> {
     final songNotifier = ref.read(songNotifierProvider(widget.songId).notifier);
     final reorderedStructure = songPrefsController.structureItems;
     songNotifier.updateStructureOnSong(reorderedStructure);
-    setState(() {
-      _isEditingMode = false;
-    });
+
     if (widget.closeAfterSave) {
       context.popDialog();
     }

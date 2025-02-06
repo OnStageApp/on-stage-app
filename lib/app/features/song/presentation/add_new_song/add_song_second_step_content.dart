@@ -73,32 +73,35 @@ class AddSongSecondStepContentState
 
     final isLargeScreen = context.isLargeScreen;
 
-    return Scaffold(
-      appBar: StageAppBar(
-        isBackButtonVisible: true,
-        title: songTitle,
-        onBackButtonPressed: _handleBackPress,
-        trailing: isLargeScreen ? _buildTrailingButton(context) : null,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: StageAppBar(
+          isBackButtonVisible: true,
+          title: songTitle,
+          onBackButtonPressed: _handleBackPress,
+          trailing: isLargeScreen ? _buildTrailingButton(context) : null,
+        ),
+        body: isLargeScreen
+            ? EditorTabSwitch(
+                songId: widget.songId,
+                tabController: _tabController,
+              )
+            : Stack(
+                children: [
+                  EditorTabSwitch(
+                    songId: widget.songId,
+                    tabController: _tabController,
+                  ),
+                  Positioned(
+                    bottom: -_bottomInsets,
+                    left: 0,
+                    right: 0,
+                    child: _buildFloatingActionButton(context),
+                  ),
+                ],
+              ),
       ),
-      body: isLargeScreen
-          ? EditorTabSwitch(
-              songId: widget.songId,
-              tabController: _tabController,
-            )
-          : Stack(
-              children: [
-                EditorTabSwitch(
-                  songId: widget.songId,
-                  tabController: _tabController,
-                ),
-                Positioned(
-                  bottom: -_bottomInsets,
-                  left: 0,
-                  right: 0,
-                  child: _buildFloatingActionButton(context),
-                ),
-              ],
-            ),
     );
   }
 

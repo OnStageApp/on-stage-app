@@ -98,11 +98,12 @@ class SongPreferencesModalState extends ConsumerState<SongPreferencesModal> {
                   const SizedBox(height: Insets.medium),
                   const PreferencesVocalLead(),
                 ],
-                if (widget.isFromEvent || isSongAddedByCurrentTeam) ...[
+                if ((widget.isFromEvent || isSongAddedByCurrentTeam) &&
+                    hasEditorRights) ...[
                   const SizedBox(height: Insets.medium),
                   PreferencesSongStructure(songId: widget.songId),
                 ],
-                if (isSongAddedByCurrentTeam) ...[
+                if (isSongAddedByCurrentTeam && hasEditorRights) ...[
                   const SizedBox(height: Insets.medium),
                   Text(
                     'Edit Song',
