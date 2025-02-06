@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/dummy_data/themes_dummy.dart';
 import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/features/search/domain/enums/theme_filter_enum.dart';
+import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class ThemeModal extends ConsumerStatefulWidget {
   const ThemeModal({
@@ -32,6 +34,34 @@ class ThemeModal extends ConsumerStatefulWidget {
 
 class ThemeModalState extends ConsumerState<ThemeModal> {
   final List<ThemeEnum> _allThemes = ThemesDummy.themes;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  List<ThemeEnum> _filteredThemes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredThemes = _allThemes;
+    _searchController.addListener(_filterThemes);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterThemes);
+    _searchController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _filterThemes() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredThemes = _allThemes
+          .where((theme) => theme.title.toLowerCase().contains(query))
+          .toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +77,18 @@ class ThemeModalState extends ConsumerState<ThemeModal> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
+            StageSearchBar(
+              focusNode: _focusNode,
+              controller: _searchController,
+              onChanged: (value) => _filterThemes(),
+            ),
+            const SizedBox(height: 16),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: _allThemes.length,
+              itemCount: _filteredThemes.length,
               itemBuilder: (context, index) {
-                return _buildTile(_allThemes[index]);
+                return _buildTile(_filteredThemes[index]);
               },
             ),
           ],
