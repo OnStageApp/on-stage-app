@@ -141,6 +141,8 @@ class API {
   static const String deleteGroup = 'groups/{id}';
 
   static const String groupsForEvent = 'groups/events/{eventId}';
+  static const String groupsForEventTemplate =
+      'groups/eventTemplates/{eventTemplateId}';
   static const String groupEventById = 'groups/{groupId}/events/{eventId}';
 
   static const String getPositions = 'positions/groups/{id}';
@@ -155,4 +157,7 @@ class API {
 
   //event-templates
   static const String getEventTemplates = 'event-templates';
+  static const String getEventTemplate = 'event-templates/{eventTemplateId}';
+  static const String createEventTemplate = 'event-templates';
+  static const String updateEventTemplate = 'event-templates/{eventTemplateId}';
 }

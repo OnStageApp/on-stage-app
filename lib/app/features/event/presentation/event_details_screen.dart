@@ -133,7 +133,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                       title: 'Start Event',
                       color: Colors.white,
                       backgroundColor: context.colorScheme.primary,
-                      overlayColor: Colors.white.withOpacity(0.1),
+                      overlayColor: Colors.white.withAlpha(25),
                       leadingWidget: const Icon(
                         LucideIcons.circle_play,
                         color: Colors.white,
@@ -228,7 +228,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 ],
               ),
               const SizedBox(height: 12),
-              GroupsEventGrid(
+              GroupsEventGrid.fromEventId(
                 eventId: widget.eventId,
               ),
               if (hasEditorRoles) ...[

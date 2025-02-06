@@ -6,12 +6,18 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 class GroupsEventGrid extends ConsumerWidget {
-  const GroupsEventGrid({
+  const GroupsEventGrid.fromEventId({
     required this.eventId,
     super.key,
-  });
+  }) : eventTemplateId = null;
 
-  final String eventId;
+  const GroupsEventGrid.fromEventTemplateId({
+    required this.eventTemplateId,
+    super.key,
+  }) : eventId = null;
+
+  final String? eventId;
+  final String? eventTemplateId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,10 +38,18 @@ class GroupsEventGrid extends ConsumerWidget {
           itemBuilder: (_, index) {
             if (groupState.isLoading) return _buildShimmerGroupCard(context);
             final group = groupState.groupEvents.elementAt(index);
-            return GroupEventCard(
-              groupId: group.id,
-              eventId: eventId,
-            );
+            if (eventId != null) {
+              return GroupEventCard.fromEvent(
+                groupId: group.id,
+                eventId: eventId,
+              );
+            } else if (eventTemplateId != null) {
+              return GroupEventCard.fromEventTemplate(
+                groupId: group.id,
+                eventTemplateId: eventTemplateId,
+              );
+            }
+            return null;
           },
         );
       },

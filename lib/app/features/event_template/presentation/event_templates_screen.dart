@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/groups/group_template/application/group_template_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/application/event_templates_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/presentation/widgets/event_template_tile.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/create_group_modal.dart';
-import 'package:on_stage_app/app/features/groups/group_template/presentation/widgets/groups_grid.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -15,6 +17,21 @@ class EventTemplatesScreen extends ConsumerStatefulWidget {
 }
 
 class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
+  List<EventTemplate> eventTemplates = [
+    EventTemplate(
+      id: '1',
+      name: 'Duminică dimineata',
+      dateTime: DateTime.now(),
+      location: 'Biserica Betania Oradea',
+    ),
+    EventTemplate(
+      id: '1',
+      name: 'Duminică seara',
+      dateTime: DateTime.now(),
+      location: 'Biserica Betania Oradea',
+    ),
+  ];
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -60,12 +77,26 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
         body: RefreshIndicator.adaptive(
           onRefresh: () async {
             await ref
-                .read(groupTemplateNotifierProvider.notifier)
-                .getGroupsTemplate();
+                .read(eventTemplatesNotifierProvider.notifier)
+                .getEventTemplates();
           },
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: GroupsTemplateGrid(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ListView.builder(
+              itemCount: 2,
+              itemBuilder: (context, index) {
+                return EventTemplateTile(
+                  title: eventTemplates[index].name ?? '',
+                  location: eventTemplates[index].location ?? '',
+                  onTap: () {
+                    context.pushNamed(
+                      AppRoute.eventTemplateDetails.name,
+                      extra: eventTemplates[index],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

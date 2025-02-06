@@ -13,6 +13,22 @@ abstract class EventTemplatesRepository {
 
   @GET(API.getEventTemplates)
   Future<List<EventTemplate>> getEventTemplates();
+
+  @GET(API.getEventTemplate)
+  Future<EventTemplate> getEventTemplate(
+    @Path('eventTemplateId') String eventTemplateId,
+  );
+
+  @POST(API.createEventTemplate)
+  Future<EventTemplate> createEventTemplate(
+    @Body() EventTemplate eventTemplate,
+  );
+
+  @PUT(API.updateEventTemplate)
+  Future<EventTemplate> updateEventTemplate(
+    @Path('eventTemplateId') String eventTemplateId,
+    @Body() EventTemplate eventTemplate,
+  );
 }
 
 final eventTemplatesRepoProvider = Provider<EventTemplatesRepository>((ref) {
