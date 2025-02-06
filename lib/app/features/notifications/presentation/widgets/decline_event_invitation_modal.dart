@@ -1,52 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/shared/modal_header.dart';
-import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
-import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_with_position.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class DeclineEventInvitationModal extends ConsumerStatefulWidget {
   const DeclineEventInvitationModal({
-    required this.onDeclineInvitation,
+    required this.eventId,
     super.key,
   });
 
-  final void Function() onDeclineInvitation;
+  final String eventId;
 
   @override
   DeclineEventInvitationModalState createState() =>
       DeclineEventInvitationModalState();
-
-  static void show({
-    required BuildContext context,
-    required void Function() onDeclineInvitation,
-  }) {
-    showModalBottomSheet<Widget>(
-      useRootNavigator: true,
-      isScrollControlled: true,
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
-      context: context,
-      builder: (context) => SafeArea(
-        child: NestedScrollModal(
-          buildHeader: () => const ModalHeader(title: 'Preferences'),
-          headerHeight: () => 64,
-          buildContent: () => SingleChildScrollView(
-            child: DeclineEventInvitationModal(
-              onDeclineInvitation: onDeclineInvitation,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class DeclineEventInvitationModalState
     extends ConsumerState<DeclineEventInvitationModal> {
+  List<StagerWithPosition> stagerWithPositions = [];
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final stagers = await ref
+          .read(eventNotifierProvider.notifier)
+          .getStagersByCurrentUserAndEvent(widget.eventId);
+      setState(() {
+        stagerWithPositions = stagers;
+      });
+    });
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -54,68 +42,50 @@ class DeclineEventInvitationModalState
     super.dispose();
   }
 
+  void _onDeclineInvitation(String stagerId) {
+    ref.read(eventNotifierProvider.notifier).removeStagerById(stagerId);
+    if (stagerWithPositions.length <= 1 && context.canPop()) {
+      context.goNamed(AppRoute.events.name);
+    } else {
+      setState(() {
+        stagerWithPositions
+            .removeWhere((element) => element.stagerId == stagerId);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (stagerWithPositions.isEmpty) return const SizedBox();
     return Padding(
-      padding: defaultScreenPadding,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: context.colorScheme.error,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 16,
-              ),
-              minimumSize: const Size(double.infinity, 40),
-              // width, height
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+      padding: const EdgeInsets.only(right: 16),
+      child: AdaptiveMenuContext(
+        items: stagerWithPositions.map((stager) {
+          return MenuAction(
+            title: 'Decline Invitation for ${stager.positionName}',
+            onTap: () => _onDeclineInvitation(stager.stagerId),
+            icon: LucideIcons.calendar_x_2,
+            isDestructive: true,
+          );
+        }).toList(),
+        child: SizedBox(
+          height: 30,
+          width: 30,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              color: context.isDarkMode
+                  ? const Color(0xFF43474E)
+                  : context.colorScheme.onSurfaceVariant,
             ),
-            onPressed: () {
-              widget.onDeclineInvitation();
-            },
-            child: Text(
-              'Decline Invitation',
-              textAlign: TextAlign.start,
-              style: context.textTheme.titleMedium!.copyWith(
-                color: Colors.white,
-              ),
+            child: Icon(
+              LucideIcons.ellipsis_vertical,
+              size: 15,
+              color: context.colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 12),
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: context.colorScheme.onSurfaceVariant,
-
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 16,
-              ),
-              minimumSize: const Size(double.infinity, 40),
-              // width, height
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              context.popDialog();
-            },
-            child: Text(
-              'Cancel',
-              textAlign: TextAlign.start,
-              style: context.textTheme.titleMedium!.copyWith(
-                color: context.colorScheme.onSurface,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
+        ),
       ),
     );
   }

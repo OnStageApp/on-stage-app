@@ -15,6 +15,7 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/create_stag
 import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_with_position.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/user/application/user_notifier.dart';
 import 'package:on_stage_app/logger.dart';
@@ -261,19 +262,32 @@ class EventNotifier extends _$EventNotifier {
     state = state.copyWith(isLoading: false);
   }
 
+  Future<void> removeStagerById(
+    String stagerId,
+  ) async {
+    try {
+      const stagerRequest = EditStagerRequest(
+        participationStatus: StagerStatusEnum.DECLINED,
+      );
+      await _eventsRepository.updateStager(stagerId, stagerRequest);
+      unawaited(ref.read(eventsNotifierProvider.notifier).getUpcomingEvents());
+      unawaited(ref.read(eventsNotifierProvider.notifier).getUpcomingEvent());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<StagerWithPosition>> getStagersByCurrentUserAndEvent(
+    String eventId,
+  ) {
+    return _eventsRepository.getStagersByCurrentUserAndEvent(eventId);
+  }
+
   Future<Stager> _getStagerWithPhoto(
     Stager stager,
   ) async {
     final photo = await _setPhotosFromLocalStorage(stager.userId);
     return stager.copyWith(profilePicture: photo);
-  }
-
-  int getAcceptedInvitees() {
-    return state.stagers
-        .where(
-          (stager) => stager.participationStatus == StagerStatusEnum.CONFIRMED,
-        )
-        .length;
   }
 
   Future<Uint8List?> _setPhotosFromLocalStorage(

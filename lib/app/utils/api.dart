@@ -62,6 +62,7 @@ class API {
   static const String editStagerById = 'stagers/{id}';
   static const String stagerByEventAndTeamMember =
       'stagers/getByEventAndTeamMember';
+  static const String getStagerWithPositionsByUserId = 'stagers/positions';
 
   static const String artists = 'artists';
   static const String artistsPaginated = 'artists/paginated';

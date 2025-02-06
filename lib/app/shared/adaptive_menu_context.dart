@@ -21,6 +21,7 @@ class AdaptiveMenuContext extends StatelessWidget {
   const AdaptiveMenuContext({
     required this.items,
     required this.child,
+    this.backgroundColor,
     this.width,
     super.key,
   });
@@ -28,6 +29,7 @@ class AdaptiveMenuContext extends StatelessWidget {
   final List<MenuAction> items;
   final double? width;
   final Widget child;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {

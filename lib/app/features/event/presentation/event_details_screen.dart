@@ -10,8 +10,6 @@ import 'package:on_stage_app/app/features/event/application/events/events_notifi
 import 'package:on_stage_app/app/features/event/domain/enums/event_status_enum.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
@@ -77,21 +75,17 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SettingsTrailingAppBarButton(
-              rightPadding: 12,
-              onTap: () {
-                if (ref.watch(permissionServiceProvider).hasAccessToEdit) {
+            if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+              SettingsTrailingAppBarButton(
+                rightPadding: 12,
+                onTap: () {
                   context.pushNamed(AppRoute.eventSettings.name);
-                } else {
-                  DeclineEventInvitationModal.show(
-                    context: context,
-                    onDeclineInvitation: () {
-                      _onDeclineInvitation(context);
-                    },
-                  );
-                }
-              },
-            ),
+                },
+              )
+            else
+              DeclineEventInvitationModal(
+                eventId: widget.eventId,
+              )
           ],
         ),
       ),
@@ -246,16 +240,6 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         ),
       ),
     );
-  }
-
-  void _onDeclineInvitation(BuildContext context) {
-    const stagerRequest = EditStagerRequest(
-      participationStatus: StagerStatusEnum.DECLINED,
-    );
-    ref.read(eventNotifierProvider.notifier).updateStager(stagerRequest);
-    context
-      ..popDialog()
-      ..pop();
   }
 
   Widget _buildEnhancedEventTile(EventModel? event) {

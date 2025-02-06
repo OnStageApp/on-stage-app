@@ -71,6 +71,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canEdit = ref.watch(permissionServiceProvider).hasAccessToEdit;
     return Padding(
       padding: getResponsivePadding(context),
       child: Scaffold(
@@ -86,7 +87,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+                if (canEdit) ...[
                   const SizedBox(height: 16),
                   const Text('Manage'),
                   const SizedBox(height: 8),
@@ -111,10 +112,12 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                       ref.watch(teamNotifierProvider).currentTeam?.name ??
                           'Enter Team Name',
                   headline: 'Team Name',
-                  suffix: Icon(
-                    LucideIcons.pencil,
-                    color: context.colorScheme.outline,
-                  ),
+                  suffix: canEdit
+                      ? Icon(
+                          LucideIcons.pencil,
+                          color: context.colorScheme.outline,
+                        )
+                      : const SizedBox(),
                   onTap: () {
                     if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
                       return;

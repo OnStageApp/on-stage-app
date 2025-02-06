@@ -10,6 +10,7 @@ import 'package:on_stage_app/app/features/event/domain/models/stager/create_all_
 import 'package:on_stage_app/app/features/event/domain/models/stager/edit_stager_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
+import 'package:on_stage_app/app/features/event/domain/models/stager/stager_with_position.dart';
 import 'package:on_stage_app/app/features/event/domain/models/upcoming_event/upcoming_event_model.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_items_request.dart';
@@ -120,6 +121,11 @@ abstract class EventsRepository {
   Future<List<Stager>> getStagersByEventAndPosition(
     @Query('eventId') String eventId,
     @Query('positionId') String positionId,
+  );
+
+  @GET(API.getStagerWithPositionsByUserId)
+  Future<List<StagerWithPosition>> getStagersByCurrentUserAndEvent(
+    @Query('eventId') String eventId,
   );
 }
 
