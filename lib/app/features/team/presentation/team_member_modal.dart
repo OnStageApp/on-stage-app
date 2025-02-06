@@ -143,11 +143,13 @@ class TeamMemberModalState extends ConsumerState<TeamMemberModal> {
                 const SizedBox(height: 64),
                 if (teamMember.inviteStatus == InviteStatus.pending)
                   _buildResendInvitation(context),
-                const SizedBox(height: 12),
-                RemoveMemberWidget(
-                  teamMemberId: teamMember.id,
-                ),
-                const SizedBox(height: 24),
+                if (teamMember.role != TeamMemberRole.leader) ...[
+                  const SizedBox(height: 12),
+                  RemoveMemberWidget(
+                    teamMemberId: teamMember.id,
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ],
             ),
           ),

@@ -15,6 +15,7 @@ import 'package:on_stage_app/app/features/team_member/domain/team_member_role/te
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/shared/data/enums/error_type.dart';
 import 'package:on_stage_app/app/shared/data/error_model/error_model.dart';
+import 'package:on_stage_app/app/utils/error_handler.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:pool/pool.dart';
@@ -185,15 +186,22 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     await teamMemberRepository.updateTeamMember(teamMemberId, teamMember);
   }
 
-  Future<void> removeTeamMember(String id) async {
+  Future<bool> removeTeamMember(String id) async {
+    state = state.copyWith(isLoading: true, error: null);
     try {
+      await teamMemberRepository.deleteTeamMember(id);
       state = state.copyWith(
         teamMembers:
             state.teamMembers.where((member) => member.id != id).toList(),
       );
-      await teamMemberRepository.deleteTeamMember(id);
-    } catch (e) {
-      logger.e('Error deleting team member: $e');
+      return true;
+    } catch (error) {
+      final appError =
+          ErrorHandler.handleError(error, 'Error removing team member');
+      state = state.copyWith(error: appError.message);
+      return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 

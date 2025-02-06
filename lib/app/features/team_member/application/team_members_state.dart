@@ -9,5 +9,6 @@ class TeamMembersState with _$TeamMembersState {
     @Default([]) List<TeamMember> teamMembers,
     @Default([]) List<TeamMember> uninvitedTeamMembers,
     @Default(false) bool isLoading,
+    String? error,
   }) = _TeamMembersState;
 }

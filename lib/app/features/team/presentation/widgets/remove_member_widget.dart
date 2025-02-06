@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
+import 'package:on_stage_app/app/features/team_member/application/team_members_state.dart';
+import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/dialog_helper.dart';
 
 class RemoveMemberWidget extends ConsumerWidget {
   const RemoveMemberWidget({
@@ -15,6 +19,8 @@ class RemoveMemberWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _setupErrorListener(ref, context);
+
     return InkWell(
       onTap: () {
         _onTap(context, ref);
@@ -41,33 +47,41 @@ class RemoveMemberWidget extends ConsumerWidget {
   }
 
   void _onTap(BuildContext context, WidgetRef ref) {
-    DialogHelper.showPlatformDialog(
+    AdaptiveDialog.show(
       context: context,
-      title: _buildTitle(),
-      content: _buildContent(),
-      confirmText: 'Remove',
-      cancelText: 'Cancel',
-      isDestructive: true,
-      onConfirm: () => _removeMember(ref, context),
+      title: 'Remove Member',
+      description: 'Are you sure you want to remove this member? '
+          '\nThis action cannot be undone.',
+      actionText: 'Remove',
+      onAction: () => _removeMember(ref, context),
     );
   }
 
-  Text _buildTitle() => const Text('Remove member');
-
-  Text _buildContent() {
-    return const Text(
-      'Are you sure you want to remove this member? '
-      'This action cannot be undone.',
-    );
-  }
-
-  void _removeMember(WidgetRef ref, BuildContext context) {
-    ref
+  Future<void> _removeMember(WidgetRef ref, BuildContext context) async {
+    final success = await ref
         .read(teamMembersNotifierProvider.notifier)
         .removeTeamMember(teamMemberId);
 
-    ref.read(teamNotifierProvider.notifier).getCurrentTeam();
+    if (success) {
+      unawaited(ref.read(teamNotifierProvider.notifier).getCurrentTeam());
+      if (context.mounted) {
+        context.popDialog();
+      }
+    }
+  }
 
-    context.popDialog();
+  void _setupErrorListener(WidgetRef ref, BuildContext context) {
+    ref.listen<TeamMembersState>(
+      teamMembersNotifierProvider,
+      (previous, next) {
+        if (next.error != null && context.mounted) {
+          TopFlushBar.show(
+            context,
+            next.error.toString(),
+            isError: true,
+          );
+        }
+      },
+    );
   }
 }
