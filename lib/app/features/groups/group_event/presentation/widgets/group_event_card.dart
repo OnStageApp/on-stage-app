@@ -13,15 +13,23 @@ import 'package:on_stage_app/app/shared/square_button.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class GroupEventCard extends ConsumerStatefulWidget {
-  const GroupEventCard({
+  const GroupEventCard.fromEvent({
     required this.groupId,
     required this.eventId,
     this.onTap,
     super.key,
-  });
+  }) : eventTemplateId = null;
+
+  const GroupEventCard.fromEventTemplate({
+    required this.groupId,
+    required this.eventTemplateId,
+    this.onTap,
+    super.key,
+  }) : eventId = null;
 
   final String groupId;
-  final String eventId;
+  final String? eventId;
+  final String? eventTemplateId;
   final VoidCallback? onTap;
 
   @override
@@ -103,15 +111,16 @@ class _GroupEventCardState extends ConsumerState<GroupEventCard> {
   }
 
   Future<void> _doActionOnTap(BuildContext context) async {
+    if (widget.eventId == null) return;
     await PositionMembersModal.show(
       context: context,
       groupId: widget.groupId,
-      eventId: widget.eventId,
+      eventId: widget.eventId!,
     );
     unawaited(
       ref
           .read(groupEventNotifierProvider.notifier)
-          .getGroupEventById(widget.eventId, widget.groupId),
+          .getGroupEventById(widget.eventId!, widget.groupId),
     );
   }
 

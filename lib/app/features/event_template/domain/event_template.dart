@@ -10,6 +10,7 @@ class EventTemplate with _$EventTemplate {
     String? name,
     DateTime? dateTime,
     String? location,
+    @Default([]) List<int> reminders,
   }) = _Event;
 
   factory EventTemplate.fromJson(Map<String, dynamic> json) =>

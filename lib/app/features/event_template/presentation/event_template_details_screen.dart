@@ -3,19 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:on_stage_app/app/features/event/application/event/controller/event_controller.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
-import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/application/current_event_template_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
 import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
-import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
-import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
+import 'package:on_stage_app/app/features/groups/group_event_template/application/group_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
-import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -26,28 +23,33 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
-class AddEventDetailsScreen extends ConsumerStatefulWidget {
-  const AddEventDetailsScreen({super.key});
+class EventTemplateDetailsScreen extends ConsumerStatefulWidget {
+  const EventTemplateDetailsScreen({this.eventTemplate, super.key});
+
+  final EventTemplate? eventTemplate;
 
   @override
-  AddEventDetailsScreenState createState() => AddEventDetailsScreenState();
+  EventTemplateDetailsScreenState createState() =>
+      EventTemplateDetailsScreenState();
 }
 
-class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
+class EventTemplateDetailsScreenState
+    extends ConsumerState<EventTemplateDetailsScreen> {
   final _eventNameController = TextEditingController();
   final _eventLocationController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  DateTime? _selectedDateTime;
   var _reminders = <int>[];
-  String? _dateTimeError;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final eventId = ref.watch(eventNotifierProvider).event?.id;
-      print('Event ID: $eventId');
-      if (eventId != null) {
-        ref.read(groupEventNotifierProvider.notifier).getGroupsEvent(eventId);
+      if (widget.eventTemplate?.id != null) {
+        ref
+            .read(currentEventTemplateProvider.notifier)
+            .initialize(widget.eventTemplate);
+        ref
+            .read(groupEventTemplateNotifierProvider.notifier)
+            .getGroupsForEventTemplate(widget.eventTemplate!.id!);
       }
     });
     super.initState();
@@ -55,20 +57,13 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final eventId = ref.watch(eventNotifierProvider).event?.id;
-
-    if (eventId == null) {
-      return const SizedBox();
-    }
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ContinueButton(
-          text: 'Create Event',
-          onPressed: () {
-            _createDraftEvent(context);
-          },
+          text: 'Save',
+          onPressed: _saveEventTemplate,
           isEnabled: true,
         ),
       ),
@@ -80,11 +75,12 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
           );
 
           if (shouldPop ?? true) {
-            unawaited(ref.read(eventNotifierProvider.notifier).deleteEvent());
+            //TODO: Discarc changes of an eventTemplate
+            // unawaited(ref.read(eventNotifierProvider.notifier).deleteEvent());
             if (mounted) context.pop();
           }
         },
-        title: 'Create Event',
+        title: 'Edit Template',
       ),
       body: Padding(
         padding: defaultScreenPadding,
@@ -94,17 +90,16 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               CustomTextField(
-                label: 'Event Name',
-                hint: 'Sunday Service',
+                label: 'Event Template Name',
+                hint: 'Summer Concert',
                 icon: Icons.church,
                 controller: _eventNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an event name';
+                    return 'Please enter an event template name';
                   }
                   return null;
                 },
-                onChanged: (value) {},
               ),
               const SizedBox(height: Insets.medium),
               CustomTextField(
@@ -112,26 +107,17 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 hint: 'Charlotte, NC 28277, US',
                 icon: Icons.church,
                 controller: _eventLocationController,
-                onChanged: (value) {},
               ),
-              const SizedBox(height: Insets.medium),
-              DateTimeTextFieldWidget(
-                initialDateTime: _selectedDateTime,
-                onDateTimeChanged: (dateTime) {
-                  setState(() {
-                    _selectedDateTime = dateTime;
-                  });
-                },
-                dateErrorText: _dateTimeError,
-              ),
+
               const SizedBox(height: Insets.medium),
               Text(
                 'Members',
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              GroupsEventGrid.fromEventId(
-                eventId: eventId,
+              //TODO: GroupTemaplateGrid
+              GroupsEventGrid.fromEventTemplateId(
+                eventTemplateId: widget.eventTemplate?.id,
               ),
               const SizedBox(height: 24),
               Text(
@@ -200,55 +186,22 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     );
   }
 
-  Future<void> _createDraftEvent(BuildContext context) async {
-    _setFieldsOnController();
-
-    if (_isDateTimeInvalid()) {
-      setState(() {
-        _dateTimeError = 'Please choose a valid date and time';
-      });
-    } else {
-      setState(() {
-        _dateTimeError = null;
-      });
-    }
-
+  Future<void> _saveEventTemplate() async {
     if (_isFormValid()) {
-      await ref.read(eventNotifierProvider.notifier).updateEventOnCreate();
+      //TODO: if valid, update the event template
+      // await ref.read(eventNotifierProvider.notifier).updateEventOnCreate();
 
-      final eventId = ref.watch(eventNotifierProvider).event?.id;
-      if (eventId == null) {
-        return;
-      }
-
-      if (_reminders.isNotEmpty) {
-        await ref.read(reminderNotifierProvider.notifier).createReminders(
-              _reminders,
-              ref.watch(eventNotifierProvider).event!.id!,
-            );
-      }
+      // final eventId = ref.watch(eventNotifierProvider).event?.id;
+      // if (eventId == null) {
+      //   return;
+      // }
 
       if (mounted) {
-        context.pushReplacementNamed(
-          AppRoute.eventDetails.name,
-          queryParameters: {
-            'eventId': ref.watch(eventNotifierProvider).event!.id,
-          },
-        );
+        context.pop();
       }
     } else {
       logger.i('Form is not valid');
     }
-  }
-
-  void _setFieldsOnController() {
-    ref
-        .read(eventControllerProvider.notifier)
-        .setEventLocation(_eventLocationController.text);
-    ref
-        .read(eventControllerProvider.notifier)
-        .setEventName(_eventNameController.text);
-    ref.read(eventControllerProvider.notifier).setDateTime(_selectedDateTime);
   }
 
   Widget _buildCreateRehearsalButton() {
@@ -257,7 +210,8 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
         CreateRehearsalModal.show(
           context: context,
           onRehearsalCreated: (rehearsal) {
-            ref.read(eventNotifierProvider.notifier).addRehearsal(rehearsal);
+            //TODO: add rehearsal to templateEvent
+            // ref.read(eventNotifierProvider.notifier).addRehearsal(rehearsal);
           },
         );
       },
@@ -266,30 +220,19 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     );
   }
 
-  bool _isDateTimeInvalid() {
-    return _selectedDateTime == null ||
-        _selectedDateTime!.isBefore(DateTime.now());
-  }
-
-  bool _isFormValid() =>
-      _formKey.currentState!.validate() && _dateTimeError == null;
+  bool _isFormValid() => _formKey.currentState!.validate();
 
   Future<void> _editReminders(BuildContext context) async {
-    await ref.watch(permissionServiceProvider).callMethodIfHasPermission(
-          context: context,
-          permissionType: PermissionType.reminders,
-          onGranted: () {
-            SetReminderModal.show(
-              cacheReminders: _reminders,
-              context: context,
-              ref: ref,
-              onSaved: (List<int> reminders) {
-                setState(() {
-                  _reminders = reminders;
-                });
-              },
-            );
-          },
-        );
+    //TODO: Set reminders on eventTemplateModel, we don't need to create new objects, a list<int> will be enough
+    SetReminderModal.show(
+      cacheReminders: _reminders,
+      context: context,
+      ref: ref,
+      onSaved: (List<int> reminders) {
+        setState(() {
+          _reminders = reminders;
+        });
+      },
+    );
   }
 }
