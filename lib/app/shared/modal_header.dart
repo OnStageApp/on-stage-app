@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class ModalHeader extends StatelessWidget {
   const ModalHeader({
     required this.title,
+    this.titleWidget,
     this.leadingButton = const SizedBox(
       width: 80 - 12,
     ),
@@ -13,6 +14,7 @@ class ModalHeader extends StatelessWidget {
   });
 
   final String title;
+  final Widget? titleWidget;
   final Widget? leadingButton;
 
   @override
@@ -51,13 +53,16 @@ class ModalHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 leadingButton ?? const SizedBox(width: 80 - 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: titleStyle, // Apply the dynamic title style
-                    textAlign: TextAlign.center,
+                if (titleWidget != null)
+                  titleWidget!
+                else
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: titleStyle, // Apply the dynamic title style
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
                 SizedBox(
                   width: 80,
                   child: IconButton(

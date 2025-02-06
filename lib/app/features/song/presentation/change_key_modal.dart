@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/lyrics/model/chord_enum.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type_enum.dart';
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/chord_type_widget.dart';
+import 'package:on_stage_app/app/shared/circle_info.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
@@ -19,14 +21,14 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     this.songKey, {
     required this.songId,
     required this.onKeyChanged,
-    this.title = 'Change Key',
+    this.isFrom = TransposerOpenFrom.songsScreen,
     super.key,
   });
 
+  final TransposerOpenFrom isFrom;
   final String? songId;
   final SongKey songKey;
   final Future<void> Function(SongKey) onKeyChanged;
-  final String title;
 
   @override
   ChangeKeyModalState createState() => ChangeKeyModalState();
@@ -36,14 +38,18 @@ class ChangeKeyModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required SongKey songKey,
     required Future<void> Function(SongKey) onKeyChanged,
-    String title = 'Change Key',
+    TransposerOpenFrom isFrom = TransposerOpenFrom.songsScreen,
   }) {
     AdaptiveModal.show<void>(
       context: context,
       expand: false,
       isFloatingForLargeScreens: true,
       child: ChangeKeyModal(
-          songId: songId, songKey, onKeyChanged: onKeyChanged, title: title),
+        songId: songId,
+        songKey,
+        onKeyChanged: onKeyChanged,
+        isFrom: isFrom,
+      ),
     );
   }
 }
@@ -73,11 +79,44 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     });
   }
 
-  //TODO: Add constraints on width
+  String get title {
+    final canEdit = ref.watch(permissionServiceProvider).hasAccessToEdit;
+
+    switch (widget.isFrom) {
+      case TransposerOpenFrom.songsScreen:
+        return 'Preview Key';
+      case TransposerOpenFrom.eventsScreen:
+        return canEdit ? 'Change Key' : 'Preview Key';
+      case TransposerOpenFrom.newSong:
+        return 'Set Key';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollModal(
-      buildHeader: () => ModalHeader(title: widget.title),
+      buildHeader: () => ModalHeader(
+        title: title,
+        titleWidget: Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontSize: context.isLargeScreen ? 18.0 : 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(width: 6),
+              if (widget.isFrom != TransposerOpenFrom.newSong)
+                _buildInfoButton(),
+            ],
+          ),
+        ),
+      ),
       headerHeight: () {
         return 64;
       },
@@ -106,6 +145,19 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildInfoButton() {
+    final canEdit = ref.watch(permissionServiceProvider).hasAccessToEdit;
+    final isFromEvent = widget.isFrom == TransposerOpenFrom.eventsScreen;
+    final message = (isFromEvent && canEdit)
+        ? "You'll change the key of this song for everyone in the event."
+        : 'You need edit permissions and must add '
+            'the song to an event to change its key for everyone.';
+
+    return InfoIcon(
+      message: message,
     );
   }
 
@@ -248,3 +300,5 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
     }
   }
 }
+
+enum TransposerOpenFrom { songsScreen, eventsScreen, newSong }

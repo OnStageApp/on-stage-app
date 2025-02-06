@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class InfoIcon extends StatelessWidget {
   const InfoIcon({
@@ -15,6 +16,13 @@ class InfoIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
+      decoration: BoxDecoration(
+        color: context.colorScheme.onSurfaceVariant,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      textStyle: context.textTheme.bodySmall?.copyWith(
+        color: context.colorScheme.onSurface,
+      ),
       message: message,
       margin: const EdgeInsets.symmetric(horizontal: 24),
       waitDuration: waitDuration,

@@ -163,7 +163,7 @@ class _AddSongFirstStepDetailsState
                   ChangeKeyModal.show(
                     songId: widget.songId,
                     context: context,
-                    title: 'Select Key',
+                    isFrom: TransposerOpenFrom.newSong,
                     songKey: _selectedKey ??
                         const SongKey(chord: ChordsWithoutSharp.C),
                     onKeyChanged: (key) async {

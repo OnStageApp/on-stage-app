@@ -46,9 +46,9 @@ class SongAppBarLeading extends ConsumerWidget {
               ChangeKeyModal.show(
                 songId: songId,
                 context: context,
-                title: ref.watch(permissionServiceProvider).hasAccessToEdit
-                    ? 'Change Key'
-                    : 'Preview Key',
+                isFrom: isFromEvent
+                    ? TransposerOpenFrom.eventsScreen
+                    : TransposerOpenFrom.songsScreen,
                 songKey: ref.watch(songNotifierProvider(songId)).song.key ??
                     const SongKey(),
                 onKeyChanged: (key) async {
