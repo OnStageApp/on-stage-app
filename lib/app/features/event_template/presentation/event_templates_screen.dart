@@ -18,17 +18,15 @@ class EventTemplatesScreen extends ConsumerStatefulWidget {
 
 class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
   List<EventTemplate> eventTemplates = [
-    EventTemplate(
+    const EventTemplate(
       id: '1',
       name: 'Duminică dimineata',
-      dateTime: DateTime.now(),
       location: 'Biserica Betania Oradea',
       reminderDays: [1, 2, 7],
     ),
-    EventTemplate(
+    const EventTemplate(
       id: '2',
       name: 'Duminică seara',
-      dateTime: DateTime.now(),
       location: 'Biserica Betania Oradea',
       reminderDays: [1, 2, 7],
     ),

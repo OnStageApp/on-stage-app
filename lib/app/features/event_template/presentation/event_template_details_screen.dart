@@ -60,7 +60,7 @@ class EventTemplateDetailsScreenState
   void _initFields() {
     _eventNameController.text = widget.eventTemplate?.name ?? '';
     _eventLocationController.text = widget.eventTemplate?.location ?? '';
-    _reminders = widget.eventTemplate?.reminders ?? [];
+    _reminders = widget.eventTemplate?.reminderDays ?? [];
   }
 
   @override
