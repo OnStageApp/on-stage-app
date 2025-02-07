@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/domain/event_template_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -21,7 +22,7 @@ abstract class EventTemplatesRepository {
 
   @POST(API.createEventTemplate)
   Future<EventTemplate> createEventTemplate(
-    @Body() EventTemplate eventTemplate,
+    @Body() EventTemplateRequest request,
   );
 
   @PUT(API.updateEventTemplate)

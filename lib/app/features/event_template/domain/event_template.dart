@@ -7,11 +7,10 @@ part 'event_template.g.dart';
 class EventTemplate with _$EventTemplate {
   const factory EventTemplate({
     String? id,
-    String? teamId,
     String? name,
     String? location,
     @Default([]) List<int> reminderDays,
-  }) = _Event;
+  }) = _EventTemplate;
 
   factory EventTemplate.fromJson(Map<String, dynamic> json) =>
       _$EventTemplateFromJson(json);
