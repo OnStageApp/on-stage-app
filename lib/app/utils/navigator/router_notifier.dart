@@ -424,11 +424,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                           name: AppRoute.eventTemplateDetails.name,
                           path: 'eventTemplateDetails',
                           builder: (context, state) {
-                            final eventTemplate = state.extra is EventTemplate?
-                                ? state.extra as EventTemplate?
-                                : null;
+                            final eventTemplate = state.extra! as EventTemplate;
+                            final isNew =
+                                state.uri.queryParameters['isNew'] == 'true';
+
                             return EventTemplateDetailsScreen(
                               eventTemplate: eventTemplate,
+                              isNew: isNew,
                             );
                           },
                         ),
