@@ -24,9 +24,14 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class EventTemplateDetailsScreen extends ConsumerStatefulWidget {
-  const EventTemplateDetailsScreen({this.eventTemplate, super.key});
+  const EventTemplateDetailsScreen({
+    required this.eventTemplate,
+    this.isNew = false,
+    super.key,
+  });
 
-  final EventTemplate? eventTemplate;
+  final EventTemplate eventTemplate;
+  final bool isNew;
 
   @override
   EventTemplateDetailsScreenState createState() =>
@@ -43,24 +48,30 @@ class EventTemplateDetailsScreenState
   @override
   void initState() {
     _initFields();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.eventTemplate?.id != null) {
-        ref
-            .read(currentEventTemplateProvider.notifier)
-            .initialize(widget.eventTemplate);
-        ref
-            .read(groupEventTemplateNotifierProvider.notifier)
-            .getGroupsForEventTemplate(widget.eventTemplate!.id!);
-      }
-    });
+    logger.i('isNewEventTemplate : ${widget.isNew}');
+    _initEventTemplate();
     super.initState();
   }
 
+  void _initEventTemplate() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(currentEventTemplateProvider.notifier)
+          .initialize(widget.eventTemplate);
+
+      if (widget.isNew) {
+      } else {
+        ref
+            .read(groupEventTemplateNotifierProvider.notifier)
+            .getGroupsForEventTemplate(widget.eventTemplate.id!);
+      }
+    });
+  }
+
   void _initFields() {
-    _eventNameController.text = widget.eventTemplate?.name ?? '';
-    _eventLocationController.text = widget.eventTemplate?.location ?? '';
-    _reminders = widget.eventTemplate?.reminderDays ?? [];
+    _eventNameController.text = widget.eventTemplate.name ?? '';
+    _eventLocationController.text = widget.eventTemplate.location ?? '';
+    _reminders = widget.eventTemplate.reminderDays ?? [];
   }
 
   @override

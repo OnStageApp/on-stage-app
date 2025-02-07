@@ -32,30 +32,16 @@ class CurrentEventTemplate extends _$CurrentEventTemplate {
     }
   }
 
-  Future<void> create({
-    required String? name,
-    required String? location,
-    List<int>? reminders,
-  }) async {
+  Future<EventTemplate> createEmptyEventTemplate() async {
     state = state.copyWith(isLoading: true, error: null);
-    final requestTemplate = EventTemplateRequest(
-      name: name,
-      location: location,
-      reminderDays: reminders ?? [],
-    );
+
     try {
       final savedTemplate =
-          await _repository.createEventTemplate(requestTemplate);
-
-      state = state.copyWith(
-        eventTemplate: savedTemplate,
-        isLoading: false,
-      );
+          await _repository.createEventTemplate(const EventTemplateRequest());
+      state = state.copyWith(eventTemplate: savedTemplate, isLoading: false);
+      return savedTemplate;
     } catch (e) {
-      state = state.copyWith(
-        error: e,
-        isLoading: false,
-      );
+      state = state.copyWith(error: e, isLoading: false);
       rethrow;
     }
   }

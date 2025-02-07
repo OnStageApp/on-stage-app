@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event_template/application/current_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/application/event_templates_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
 import 'package:on_stage_app/app/features/event_template/presentation/widgets/event_template_tile.dart';
-import 'package:on_stage_app/app/features/groups/group_template/presentation/create_group_modal.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -68,8 +70,19 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
             child: AddNewButton(
-              onPressed: () {
-                CreateGroupModal.show(context: context);
+              onPressed: () async {
+                final savedTemplate = await ref
+                    .read(currentEventTemplateProvider.notifier)
+                    .createEmptyEventTemplate();
+                if (mounted) {
+                  unawaited(
+                    context.pushNamed(
+                      AppRoute.eventTemplateDetails.name,
+                      extra: savedTemplate,
+                      queryParameters: {'isNew': 'true'},
+                    ),
+                  );
+                }
               },
             ),
           ),
