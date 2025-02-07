@@ -1,15 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
-import 'package:on_stage_app/app/features/groups/group_event/data/group_event_repository.dart';
-import 'package:on_stage_app/app/features/groups/group_event/domain/group_event.dart';
 import 'package:on_stage_app/app/features/groups/group_event_template/application/group_event_template_state.dart';
+import 'package:on_stage_app/app/features/groups/group_event_template/data/group_event_template_repository.dart';
+import 'package:on_stage_app/app/features/groups/group_event_template/domain/group_event_template.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'group_event_template_notifier.g.dart';
 
 @riverpod
 class GroupEventTemplateNotifier extends _$GroupEventTemplateNotifier {
-  GroupEventRepository get _groupEventRepo => ref.read(groupEventRepoProvider);
+  GroupEventTemplateRepository get _groupEventTemplateRepo =>
+      ref.read(groupEventTemplateRepo);
 
   @override
   GroupEventTemplateState build() {
@@ -19,17 +21,14 @@ class GroupEventTemplateNotifier extends _$GroupEventTemplateNotifier {
   Future<void> getGroupsForEventTemplate(String eventTemplateId) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      //TODO: implement getGroupsForEventTemplate
-      // final groups =
-      //     await _groupEventRepo.getGroupsForEventTemplate(eventTemplateId);
-      // final updatedGroups = await Future.wait(
-      //   groups.map(_updateGroupWithPhotos),
-      // );
+      final groups = await _groupEventTemplateRepo.getGroups(eventTemplateId);
+      final updatedGroups = await Future.wait(
+        groups.map(_updateGroupWithPhotos),
+      );
 
-      //TODO: or add familly provider, or another field groupEventsForEventTemplate or anotherProvider
-      // state = state.copyWith(groupEvents: updatedGroups);
+      state = state.copyWith(groups: updatedGroups);
     } catch (e) {
-      // logger.e('Error getting groups for event $eventId', e);
+      logger.e('Error getting groups for event $eventTemplateId', e);
       state = state.copyWith(error: e);
       rethrow;
     } finally {
@@ -37,7 +36,9 @@ class GroupEventTemplateNotifier extends _$GroupEventTemplateNotifier {
     }
   }
 
-  Future<GroupEvent> _updateGroupWithPhotos(GroupEvent group) async {
+  Future<GroupEventTemplate> _updateGroupWithPhotos(
+    GroupEventTemplate group,
+  ) async {
     if (group.stagersWithPhoto?.isEmpty ?? true) return group;
 
     final photos = await Future.wait(
@@ -54,7 +55,7 @@ class GroupEventTemplateNotifier extends _$GroupEventTemplateNotifier {
   }
 
   (int, List<Uint8List>) getGroupsStatsAndPhotos() {
-    final groups = state.groupEventTemplates;
+    final groups = state.groups;
     final totalMembers =
         groups.fold<int>(0, (sum, group) => sum + group.membersCount);
 

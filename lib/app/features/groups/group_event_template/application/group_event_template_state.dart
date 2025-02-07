@@ -6,7 +6,7 @@ part 'group_event_template_state.freezed.dart';
 @freezed
 class GroupEventTemplateState with _$GroupEventTemplateState {
   const factory GroupEventTemplateState({
-    @Default([]) List<GroupEventTemplate> groupEventTemplates,
+    @Default([]) List<GroupEventTemplate> groups,
     @Default(false) bool isLoading,
     Object? error,
   }) = _GroupEventTemplateState;

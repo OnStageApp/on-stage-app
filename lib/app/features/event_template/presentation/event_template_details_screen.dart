@@ -9,8 +9,8 @@ import 'package:on_stage_app/app/features/event/presentation/custom_text_field.d
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/event_template/application/current_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
-import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
 import 'package:on_stage_app/app/features/groups/group_event_template/application/group_event_template_notifier.dart';
+import 'package:on_stage_app/app/features/groups/shared/presentation/groups_obj_grid.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -58,13 +58,11 @@ class EventTemplateDetailsScreenState
       ref
           .read(currentEventTemplateProvider.notifier)
           .initialize(widget.eventTemplate);
-
+      ref
+          .read(groupEventTemplateNotifierProvider.notifier)
+          .getGroupsForEventTemplate(widget.eventTemplate.id!);
       if (widget.isNew) {
-      } else {
-        ref
-            .read(groupEventTemplateNotifierProvider.notifier)
-            .getGroupsForEventTemplate(widget.eventTemplate.id!);
-      }
+      } else {}
     });
   }
 
@@ -127,16 +125,14 @@ class EventTemplateDetailsScreenState
                 icon: Icons.church,
                 controller: _eventLocationController,
               ),
-
               const SizedBox(height: Insets.medium),
               Text(
                 'Members',
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              //TODO: GroupTemaplateGrid
-              GroupsEventGrid.fromEventTemplateId(
-                eventTemplateId: widget.eventTemplate?.id,
+              GroupsObjGrid.fromEventTemplateId(
+                eventTemplateId: widget.eventTemplate.id,
               ),
               const SizedBox(height: 24),
               Text(
