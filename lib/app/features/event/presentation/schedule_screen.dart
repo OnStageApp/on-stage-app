@@ -65,7 +65,7 @@ class ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     });
   }
 
-  void _toggleEditMode() {
+  void _saveChanges() {
     ref.read(isEditModeProvider.notifier).update((state) => !state);
     if (ref.watch(hasChangesProvider) && !ref.watch(isEditModeProvider)) {
       _saveReorder();
@@ -83,7 +83,7 @@ class ScheduleScreenState extends ConsumerState<ScheduleScreen> {
         isBackButtonVisible: true,
         trailing: ScheduleSettingsButtons(
           onPlayTap: _goToEventItemsPageView,
-          onEditTap: _toggleEditMode,
+          onEditTap: _saveChanges,
           isEditMode: canEdit,
         ),
       ),
@@ -149,7 +149,7 @@ class ScheduleScreenState extends ConsumerState<ScheduleScreen> {
       padding: const EdgeInsets.all(12),
       child: ContinueButton(
         text: 'Save Order',
-        onPressed: hasChanges ? _saveReorder : () {},
+        onPressed: hasChanges ? _saveChanges : () {},
         isEnabled: hasChanges,
       ),
     );
