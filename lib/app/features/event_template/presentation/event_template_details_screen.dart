@@ -42,6 +42,8 @@ class EventTemplateDetailsScreenState
 
   @override
   void initState() {
+    _initFields();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.eventTemplate?.id != null) {
         ref
@@ -53,6 +55,12 @@ class EventTemplateDetailsScreenState
       }
     });
     super.initState();
+  }
+
+  void _initFields() {
+    _eventNameController.text = widget.eventTemplate?.name ?? '';
+    _eventLocationController.text = widget.eventTemplate?.location ?? '';
+    _reminders = widget.eventTemplate?.reminders ?? [];
   }
 
   @override
