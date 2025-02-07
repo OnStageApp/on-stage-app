@@ -23,14 +23,14 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
       name: 'Duminică dimineata',
       dateTime: DateTime.now(),
       location: 'Biserica Betania Oradea',
-      reminders: [1, 2, 7],
+      reminderDays: [1, 2, 7],
     ),
     EventTemplate(
       id: '2',
       name: 'Duminică seara',
       dateTime: DateTime.now(),
       location: 'Biserica Betania Oradea',
-      reminders: [1, 2, 7],
+      reminderDays: [1, 2, 7],
     ),
   ];
 
