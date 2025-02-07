@@ -10,7 +10,7 @@ import 'package:on_stage_app/app/features/event/presentation/custom_text_field.d
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
-import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
+import 'package:on_stage_app/app/features/groups/shared/presentation/groups_obj_grid.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
@@ -130,7 +130,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 style: context.textTheme.titleSmall,
               ),
               const SizedBox(height: Insets.smallNormal),
-              GroupsEventGrid.fromEventId(
+              GroupsObjGrid.fromEventId(
                 eventId: eventId,
               ),
               const SizedBox(height: 24),

@@ -142,7 +142,7 @@ class API {
 
   static const String groupsForEvent = 'groups/events/{eventId}';
   static const String groupsForEventTemplate =
-      'groups/eventTemplates/{eventTemplateId}';
+      'groups/event-templates/{eventTemplateId}';
   static const String groupEventById = 'groups/{groupId}/events/{eventId}';
 
   static const String getPositions = 'positions/groups/{id}';

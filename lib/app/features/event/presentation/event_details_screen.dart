@@ -12,7 +12,7 @@ import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
 import 'package:on_stage_app/app/features/event/domain/models/rehearsal/rehearsal_model.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
-import 'package:on_stage_app/app/features/groups/group_event/presentation/widgets/groups_event_grid.dart';
+import 'package:on_stage_app/app/features/groups/shared/presentation/groups_obj_grid.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/decline_event_invitation_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
@@ -228,7 +228,7 @@ class EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 ],
               ),
               const SizedBox(height: 12),
-              GroupsEventGrid.fromEventId(
+              GroupsObjGrid.fromEventId(
                 eventId: widget.eventId,
               ),
               if (hasEditorRoles) ...[
