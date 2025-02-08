@@ -61,9 +61,9 @@ class EventTemplateDetailsScreenState
   }
 
   void _handleFormDataChanged(EventTemplateRequest formData) {
-    setState(() {
-      _currentFormData = formData;
-    });
+    // setState(() {
+    _currentFormData = formData;
+    // });
   }
 
   @override

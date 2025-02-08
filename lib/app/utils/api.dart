@@ -11,7 +11,7 @@ class API {
   // static const String baseUrl = 'https://$prodDomain/';
   // static const String socketUrl = 'wss://$socketProdDomain/';
   //
-  static const String baseUrl = 'https://ed3c-5-12-238-31.ngrok-free.app/';
+  static const String baseUrl = 'https://2580-5-12-238-31.ngrok-free.app/';
   // static const String devDomain = 'localhost:9001';
 
   static const String devDomain = 'dev.on-stage.app';
