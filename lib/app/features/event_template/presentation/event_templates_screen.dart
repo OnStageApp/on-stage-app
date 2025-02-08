@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event_template/application/current_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/application/event_templates_notifier.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
 import 'package:on_stage_app/app/features/event_template/presentation/widgets/event_template_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
@@ -19,25 +18,10 @@ class EventTemplatesScreen extends ConsumerStatefulWidget {
 }
 
 class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
-  List<EventTemplate> eventTemplates = [
-    const EventTemplate(
-      id: '1',
-      name: 'Duminică dimineata',
-      location: 'Biserica Betania Oradea',
-      reminderDays: [1, 2, 7],
-    ),
-    const EventTemplate(
-      id: '2',
-      name: 'Duminică seara',
-      location: 'Biserica Betania Oradea',
-      reminderDays: [1, 2, 7],
-    ),
-  ];
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ref.read(eventTemplatesNotifierProvider.notifier).getEventTemplates();
+      ref.read(eventTemplatesNotifierProvider.notifier).getEventTemplates();
     });
     super.initState();
   }
@@ -60,7 +44,8 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
   @override
   Widget build(BuildContext context) {
     // _setupErrorListener();
-
+    final eventTemplates =
+        ref.watch(eventTemplatesNotifierProvider).eventTemplates;
     return Padding(
       padding: getResponsivePadding(context),
       child: Scaffold(
@@ -96,7 +81,7 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ListView.builder(
-              itemCount: 2,
+              itemCount: eventTemplates.length,
               itemBuilder: (context, index) {
                 return EventTemplateTile(
                   title: eventTemplates[index].name ?? '',
