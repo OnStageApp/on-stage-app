@@ -26,4 +26,12 @@ class EventTemplatesNotifier extends _$EventTemplatesNotifier {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  void removeEventTemplate(String eventTemplateId) {
+    state = state.copyWith(
+      eventTemplates: state.eventTemplates
+          .where((eventTemplate) => eventTemplate.id != eventTemplateId)
+          .toList(),
+    );
+  }
 }

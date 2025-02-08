@@ -28,7 +28,12 @@ abstract class EventTemplatesRepository {
   @PUT(API.updateEventTemplate)
   Future<EventTemplate> updateEventTemplate(
     @Path('eventTemplateId') String eventTemplateId,
-    @Body() EventTemplate eventTemplate,
+    @Body() EventTemplateRequest request,
+  );
+
+  @DELETE(API.deleteEventTemplate)
+  Future<EventTemplate> deleteEventTemplate(
+    @Path('eventTemplateId') String eventTemplateId,
   );
 }
 

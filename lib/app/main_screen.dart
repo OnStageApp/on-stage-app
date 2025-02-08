@@ -145,6 +145,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       '/songs/song/editSongContent',
       '/songs/song/editSongInfo',
       '/songs/createSongInfo',
+      '/profile/eventTemplates/eventTemplateDetails',
     ].any((route) => location.startsWith(route));
   }
 
