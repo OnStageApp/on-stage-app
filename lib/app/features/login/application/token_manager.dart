@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:on_stage_app/logger.dart';
 
 class TokenManager {
   TokenManager(this._storage);
@@ -8,7 +9,13 @@ class TokenManager {
   static const _refreshTokenKey = 'refresh_token';
 
   Future<String?> getAccessToken() async {
-    return _storage.read(key: _accessTokenKey);
+    try {
+      return await _storage.read(key: _accessTokenKey);
+    } catch (e) {
+      logger.e('Error reading access token: $e');
+      await clearTokens();
+      return null;
+    }
   }
 
   Future<String?> getRefreshToken() async {
