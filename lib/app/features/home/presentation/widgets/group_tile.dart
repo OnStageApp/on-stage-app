@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
@@ -36,12 +37,21 @@ class GroupTile extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Assets.icons.userFriends.svg(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Assets.icons.userFriends.svg(),
+                ),
                 const SizedBox(width: Insets.small),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge,
+                Expanded(
+                  child: AutoSizeText(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    minFontSize: 10,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
               ],
             ),
