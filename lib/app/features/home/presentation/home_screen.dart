@@ -9,6 +9,7 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_tile.dart';
@@ -136,6 +137,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildEnhanced(bool hasUpcomingEvent) {
     final upcomingEvent = ref.watch(eventsNotifierProvider).upcomingEvent;
+    final currentTeam = ref.watch(teamNotifierProvider).currentTeam;
 
     return SizedBox(
       height: 240,
@@ -166,7 +168,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   child: SizedBox(
                     height: 112,
                     child: GroupTile(
-                      title: 'Team',
+                      title: currentTeam?.name ?? " ",
                       hasUpcomingEvent: hasUpcomingEvent,
                     ),
                   ),
