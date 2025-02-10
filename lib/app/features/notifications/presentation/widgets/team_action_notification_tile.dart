@@ -200,6 +200,8 @@ class _ActionButtonSection extends StatelessWidget {
         text: 'Declined',
         isConfirm: false,
       );
+    } else if (notification.actionStatus == NotificationActionStatus.DISABLED) {
+      return Text('No longer available');
     }
 
     if (currentTeamId != notification.params?.teamId) {

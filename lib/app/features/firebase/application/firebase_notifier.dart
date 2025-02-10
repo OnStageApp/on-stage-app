@@ -187,21 +187,35 @@ class FirebaseNotifier extends _$FirebaseNotifier {
   }
 
   Future<void> _handleNotificationTeamChange(String teamId) async {
-    final currentTeamId = ref.read(teamNotifierProvider).currentTeam?.id;
+    try {
+      final currentTeamId = ref.read(teamNotifierProvider).currentTeam?.id;
+      if (currentTeamId == null || teamId == currentTeamId) {
+        return;
+      }
 
-    if (currentTeamId == null || teamId == currentTeamId) {
-      return;
+      final teamNotifier = ref.read(teamNotifierProvider.notifier);
+      final eventsNotifier = ref.read(eventsNotifierProvider.notifier);
+      final teamsNotifier = ref.read(teamsNotifierProvider.notifier);
+      await teamsNotifier.getTeams();
+
+      final containsTeamToSwitch = ref
+          .watch(teamsNotifierProvider)
+          .teams
+          .where((element) => element.id == teamId)
+          .toList();
+
+      if (containsTeamToSwitch.isEmpty) {
+        logger.i('Team cannot be changed. Team not found in existing teams');
+        return;
+      }
+
+      await teamsNotifier.setCurrentTeam(teamId);
+      await teamNotifier.getCurrentTeam();
+      eventsNotifier.resetState();
+    } catch (e, stackTrace) {
+      logger.e('Team change failed', e, stackTrace);
+      rethrow;
     }
-
-    final teamsNotifier = ref.read(teamsNotifierProvider.notifier);
-    final teamNotifier = ref.read(teamNotifierProvider.notifier);
-    final eventsNotifier = ref.read(eventsNotifierProvider.notifier);
-
-    await teamsNotifier.setCurrentTeam(teamId);
-
-    await teamNotifier.getCurrentTeam();
-
-    eventsNotifier.resetState();
   }
 
   /// Processes the pending navigation if any.
