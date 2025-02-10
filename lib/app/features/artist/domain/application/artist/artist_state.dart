@@ -17,8 +17,7 @@ class ArtistState extends Equatable {
       ];
 
   ArtistState copyWith({
-    List<Artist>? artists,
-    List<Artist>? filteredArtists,
+    List<Artist>? artist,
     bool? isLoading,
   }) {
     return ArtistState(

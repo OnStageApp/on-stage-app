@@ -89,32 +89,22 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userNotifierProvider);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.noAnimation,
-      floatingActionButton: _hasChanges
-          ? Padding(
-              padding: defaultScreenHorizontalPadding,
-              child: ContinueButton(
-                text: 'Save',
-                onPressed: _hasChanges ? _editProfile : () {},
-                isEnabled: _hasChanges,
-                hasShadow: false,
-              ),
-            )
-          : const SizedBox(),
+      resizeToAvoidBottomInset: true,
       appBar: const StageAppBar(
         title: 'Edit Profile',
         isBackButtonVisible: true,
       ),
-      body: SafeArea(
-        child: CustomScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
-              sliver: SliverToBoxAdapter(
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Insets.normal),
                 child: Column(
                   children: [
                     const SizedBox(height: 24),
@@ -138,7 +128,7 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               overlayColor:
-                                  context.colorScheme.outline.withOpacity(0.1),
+                                  context.colorScheme.outline.withAlpha(25),
                               backgroundColor:
                                   context.colorScheme.onSurfaceVariant,
                             ),
@@ -170,18 +160,6 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                         return null;
                       },
                     ),
-                    //TODO: Maybe add this in the future
-                    // const SizedBox(height: 12),
-
-                    // Align(
-                    //   alignment: Alignment.centerLeft,
-                    //   child: Text(
-                    //     'Positions',
-                    //     style: context.textTheme.titleSmall,
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 12),
-                    // const PositionTile(),
                     const SizedBox(height: 12),
                     CustomTextField(
                       enabled: true,
@@ -210,15 +188,38 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                         return null;
                       },
                     ),
-                    const SizedBox(
-                      height: 100,
-                    ),
+                    SizedBox(height: _hasChanges ? 100 : 20),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          if (_hasChanges)
+            Container(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: bottomPadding + 16,
+                top: 16,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: ContinueButton(
+                text: 'Save',
+                onPressed: _hasChanges ? _editProfile : () {},
+                isEnabled: _hasChanges,
+                hasShadow: false,
+              ),
+            ),
+        ],
       ),
     );
   }
