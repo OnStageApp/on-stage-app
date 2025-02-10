@@ -60,6 +60,7 @@ class AddPhotoModal extends ConsumerWidget {
     final permissionStatus = await Permission.photos.status;
 
     if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
+      if (!context.mounted) return;
       await requestPermission(
         permission: Permission.photos,
         context: context,
