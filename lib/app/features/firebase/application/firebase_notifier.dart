@@ -174,8 +174,9 @@ class FirebaseNotifier extends _$FirebaseNotifier {
 
     if (screen != null) {
       _handleScreenRoutesChange(screen);
-    } else if (teamId != null) {
-      _handleNotificationTeamChange(teamId);
+      // } else if (teamId != null) {
+      //TODO: Will handle this when we receive the type of notification
+      // _handleNotificationTeamChange(teamId);
     } else {
       ref.read(navigationNotifierProvider).goNamed(AppRoute.notification.name);
     }

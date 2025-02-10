@@ -12,9 +12,9 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class TeamActionNotificationTile extends NotificationTile {
   const TeamActionNotificationTile({
-    super.key,
     required super.onTap,
     required this.notification,
+    super.key,
     this.onDecline,
     this.onConfirm,
   });
@@ -201,12 +201,14 @@ class _ActionButtonSection extends StatelessWidget {
         isConfirm: false,
       );
     } else if (notification.actionStatus == NotificationActionStatus.DISABLED) {
-      return Text('No longer available');
+      return const Text('No longer available');
     }
 
     if (currentTeamId != notification.params?.teamId) {
       return NotificationSwitchTeamButton(
         text: 'Switch Team',
+        textColor: Colors.blue,
+        backgroundColor: Colors.blue.withAlpha(60),
         teamId: notification.params?.teamId,
       );
     }

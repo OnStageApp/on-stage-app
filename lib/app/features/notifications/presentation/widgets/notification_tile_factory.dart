@@ -7,6 +7,7 @@ import 'package:on_stage_app/app/features/notifications/domain/enums/notificatio
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_type.dart';
 import 'package:on_stage_app/app/features/notifications/domain/models/notification_model.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/event_action_notification_tile.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_icon_config.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/photo_message_notification_tile.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/team_action_notification_tile.dart';
 import 'package:on_stage_app/app/shared/data/enums/notification_action_status.dart';
@@ -28,7 +29,10 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.calendar_sync,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.REMINDER,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.TEAM_INVITATION_REQUEST:
@@ -113,7 +117,10 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.repeat_2,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.NEW_REHEARSAL,
+            context,
+          ),
           onTap: () {
             notificationActions.goToEvent(
               notification.params?.eventId,
@@ -125,7 +132,10 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.mic,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.LEAD_VOICE_ASSIGNED,
+            context,
+          ),
           onTap: () {
             notificationActions.goToEvent(
               notification.params?.eventId,
@@ -138,42 +148,60 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.trash,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.EVENT_DELETED,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.TEAM_MEMBER_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.user_minus,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.TEAM_MEMBER_REMOVED,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.LEAD_VOICE_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.mic_off,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.LEAD_VOICE_REMOVED,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.ROLE_CHANGED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.user_check,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.ROLE_CHANGED,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.TEAM_MEMBER_ADDED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.user_plus,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.TEAM_MEMBER_ADDED,
+            context,
+          ),
           onTap: () {},
         );
       case NotificationType.STAGER_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
-          icon: LucideIcons.user_minus,
+          iconConfig: NotificationIconHelper.getConfigForType(
+            NotificationType.STAGER_REMOVED,
+            context,
+          ),
           onTap: () {},
         );
       case null:

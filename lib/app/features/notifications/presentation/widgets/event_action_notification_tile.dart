@@ -66,8 +66,7 @@ class EventActionNotificationTile extends NotificationTile {
                 ),
                 decoration: BoxDecoration(
                   color: context.isDarkMode
-                      ? context.colorScheme.surfaceContainerHigh
-                          .withOpacity(0.5)
+                      ? context.colorScheme.surfaceContainerHigh.withAlpha(110)
                       : context.colorScheme.surface,
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -78,50 +77,55 @@ class EventActionNotificationTile extends NotificationTile {
               ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: Row(
-            children: [
-              if (notification.actionStatus ==
-                  NotificationActionStatus.PENDING) ...[
-                Expanded(
-                  child: InviteButton(
-                    text: 'Decline',
-                    onPressed: onDecline ?? () {},
-                    isConfirm: false,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: InviteButton(
-                    text: 'Confirm',
-                    onPressed: onConfirm ?? () {},
-                    isConfirm: true,
-                  ),
-                ),
-              ] else
-                Expanded(
-                  child: InviteButton(
-                    icon: _isAccepted()
-                        ? LucideIcons.calendar_check_2
-                        : LucideIcons.calendar_x_2,
-                    onPressed: _isAccepted()
-                        ? () {
-                            final eventId = notification.params?.eventId;
-                            context.goNamed(
-                              AppRoute.eventDetails.name,
-                              queryParameters: {'eventId': eventId},
-                            );
-                          }
-                        : null,
-                    text: _isAccepted() ? 'Go to Event' : 'Declined',
-                    isConfirm: _isAccepted(),
-                  ),
-                ),
-            ],
-          ),
-        ),
+        if (notification.actionStatus != NotificationActionStatus.DISABLED)
+          _buildActionButton(context),
       ],
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Row(
+        children: [
+          if (notification.actionStatus ==
+              NotificationActionStatus.PENDING) ...[
+            Expanded(
+              child: InviteButton(
+                text: 'Decline',
+                onPressed: onDecline ?? () {},
+                isConfirm: false,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: InviteButton(
+                text: 'Confirm',
+                onPressed: onConfirm ?? () {},
+                isConfirm: true,
+              ),
+            ),
+          ] else
+            Expanded(
+              child: InviteButton(
+                icon: _isAccepted()
+                    ? LucideIcons.calendar_check_2
+                    : LucideIcons.calendar_x_2,
+                onPressed: _isAccepted()
+                    ? () {
+                        final eventId = notification.params?.eventId;
+                        context.goNamed(
+                          AppRoute.eventDetails.name,
+                          queryParameters: {'eventId': eventId},
+                        );
+                      }
+                    : null,
+                text: _isAccepted() ? 'Go to Event' : 'Declined',
+                isConfirm: _isAccepted(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

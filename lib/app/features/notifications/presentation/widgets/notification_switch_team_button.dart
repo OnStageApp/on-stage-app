@@ -38,11 +38,13 @@ class NotificationSwitchTeamButton extends ConsumerWidget {
         padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         ),
-        backgroundColor: WidgetStateProperty.all(context.colorScheme.tertiary),
+        backgroundColor: WidgetStateProperty.all(
+          backgroundColor ?? context.colorScheme.tertiary,
+        ),
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
           (Set<WidgetState> states) {
             if (states.contains(WidgetState.pressed)) {
-              return context.colorScheme.primary.withOpacity(0.1);
+              return context.colorScheme.surfaceBright.withAlpha(25);
             }
             return null;
           },

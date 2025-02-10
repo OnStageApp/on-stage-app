@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/name_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -35,8 +36,9 @@ class PlaceholderImageWidget extends StatelessWidget {
               ),
             )
           : Icon(
-              Icons.person,
+              LucideIcons.user_round,
               color: textColor ?? context.colorScheme.onSurface,
+              size: 18,
             ),
     );
   }

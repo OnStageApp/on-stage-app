@@ -13,6 +13,9 @@ class InviteButton extends StatelessWidget {
     super.key,
   });
 
+  static const _confirmColor = Color.fromARGB(255, 70, 209, 74);
+  static const _cancelColor = Color.fromARGB(255, 227, 85, 77);
+
   final String text;
   final void Function()? onPressed;
   final bool isConfirm;
@@ -36,12 +39,14 @@ class InviteButton extends StatelessWidget {
         ),
         backgroundColor: WidgetStateProperty.all(
           backgroundColor ??
-              (isConfirm ? Colors.green : context.colorScheme.surface),
+              (isConfirm
+                  ? _confirmColor.withAlpha(50)
+                  : _cancelColor.withAlpha(50)),
         ),
         overlayColor: WidgetStateProperty.resolveWith<Color?>(
           (Set<WidgetState> states) {
             if (states.contains(WidgetState.pressed)) {
-              return context.colorScheme.primary.withOpacity(0.1);
+              return context.colorScheme.primary.withAlpha(25);
             }
             return null;
           },
@@ -54,15 +59,13 @@ class InviteButton extends StatelessWidget {
           Icon(
             icon ?? (isConfirm ? LucideIcons.circle_check : Icons.cancel),
             size: 20,
-            color: textColor ??
-                (isConfirm ? Colors.white : context.colorScheme.error),
+            color: textColor ?? (isConfirm ? _confirmColor : _cancelColor),
           ),
           const SizedBox(width: 6),
           Text(
             text,
             style: context.textTheme.titleMedium!.copyWith(
-              color: textColor ??
-                  (isConfirm ? Colors.white : context.colorScheme.onSurface),
+              color: textColor ?? (isConfirm ? _confirmColor : _cancelColor),
             ),
           ),
         ],

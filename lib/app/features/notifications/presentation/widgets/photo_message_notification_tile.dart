@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/notifications/domain/enums/notification_status.dart';
+import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_icon_config.dart';
 import 'package:on_stage_app/app/features/notifications/presentation/widgets/notification_tile.dart';
 import 'package:on_stage_app/app/shared/image_with_placeholder.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -15,13 +17,13 @@ class PhotoMessageNotificationTile extends NotificationTile {
     this.description,
     this.title,
     this.profilePicture,
-    this.icon,
+    this.iconConfig,
     this.date,
     super.key,
   });
 
   final Uint8List? profilePicture;
-  final IconData? icon;
+  final NotificationIconConfig? iconConfig;
   final String? title;
   final String? description;
   final DateTime? date;
@@ -41,18 +43,28 @@ class PhotoMessageNotificationTile extends NotificationTile {
                   if (description.isNotNullEmptyOrWhitespace) ...[
                     Row(
                       children: [
-                        if (icon != null)
-                          SizedBox(
-                            width: 38,
+                        if (iconConfig != null)
+                          Container(
+                            width: 36,
+                            height: 36,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: iconConfig?.backgroundColor,
+                            ),
                             child: Icon(
-                              icon,
-                              color: context.colorScheme.onSurface,
+                              iconConfig?.icon,
+                              size: 18,
+                              color: iconConfig?.iconColor,
                             ),
                           )
                         else
                           ImageWithPlaceholder(
+                            borderWidth: 0,
                             photo: profilePicture,
-                            backgroundColor: context.colorScheme.tertiary,
+                            placeholderColor: context.colorScheme.primary,
+                            backgroundColor:
+                                context.colorScheme.primary.withAlpha(50),
                           ),
                         const SizedBox(width: 8),
                         Expanded(
