@@ -199,10 +199,12 @@ class EventItemsNotifier extends _$EventItemsNotifier {
 
       final updateRequests = updatedItems
           .where((item) => item.index != null)
-          .map((item) => UpdateEventItemIndex(
-                eventItemId: item.id,
-                index: item.index!,
-              ))
+          .map(
+            (item) => UpdateEventItemIndex(
+              eventItemId: item.id,
+              index: item.index!,
+            ),
+          )
           .toList();
 
       if (updateRequests.isNotEmpty) {

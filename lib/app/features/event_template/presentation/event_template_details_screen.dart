@@ -13,6 +13,7 @@ import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/logger.dart';
 
 class EventTemplateDetailsScreen extends ConsumerStatefulWidget {
   const EventTemplateDetailsScreen({
@@ -61,9 +62,8 @@ class EventTemplateDetailsScreenState
   }
 
   void _handleFormDataChanged(EventTemplateRequest formData) {
-    // setState(() {
+    logger.i(formData);
     _currentFormData = formData;
-    // });
   }
 
   @override
@@ -97,12 +97,13 @@ class EventTemplateDetailsScreenState
               MenuAction(
                 title: 'Delete Template',
                 onTap: () async {
-                  if (mounted) context.pop();
+                  ///See if it's needed
+                  // if (mounted) context.pop();
 
-                  final templateId = widget.eventTemplate.id!;
-                  await ref
-                      .read(currentEventTemplateProvider.notifier)
-                      .deleteEventTemplate(templateId);
+                  // final templateId = widget.eventTemplate.id!;
+                  // await ref
+                  //     .read(currentEventTemplateProvider.notifier)
+                  //     .deleteEventTemplate(templateId);
                 },
                 isDestructive: true,
               ),
@@ -130,7 +131,7 @@ class EventTemplateDetailsScreenState
         onBackButtonPressed: () async {
           final shouldPop = await AdaptiveDialogOnPop.show(context: context);
           if (shouldPop ?? true) {
-            if (mounted) context.pop();
+            if (context.mounted) context.pop();
           }
         },
         title: 'Edit Template',

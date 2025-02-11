@@ -18,6 +18,24 @@ class GroupEventTemplateNotifier extends _$GroupEventTemplateNotifier {
     return const GroupEventTemplateState();
   }
 
+  Future<void> getGroupEventById(String eventTemplateId, String groupId) async {
+    state = state.copyWith(error: null);
+    try {
+      final group =
+          await _groupEventTemplateRepo.getGroupById(eventTemplateId, groupId);
+      final updatedGroup = await _updateGroupWithPhotos(group);
+
+      state = state.copyWith(
+        groups: state.groups
+            .map((e) => e.id == groupId ? updatedGroup : e)
+            .toList(),
+      );
+    } catch (e) {
+      state = state.copyWith(error: e);
+      rethrow;
+    }
+  }
+
   Future<void> getGroupsForEventTemplate(String eventTemplateId) async {
     state = state.copyWith(isLoading: true, error: null);
     try {

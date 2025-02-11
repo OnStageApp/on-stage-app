@@ -118,7 +118,7 @@ class _ShimmerGroupCard extends StatelessWidget {
       height: 200,
       width: 200,
       child: Shimmer.fromColors(
-        baseColor: context.colorScheme.onSurfaceVariant.withOpacity(0.3),
+        baseColor: context.colorScheme.onSurfaceVariant.withAlpha(10),
         highlightColor: context.colorScheme.onSurfaceVariant,
         child: Container(
           decoration: BoxDecoration(

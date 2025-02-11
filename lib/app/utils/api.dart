@@ -11,7 +11,7 @@ class API {
   // static const String baseUrl = 'https://$prodDomain/';
   // static const String socketUrl = 'wss://$socketProdDomain/';
   //
-  static const String baseUrl = 'https://2580-5-12-238-31.ngrok-free.app/';
+  static const String baseUrl = 'https://c72a-5-12-238-31.ngrok-free.app/';
   // static const String devDomain = 'localhost:9001';
 
   static const String devDomain = 'dev.on-stage.app';
@@ -104,6 +104,8 @@ class API {
   static const String teamMembersById = 'team-members/{id}';
   static const String currentTeamMember = 'team-members/current';
   static const String uninvitedTeamMembers = 'team-members/uninvited';
+  static const String uninvitedTeamMembersForEventTemplates =
+      'team-members/event-templates/{eventTemplateId}/uninvited';
   static const String addTeamMember = 'team-members/invite';
   static const String teamMemberPhotos = 'team-members/photos';
 
@@ -161,4 +163,12 @@ class API {
   static const String createEventTemplate = 'event-templates';
   static const String updateEventTemplate = 'event-templates/{eventTemplateId}';
   static const String deleteEventTemplate = 'event-templates/{eventTemplateId}';
+
+  static const String getStagerTemplates = 'stager-templates';
+
+  static const String deleteStagerTemplate = 'stager-templates/{id}';
+  static const String createStagerTemplates = 'stager-templates';
+
+  static const String groupByIdAndEventTemplate =
+      'event-templates/{eventTemplateId}/groups/{groupId}';
 }

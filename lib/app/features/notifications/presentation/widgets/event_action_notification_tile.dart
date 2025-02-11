@@ -145,7 +145,7 @@ class EventActionNotificationTile extends NotificationTile {
           ),
         ),
         _buildCircle(
-          context.colorScheme.outline.withOpacity(0.2),
+          context.colorScheme.outline.withAlpha(10),
         ),
         Text(
           TimeUtils().formatOnlyDate(
