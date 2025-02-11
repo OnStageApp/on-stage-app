@@ -1,23 +1,21 @@
 import 'dart:typed_data';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_base.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 
-part 'stager.freezed.dart';
-part 'stager.g.dart';
+part 'stager_template.freezed.dart';
+part 'stager_template.g.dart';
 
 @Freezed()
-class Stager with _$Stager implements StagerBase {
-  const factory Stager({
+class StagerTemplate with _$StagerTemplate implements StagerBase {
+  const factory StagerTemplate({
     required String id,
     required String? name,
-    required StagerStatusEnum? participationStatus,
     required String? userId,
     String? groupId,
     String? positionId,
     @JsonKey(includeFromJson: false) Uint8List? profilePicture,
-  }) = _Stager;
+  }) = _StagerTemplate;
 
-  factory Stager.fromJson(Map<String, dynamic> json) => _$StagerFromJson(json);
+  factory StagerTemplate.fromJson(Map<String, dynamic> json) =>
+      _$StagerTemplateFromJson(json);
 }

@@ -12,16 +12,28 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:shimmer/shimmer.dart';
 
 class UninvitedPeopleModal extends ConsumerStatefulWidget {
-  const UninvitedPeopleModal({
-    required this.eventId,
+  const UninvitedPeopleModal.fromEventId({
+    required String eventId,
     required this.positionName,
     required this.positionId,
     super.key,
-  });
+  })  : _eventId = eventId,
+        _eventTemplateId = null;
 
-  final String? eventId;
+  const UninvitedPeopleModal.fromEventTemplateId({
+    required String? eventTemplateId,
+    required this.positionName,
+    required this.positionId,
+    super.key,
+  })  : _eventTemplateId = eventTemplateId,
+        _eventId = null;
+
+  final String? _eventId;
+  final String? _eventTemplateId;
   final String positionName;
   final String positionId;
+
+  bool get _isEventMode => _eventId != null;
 
   @override
   UninvitedPeopleModalState createState() => UninvitedPeopleModalState();
@@ -30,15 +42,27 @@ class UninvitedPeopleModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required String positionName,
     required String positionId,
-    required String eventId,
+    String? eventId,
+    String? eventTemplateId,
   }) {
+    assert(
+      (eventId != null) != (eventTemplateId != null),
+      'Either eventId or eventTemplateId must be provided, but not both',
+    );
+
     return AdaptiveModal.show<List<TeamMember>>(
       context: context,
-      child: UninvitedPeopleModal(
-        eventId: eventId,
-        positionName: positionName,
-        positionId: positionId,
-      ),
+      child: eventId != null
+          ? UninvitedPeopleModal.fromEventId(
+              eventId: eventId,
+              positionName: positionName,
+              positionId: positionId,
+            )
+          : UninvitedPeopleModal.fromEventTemplateId(
+              eventTemplateId: eventTemplateId,
+              positionName: positionName,
+              positionId: positionId,
+            ),
     );
   }
 }
@@ -60,13 +84,21 @@ class UninvitedPeopleModalState extends ConsumerState<UninvitedPeopleModal> {
   }
 
   Future<void> _getUninvitedTeamMembers() async {
-    if (widget.eventId == null) return;
-    await ref
-        .read(teamMembersNotifierProvider.notifier)
-        .getUninvitedTeamMembers(
-          eventId: widget.eventId!,
-          positionId: widget.positionId,
-        );
+    if (widget._isEventMode) {
+      await ref
+          .read(teamMembersNotifierProvider.notifier)
+          .getUninvitedTeamMembers(
+            eventId: widget._eventId!,
+            positionId: widget.positionId,
+          );
+    } else {
+      await ref
+          .read(teamMembersNotifierProvider.notifier)
+          .getUninvitedTeamMembersForEventTemplates(
+            eventTemplateId: widget._eventTemplateId!,
+            positionId: widget.positionId,
+          );
+    }
 
     setState(() {
       _allParticipants =
@@ -229,7 +261,9 @@ class UninvitedPeopleModalState extends ConsumerState<UninvitedPeopleModal> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 36),
         child: ClipRect(
           child: ContinueButton(
-            text: 'Invite People to Event',
+            text: widget._isEventMode
+                ? 'Invite People to Event'
+                : 'Add People to Template',
             onPressed: () {
               context.popDialog(selectedTeamMembers);
             },

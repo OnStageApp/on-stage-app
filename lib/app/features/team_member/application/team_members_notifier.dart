@@ -70,6 +70,30 @@ class TeamMembersNotifier extends _$TeamMembersNotifier {
     }
   }
 
+//TODO: Maybe add familly scope
+  Future<void> getUninvitedTeamMembersForEventTemplates({
+    required String eventTemplateId,
+    required String positionId,
+  }) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final members =
+          await teamMemberRepository.getUninvitedMembersForEventTemplate(
+        eventTemplateId: eventTemplateId,
+        positionId: positionId,
+        includeCurrentUser: true,
+      );
+      final uninvitedMembersWithPhoto = await Future.wait(
+        members.map(_getMemberWithPhotoFromLocalStorage),
+      );
+      state = state.copyWith(uninvitedTeamMembers: uninvitedMembersWithPhoto);
+    } catch (e) {
+      logger.e('Error getting uninvited team members: $e');
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
   Future<String?> resendInvitationOnTeamMember(
     String? teamMemberInvited,
     TeamMemberRole? role,

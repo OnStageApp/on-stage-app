@@ -27,6 +27,13 @@ abstract class TeamMemberRepository {
     @Query('includeCurrentUser') bool includeCurrentUser = false,
   });
 
+    @GET(API.uninvitedTeamMembersForEventTemplates)
+  Future<List<TeamMember>> getUninvitedMembersForEventTemplate({
+    @Path('eventTemplateId') required String eventTemplateId,
+    @Query('positionId') required String positionId,
+    @Query('includeCurrentUser') bool includeCurrentUser = false,
+  });
+
   @POST(API.addTeamMember)
   Future<TeamMember?> inviteTeamMember(
     @Body() CreateTeamMemberRequest addTeamMemberRequest,

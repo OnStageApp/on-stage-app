@@ -17,8 +17,8 @@ abstract class GroupEventTemplateRepository {
     @Path('eventTemplateId') String eventTemplateId,
   );
 
-  @GET(API.groupEventById)
-  Future<GroupEvent> getGroupById(
+  @GET(API.groupByIdAndEventTemplate)
+  Future<GroupEventTemplate> getGroupById(
     @Path('eventTemplateId') String eventTemplateId,
     @Path('groupId') String groupId,
   );

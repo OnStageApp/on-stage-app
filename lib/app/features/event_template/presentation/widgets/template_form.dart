@@ -1,10 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
 import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
 import 'package:on_stage_app/app/features/event_template/domain/event_template_request.dart';
 import 'package:on_stage_app/app/features/event_template/presentation/widgets/reminders_list.dart';
 import 'package:on_stage_app/app/features/groups/shared/presentation/groups_obj_grid.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
@@ -81,7 +85,8 @@ class _TemplateFormState extends State<TemplateForm> {
         !listEquals(_reminders, widget.originalTemplate.reminderDays);
 
     widget.onChangeState(
-        hasNameChanged || hasLocationChanged || hasRemindersChanged);
+      hasNameChanged || hasLocationChanged || hasRemindersChanged,
+    );
   }
 
   @override
@@ -127,6 +132,27 @@ class _TemplateFormState extends State<TemplateForm> {
                 _reminders = newReminders;
                 _onFieldsChanged();
               });
+            },
+          ),
+          const SizedBox(height: 24),
+          const DashedLineDivider(),
+          const SizedBox(height: 24),
+          PreferencesActionTile(
+            title: 'Schedule',
+            color: context.colorScheme.primary,
+            trailingIcon: Icons.keyboard_arrow_right_rounded,
+            leadingWidget: Icon(
+              LucideIcons.list_music,
+              color: context.colorScheme.primary,
+            ),
+            height: 54,
+            onTap: () {
+              // context.pushNamed(
+              //   AppRoute.schedule.name,
+              //   queryParameters: {
+              //     'eventTemplateId': widget.eventTemplate.id,
+              //   },
+              // );
             },
           ),
           const SizedBox(height: 120),
