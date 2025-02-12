@@ -109,7 +109,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                     title: 'Event Templates',
                     trailingIcon: Icons.keyboard_arrow_right_rounded,
                     leadingWidget: Icon(
-                      LucideIcons.calendar_range,
+                      LucideIcons.folders,
                       size: 20,
                       color: context.colorScheme.outline,
                     ),
@@ -205,7 +205,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
       if (allTeamMembers.isNotEmpty && searchController.text.isNotEmpty) {
         return Center(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'No members found matching "${searchController.text}"',
               style: context.textTheme.bodyMedium?.copyWith(

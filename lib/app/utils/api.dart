@@ -41,6 +41,7 @@ class API {
   static const String eventsByFilter = 'events?{startDate}&{endDate}&{search}';
   static const String eventById = 'events/{id}';
   static const String duplicateEvent = 'events/duplicate/{id}';
+  static const String createFromTemplate = 'events/templates/{id}';
   static const String events = 'events';
   static const String rehearsals = 'rehearsals';
   static const String rehearsalById = 'rehearsals/{id}';

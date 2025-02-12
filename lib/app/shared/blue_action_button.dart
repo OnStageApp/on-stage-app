@@ -27,7 +27,7 @@ class EventActionButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        foregroundColor: context.colorScheme.outline.withOpacity(0.1),
+        foregroundColor: context.colorScheme.outline.withAlpha(20),
       ),
       child: Row(
         children: [
@@ -37,7 +37,7 @@ class EventActionButton extends StatelessWidget {
               color: Colors.blue,
               size: 20,
             ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             text,
             style: context.textTheme.titleMedium!.copyWith(

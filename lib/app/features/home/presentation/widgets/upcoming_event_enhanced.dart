@@ -2,8 +2,10 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/create_event_adaptive_menu.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
@@ -125,38 +127,32 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                       ),
                     ),
                     if (ref.watch(permissionServiceProvider).hasAccessToEdit)
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await ref
-                                .read(eventNotifierProvider.notifier)
-                                .createEmptyEvent();
-                            if (context.mounted) {
-                              context.goNamed(AppRoute.addEvent.name);
-                            }
-                          },
-                          icon: Assets.icons.plus.svg(
-                            colorFilter: ColorFilter.mode(
-                              context.colorScheme.primary,
-                              BlendMode.srcIn,
-                            ),
+                      CreateEventAdaptiveMenu(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                          label: Text(
-                            'Create Event',
-                            style: context.textTheme.titleSmall!.copyWith(
-                              color: context.colorScheme.primary,
-                            ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(7),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            backgroundColor: Colors.white,
-                            shadowColor: Colors.transparent,
-                            foregroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7),
-                            ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                LucideIcons.plus,
+                                color: context.colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: AutoSizeText(
+                                  'Create Event',
+                                  style: context.textTheme.titleSmall!.copyWith(
+                                    color: context.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

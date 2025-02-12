@@ -164,6 +164,25 @@ class EventNotifier extends _$EventNotifier {
     }
   }
 
+  Future<void> createFromEventTemplate(String eventTemplateId) async {
+    try {
+      state = state.copyWith(isLoading: true);
+
+      final newEvent =
+          await _eventsRepository.createEventFromTemplate(eventTemplateId);
+
+      state = state.copyWith(
+        event: newEvent,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+      );
+      rethrow;
+    }
+  }
+
   Future<void> deleteEventAndGetAll() async {
     await deleteEvent();
     unawaited(ref.read(eventsNotifierProvider.notifier).initEvents());
