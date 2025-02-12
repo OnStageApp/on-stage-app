@@ -29,7 +29,6 @@ class ImageWithPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasValidPhoto = photo?.isNotNullOrEmpty ?? false;
-
     return Container(
       width: size,
       height: size,

@@ -69,21 +69,35 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
   }
 
   Future<void> _editProfile() async {
+    FocusScope.of(context).unfocus();
+
     final updatedUserRequest = UserRequest(
       name: _nameController.text,
       username: _usernameController.text,
     );
 
-    FocusScope.of(context).unfocus();
-    await ref.read(userNotifierProvider.notifier).editUserById(
+    final success = await ref.read(userNotifierProvider.notifier).editUserById(
           updatedUserRequest,
         );
 
-    setState(() {
-      _initialName = updatedUserRequest.name;
-      _initialUsername = updatedUserRequest.username;
-      _hasChanges = false;
-    });
+    if (!mounted) return;
+
+    if (success) {
+      setState(() {
+        _initialName = updatedUserRequest.name;
+        _initialUsername = updatedUserRequest.username;
+        _hasChanges = false;
+      });
+    } else {
+      // Get error message from state
+      final errorMessage = ref.read(userNotifierProvider).error;
+
+      TopFlushBar.show(
+        context,
+        errorMessage ?? 'Failed to update profile',
+        isError: true,
+      );
+    }
   }
 
   @override
@@ -181,12 +195,6 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
                       hint: '${userState.currentUser?.email}',
                       icon: Icons.church,
                       controller: TextEditingController(),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an event name';
-                        }
-                        return null;
-                      },
                     ),
                     SizedBox(height: _hasChanges ? 100 : 20),
                   ],

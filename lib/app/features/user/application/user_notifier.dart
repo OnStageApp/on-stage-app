@@ -54,20 +54,43 @@ class UserNotifier extends _$UserNotifier {
     return userProfileInfo.copyWith(image: photo);
   }
 
-  Future<void> editUserById(UserRequest userRequest) async {
+  Future<bool> editUserById(UserRequest userRequest) async {
     try {
       final userId = state.currentUser?.id;
-      if (userId == null) return;
-      state = state.copyWith(isLoading: true);
+      if (userId == null) {
+        state = state.copyWith(error: 'User not found');
+        return false;
+      }
+
+      state = state.copyWith(isLoading: true, error: null);
+
       final editedUser = await usersRepository.editUser(userRequest);
+
       final finalUser = state.currentUser!.copyWith(
         name: editedUser.name,
         username: editedUser.username,
       );
-      state = state.copyWith(currentUser: finalUser, isLoading: false);
+
+      state = state.copyWith(
+        currentUser: finalUser,
+        isLoading: false,
+        error: null,
+      );
+
+      return true;
     } catch (e) {
-      state = state.copyWith(isLoading: false);
+      final errorMessage = e is DioException
+          ? ApiErrorHandler.handleDioException(e)
+          : 'An unexpected error occurred';
+
+      state = state.copyWith(
+        isLoading: false,
+        error: errorMessage,
+        currentUser: state.currentUser, // Preserve current user on error
+      );
+
       logger.e('Error updating user: $e');
+      return false;
     }
   }
 
@@ -152,9 +175,10 @@ class UserNotifier extends _$UserNotifier {
           : 'An unexpected error occurred';
 
       state = state.copyWith(
-          isLoading: false,
-          error: errorMessage,
-          currentUser: state.currentUser);
+        isLoading: false,
+        error: errorMessage,
+        currentUser: state.currentUser,
+      );
       return false;
     }
   }
