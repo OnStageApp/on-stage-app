@@ -11,7 +11,7 @@ class API {
   // static const String baseUrl = 'https://$prodDomain/';
   // static const String socketUrl = 'wss://$socketProdDomain/';
   //
-  static const String baseUrl = 'https://c72a-5-12-238-31.ngrok-free.app/';
+  // static const String baseUrl = 'https://c72a-5-12-238-31.ngrok-free.app/';
   // static const String devDomain = 'localhost:9001';
 
   static const String devDomain = 'dev.on-stage.app';
@@ -20,10 +20,10 @@ class API {
   static const String prodDomain = 'on-stage.app/api';
   static const String socketProdDomain = 'on-stage.app';
 
-  // static String get baseUrl =>
-  //     EnvironmentManager.currentEnvironment == AppEnvironment.development
-  //         ? 'https://$devDomain/'
-  //         : 'https://$prodDomain/';
+  static String get baseUrl =>
+      EnvironmentManager.currentEnvironment == AppEnvironment.development
+          ? 'https://$devDomain/'
+          : 'https://$prodDomain/';
 
   static String get socketUrl =>
       EnvironmentManager.currentEnvironment == AppEnvironment.development
@@ -173,8 +173,9 @@ class API {
   static const String groupByIdAndEventTemplate =
       'event-templates/{eventTemplateId}/groups/{groupId}';
   static const String getEventItemTemplates = 'event-item-templates';
-    static const String addEventItemTemplate = 'event-item-templates';
-    static const String deleteEventItemTemplate = 'event-item-templates/{id}';
-    static const String updateEventItemTemplateIndexes = 'event-item-templates/indexes';
-    static const String updateEventItemTemplate = 'event-item-templates/{id}';
+  static const String addEventItemTemplate = 'event-item-templates';
+  static const String deleteEventItemTemplate = 'event-item-templates/{id}';
+  static const String updateEventItemTemplateIndexes =
+      'event-item-templates/indexes';
+  static const String updateEventItemTemplate = 'event-item-templates/{id}';
 }
