@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event_template/application/current_event_template_notifier.dart';
-import 'package:on_stage_app/app/features/event_template/application/event_templates_notifier.dart';
-import 'package:on_stage_app/app/features/event_template/presentation/widgets/event_template_tile.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/current_event_template_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/event_templates_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/widgets/event_template_tile.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -26,24 +26,8 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
     super.initState();
   }
 
-  // void _setupErrorListener() {
-  //   ref.listen<GroupTemplateState>(
-  //     groupTemplateNotifierProvider,
-  //         (previous, next) {
-  //       if (next.error != null && mounted) {
-  //         TopFlushBar.show(
-  //           context,
-  //           next.error.toString(),
-  //           isError: true,
-  //         );
-  //       }
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // _setupErrorListener();
     final eventTemplates =
         ref.watch(eventTemplatesNotifierProvider).eventTemplates;
     return Padding(
@@ -59,7 +43,7 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
                 final savedTemplate = await ref
                     .read(currentEventTemplateProvider.notifier)
                     .createEmptyEventTemplate();
-                if (mounted) {
+                if (context.mounted) {
                   unawaited(
                     context.pushNamed(
                       AppRoute.eventTemplateDetails.name,

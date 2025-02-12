@@ -22,7 +22,7 @@ class AddItemsToEventModal extends ConsumerStatefulWidget {
     required BuildContext context,
     required VoidCallback onItemsAdded,
   }) async {
-    await AdaptiveModal.show(
+    await AdaptiveModal.show<void>(
       context: context,
       isFloatingForLargeScreens: true,
       expand: false,
@@ -67,7 +67,6 @@ class AddItemsToEventModalState extends ConsumerState<AddItemsToEventModal> {
                 context.popDialog();
                 AddEditMomentModal.show(
                   context: context,
-                  // onMomentAdded: widget.onItemsAdded,
                 );
               },
             ),

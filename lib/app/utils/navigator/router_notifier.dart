@@ -8,9 +8,10 @@ import 'package:on_stage_app/app/features/event/presentation/event_details_scree
 import 'package:on_stage_app/app/features/event/presentation/event_settings_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/events_screen.dart';
 import 'package:on_stage_app/app/features/event/presentation/schedule_screen.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
-import 'package:on_stage_app/app/features/event_template/presentation/event_template_details_screen.dart';
-import 'package:on_stage_app/app/features/event_template/presentation/event_templates_screen.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_template_details_screen.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_schedule_screen.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_screen.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/groups_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
@@ -433,6 +434,19 @@ class NavigationNotifier extends _$NavigationNotifier {
                               isNew: isNew,
                             );
                           },
+                          routes: [
+                            GoRoute(
+                              name: AppRoute.eventItemTemplateSchedule.name,
+                              path: 'eventItemTemplateSchedule',
+                              builder: (context, state) {
+                                final eventTemplateId = state
+                                    .uri.queryParameters['eventTemplateId'];
+                                return EventTemplateScheduleScreen(
+                                  eventTemplateId: eventTemplateId!,
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),

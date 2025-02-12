@@ -1,5 +1,5 @@
-import 'package:on_stage_app/app/features/event_template/application/event_templates_state.dart';
-import 'package:on_stage_app/app/features/event_template/data/event_templates_repository.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/event_templates_state.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/data/event_templates_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_templates_notifier.g.dart';

@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.keyboardType,
+    this.requiredField = false,
   });
 
   final String? label;
@@ -32,6 +33,7 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final bool requiredField;
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,21 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null)
-          Text(
-            label!,
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.colorScheme.onSurface,
-            ),
+          Row(
+            children: [
+              Text(
+                label!,
+                style: context.textTheme.titleSmall!.copyWith(
+                  color: context.colorScheme.onSurface,
+                ),
+              ),
+              if (requiredField)
+                Text(
+                  ' *',
+                  style: context.textTheme.titleSmall!
+                      .copyWith(color: context.colorScheme.error),
+                ),
+            ],
           ),
         const SizedBox(height: Insets.small),
         TextFormField(

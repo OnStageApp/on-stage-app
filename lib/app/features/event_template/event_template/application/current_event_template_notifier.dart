@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
-import 'package:on_stage_app/app/features/event_template/application/current_event_template_state.dart';
-import 'package:on_stage_app/app/features/event_template/application/event_templates_notifier.dart';
-import 'package:on_stage_app/app/features/event_template/data/event_templates_repository.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template_request.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/current_event_template_state.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/event_templates_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/data/event_templates_repository.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template_request.dart';
 import 'package:on_stage_app/app/features/stager_template/domain/stager_template.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -75,6 +75,7 @@ class CurrentEventTemplate extends _$CurrentEventTemplate {
       ref
           .read(eventTemplatesNotifierProvider.notifier)
           .removeEventTemplate(templateId);
+          
       state = state.copyWith(eventTemplate: null, isLoading: false);
     } catch (e) {
       state = state.copyWith(error: e, isLoading: false);
