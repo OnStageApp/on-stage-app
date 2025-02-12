@@ -90,18 +90,12 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       const SizedBox(height: 16),
                       const ProfileHeader(),
                       const SizedBox(height: 24),
-                      //TODO: see if we need it here, if it's helpful
-                      // Focus(
-                      //   focusNode: _songViewSettingsFocusNode,
-                      //   child: const SongViewSettings(),
-                      // ),
-                      // const SizedBox(height: 24),
                       const TeamsSection(),
                       const SizedBox(height: 24),
                       const AppSettings(),
                       const SizedBox(height: 24),
                       const LibrarySection(),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 24),
                       EnvSwitcher(
                         child: Text(
                           'Account',
