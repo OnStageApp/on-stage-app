@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template.dart';
-import 'package:on_stage_app/app/features/event_template/domain/event_template_request.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template_request.dart';
 import 'package:on_stage_app/app/features/stager_template/domain/stager_template.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/api.dart';
@@ -33,11 +33,11 @@ abstract class EventTemplatesRepository {
   );
 
   @DELETE(API.deleteEventTemplate)
-  Future<EventTemplate> deleteEventTemplate(
+  Future<void> deleteEventTemplate(
     @Path('eventTemplateId') String eventTemplateId,
   );
 
-    @GET(API.stagers)
+  @GET(API.stagers)
   Future<List<StagerTemplate>> getStagersByGroupAndEvent({
     @Query('eventTemplateId') required String eventTemplateId,
     @Query('groupId') required String groupId,

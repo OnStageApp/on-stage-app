@@ -41,7 +41,7 @@ class AddEditMomentModal extends ConsumerStatefulWidget {
     void Function(EventItem)? onMomentAdded,
     bool enabled = true,
   }) {
-    AdaptiveModal.show(
+    AdaptiveModal.show<void>(
       context: context,
       child: AddEditMomentModal(
         eventItem: eventItem,
@@ -105,7 +105,7 @@ class AddEditMomentModalState extends ConsumerState<AddEditMomentModal> {
     ref.read(stagerSelectionProvider.notifier).clearStagers();
 
     /// Add new stagers one by one
-    for (var stager in stagers) {
+    for (final stager in stagers) {
       ref.read(stagerSelectionProvider.notifier).addStager(stager);
     }
   }

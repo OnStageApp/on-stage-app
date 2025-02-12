@@ -171,4 +171,9 @@ class API {
 
   static const String groupByIdAndEventTemplate =
       'event-templates/{eventTemplateId}/groups/{groupId}';
+  static const String getEventItemTemplates = 'event-item-templates';
+    static const String addEventItemTemplate = 'event-item-templates';
+    static const String deleteEventItemTemplate = 'event-item-templates/{id}';
+    static const String updateEventItemTemplateIndexes = 'event-item-templates/indexes';
+    static const String updateEventItemTemplate = 'event-item-templates/{id}';
 }

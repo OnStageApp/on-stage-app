@@ -1,17 +1,11 @@
 import 'dart:async';
 
-import 'package:on_stage_app/app/database/app_database.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/stager_overview.dart';
-import 'package:on_stage_app/app/features/event_items/application/event_items_state.dart';
-import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
-import 'package:on_stage_app/app/features/event_items/domain/event_item_create.dart';
-import 'package:on_stage_app/app/features/event_items/domain/event_item_type.dart';
-import 'package:on_stage_app/app/features/event_items/domain/update_event_item_index.dart';
 import 'package:on_stage_app/app/features/event_template/event_item_template/application/event_item_templates_state.dart';
 import 'package:on_stage_app/app/features/event_template/event_item_template/data/event_item_templates_repo.dart';
 import 'package:on_stage_app/app/features/event_template/event_item_template/data/event_item_templates_repo_provider.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_model_v2.dart';
-import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
+import 'package:on_stage_app/app/features/event_template/event_item_template/domain/event_item_template.dart';
+import 'package:on_stage_app/app/features/event_template/event_item_template/domain/event_item_template_create.dart';
+import 'package:on_stage_app/app/features/event_template/event_item_template/domain/update_event_item_template_index.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,111 +22,30 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
     return const EventItemTemplatesState();
   }
 
-  List<String> getSongIds() {
-    return state.eventItemTemplates
-        .where((item) => item.eventType == EventItemType.song)
-        .map((item) => item.song!.id)
-        .toList();
-  }
-
-  Future<void> getEventItems(String eventId) async {
+  Future<void> getEventItemTemplates(String eventTemplateId) async {
     state = state.copyWith(isLoading: true);
 
-    final eventItemTemplates = await _eventItemTemplatesRepo.getEventItems(eventId);
-
-    final eventItemTemplatesWithPhotos = await Future.wait(
-      eventItemTemplates.map((eventItem) async {
-        if (eventItem.assignedTo == null || eventItem.assignedTo!.isEmpty) {
-          return eventItem;
-        }
-
-        final updatedStagers = await Future.wait(
-          eventItem.assignedTo!.map((stager) async {
-            final photo = await ref
-                .read(databaseProvider)
-                .getTeamMemberPhoto(stager.userId);
-            return stager.copyWith(profilePicture: photo?.profilePicture);
-          }),
-        );
-
-        return eventItem.copyWith(assignedTo: updatedStagers);
-      }),
-    );
+    final eventItemTemplates =
+        await _eventItemTemplatesRepo.getEventItems(eventTemplateId);
 
     state = state.copyWith(
-      eventItemTemplates: eventItemTemplatesWithPhotos,
+      eventItemTemplates: eventItemTemplates,
     );
 
     state = state.copyWith(isLoading: false);
   }
 
-  Future<void> updateMomentItem(EventItem eventItem) async {
-    try {
-      final eventItemCreate = EventItemCreate.fromEventItem(eventItem);
-      final updatedEventItem = await _eventItemTemplatesRepo.updateEventItem(
-        eventItem.id,
-        eventItemCreate,
-      );
-
-      final updatedItems = state.eventItemTemplates.map((item) {
-        return item.id == eventItem.id ? updatedEventItem : item;
-      }).toList();
-
-      state = state.copyWith(
-        eventItemTemplates: updatedItems,
-      );
-    } catch (e, stackTrace) {
-      logger.e('Error updating event item: $e\n$stackTrace');
-      state = state.copyWith(
-        eventItemTemplates: state.eventItemTemplates,
-      );
-    }
-  }
-
-  Future<void> updateSongIneventItemTemplates(SongModelV2 song) async {
-    logger.i('Updating song in event items: ${song.title}');
-    final updatedItems = state.eventItemTemplates.map((item) {
-      if (item.eventType == EventItemType.song && item.song!.id == song.id) {
-        return item.copyWith(song: SongOverview.fromSong(song));
-      }
-      return item;
-    }).toList();
-
-    final updatedSongs = state.songsFromEvent.map((s) {
-      if (s.id == song.id) {
-        return song;
-      }
-      return s;
-    }).toList();
-
-    state =
-        state.copyWith(eventItemTemplates: updatedItems, songsFromEvent: updatedSongs);
-  }
-
-  // Future<void> fetchSongForEachEventItem() async {
-  //   final songIds = state.eventItemTemplates
-  //       .where((item) => item.eventType == EventItemType.song)
-  //       .map((item) => item.song!.id)
-  //       .toList();
-
-  //   final songs = await Future.wait(
-  //     songIds.map((id) async {
-  //       final song = await songRepository.getSong(songId: id);
-  //       return song;
-  //     }).toList(),
-  //   );
-  //   state = state.copyWith(songsFromEvent: songs);
-  // }
-
-  Future<void> addEventItemMoment(EventItemCreate eventItem) async {
+  Future<void> addEventItemTemplate(
+    EventItemTemplateCreate eventItemTemplateCreate,
+  ) async {
     state = state.copyWith(isLoading: true);
 
-    final createEventItemRequest = eventItem.copyWith(
+    final eventItemTemplateCreateRequest = eventItemTemplateCreate.copyWith(
       index: state.eventItemTemplates.length,
     );
 
     final updatedEventItem =
-        await _eventItemTemplatesRepo.addMomentItem(createEventItemRequest);
+        await _eventItemTemplatesRepo.addMoment(eventItemTemplateCreateRequest);
 
     state = state.copyWith(
       isLoading: false,
@@ -140,34 +53,55 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
     );
   }
 
-  Future<void> updateeventItemTemplatesIndexes(List<EventItem> eventItemTemplates) async {
-    final originalItems = [...state.eventItemTemplates];
-    state = state.copyWith(eventItemTemplates: eventItemTemplates);
+  Future<void> updateEventItemTemplate(
+    EventItemTemplate eventItemTemplateCreate,
+  ) async {
+    state = state.copyWith(isLoading: true);
+
+    final updatedEventItemTemplateCreate = eventItemTemplateCreate;
+
+    final updatedEventItem = await _eventItemTemplatesRepo.updateEventItem(
+      updatedEventItemTemplateCreate.id,
+      updatedEventItemTemplateCreate,
+    );
+
+    final updatedItems = state.eventItemTemplates
+        .map((item) => item.id == updatedEventItem.id ? updatedEventItem : item)
+        .toList();
+
+    state = state.copyWith(
+      isLoading: false,
+      eventItemTemplates: updatedItems,
+    );
+  }
+
+  Future<void> updateEventItemTemplatesIndexes() async {
+    final eventItemTemplates = state.eventItemTemplates;
 
     try {
-      final updatedeventItemTemplates = eventItemTemplates
+      final updatedEventItemTemplates = eventItemTemplates
           .map((e) {
             if (e.index != null) {
-              return UpdateEventItemIndex(
-                eventItemId: e.id,
+              return UpdateEventItemTemplateIndex(
+                eventItemTemplateId: e.id,
                 index: e.index!,
               );
             }
             return null;
           })
-          .whereType<UpdateEventItemIndex>()
+          .whereType<UpdateEventItemTemplateIndex>()
           .toList();
 
-      await _eventItemTemplatesRepo.updateEventItemIndexes(updatedeventItemTemplates);
+      await _eventItemTemplatesRepo
+          .updateEventItemTemplateIndexes(updatedEventItemTemplates);
     } catch (e) {
-      state = state.copyWith(eventItemTemplates: originalItems);
       rethrow;
     }
   }
 
-  Future<void> deleteEventItem(String eventItemId) async {
-    final deletedItemIndex =
-        state.eventItemTemplates.indexWhere((item) => item.id == eventItemId);
+  Future<void> deleteEventItem(String eventItemTemplateId) async {
+    final deletedItemIndex = state.eventItemTemplates
+        .indexWhere((item) => item.id == eventItemTemplateId);
     if (deletedItemIndex == -1) return;
 
     final originalItems = [...state.eventItemTemplates];
@@ -176,20 +110,22 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
     state = state.copyWith(eventItemTemplates: updatedItems);
 
     try {
-      await _eventItemTemplatesRepo.deleteEventItem(eventItemId);
+      await _eventItemTemplatesRepo
+          .deleteEventItemTemplate(eventItemTemplateId);
 
       final updateRequests = updatedItems
           .where((item) => item.index != null)
           .map(
-            (item) => UpdateEventItemIndex(
-              eventItemId: item.id,
+            (item) => UpdateEventItemTemplateIndex(
+              eventItemTemplateId: item.id,
               index: item.index!,
             ),
           )
           .toList();
 
       if (updateRequests.isNotEmpty) {
-        await _eventItemTemplatesRepo.updateEventItemIndexes(updateRequests);
+        await _eventItemTemplatesRepo
+            .updateEventItemTemplateIndexes(updateRequests);
       }
     } catch (e) {
       state = state.copyWith(eventItemTemplates: originalItems);
@@ -197,7 +133,7 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
     }
   }
 
-  List<EventItem> _getUpdatedItemsAfterDeletion(int deletedIndex) {
+  List<EventItemTemplate> _getUpdatedItemsAfterDeletion(int deletedIndex) {
     return state.eventItemTemplates
         .where((item) => item.id != state.eventItemTemplates[deletedIndex].id)
         .map((item) {
@@ -207,37 +143,6 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
       return item;
     }).toList();
   }
-
-  // Future<void> addSongItems(
-  //   List<SongOverview> songs,
-  //   String eventId,
-  // ) async {
-  //   final startIndex = state.eventItemTemplates.length;
-  //   final createSongItemsRequest = songs
-  //       .map(
-  //         (song) => CreateSongItemRequest(
-  //           songId: song.id,
-  //           songTitle: song.title ?? '',
-  //           index: startIndex + songs.indexOf(song),
-  //         ),
-  //       )
-  //       .toList();
-
-  //   final createAllSongItemsRequest = CreateAllSongItemsRequest(
-  //     eventId: eventId,
-  //     songItems: createSongItemsRequest,
-  //   );
-
-  //   final addedSongItems =
-  //       await songRepository.addSongsToeventItemTemplates(createAllSongItemsRequest);
-
-  //   state = state.copyWith(
-  //     eventItemTemplates: [
-  //       ...state.eventItemTemplates,
-  //       ...addedSongItems,
-  //     ],
-  //   );
-  // }
 
   void changeOrderCache(int oldIndex, int newIndex) {
     final items = state.eventItemTemplates.toList();
@@ -254,28 +159,7 @@ class EventItemTemplatesNotifier extends _$EventItemTemplatesNotifier {
     state = state.copyWith(currentIndex: index);
   }
 
-  Future<void> removeLeadVocal(
-    String eventItemId,
-    String stagerId,
-  ) async {
-    final stagers = state.eventItemTemplates
-            .firstWhere((item) => item.id == eventItemId)
-            .assignedTo ??
-        [];
-    final updatedLeadVocals = List<StagerOverview>.from(stagers)
-      ..removeWhere((s) => s.id == stagerId);
-    state = state.copyWith(
-      eventItemTemplates: state.eventItemTemplates.map((item) {
-        if (item.id == eventItemId) {
-          return item.copyWith(assignedTo: updatedLeadVocals);
-        }
-        return item;
-      }).toList(),
-    );
-    unawaited(_eventItemTemplatesRepo.deleteLeadVocals(eventItemId, stagerId));
-  }
-
-  List<EventItem> _reorderAllEvents(List<EventItem> items) {
+  List<EventItemTemplate> _reorderAllEvents(List<EventItemTemplate> items) {
     final reorderAllEvents = items.map((e) {
       return e.copyWith(index: items.indexOf(e));
     }).toList();

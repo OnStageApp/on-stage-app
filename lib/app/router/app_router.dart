@@ -37,7 +37,7 @@ enum AppRoute {
   groups,
   momentDetails,
   eventTemplates,
-  eventTemplateDetails,
+  eventTemplateDetails, eventItemTemplateSchedule,
 }
 
 extension GoRouterExtension on GoRouter {
