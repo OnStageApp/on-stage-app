@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/stager_status_enum.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_actions.dart';
@@ -82,6 +81,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.EVENT_INVITATION_ACCEPTED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           onTap: () {
             notificationActions.goToEvent(
@@ -93,6 +93,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.EVENT_INVITATION_DECLINED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           onTap: () {
             notificationActions.goToEvent(
@@ -102,7 +103,10 @@ class NotificationTileFactory extends ConsumerWidget {
           },
         );
       case NotificationType.TEAM_INVITATION_ACCEPTED:
+        final userId = notification.params?.userId;
+
         return PhotoMessageNotificationTile(
+          userId: userId,
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
           onTap: () {},
@@ -110,12 +114,14 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.TEAM_INVITATION_DECLINED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           onTap: () {},
         );
       case NotificationType.NEW_REHEARSAL:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.NEW_REHEARSAL,
@@ -132,6 +138,7 @@ class NotificationTileFactory extends ConsumerWidget {
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
           description: notification.description,
+          userId: notification.params?.userId,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.LEAD_VOICE_ASSIGNED,
             context,
@@ -147,6 +154,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.EVENT_DELETED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.EVENT_DELETED,
@@ -157,6 +165,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.TEAM_MEMBER_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.TEAM_MEMBER_REMOVED,
@@ -167,6 +176,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.LEAD_VOICE_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.LEAD_VOICE_REMOVED,
@@ -177,6 +187,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.ROLE_CHANGED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.ROLE_CHANGED,
@@ -187,6 +198,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.TEAM_MEMBER_ADDED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.TEAM_MEMBER_ADDED,
@@ -197,6 +209,7 @@ class NotificationTileFactory extends ConsumerWidget {
       case NotificationType.STAGER_REMOVED:
         return PhotoMessageNotificationTile(
           status: notification.status ?? NotificationStatus.VIEWED,
+          userId: notification.params?.userId,
           description: notification.description,
           iconConfig: NotificationIconHelper.getConfigForType(
             NotificationType.STAGER_REMOVED,
