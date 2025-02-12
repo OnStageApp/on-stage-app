@@ -45,9 +45,7 @@ class AppSettingsState extends ConsumerState<AppSettings>
         ref.read(userSettingsNotifierProvider).isNotificationsEnabled ?? false;
 
     if (status.isGranted && !currentNotificationSetting) {
-      await ref
-          .read(userSettingsNotifierProvider.notifier)
-          .setNotification(isActive: true);
+      await ref.read(userSettingsNotifierProvider.notifier).setNotification();
     } else if (!status.isGranted && currentNotificationSetting) {
       await ref
           .read(userSettingsNotifierProvider.notifier)
@@ -124,7 +122,6 @@ class AppSettingsState extends ConsumerState<AppSettings>
               showPlanUpgrades(context);
             },
           ),
-          const SizedBox(height: 12),
         ],
       ],
     );

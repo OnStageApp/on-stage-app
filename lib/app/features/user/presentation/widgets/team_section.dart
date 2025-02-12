@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
-import 'package:on_stage_app/app/features/team/application/team_notifier
+import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/switch_teams_button.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TeamsSection extends ConsumerWidget {
   const TeamsSection({super.key});
@@ -57,6 +61,7 @@ class TeamsSection extends ConsumerWidget {
           },
         ),
         if (ref.watch(permissionServiceProvider).hasAccessToEdit) ...[
+          const SizedBox(height: 12),
           PreferencesActionTile(
             title: 'Group Templates',
             trailingIcon: Icons.keyboard_arrow_right_rounded,
@@ -70,20 +75,21 @@ class TeamsSection extends ConsumerWidget {
               context.goNamed(AppRoute.groups.name);
             },
           ),
-        ] else if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
-          /// Disabled for now
-          // CreateNewTeamButton(
-          //   icon: Icons.group,
-          //   title: 'Create Your Own Team',
-          //   actionTitle: 'Create',
-          //   onTap: () {
-          //     PaywallModal.show(
-          //       context: context,
-          //       permissionType: PermissionType.addTeamMembers,
-          //     );
-          //   },
-          // ),
         ],
+        //  else if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) ...[
+        /// Disabled for now
+        // CreateNewTeamButton(
+        //   icon: Icons.group,
+        //   title: 'Create Your Own Team',
+        //   actionTitle: 'Create',
+        //   onTap: () {
+        //     PaywallModal.show(
+        //       context: context,
+        //       permissionType: PermissionType.addTeamMembers,
+        //     );
+        //   },
+        // ),
+        // ],
       ],
     );
   }
