@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/domain/models/event_model.dart';
@@ -59,7 +60,7 @@ class _RemindersSectionState extends ConsumerState<RemindersSection> {
         EventActionButton(
           onTap: () => _showSetReminderModal(context, event),
           text: 'Edit Reminders',
-          icon: Icons.mode_edit_outline_outlined,
+          icon: LucideIcons.bell_dot,
         ),
       ],
     );

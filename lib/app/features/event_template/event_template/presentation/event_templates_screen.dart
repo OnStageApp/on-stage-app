@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/application/current_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/application/event_templates_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/widgets/event_template_tile.dart';
@@ -56,31 +59,77 @@ class EventTemplatesScreenState extends ConsumerState<EventTemplatesScreen> {
             ),
           ),
         ),
-        body: RefreshIndicator.adaptive(
-          onRefresh: () async {
-            await ref
-                .read(eventTemplatesNotifierProvider.notifier)
-                .getEventTemplates();
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: ListView.builder(
-              itemCount: eventTemplates.length,
-              itemBuilder: (context, index) {
-                return EventTemplateTile(
-                  title: eventTemplates[index].name ?? '',
-                  location: eventTemplates[index].location ?? '',
-                  onTap: () {
-                    context.pushNamed(
-                      AppRoute.eventTemplateDetails.name,
-                      extra: eventTemplates[index],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
+        body: eventTemplates.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/folders_v2.svg',
+                      colorFilter: ColorFilter.mode(
+                        context.colorScheme.outline,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: "You don't have any \ntemplates, ",
+                        style: context.textTheme.titleMedium!
+                            .copyWith(color: context.colorScheme.outline),
+                        children: [
+                          TextSpan(
+                            text: 'add one.',
+                            style: context.textTheme.titleMedium!
+                                .copyWith(color: context.colorScheme.primary),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                ref
+                                    .read(currentEventTemplateProvider.notifier)
+                                    .createEmptyEventTemplate()
+                                    .then((savedTemplate) {
+                                  if (context.mounted) {
+                                    context.pushNamed(
+                                      AppRoute.eventTemplateDetails.name,
+                                      extra: savedTemplate,
+                                      queryParameters: {'isNew': 'true'},
+                                    );
+                                  }
+                                });
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : RefreshIndicator.adaptive(
+                onRefresh: () async {
+                  await ref
+                      .read(eventTemplatesNotifierProvider.notifier)
+                      .getEventTemplates();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListView.builder(
+                    itemCount: eventTemplates.length,
+                    itemBuilder: (context, index) {
+                      return EventTemplateTile(
+                        title: eventTemplates[index].name ?? '',
+                        location: eventTemplates[index].location ?? '',
+                        onTap: () {
+                          context.pushNamed(
+                            AppRoute.eventTemplateDetails.name,
+                            extra: eventTemplates[index],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
       ),
     );
   }

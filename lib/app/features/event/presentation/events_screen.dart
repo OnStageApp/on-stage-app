@@ -2,19 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/application/events/events_notifier.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/create_event_adaptive_menu.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/event_shimmer_list.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_content.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/events_search_bar.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/search_result_list.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
-import 'package:on_stage_app/app/features/stage_tooltip/stage_tooltip.dart';
-import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
-import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
-import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
-import 'package:on_stage_app/app/features/user_settings/domain/user_settings.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -30,8 +24,6 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchFocused = false;
-  final GlobalKey<StageTooltipState> _createEventTooltipKey =
-      GlobalKey<StageTooltipState>();
 
   @override
   void initState() {
@@ -39,14 +31,6 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeEvents();
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted &&
-            ref.read(userSettingsNotifierProvider).isCreateEventTooltipShown ==
-                false) {
-          //TODO: See if it's needed
-          // _createEventTooltipKey.currentState?.showTooltip();
-        }
-      });
     });
   }
 
@@ -124,12 +108,9 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   }
 
   Widget _buildTrailingButton(BuildContext context) {
-    final userSettingsNotifier = ref.watch(userSettingsNotifierProvider);
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: StageTooltip(
-        message: 'Add your first Event',
-        key: _createEventTooltipKey,
+    return CreateEventAdaptiveMenu(
+      child: Padding(
+        padding: const EdgeInsets.only(right: 12),
         child: IconButton(
           style: IconButton.styleFrom(
             visualDensity: VisualDensity.compact,
@@ -140,34 +121,10 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
               ),
             ),
           ),
-          onPressed: () async {
-            if (userSettingsNotifier.isCreateEventTooltipShown == false) {
-              _disableTooltip();
-            }
-            if (ref.watch(permissionServiceProvider).canAddEvents) {
-              await ref.read(eventNotifierProvider.notifier).createEmptyEvent();
-              if (mounted) {
-                unawaited(context.pushNamed(AppRoute.addEvent.name));
-              }
-            } else {
-              PaywallModal.show(
-                context: context,
-                permissionType: PermissionType.addEvents,
-              );
-            }
-          },
+          onPressed: null,
           icon: Icon(Icons.add, color: context.colorScheme.surfaceDim),
         ),
       ),
     );
-  }
-
-  void _disableTooltip() {
-    _createEventTooltipKey.currentState?.hideTooltip();
-    ref.read(userSettingsNotifierProvider.notifier).updateUserSettings(
-          const UserSettings(
-            isCreateEventTooltipShown: true,
-          ),
-        );
   }
 }

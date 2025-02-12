@@ -83,6 +83,11 @@ abstract class EventsRepository {
     @Body() DuplicateEventRequest duplicateEventRequest,
   );
 
+  @POST(API.createFromTemplate)
+  Future<EventModel> createEventFromTemplate(
+    @Path('id') String id,
+  );
+
   @DELETE(API.eventById)
   Future<void> deleteEvent(
     @Path('id') String eventId,

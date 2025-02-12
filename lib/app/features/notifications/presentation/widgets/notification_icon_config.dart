@@ -78,7 +78,7 @@ class NotificationIconHelper {
 
       case NotificationType.REMINDER:
         return NotificationIconConfig(
-          icon: LucideIcons.calendar_sync,
+          icon: LucideIcons.bell_dot,
           iconColor: Colors.blue,
           backgroundColor: Colors.blue.withAlpha(50),
         );

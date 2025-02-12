@@ -7,15 +7,12 @@ import 'package:on_stage_app/app/features/event/application/event/controller/eve
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/create_rehearsal_modal.dart';
 import 'package:on_stage_app/app/features/event/presentation/custom_text_field.dart';
-import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/date_time_text_field.dart';
+import 'package:on_stage_app/app/features/event/presentation/widgets/reminders_section.dart';
 import 'package:on_stage_app/app/features/groups/group_event/application/group_event_notifier.dart';
 import 'package:on_stage_app/app/features/groups/shared/presentation/groups_obj_grid.dart';
-import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/reminder/application/reminder_notifier.dart';
-import 'package:on_stage_app/app/features/reminder/presentation/set_reminder_modal.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
-import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/blue_action_button.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
@@ -45,12 +42,21 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final eventId = ref.watch(eventNotifierProvider).event?.id;
-      print('Event ID: $eventId');
       if (eventId != null) {
+        _prefillFields();
+        ref.read(reminderNotifierProvider.notifier).getReminders(eventId);
         ref.read(groupEventNotifierProvider.notifier).getGroupsEvent(eventId);
       }
     });
     super.initState();
+  }
+
+  void _prefillFields() {
+    final event = ref.watch(eventNotifierProvider).event;
+    if (event != null) {
+      _eventNameController.text = event.name ?? '';
+      _eventLocationController.text = event.location ?? '';
+    }
   }
 
   @override
@@ -60,6 +66,10 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
     if (eventId == null) {
       return const SizedBox();
     }
+
+    _reminders = ref.watch(reminderNotifierProvider).reminders.map((e) {
+      return e.daysBefore;
+    }).toList();
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
@@ -81,7 +91,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
           if (shouldPop ?? true) {
             unawaited(ref.read(eventNotifierProvider.notifier).deleteEvent());
-            if (mounted) context.pop();
+            if (context.mounted) context.pop();
           }
         },
         title: 'Create Event',
@@ -134,40 +144,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
                 eventId: eventId,
               ),
               const SizedBox(height: 24),
-              Text(
-                'Reminders',
-                style: context.textTheme.titleSmall,
-              ),
-              const SizedBox(height: Insets.smallNormal),
-              ListView.builder(
-                itemCount: _reminders.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final reminder = _reminders[index];
-                  if (reminder == 0) return const SizedBox();
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: CustomSettingTile(
-                      backgroundColor: context.colorScheme.onSurfaceVariant,
-                      placeholder: 'Alert ${_reminders.indexOf(reminder) + 1}',
-                      placeholderColor: context.colorScheme.onSurface,
-                      suffix: Text(
-                        '$reminder days before',
-                        style: context.textTheme.titleMedium!
-                            .copyWith(color: context.colorScheme.onSurface),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              EventActionButton(
-                text: ' Select Reminders',
-                icon: Icons.notification_add_outlined,
-                onTap: () {
-                  _editReminders(context);
-                },
-              ),
+              const RemindersSection(),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: DashedLineDivider(),
@@ -228,7 +205,7 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
             );
       }
 
-      if (mounted) {
+      if (context.mounted) {
         context.pushReplacementNamed(
           AppRoute.eventDetails.name,
           queryParameters: {
@@ -273,23 +250,4 @@ class AddEventDetailsScreenState extends ConsumerState<AddEventDetailsScreen> {
 
   bool _isFormValid() =>
       _formKey.currentState!.validate() && _dateTimeError == null;
-
-  Future<void> _editReminders(BuildContext context) async {
-    await ref.watch(permissionServiceProvider).callMethodIfHasPermission(
-          context: context,
-          permissionType: PermissionType.reminders,
-          onGranted: () {
-            SetReminderModal.show(
-              cacheReminders: _reminders,
-              context: context,
-              ref: ref,
-              onSaved: (List<int> reminders) {
-                setState(() {
-                  _reminders = reminders;
-                });
-              },
-            );
-          },
-        );
-  }
 }

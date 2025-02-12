@@ -20,6 +20,7 @@ import 'package:on_stage_app/app/shared/dash_divider.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class EventTemplateDetailsScreen extends ConsumerStatefulWidget {
   const EventTemplateDetailsScreen({
@@ -124,9 +125,14 @@ class EventTemplateDetailsScreenState
         appBar: StageAppBar(
           title: 'Edit Template',
           isBackButtonVisible: true,
-          trailing: const _ScheduleButton(),
+          trailing: _ScheduleButton(
+            hasChanges: _hasChanges,
+            onSave: _handleSave,
+          ),
           onBackButtonPressed: () async {
-            if (_nameController.text.isNotEmpty && !widget.isNew) {
+            final eventTemplateId = widget.eventTemplate.id;
+            if (_nameController.text.isNotEmpty &&
+                eventTemplateId.isNotNullEmptyOrWhitespace) {
               await ref
                   .read(eventTemplatesNotifierProvider.notifier)
                   .getEventTemplates();
@@ -270,7 +276,12 @@ class EventTemplateDetailsScreenState
 }
 
 class _ScheduleButton extends ConsumerWidget {
-  const _ScheduleButton();
+  const _ScheduleButton({
+    required this.hasChanges,
+    required this.onSave,
+  });
+  final bool hasChanges;
+  final Future<void> Function() onSave;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -284,13 +295,20 @@ class _ScheduleButton extends ConsumerWidget {
         child: SizedBox(
           height: 32,
           child: InkWell(
-            onTap: () {
-              context.pushNamed(
-                AppRoute.eventItemTemplateSchedule.name,
-                queryParameters: {
-                  'eventTemplateId': eventTemplateId.toString(),
-                },
-              );
+            onTap: () async {
+              if (hasChanges) {
+                await onSave();
+              }
+              if (context.mounted) {
+                unawaited(
+                  context.pushNamed(
+                    AppRoute.eventItemTemplateSchedule.name,
+                    queryParameters: {
+                      'eventTemplateId': eventTemplateId.toString(),
+                    },
+                  ),
+                );
+              }
             },
             overlayColor: WidgetStatePropertyAll(
               context.colorScheme.onSurface.withAlpha(20),
