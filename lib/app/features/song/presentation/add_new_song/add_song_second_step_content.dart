@@ -264,14 +264,12 @@ class AddSongSecondStepContentState
 }
 
 class EditorTabSwitch extends ConsumerWidget {
-  final String songId;
-
   const EditorTabSwitch({
     required this.songId,
     required this.tabController,
     super.key,
   });
-
+  final String songId;
   final TabController tabController;
 
   @override

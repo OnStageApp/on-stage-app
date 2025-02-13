@@ -348,6 +348,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
         ),
         ListView.separated(
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           separatorBuilder: (context, index) => SizedBox(
             height: widget.lineHeight,
