@@ -32,7 +32,10 @@ class NotificationTileFactory extends ConsumerWidget {
             NotificationType.REMINDER,
             context,
           ),
-          onTap: () {},
+          onTap: () {
+            //TODO:  not possible yet
+            // _goToEvent(notificationActions, context);
+          },
         );
       case NotificationType.TEAM_INVITATION_REQUEST:
         return TeamActionNotificationTile(
@@ -84,10 +87,7 @@ class NotificationTileFactory extends ConsumerWidget {
           userId: notification.params?.userId,
           description: notification.description,
           onTap: () {
-            notificationActions.goToEvent(
-              notification.params?.eventId,
-              context,
-            );
+            _goToEvent(notificationActions, context);
           },
         );
       case NotificationType.EVENT_INVITATION_DECLINED:
@@ -95,12 +95,7 @@ class NotificationTileFactory extends ConsumerWidget {
           status: notification.status ?? NotificationStatus.VIEWED,
           userId: notification.params?.userId,
           description: notification.description,
-          onTap: () {
-            notificationActions.goToEvent(
-              notification.params?.eventId,
-              context,
-            );
-          },
+          onTap: () {},
         );
       case NotificationType.TEAM_INVITATION_ACCEPTED:
         final userId = notification.params?.userId;
@@ -128,10 +123,13 @@ class NotificationTileFactory extends ConsumerWidget {
             context,
           ),
           onTap: () {
-            notificationActions.goToEvent(
-              notification.params?.eventId,
-              context,
-            );
+            if (notification.actionStatus !=
+                NotificationActionStatus.DISABLED) {
+              notificationActions.goToEvent(
+                notification.params?.eventId,
+                context,
+              );
+            }
           },
         );
       case NotificationType.LEAD_VOICE_ASSIGNED:
@@ -144,10 +142,13 @@ class NotificationTileFactory extends ConsumerWidget {
             context,
           ),
           onTap: () {
-            notificationActions.goToEvent(
-              notification.params?.eventId,
-              context,
-            );
+            if (notification.actionStatus !=
+                NotificationActionStatus.DISABLED) {
+              notificationActions.goToEvent(
+                notification.params?.eventId,
+                context,
+              );
+            }
           },
         );
 
@@ -219,6 +220,18 @@ class NotificationTileFactory extends ConsumerWidget {
         );
       case null:
         return const SizedBox();
+    }
+  }
+
+  void _goToEvent(
+    NotificationActions notificationActions,
+    BuildContext context,
+  ) {
+    if (notification.actionStatus != NotificationActionStatus.DISABLED) {
+      notificationActions.goToEvent(
+        notification.params?.eventId,
+        context,
+      );
     }
   }
 }

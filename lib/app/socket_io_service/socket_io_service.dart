@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:on_stage_app/app/device/application/device_service.dart';
 import 'package:on_stage_app/app/enums/socket_event_type.dart';
+import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -105,12 +106,20 @@ class SocketIoService extends _$SocketIoService {
 
     _listenOnNotifications();
     _listenOnSubscriptionUpdate();
+    _listenOnLogOutEvents();
   }
 
   void _listenOnNotifications() {
     _socket?.on(SocketEventType.NOTIFICATION.name, (data) {
       logger.i('Received notification event: $data');
       ref.read(notificationNotifierProvider.notifier).getNotifications();
+    });
+  }
+
+  void _listenOnLogOutEvents() {
+    _socket?.on(SocketEventType.LOG_OUT.name, (data) {
+      logger.i('Received LOG_OUT event: $data');
+      ref.read(loginNotifierProvider.notifier).signOut();
     });
   }
 
