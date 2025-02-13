@@ -178,10 +178,10 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
                         .watch(userSettingsNotifierProvider)
                         .textSize
                         ?.size(context) ??
-                    (TextSize.normal.size(context)),
+                    (TextSize.small.size(context)),
                 color: widget.notes.isNotNullEmptyOrWhitespace
                     ? colorScheme.surfaceContainer
-                    : colorScheme.surfaceContainer.withOpacity(0.5),
+                    : colorScheme.surfaceContainer.withAlpha(100),
               ),
             ),
     );
