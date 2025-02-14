@@ -26,12 +26,14 @@ class ChordDeletionInputFormatter extends TextInputFormatter {
   }
 
   bool _isSingleCharacterDeletion(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     return oldValue.text.length - newValue.text.length == 1;
   }
 
   int _findDeletionIndex(String oldText, String newText) {
-    for (int i = 0; i < oldText.length; i++) {
+    for (var i = 0; i < oldText.length; i++) {
       if (i >= newText.length || oldText[i] != newText[i]) {
         return i;
       }
@@ -42,7 +44,7 @@ class ChordDeletionInputFormatter extends TextInputFormatter {
   ({int start, int end})? _findChordBoundaries(String text, int deletionIndex) {
     // Find opening bracket
     int? openIndex;
-    for (int i = deletionIndex; i >= 0; i--) {
+    for (var i = deletionIndex; i >= 0; i--) {
       if (text[i] == '[' && _isBalancedUpTo(text, i)) {
         openIndex = i;
         break;
@@ -51,8 +53,8 @@ class ChordDeletionInputFormatter extends TextInputFormatter {
     if (openIndex == null) return null;
 
     // Find closing bracket
-    int bracketCount = 1;
-    for (int i = openIndex + 1; i < text.length; i++) {
+    var bracketCount = 1;
+    for (var i = openIndex + 1; i < text.length; i++) {
       if (text[i] == '[') bracketCount++;
       if (text[i] == ']') {
         bracketCount--;
@@ -69,10 +71,10 @@ class ChordDeletionInputFormatter extends TextInputFormatter {
   }
 
   bool _isBalancedUpTo(String text, int index) {
-    int openCount = 0;
-    int closeCount = 0;
+    var openCount = 0;
+    var closeCount = 0;
 
-    for (int i = 0; i <= index; i++) {
+    for (var i = 0; i <= index; i++) {
       if (text[i] == '[') openCount++;
       if (text[i] == ']') closeCount++;
     }
@@ -81,7 +83,9 @@ class ChordDeletionInputFormatter extends TextInputFormatter {
   }
 
   TextEditingValue _deleteChord(
-      String text, ({int start, int end}) boundaries) {
+    String text,
+    ({int start, int end}) boundaries,
+  ) {
     return TextEditingValue(
       text: text.substring(0, boundaries.start) +
           text.substring(boundaries.end + 1),
