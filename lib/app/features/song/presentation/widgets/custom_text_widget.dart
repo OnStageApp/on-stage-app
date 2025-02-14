@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/chord_deletion_input_formatter.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-/// A custom TextEditingController that only customizes text styling.
 class CustomTextEditingController extends TextEditingController {
   CustomTextEditingController({super.text});
 
@@ -15,7 +14,7 @@ class CustomTextEditingController extends TextEditingController {
     final children = <InlineSpan>[];
     final tagRegex = RegExp(r'(<[^>]+>|\[[^\]]+\])');
     final matches = tagRegex.allMatches(text);
-    int lastMatchEnd = 0;
+    var lastMatchEnd = 0;
     for (final match in matches) {
       if (match.start > lastMatchEnd) {
         children.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
@@ -46,6 +45,33 @@ class CustomTextEditingController extends TextEditingController {
     }
     return TextSpan(style: style, children: children);
   }
+
+  @override
+  set value(TextEditingValue newValue) {
+    final oldText = text;
+    final newText = newValue.text;
+
+    // Check if a '[' was just added
+    if (newText.length == oldText.length + 1 &&
+        newText.contains('[', newValue.selection.baseOffset - 1)) {
+      // Check if there's already a closing bracket after the cursor
+      final textAfterCursor = newText.substring(newValue.selection.baseOffset);
+      if (!textAfterCursor.startsWith(']')) {
+        // Insert the closing bracket only if there isn't one already
+        final baseOffset = newValue.selection.baseOffset;
+        final newTextWithBracket = '${newText.substring(0, baseOffset)}]'
+            '${newText.substring(baseOffset)}';
+
+        value = TextEditingValue(
+          text: newTextWithBracket,
+          selection: TextSelection.collapsed(offset: baseOffset),
+        );
+        return;
+      }
+    }
+
+    super.value = newValue;
+  }
 }
 
 class CustomTextField extends StatefulWidget {
@@ -61,16 +87,16 @@ class CustomTextField extends StatefulWidget {
   final TextStyle style;
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  CustomTextFieldState createState() => CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
-        scribbleEnabled: false,
+        stylusHandwritingEnabled: false,
         scrollPhysics: const NeverScrollableScrollPhysics(),
         focusNode: widget.focusNode,
         enableSuggestions: false,
