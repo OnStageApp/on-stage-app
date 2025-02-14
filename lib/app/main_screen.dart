@@ -76,24 +76,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           await ref.read(eventNotifierProvider.notifier).deleteEvent();
         },
       ),
-      // '/songs/song/editSongContent': NavigationInfo(
-      //   unsafeIndices: {0, 1, 2, 3},
-      //   onConfirm: () async {},
-      // ),
-      // '/songs/song/editSongInfo': NavigationInfo(
-      //   unsafeIndices: {0, 1, 2, 3},
-      //   onConfirm: () async {},
-      // ),
-      // '/songs/createSongInfo': NavigationInfo(
-      //   unsafeIndices: {0, 1, 2, 3},
-      //   onConfirm: () async {},
-      // ),
-      // '/events/eventItemsWithPages': NavigationInfo(
-      //   unsafeIndices: {0, 1, 3},
-      //   onConfirm: () async {},
-      //   modalTitle: 'Leave',
-      //   modalDescription: 'Are you sure you want to leave this page?',
-      // ),
     };
 
     final navigationInfo = navigationRules[currentPath];
@@ -118,7 +100,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     await ref.read(databaseProvider).initDatabase();
     ref.read(socketIoServiceProvider.notifier);
     await Future.wait([
-      ref.read(deviceServiceProvider).verifyDeviceId(),
+      ref.read(deviceServiceProvider).updateDevice(),
       ref
           .read(teamMembersNotifierProvider.notifier)
           .fetchAndSaveTeamMemberPhotos(),

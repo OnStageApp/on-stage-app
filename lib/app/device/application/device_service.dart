@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/device/data/device_repository.dart';
 import 'package:on_stage_app/app/device/domain/device_request/device_request.dart';
 import 'package:on_stage_app/app/enums/platform_type.dart';
@@ -27,23 +28,17 @@ class DeviceService {
   final DeviceInfoPlugin _deviceInfo;
   final DeviceRepository _deviceRepository;
 
-  Future<void> verifyDeviceId() async {
+  Future<void> updateDevice() async {
     try {
+      logger.i('Updating device info');
       final deviceInfo = await getDeviceInfo();
       final storedDeviceId = await _getStoredDeviceId();
 
-      if (storedDeviceId == null || storedDeviceId != deviceInfo.deviceId) {
-        logger.i('Device ID changed or not stored. '
-            'Old: $storedDeviceId, New: ${deviceInfo.deviceId}');
+      final packageInfo = await PackageInfo.fromPlatform();
 
-        final packageInfo = await PackageInfo.fromPlatform();
+      await _storeDeviceIdLocally(deviceInfo.deviceId);
 
-        await _storeDeviceId(deviceInfo.deviceId);
-
-        await _saveDevice(oldDeviceId: storedDeviceId, deviceInfo, packageInfo);
-      } else {
-        logger.i('Device ID unchanged: $storedDeviceId');
-      }
+      await _saveDevice(oldDeviceId: storedDeviceId, deviceInfo, packageInfo);
     } catch (e, stackTrace) {
       logger.e('Error verifying device ID', e, stackTrace);
     }
@@ -54,7 +49,7 @@ class DeviceService {
       final deviceInfo = await getDeviceInfo();
       final packageInfo = await PackageInfo.fromPlatform();
 
-      await _storeDeviceId(deviceInfo.deviceId);
+      await _storeDeviceIdLocally(deviceInfo.deviceId);
       logger.i('Device ID stored locally: ${deviceInfo.deviceId}');
 
       await _loginDevice(deviceInfo, packageInfo);
@@ -202,31 +197,6 @@ class DeviceService {
     return width > 768;
   }
 
-  Future<void> updateDevice(
-    String deviceId,
-    PackageInfo packageInfo, {
-    String? oldDeviceId,
-  }) async {
-    try {
-      final deviceInfo = await getDeviceInfo();
-
-      final device = DeviceRequest(
-        deviceId: deviceId,
-        platformType: deviceInfo.platformType,
-        osVersion: deviceInfo.osVersion,
-        appVersion: packageInfo.version,
-        buildVersion: packageInfo.buildNumber,
-        pushToken: await _getFcmToken(),
-      );
-
-      await _deviceRepository.updateDevice(oldDeviceId ?? deviceId, device);
-      logger.i('Device updated successfully: $deviceId');
-    } catch (e, stackTrace) {
-      logger.e('Error updating device', e, stackTrace);
-      rethrow;
-    }
-  }
-
   Future<String?> _getFcmToken() async {
     try {
       return await FirebaseMessaging.instance.getToken();
@@ -241,14 +211,14 @@ class DeviceService {
     return prefs.getString(_deviceIdKey);
   }
 
-  Future<void> _storeDeviceId(String deviceId) async {
+  Future<void> _storeDeviceIdLocally(String deviceId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_deviceIdKey, deviceId);
   }
 }
 
 @Riverpod(keepAlive: true)
-DeviceService deviceService(DeviceServiceRef ref) {
+DeviceService deviceService(Ref ref) {
   final deviceRepository = DeviceRepository(ref.watch(dioProvider));
   return DeviceService(deviceRepository);
 }

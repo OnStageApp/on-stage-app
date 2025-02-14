@@ -89,8 +89,7 @@ class EditUserProfileState extends ConsumerState<EditUserProfile> {
         _hasChanges = false;
       });
     } else {
-      // Get error message from state
-      final errorMessage = ref.read(userNotifierProvider).error;
+      final errorMessage = ref.watch(userNotifierProvider).error;
 
       TopFlushBar.show(
         context,
