@@ -92,7 +92,7 @@ dependencies:
   synchronized: ^3.3.0+3
   force_update_helper: ^0.1.6
   firebase_remote_config: ^5.3.0
-  image_cropper: ^8.1.0
+  image_cropper: ^9.0.0
   permission_handler: ^11.3.1
   path: any
   pull_down_button: ^0.10.2
