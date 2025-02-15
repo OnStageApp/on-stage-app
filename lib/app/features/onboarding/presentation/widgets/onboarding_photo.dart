@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class OnboardingPhoto extends StatefulWidget {
-  const OnboardingPhoto({required this.imagePath, super.key});
+  const OnboardingPhoto({
+    required this.imagePath,
+    this.largeScreenImageFactor = 0.5,
+    this.smallScreenImageFactor = 0.9,
+    super.key,
+  });
+  final double largeScreenImageFactor;
+  final double smallScreenImageFactor;
 
   final String imagePath;
 
   @override
-  _OnboardingPhotoState createState() => _OnboardingPhotoState();
+  OnboardingPhotoState createState() => OnboardingPhotoState();
 }
 
-class _OnboardingPhotoState extends State<OnboardingPhoto>
+class OnboardingPhotoState extends State<OnboardingPhoto>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
@@ -63,7 +70,9 @@ class _OnboardingPhotoState extends State<OnboardingPhoto>
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: FractionallySizedBox(
-              widthFactor: context.isLargeScreen ? 0.5 : 0.9,
+              widthFactor: context.isLargeScreen
+                  ? widget.largeScreenImageFactor
+                  : widget.smallScreenImageFactor,
               child: AspectRatio(
                 aspectRatio: 3 / 4,
                 child: Image.asset(

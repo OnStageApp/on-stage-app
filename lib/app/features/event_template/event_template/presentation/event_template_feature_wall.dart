@@ -35,33 +35,42 @@ class EventTemplateFeatureWall extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 64),
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: () {
-                    ref
-                        .read(userSettingsNotifierProvider.notifier)
-                        .setEventTemplateFeatureWallShown();
-                    context.popDialog();
-                  },
-                  icon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: context.colorScheme.onSurfaceVariant,
+              Padding(
+                padding: context.isLargeScreen
+                    ? const EdgeInsets.only(
+                        left: 160,
+                        right: 160,
+                      )
+                    : EdgeInsets.zero,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () {
+                      ref
+                          .read(userSettingsNotifierProvider.notifier)
+                          .setEventTemplateFeatureWallShown();
+                      context.popDialog();
+                    },
+                    icon: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      LucideIcons.x,
-                      size: 18,
-                      color: context.colorScheme.outline,
+                      child: Icon(
+                        LucideIcons.x,
+                        size: context.isLargeScreen ? 24 : 18,
+                        color: context.colorScheme.outline,
+                      ),
                     ),
                   ),
                 ),
               ),
-              // const SizedBox(height: Insets.large),
               const OnboardingPhoto(
+                smallScreenImageFactor: 1,
+                largeScreenImageFactor: 0.6,
                 imagePath: 'assets/images/event_templates_feature_wall.png',
               ),
               const Padding(
@@ -75,33 +84,35 @@ class EventTemplateFeatureWall extends ConsumerWidget {
               const SizedBox(
                 height: 100,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ContinueButton(
-                  text: 'Create your Event Template',
-                  backgroundColor: context.colorScheme.secondary,
-                  // borderColor: context.colorScheme.primary,
-                  onPressed: () async {
-                    unawaited(
-                      ref
-                          .read(userSettingsNotifierProvider.notifier)
-                          .setEventTemplateFeatureWallShown(),
-                    );
-                    final savedTemplate = await ref
-                        .read(currentEventTemplateProvider.notifier)
-                        .createEmptyEventTemplate();
-                    if (context.mounted) {
-                      context.popDialog();
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ContinueButton(
+                    text: 'Create your Event Template',
+                    backgroundColor: context.colorScheme.secondary,
+                    // borderColor: context.colorScheme.primary,
+                    onPressed: () async {
                       unawaited(
-                        context.pushNamed(
-                          AppRoute.eventTemplateDetails.name,
-                          extra: savedTemplate,
-                          queryParameters: {'isNew': 'true'},
-                        ),
+                        ref
+                            .read(userSettingsNotifierProvider.notifier)
+                            .setEventTemplateFeatureWallShown(),
                       );
-                    }
-                  },
-                  isEnabled: true,
+                      final savedTemplate = await ref
+                          .read(currentEventTemplateProvider.notifier)
+                          .createEmptyEventTemplate();
+                      if (context.mounted) {
+                        context.popDialog();
+                        unawaited(
+                          context.pushNamed(
+                            AppRoute.eventTemplateDetails.name,
+                            extra: savedTemplate,
+                            queryParameters: {'isNew': 'true'},
+                          ),
+                        );
+                      }
+                    },
+                    isEnabled: true,
+                  ),
                 ),
               ),
               const SizedBox(
