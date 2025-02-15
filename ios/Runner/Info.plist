@@ -43,6 +43,8 @@
     <string>Access to your photos is needed to let you choose and set your profile picture in the app.</string>
     <key>NSUserNotificationUsageDescription</key>
     <string>We'll notify you about new messages, comments, and updates from other users in your network to help you stay connected with your community.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>... explain why the app uses the microphone here ...</string>
     <!-- URL Schemes -->
     <key>CFBundleURLTypes</key>
     <array>
@@ -54,6 +56,11 @@
             </array>
         </dict>
     </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 
     <!-- App Settings -->
     <key>ITSAppUsesNonExemptEncryption</key>
