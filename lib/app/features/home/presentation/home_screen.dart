@@ -168,7 +168,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   child: SizedBox(
                     height: 112,
                     child: GroupTile(
-                      title: currentTeam?.name ?? " ",
+                      title: currentTeam?.name ?? ' ',
                       hasUpcomingEvent: hasUpcomingEvent,
                     ),
                   ),
