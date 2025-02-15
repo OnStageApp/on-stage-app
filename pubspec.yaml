@@ -97,6 +97,8 @@ dependencies:
   path: any
   pull_down_button: ^0.10.2
   keyboard_actions: ^4.2.0
+  just_audio: ^0.9.46
+  rxdart: ^0.28.0
 dev_dependencies:
   build_runner: ^2.4.14
   custom_lint: ^0.7.0
