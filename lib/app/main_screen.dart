@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
+import 'package:on_stage_app/app/features/audio_player/presentation/stg_audio_player.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
 import 'package:on_stage_app/app/features/notifications/application/notification_notifier.dart';
@@ -124,6 +125,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return [
       '/events/eventItemsWithPages',
       '/events/addEvent',
+      '/songs/song',
       '/songs/song/editSongContent',
       '/songs/song/editSongInfo',
       '/songs/createSongInfo',
@@ -247,8 +249,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     ),
                   ],
                 ),
-      body: context.isLargeScreen
-          ? Row(
+      body: Stack(
+        children: [
+          if (context.isLargeScreen)
+            Row(
               children: [
                 if (_shouldHideBottomNav(currentLocation))
                   const SizedBox()
@@ -275,7 +279,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                 ),
               ],
             )
-          : widget.navigationShell,
+          else
+            widget.navigationShell,
+          // StgAudioPlayer(
+          //   hasNavbar: !_shouldHideBottomNav(currentLocation),
+          //   audioUrl: 'http://ice1.somafm.com/groovesalad-128-mp3',
+          // ),
+        ],
+      ),
     );
   }
 
