@@ -19,12 +19,11 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/logger.dart';
 
 class SongEditorWidget extends ConsumerStatefulWidget {
-  final String songId;
-
   const SongEditorWidget({
     required this.songId,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final String songId;
 
   @override
   _SongEditorWidgetState createState() => _SongEditorWidgetState();
@@ -59,7 +58,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
       focusNode.addListener(() {
         if (focusNode.hasFocus) {
           logger.i(
-              'Focus gained for section ${section.rawSection.structureItem?.name}');
+            'Focus gained for section ${section.rawSection.structureItem?.name}',
+          );
           setState(() {
             _focusedSection = section;
           });
@@ -204,8 +204,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Dont worry about the order yet - you\'ll be able to "
-                            'arrange and customize the structure in the next step',
+                            "Dont worry about the order yet - you'll be able "
+                            'to customize the structure in the next step',
                             style: context.textTheme.bodySmall!
                                 .copyWith(color: context.colorScheme.outline),
                             maxLines: 2,

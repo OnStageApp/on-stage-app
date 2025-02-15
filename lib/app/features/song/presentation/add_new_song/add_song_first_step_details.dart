@@ -200,7 +200,7 @@ class _AddSongFirstStepDetailsState
               const SizedBox(height: Insets.medium),
               PreferenceSelector<ThemeEnum>(
                 label: 'Theme',
-                placeholder: 'Choose one or more themes',
+                placeholder: 'Choose theme',
                 selectedValue: _selectedTheme,
                 displayValue: (theme) => theme?.title ?? '',
                 validator: (theme) {

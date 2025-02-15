@@ -55,7 +55,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   Future<bool> requestNotificationPermission(BuildContext context) async {
     final status = await Permission.notification.status;
 
-    if (!status.isGranted) {
+    if (!status.isGranted && context.mounted) {
       await requestPermission(
         permission: Permission.notification,
         context: context,
@@ -159,6 +159,19 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       const userSettings = UserSettings(isOnboardingDone: true);
       state = state.copyWith(
         isOnboardingDone: true,
+      );
+
+      await _saveUserSettings(userSettings);
+    } catch (e) {
+      logger.e('Error setting onboarding done: $e');
+    }
+  }
+
+  Future<void> setEventTemplateFeatureWallShown() async {
+    try {
+      const userSettings = UserSettings(isEventTemplatesFeatureWallShown: true);
+      state = state.copyWith(
+        isEventTemplatesFeatureWallShown: true,
       );
 
       await _saveUserSettings(userSettings);

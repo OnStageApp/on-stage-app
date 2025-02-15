@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_template_feature_wall.dart';
+import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
@@ -8,6 +10,7 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/library_sect
 import 'package:on_stage_app/app/features/user/presentation/widgets/profile_header.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/team_section.dart';
+import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/app_version.dart';
@@ -30,23 +33,28 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
 
-    // Fetch current team data
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
-
-      // Start the onboarding process
-      // onboardingKey.currentState?.show();
+      _checkIfEventTemplatesWallShouldBeShown();
     });
+  }
+
+  void _checkIfEventTemplatesWallShouldBeShown() {
+    final isLeaderOnTeam = ref.watch(permissionServiceProvider).isLeaderOnTeam;
+    final isEventTemplatesFeatureWallShown = ref
+            .watch(userSettingsNotifierProvider)
+            .isEventTemplatesFeatureWallShown ??
+        false;
+    if (isEventTemplatesFeatureWallShown == false && isLeaderOnTeam) {
+      showEventTemplateFeature(context);
+    }
   }
 
   @override
   void dispose() {
-    // Dispose the focus node
-    // _songViewSettingsFocusNode.dispose();
     super.dispose();
   }
 
-//TODO: Complete steps for onboarding overlay
   @override
   Widget build(BuildContext context) {
     return Onboarding(
@@ -56,7 +64,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           focusNode: _songViewSettingsFocusNode,
           titleText: 'Song View Settings',
           bodyText: 'Customize how your songs are displayed in the app.',
-          overlayColor: context.colorScheme.secondary.withOpacity(0.8),
+          overlayColor: context.colorScheme.secondary.withAlpha(200),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

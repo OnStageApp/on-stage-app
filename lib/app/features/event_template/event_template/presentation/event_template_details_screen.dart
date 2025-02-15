@@ -123,7 +123,7 @@ class EventTemplateDetailsScreenState
       canPop: false,
       child: Scaffold(
         appBar: StageAppBar(
-          title: 'Edit Template',
+          title: widget.isNew ? 'Create Template' : 'Edit Template',
           isBackButtonVisible: true,
           trailing: _ScheduleButton(
             hasChanges: _hasChanges,

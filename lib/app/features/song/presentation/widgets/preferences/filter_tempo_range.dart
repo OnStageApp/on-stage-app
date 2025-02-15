@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/search/application/search_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class TempoRangeSlider extends StatefulWidget {
+class TempoRangeSlider extends ConsumerStatefulWidget {
   const TempoRangeSlider({
-    required this.startValue,
-    required this.endValue,
     super.key,
     this.onChanged,
   });
 
-  final int startValue;
-  final int endValue;
   final void Function(int start, int end)? onChanged;
 
   @override
-  State<TempoRangeSlider> createState() => _TempoRangeSliderState();
+  ConsumerState<TempoRangeSlider> createState() => _TempoRangeSliderState();
 }
 
-class _TempoRangeSliderState extends State<TempoRangeSlider> {
+class _TempoRangeSliderState extends ConsumerState<TempoRangeSlider> {
   static const int minValue = 30;
   static const int maxValue = 120;
   static const int minRange = 40;
@@ -28,8 +26,12 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
   @override
   void initState() {
     super.initState();
-    _startValue = widget.startValue;
-    _endValue = widget.endValue;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _startValue = ref.watch(searchNotifierProvider).tempoFilter?.min ?? 30;
+        _endValue = ref.watch(searchNotifierProvider).tempoFilter?.max ?? 120;
+      });
+    });
   }
 
   void _updateValues(double dx, BoxConstraints constraints, bool isStart) {
@@ -90,8 +92,20 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
     );
   }
 
+  void _listenForFilterReset() {
+    ref.listen(searchNotifierProvider, (prev, next) {
+      if (prev?.tempoFilter != null && next.tempoFilter == null) {
+        setState(() {
+          _startValue = minValue;
+          _endValue = maxValue;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _listenForFilterReset();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -139,7 +153,6 @@ class _TempoRangeSliderState extends State<TempoRangeSlider> {
                       ),
                     ),
                   ),
-                  // Blue range selection
                   // Blue range selection
                   Positioned(
                     left: startPosition,

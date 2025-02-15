@@ -19,6 +19,7 @@ class UserSettings with _$UserSettings {
     bool? isOnboardingDone,
     bool? isCreateEventTooltipShown,
     bool? isAddRemindersTooltipShown,
+    bool? isEventTemplatesFeatureWallShown,
   }) = _UserSettings;
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>

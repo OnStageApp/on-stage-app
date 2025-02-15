@@ -46,7 +46,6 @@ class PreferenceThemeState extends ConsumerState<PreferenceTheme> {
               onSelected: (theme) {
                 if (theme == null) return;
                 ref.read(searchNotifierProvider.notifier).setThemeFilter(theme);
-                context.popDialog();
               },
             );
           },
