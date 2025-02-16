@@ -46,7 +46,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
             .isEventTemplatesFeatureWallShown ??
         false;
     if (isEventTemplatesFeatureWallShown == false && isLeaderOnTeam) {
-    showEventTemplateFeature(context);
+      showEventTemplateFeature(context);
     }
   }
 

@@ -41,7 +41,7 @@ class EventTemplateFeatureWall extends ConsumerWidget {
                         left: 160,
                         right: 160,
                       )
-                    : EdgeInsets.zero,
+                    : const EdgeInsets.only(right: 12),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
@@ -68,10 +68,12 @@ class EventTemplateFeatureWall extends ConsumerWidget {
                   ),
                 ),
               ),
-              const OnboardingPhoto(
+              OnboardingPhoto(
                 smallScreenImageFactor: 1,
                 largeScreenImageFactor: 0.6,
-                imagePath: 'assets/images/event_templates_feature_wall.png',
+                imagePath: context.isDarkMode
+                    ? 'assets/images/event_templates_feature_wall.png'
+                    : 'assets/images/event_template_feature_wall_light_mode.png',
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.large),
@@ -89,8 +91,9 @@ class EventTemplateFeatureWall extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ContinueButton(
                     text: 'Create your Event Template',
-                    backgroundColor: context.colorScheme.secondary,
-                    // borderColor: context.colorScheme.primary,
+                    backgroundColor: context.isDarkMode
+                        ? context.colorScheme.secondary
+                        : context.colorScheme.onSecondary,
                     onPressed: () async {
                       unawaited(
                         ref

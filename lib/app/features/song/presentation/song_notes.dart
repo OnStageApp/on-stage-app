@@ -132,18 +132,23 @@ class _SongNotesCardCardState extends ConsumerState<SongNotesCard> {
     }
 
     return AdaptiveMenuContext(
-      width: 24,
+      // width: 24,
+      // height: 24,
       items: menuItems,
-      child: Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.all(6),
-        child: Icon(
-          LucideIcons.ellipsis_vertical,
-          color: colorScheme.outline,
-          size: 18,
+      child: SizedBox(
+        height: 30,
+        width: 30,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            color: colorScheme.surface,
+          ),
+          child: Icon(
+            LucideIcons.ellipsis_vertical,
+            size: 15,
+            color: colorScheme.outline,
+          ),
         ),
       ),
     );

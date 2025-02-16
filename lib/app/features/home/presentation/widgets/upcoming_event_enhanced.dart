@@ -4,14 +4,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/create_event_adaptive_menu.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class UpcomingEventEnhanced extends ConsumerWidget {
   const UpcomingEventEnhanced({
@@ -128,6 +125,8 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                     ),
                     if (ref.watch(permissionServiceProvider).hasAccessToEdit)
                       CreateEventAdaptiveMenu(
+                        width: 150,
+                        height: 32,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,

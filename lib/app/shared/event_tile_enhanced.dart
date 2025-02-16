@@ -1,17 +1,13 @@
-import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/create_event_adaptive_menu.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/participants_on_tile.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/time_utils.dart';
-import 'package:on_stage_app/resources/generated/assets.gen.dart';
 
 class EventTileEnhanced extends ConsumerWidget {
   const EventTileEnhanced({
@@ -77,8 +73,9 @@ class EventTileEnhanced extends ConsumerWidget {
               if (isEventEmpty &&
                   ref.watch(permissionServiceProvider).hasAccessToEdit)
                 CreateEventAdaptiveMenu(
+                  width: 150,
+                  height: 32,
                   child: Container(
-                    width: 150,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 6,

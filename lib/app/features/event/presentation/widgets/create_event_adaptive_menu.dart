@@ -14,15 +14,20 @@ import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 class CreateEventAdaptiveMenu extends ConsumerWidget {
   const CreateEventAdaptiveMenu({
     required this.child,
+    this.width,
+    this.height,
     super.key,
   });
 
   final Widget child;
+  final double? width;
+  final double? height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdaptiveMenuContext(
-      width: 24,
+      width: width ?? 24,
+      height: height ?? 24,
       items: [
         MenuAction(
           title: 'Add New Event',

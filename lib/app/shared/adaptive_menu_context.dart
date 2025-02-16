@@ -23,11 +23,13 @@ class AdaptiveMenuContext extends StatelessWidget {
     required this.child,
     this.backgroundColor,
     this.width,
+    this.height,
     super.key,
   });
 
   final List<MenuAction> items;
   final double? width;
+  final double? height;
   final Widget child;
   final Color? backgroundColor;
 
@@ -60,7 +62,7 @@ class AdaptiveMenuContext extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 24,
+      height: height ?? 24,
       width: width,
       child: PopupMenuButton<MenuAction>(
         padding: EdgeInsets.zero,
