@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
+import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart' as rx;
 
@@ -23,43 +24,40 @@ class AudioController extends _$AudioController {
     return const AudioPlayerState();
   }
 
-  Future<void> initializePlayer() async {
-    // Prevent multiple initializations.
-    if (_player != null) return;
+  Future<void> openFile(SongFile file) async {
+    await _initializePlayer();
 
-    _player = AudioPlayer();
-    state = state.copyWith(player: _player);
-
-    // Combine streams in a type-safe manner.
-    final combinedStream = rx.CombineLatestStream.combine4<Duration, Duration,
-        Duration?, PlayerState, CombinedPlayerState>(
-      _player!.positionStream,
-      _player!.bufferedPositionStream,
-      _player!.durationStream,
-      _player!.playerStateStream,
-      (position, bufferedPosition, duration, playerState) =>
-          CombinedPlayerState(
-        position: position,
-        bufferedPosition: bufferedPosition,
-        duration: duration ?? Duration.zero,
-        isPlaying: playerState.playing,
-      ),
-    );
-
-    // Listen to the combined stream and update the state.
-    _playerSubscription = combinedStream.listen((combinedState) {
+    try {
       state = state.copyWith(
-        position: combinedState.position,
-        bufferedPosition: combinedState.bufferedPosition,
-        duration: combinedState.duration,
-        isPlaying: combinedState.isPlaying,
+        status: AudioStatus.loading,
+        currentSongFile: file,
       );
-    });
+
+      await _player!.setUrl(file.url);
+      state = state.copyWith(status: AudioStatus.ready);
+      await _player!.play();
+    } catch (e) {
+      state = state.copyWith(status: AudioStatus.error);
+    }
+  }
+
+  Future<void> closeFile() async {
+    await _player?.stop();
+    await _player?.dispose();
+    _player = null;
+    await _playerSubscription?.cancel();
+
+    state = const AudioPlayerState();
+  }
+
+  void stopPlaying() {
+    _player?.pause();
+    state = state.copyWith(currentSongFile: null);
   }
 
   Future<void> loadAudio(String url) async {
     if (_player == null) {
-      await initializePlayer();
+      await _initializePlayer();
     }
     try {
       state = state.copyWith(status: AudioStatus.loading);
@@ -106,5 +104,39 @@ class AudioController extends _$AudioController {
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
     return '$minutes:$seconds';
+  }
+
+  Future<void> _initializePlayer() async {
+    // Prevent multiple initializations.
+    if (_player != null) return;
+
+    _player = AudioPlayer();
+    state = state.copyWith(player: _player);
+
+    // Combine streams in a type-safe manner.
+    final combinedStream = rx.CombineLatestStream.combine4<Duration, Duration,
+        Duration?, PlayerState, CombinedPlayerState>(
+      _player!.positionStream,
+      _player!.bufferedPositionStream,
+      _player!.durationStream,
+      _player!.playerStateStream,
+      (position, bufferedPosition, duration, playerState) =>
+          CombinedPlayerState(
+        position: position,
+        bufferedPosition: bufferedPosition,
+        duration: duration ?? Duration.zero,
+        isPlaying: playerState.playing,
+      ),
+    );
+
+    // Listen to the combined stream and update the state.
+    _playerSubscription = combinedStream.listen((combinedState) {
+      state = state.copyWith(
+        position: combinedState.position,
+        bufferedPosition: combinedState.bufferedPosition,
+        duration: combinedState.duration,
+        isPlaying: combinedState.isPlaying,
+      );
+    });
   }
 }

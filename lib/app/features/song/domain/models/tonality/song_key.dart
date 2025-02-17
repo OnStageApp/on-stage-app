@@ -21,7 +21,7 @@ class SongKey with _$SongKey {
   String get name {
     if (chord == null) return 'Key not found';
 
-    final suffix = isMajor ? ' major' : ' minor';
+    final suffix = isMajor ? '' : 'm';
     final accidental = switch (keyType) {
       ChordTypeEnum.sharp => '♯',
       ChordTypeEnum.flat => 'b',

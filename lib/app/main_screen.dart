@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
 import 'package:on_stage_app/app/device/application/device_service.dart';
+import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/audio_player/presentation/stg_audio_player.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
 import 'package:on_stage_app/app/features/login/application/login_notifier.dart';
@@ -13,6 +14,7 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
+import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -24,6 +26,7 @@ import 'package:on_stage_app/app/features/user_settings/application/user_setting
 import 'package:on_stage_app/app/shared/custom_side_navigation.dart';
 import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/tab_navigation_info.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -136,6 +139,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
+    final audioState = ref.watch(audioControllerProvider);
 
     _listenForPermissionDeniedAndShowPaywall();
     return Scaffold(
@@ -281,10 +285,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             )
           else
             widget.navigationShell,
-          // StgAudioPlayer(
-          //   hasNavbar: !_shouldHideBottomNav(currentLocation),
-          //   audioUrl: 'http://ice1.somafm.com/groovesalad-128-mp3',
-          // ),
+          // ignore: use_if_null_to_convert_nulls_to_bools
+          if (audioState.currentSongFile?.url.isNotNullEmptyOrWhitespace ==
+              true)
+            StgAudioPlayer(
+              hasNavbar: !_shouldHideBottomNav(currentLocation),
+              audioUrl: audioState.currentSongFile!.url,
+            ),
         ],
       ),
     );

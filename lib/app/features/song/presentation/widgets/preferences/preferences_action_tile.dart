@@ -8,6 +8,7 @@ class PreferencesActionTile extends StatelessWidget {
     required this.onTap,
     this.leadingWidget,
     this.trailingIcon,
+    this.trailingIconSize = 24,
     this.color,
     this.height,
     this.suffixWidget,
@@ -20,6 +21,7 @@ class PreferencesActionTile extends StatelessWidget {
   final String title;
   final Color? color;
   final IconData? trailingIcon;
+  final double trailingIconSize;
   final VoidCallback onTap;
   final double? height;
   final Widget? suffixWidget;
@@ -66,7 +68,7 @@ class PreferencesActionTile extends StatelessWidget {
                   ),
                   child: Icon(
                     trailingIcon,
-                    size: 24,
+                    size: trailingIconSize,
                     color: const Color(0xFF8E9199),
                   ),
                 ),
