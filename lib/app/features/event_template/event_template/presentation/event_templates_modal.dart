@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/application/current_event_template_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/application/event_templates_notifier.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/domain/event_template.dart';
+import 'package:on_stage_app/app/features/event_template/event_template/presentation/widgets/empty_event_templates.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/list_utils.dart';
 
 class EventTemplatesModal extends ConsumerStatefulWidget {
   const EventTemplatesModal({required this.onEventTemplateSelected, super.key});
@@ -67,41 +70,64 @@ class EventTemplatesModalState extends ConsumerState<EventTemplatesModal> {
       ),
       buildContent: () => Padding(
         padding: const EdgeInsets.only(bottom: 42, top: 12),
-        child: Column(
-          children: [
-            RefreshIndicator.adaptive(
-              onRefresh: () async {
-                await ref
-                    .read(eventTemplatesNotifierProvider.notifier)
-                    .getEventTemplates();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: eventTemplates.length,
-                  itemBuilder: (context, index) {
-                    return _EventTemplateSelectionTile(
-                      eventTemplate: eventTemplates[index],
-                      isSelected: _selectedEventTemplate?.id ==
-                          eventTemplates[index].id,
-                      onTap: () {
-                        setState(() {
-                          if (_selectedEventTemplate == eventTemplates[index]) {
-                            _selectedEventTemplate = null;
-                          } else {
-                            _selectedEventTemplate = eventTemplates[index];
-                          }
-                        });
-                      },
-                    );
+        child: eventTemplates.isNullOrEmpty
+            ? Center(
+                child: EmptyEventTemplates(
+                  includeIcon: false,
+                  onTap: () {
+                    context.popDialog();
+                    ref
+                        .read(currentEventTemplateProvider.notifier)
+                        .createEmptyEventTemplate()
+                        .then((savedTemplate) {
+                      if (context.mounted) {
+                        context.goNamed(
+                          AppRoute.eventTemplateDetails.name,
+                          extra: savedTemplate,
+                          queryParameters: {'isNew': 'true'},
+                        );
+                      }
+                    });
                   },
                 ),
+              )
+            : Column(
+                children: [
+                  RefreshIndicator.adaptive(
+                    onRefresh: () async {
+                      await ref
+                          .read(eventTemplatesNotifierProvider.notifier)
+                          .getEventTemplates();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: eventTemplates.length,
+                        itemBuilder: (context, index) {
+                          return _EventTemplateSelectionTile(
+                            eventTemplate: eventTemplates[index],
+                            isSelected: _selectedEventTemplate?.id ==
+                                eventTemplates[index].id,
+                            onTap: () {
+                              setState(() {
+                                if (_selectedEventTemplate ==
+                                    eventTemplates[index]) {
+                                  _selectedEventTemplate = null;
+                                } else {
+                                  _selectedEventTemplate =
+                                      eventTemplates[index];
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

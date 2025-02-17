@@ -290,7 +290,7 @@ class _ScheduleButton extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Material(
-        color: context.colorScheme.primary,
+        color: context.colorScheme.onSurfaceVariant,
         borderRadius: BorderRadius.circular(8),
         child: SizedBox(
           height: 32,
@@ -318,16 +318,16 @@ class _ScheduleButton extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     LucideIcons.list_music,
                     size: 16,
-                    color: Colors.white,
+                    color: context.colorScheme.onSurface,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     'Schedule',
                     style: context.textTheme.labelMedium!.copyWith(
-                      color: Colors.white,
+                      color: context.colorScheme.onSurface,
                     ),
                   ),
                 ],
