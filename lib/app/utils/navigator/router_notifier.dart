@@ -27,6 +27,7 @@ import 'package:on_stage_app/app/features/song/presentation/event_items_details_
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
+import 'package:on_stage_app/app/features/files/presentation/song_files_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
@@ -208,6 +209,13 @@ class NavigationNotifier extends _$NavigationNotifier {
                               songId: songId!,
                               isNewSong: isNewSong,
                             );
+                          },
+                        ),
+                        GoRoute(
+                          name: AppRoute.songFiles.name,
+                          path: 'songFiles',
+                          builder: (context, state) {
+                            return const SongFilesScreen();
                           },
                         ),
                       ],

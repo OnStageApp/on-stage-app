@@ -1,8 +1,10 @@
 // Extracted PlayerControls Widget
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
+import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class PlayerControls extends ConsumerWidget {
   const PlayerControls({super.key});
@@ -22,10 +24,10 @@ class PlayerControls extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             onPressed:
                 isLoading ? null : () => audioNotifier.seek(Duration.zero),
-            icon: const Icon(
+            icon: Icon(
               Icons.fast_rewind_rounded,
               size: 32,
-              color: Colors.white,
+              color: context.colorScheme.onSurface,
             ),
           ),
           const Spacer(),
@@ -33,10 +35,10 @@ class PlayerControls extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed: isLoading ? null : audioNotifier.skipBackward,
-            icon: const Icon(
+            icon: Icon(
               Icons.replay_10_rounded,
               size: 28,
-              color: Colors.white,
+              color: context.colorScheme.onSurface,
             ),
           ),
           IconButton(
@@ -52,12 +54,17 @@ class PlayerControls extends ConsumerWidget {
                     }
                   },
             icon: isLoading
-                ? const SizedBox(
-                    width: 42,
-                    height: 42,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 9),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.ballBeat,
+                        colors: [context.colorScheme.onSurface],
+                        strokeWidth: 2,
+                      ),
                     ),
                   )
                 : Icon(
@@ -65,7 +72,7 @@ class PlayerControls extends ConsumerWidget {
                         ? Icons.pause_rounded
                         : Icons.play_arrow_rounded,
                     size: 42,
-                    color: Colors.white,
+                    color: context.colorScheme.onSurface,
                   ),
           ),
           // Forward 10 seconds.
@@ -73,10 +80,10 @@ class PlayerControls extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed: isLoading ? null : audioNotifier.skipForward,
-            icon: const Icon(
+            icon: Icon(
               Icons.forward_10_rounded,
               size: 28,
-              color: Colors.white,
+              color: context.colorScheme.onSurface,
             ),
           ),
           const Spacer(),
@@ -86,10 +93,10 @@ class PlayerControls extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             onPressed:
                 isLoading ? null : () => audioNotifier.seek(state.duration),
-            icon: const Icon(
+            icon: Icon(
               Icons.fast_forward_rounded,
               size: 32,
-              color: Colors.white,
+              color: context.colorScheme.onSurface,
             ),
           ),
         ],

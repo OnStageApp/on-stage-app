@@ -59,6 +59,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
         isBackButtonVisible: true,
         title: ref.watch(songNotifierProvider(widget.songId)).song.title ?? '',
         trailing: SongAppBarLeading(
+          hasAttachments: true,
           songId: widget.songId,
         ),
         bottom: PreferredSize(

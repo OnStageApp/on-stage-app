@@ -34,6 +34,7 @@ class ProgressBar extends ConsumerWidget {
                 overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
               ),
               child: Slider(
+                inactiveColor: context.colorScheme.outline,
                 thumbColor: context.colorScheme.primary,
                 value: state.status == AudioStatus.loading
                     ? 0.0

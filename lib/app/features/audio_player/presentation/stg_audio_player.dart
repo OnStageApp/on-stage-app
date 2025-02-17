@@ -10,7 +10,7 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 class StgAudioPlayer extends ConsumerStatefulWidget {
   const StgAudioPlayer({
     required this.audioUrl,
-    this.hasNavbar = true, // default to true
+    this.hasNavbar = true,
     super.key,
   });
   final String audioUrl;
@@ -20,23 +20,66 @@ class StgAudioPlayer extends ConsumerStatefulWidget {
   ConsumerState<StgAudioPlayer> createState() => _StgAudioPlayerState();
 }
 
-class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer> {
+class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer>
+    with SingleTickerProviderStateMixin {
   Offset _position = Offset.zero;
-  bool _isInitialized = false; // Track initialization
+  bool _isInitialized = false;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
 
-  // Constants (configurable if needed)
+  // Constants
   static const double defaultPlayerWidth = 400;
   static const double largeScreenPlayerWidth = 500;
   static const double playerHeight = 180;
   static const double horizontalPadding = 16;
-  // Define navbar height (if present)
   static const double navBarHeight = 52;
 
-  /// Calculates the bottom margin based on navbar presence.
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimations();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final size = MediaQuery.of(context).size;
+      setState(() {
+        _position = _calculateDefaultOffset(size);
+        _isInitialized = true;
+      });
+      _animationController.forward();
+    });
+  }
+
+  void _setupAnimations() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOutBack,
+      ),
+    );
+
+    _opacityAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0, 0.5, curve: Curves.easeIn),
+      ),
+    );
+  }
+
   double get _bottomMargin =>
       (widget.hasNavbar && !context.isLargeScreen) ? navBarHeight : 0;
 
-  /// Computes the default offset for the player.
   Offset _calculateDefaultOffset(Size size) {
     final currentPlayerWidth =
         context.isLargeScreen ? largeScreenPlayerWidth : defaultPlayerWidth;
@@ -47,18 +90,9 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // Use addPostFrameCallback to get the size info.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final size = MediaQuery.of(context).size;
-      setState(() {
-        _position = _calculateDefaultOffset(size);
-        _isInitialized = true;
-      });
-      ref.read(audioControllerProvider.notifier).loadAudio(widget.audioUrl);
-    });
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -81,44 +115,70 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer> {
         context.isLargeScreen ? largeScreenPlayerWidth : defaultPlayerWidth;
     final safeBottomPosition = size.height - _bottomMargin;
 
-    // Clamp vertical movement on small screens.
     final topPosition = context.isLargeScreen
         ? _position.dy
         : _position.dy.clamp(0.0, safeBottomPosition);
 
     return !_isInitialized
         ? const SizedBox.shrink()
-        : AnimatedPositioned(
-            duration: context.isLargeScreen
-                ? Duration.zero
-                : const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+        : Positioned(
             left: context.isLargeScreen ? _position.dx : 0,
             right: context.isLargeScreen ? null : 0,
             top: topPosition,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                if (!context.isLargeScreen) return;
-                setState(() {
-                  _position += details.delta;
-                  _position = Offset(
-                    _position.dx
-                        .clamp(0, size.width - currentPlayerWidth)
-                        .toDouble(),
-                    context.isLargeScreen
-                        ? _position.dy
-                        : (_position.dy.clamp(0, safeBottomPosition) as double),
-                  );
-                });
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _opacityAnimation.value,
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        if (!context.isLargeScreen) return;
+                        setState(() {
+                          _position += details.delta;
+                          _position = Offset(
+                            _position.dx
+                                .clamp(0, size.width - currentPlayerWidth)
+                                .toDouble(),
+                            context.isLargeScreen
+                                ? _position.dy
+                                : (_position.dy.clamp(0, safeBottomPosition)
+                                    as double),
+                          );
+                        });
+                      },
+                      child: Container(
+                        width:
+                            context.isLargeScreen ? currentPlayerWidth : null,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                        ),
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween<double>(begin: 0, end: 1),
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
+                          builder: (context, value, child) {
+                            return Transform.translate(
+                              offset: Offset(0, 20 * (1 - value)),
+                              child: Opacity(
+                                opacity: value,
+                                child: GlassContainer(
+                                  child: _buildContent(
+                                    context,
+                                    state,
+                                    audioNotifier,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
-              child: Container(
-                width: context.isLargeScreen ? currentPlayerWidth : null,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: GlassContainer(
-                  child: _buildContent(context, state, audioNotifier),
-                ),
-              ),
             ),
           );
   }
@@ -138,46 +198,74 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              Text(
-                'laud-numele-tenor.wav',
-                style: context.textTheme.titleMedium!
-                    .copyWith(color: Colors.white),
-              ),
-              const Spacer(),
-              if (context.isLargeScreen)
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: InkWell(
-                    onTap: state.status == AudioStatus.loading
-                        ? null
-                        : _resetPosition,
-                    child: Icon(
-                      Icons.center_focus_strong,
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                ),
-              InkWell(
-                onTap: () {
-                  // Optionally implement a stop or close action.
-                },
-                child: Icon(
-                  Icons.close,
-                  color: context.colorScheme.outline,
-                ),
-              ),
-            ],
-          ),
-        ),
+        _buildHeader(context, state),
         const SizedBox(height: 12),
         const ProgressBar(),
         const SizedBox(height: 4),
         const PlayerControls(),
       ],
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, AudioPlayerState state) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          Text(
+            'laud-numele-tenor.wav',
+            style: context.textTheme.titleMedium!
+                .copyWith(color: context.colorScheme.onSurface),
+          ),
+          const Spacer(),
+          if (context.isLargeScreen)
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 300),
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
+                    child: InkWell(
+                      onTap: state.status == AudioStatus.loading
+                          ? null
+                          : _resetPosition,
+                      child: Icon(
+                        Icons.center_focus_strong,
+                        color: context.colorScheme.outline,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          _buildCloseButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCloseButton(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 300),
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: InkWell(
+            onTap: () {
+              _animationController.reverse().then((_) {
+                ref.read(audioControllerProvider.notifier).closeFile();
+              });
+            },
+            child: Icon(
+              Icons.close,
+              color: context.colorScheme.outline,
+            ),
+          ),
+        );
+      },
     );
   }
 }
