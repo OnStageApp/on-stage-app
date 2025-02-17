@@ -72,32 +72,35 @@ class EventTileEnhanced extends ConsumerWidget {
               ),
               if (isEventEmpty &&
                   ref.watch(permissionServiceProvider).hasAccessToEdit)
-                CreateEventAdaptiveMenu(
+                SizedBox(
                   width: 150,
-                  height: 32,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          LucideIcons.plus,
-                          color: context.colorScheme.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Create Event',
-                          style: context.textTheme.titleSmall!.copyWith(
+                  child: CreateEventAdaptiveMenu(
+                    width: 150,
+                    height: 32,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.plus,
                             color: context.colorScheme.primary,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Text(
+                            'Create Event',
+                            style: context.textTheme.titleSmall!.copyWith(
+                              color: context.colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )
