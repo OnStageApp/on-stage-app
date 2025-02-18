@@ -53,7 +53,7 @@ class CustomTextEditingController extends TextEditingController {
 
     // Check if a '[' was just added
     if (newText.length == oldText.length + 1 &&
-        newText.contains('[', newValue.selection.baseOffset - 1)) {
+        newText[newValue.selection.baseOffset - 1] == '[') {
       // Check if there's already a closing bracket after the cursor
       final textAfterCursor = newText.substring(newValue.selection.baseOffset);
       if (!textAfterCursor.startsWith(']')) {
