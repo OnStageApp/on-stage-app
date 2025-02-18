@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
@@ -33,7 +34,18 @@ class AudioController extends _$AudioController {
         currentSongFile: file,
       );
 
-      await _player!.setUrl(file.url);
+      // Create a tagged AudioSource instead of just using setUrl.
+      final audioSource = AudioSource.uri(
+        Uri.parse(file.url),
+        tag: MediaItem(
+          id: file.id,
+          album: 'OnStage',
+          title: file.name,
+          // artUri: file.artUri != null ? Uri.parse(file.artUri!) : null,
+        ),
+      );
+
+      await _player!.setAudioSource(audioSource);
       state = state.copyWith(status: AudioStatus.ready);
       await _player!.play();
     } catch (e) {
