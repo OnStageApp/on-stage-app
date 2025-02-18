@@ -247,25 +247,16 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer>
   }
 
   Widget _buildCloseButton(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 300),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: InkWell(
-            onTap: () {
-              _animationController.reverse().then((_) {
-                ref.read(audioControllerProvider.notifier).closeFile();
-              });
-            },
-            child: Icon(
-              Icons.close,
-              color: context.colorScheme.outline,
-            ),
-          ),
-        );
+    return InkWell(
+      onTap: () {
+        _animationController.reverse().then((_) {
+          ref.read(audioControllerProvider.notifier).closeFile();
+        });
       },
+      child: Icon(
+        Icons.close,
+        color: context.colorScheme.outline,
+      ),
     );
   }
 }
