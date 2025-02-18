@@ -158,7 +158,7 @@ class PlanCard extends ConsumerWidget {
           Expanded(
             child: Text(
               feature.name,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.titleMedium!.copyWith(
                 color: feature.isAvailable

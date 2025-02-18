@@ -39,7 +39,7 @@ extension PlanFeatures on Plan {
   List<PlanFeature> get features {
     return [
       const PlanFeature('Full Access to our Songs', true),
-      PlanFeature('Create $maxEvents Events per month', true),
+      PlanFeature('$maxEvents Events per month', true),
       PlanFeature('$maxMembers Members', true),
       PlanFeature('Add Your Own Songs', hasAddSong),
       PlanFeature('Unlimited Groups', hasAddSong),
