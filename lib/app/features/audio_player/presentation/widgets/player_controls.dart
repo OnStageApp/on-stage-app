@@ -20,6 +20,7 @@ class PlayerControls extends ConsumerWidget {
         children: [
           // Skip to beginning of track.
           IconButton(
+            highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed:
@@ -32,6 +33,7 @@ class PlayerControls extends ConsumerWidget {
           ),
           const Spacer(),
           IconButton(
+            highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed: isLoading ? null : audioNotifier.skipBackward,
@@ -42,6 +44,7 @@ class PlayerControls extends ConsumerWidget {
             ),
           ),
           IconButton(
+            highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed: isLoading
@@ -56,7 +59,7 @@ class PlayerControls extends ConsumerWidget {
             icon: isLoading
                 ? Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 9),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                     child: SizedBox(
                       width: 24,
                       height: 24,
@@ -67,16 +70,36 @@ class PlayerControls extends ConsumerWidget {
                       ),
                     ),
                   )
-                : Icon(
-                    state.isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    size: 42,
-                    color: context.colorScheme.onSurface,
+                : AnimatedScale(
+                    scale: state.isPlaying ? 0.9 : 1.0,
+                    duration: const Duration(milliseconds: 150),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        state.isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        key: ValueKey(
+                          state.isPlaying,
+                        ), // Important for AnimatedSwitcher
+                        size: 42,
+                        color: context.colorScheme.onSurface,
+                      ),
+                    ),
                   ),
           ),
           // Forward 10 seconds.
           IconButton(
+            highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed: isLoading ? null : audioNotifier.skipForward,
@@ -89,6 +112,7 @@ class PlayerControls extends ConsumerWidget {
           const Spacer(),
           // Skip to end of track.
           IconButton(
+            highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.all(8),
             onPressed:
