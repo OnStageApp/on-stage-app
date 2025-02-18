@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_state.dart';
 import 'package:on_stage_app/app/features/files/data/song_files_repository.dart';
@@ -52,6 +53,28 @@ class SongFilesNotifier extends _$SongFilesNotifier {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+    Future<void> addSongFile(PlatformFile file) async {
+    final extension = file.extension?.toLowerCase() ?? '';
+    // Determine file type
+    final fileType = (['mp3', 'wav', 'aac', 'm4a', 'caf'].contains(extension))
+        ? FileTypeEnum.audio
+        : (['pdf', 'doc', 'docx', 'txt'].contains(extension))
+            ? FileTypeEnum.document
+            : FileTypeEnum.document;
+    
+    final newFile = SongFile(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: file.name,
+      url: file.path ?? '',
+      size: file.size,
+      duration: '0', // duration not available until processed
+      fileType: fileType,
+    );
+
+    // Simply add the new file to the state
+    state = state.copyWith(songFiles: [...state.songFiles, newFile]);
   }
 
   Future<String> getUploadUrl(String fileName, int fileSize) async {

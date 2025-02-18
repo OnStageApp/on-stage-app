@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
@@ -42,7 +45,7 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
             child: AddNewButton(
-              onPressed: () async {},
+              onPressed: pickFile,
             ),
           ),
         ),
@@ -100,5 +103,22 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [
+        // Audio files
+        'mp3', 'wav', 'aac', 'm4a', 'caf',
+        // Document files
+        'pdf', 'doc', 'docx', 'txt',
+      ],
+    );
+
+    if (result != null) {
+      final file = result.files.first;
+      unawaited(ref.read(songFilesNotifierProvider.notifier).addSongFile(file));
+    }
   }
 }

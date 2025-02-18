@@ -84,6 +84,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
               },
         visualDensity: VisualDensity.compact,
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Icon(
               LucideIcons.chart_no_axes_column,
@@ -112,13 +113,16 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                 ),
               )
             else
-              Text(
-                widget.songFile.name,
-                style: context.textTheme.titleMedium!.copyWith(
-                  color: context.colorScheme.onSurface,
+              Expanded(
+                child: Text(
+                  widget.songFile.name,
+                  style: context.textTheme.titleMedium!.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            const Spacer(),
             AdaptiveMenuContext(
               items: [
                 MenuAction(
