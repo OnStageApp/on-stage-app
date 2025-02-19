@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
+import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/draggable_area.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_tile.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -30,11 +32,12 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
   Widget build(BuildContext context) {
     final files = ref.watch(songFilesNotifierProvider).songFiles;
 
-    // Separate files into audio and documents
     final audioFiles =
         files.where((file) => file.fileType == FileTypeEnum.audio).toList();
     final documentFiles =
-        files.where((file) => file.fileType == FileTypeEnum.document).toList();
+        files.where((file) => file.fileType == FileTypeEnum.pdf).toList();
+    final otherFiles =
+        files.where((file) => file.fileType == FileTypeEnum.other).toList();
 
     return Padding(
       padding: getResponsivePadding(context),
@@ -44,60 +47,30 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           isBackButtonVisible: true,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: AddNewButton(
-              onPressed: pickFile,
-            ),
+            child: AddNewButton(onPressed: pickFile),
           ),
         ),
-        body: RefreshIndicator.adaptive(
-          onRefresh: () async {
-            await ref.read(songFilesNotifierProvider.notifier).getSongFiles();
+        body: DraggableFilesOverlay(
+          onFileDropped: (platformFile) {
+            unawaited(
+              ref
+                  .read(songFilesNotifierProvider.notifier)
+                  .addSongFile(platformFile),
+            );
           },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: ListView(
-              children: [
-                if (audioFiles.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      'Audio Files',
-                      style: context.textTheme.titleSmall,
-                    ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: audioFiles.length,
-                    itemBuilder: (context, index) {
-                      return SongFileTile(
-                        audioFiles[index],
-                      );
-                    },
-                  ),
+          child: RefreshIndicator.adaptive(
+            onRefresh: () async {
+              await ref.read(songFilesNotifierProvider.notifier).getSongFiles();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: ListView(
+                children: [
+                  _buildFileSection('Audio', audioFiles),
+                  _buildFileSection('PDFs', documentFiles),
+                  _buildFileSection('Others', otherFiles),
                 ],
-                // Document Files Section
-                if (documentFiles.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      'Document Files',
-                      style: context.textTheme.titleSmall,
-                    ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: documentFiles.length,
-                    itemBuilder: (context, index) {
-                      return SongFileTile(
-                        documentFiles[index],
-                        // onTap: () {},
-                      );
-                    },
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
         ),
@@ -105,14 +78,42 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
     );
   }
 
+  Widget _buildFileSection(String title, List<SongFile> files) {
+    if (files.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            title,
+            style: context.textTheme.titleSmall,
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: files.length,
+          itemBuilder: (context, index) => SongFileTile(files[index]),
+        ),
+      ],
+    );
+  }
+
   Future<void> pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: [
-        // Audio files
-        'mp3', 'wav', 'aac', 'm4a', 'caf',
-        // Document files
-        'pdf', 'doc', 'docx', 'txt',
+        'mp3',
+        'wav',
+        'aac',
+        'm4a',
+        'caf',
+        'pdf',
+        'doc',
+        'docx',
+        'txt',
       ],
     );
 

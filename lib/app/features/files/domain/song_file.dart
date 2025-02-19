@@ -8,11 +8,12 @@ part 'song_file.g.dart';
 class SongFile with _$SongFile {
   const factory SongFile({
     required String id,
+    required String songId,
+    required String teamId,
     required String name,
     required String url,
-    required String duration,
-    required int size,
     required FileTypeEnum fileType,
+    required int size,
   }) = _SongFile;
 
   factory SongFile.fromJson(Map<String, dynamic> json) =>

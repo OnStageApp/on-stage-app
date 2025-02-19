@@ -36,7 +36,12 @@
     <string>Main</string>
 
     <!-- Permissions -->
-
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Access to your photos is needed to let you choose and set your profile picture in the app.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
