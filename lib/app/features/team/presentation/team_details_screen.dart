@@ -7,7 +7,6 @@ import 'package:on_stage_app/app/features/permission/application/permission_noti
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
-import 'package:on_stage_app/app/features/team/domain/team_request/team_request.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_member_modal.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
@@ -16,7 +15,6 @@ import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
-import 'package:on_stage_app/app/shared/continue_button.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -24,11 +22,8 @@ import 'package:on_stage_app/app/utils/string_utils.dart';
 
 class TeamDetailsScreen extends ConsumerStatefulWidget {
   const TeamDetailsScreen({
-    this.isCreating = false,
     super.key,
   });
-
-  final bool isCreating;
 
   @override
   TeamDetailsScreenState createState() => TeamDetailsScreenState();
@@ -42,9 +37,7 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.isCreating) {
-        ref.read(teamMembersNotifierProvider.notifier).getTeamMembers();
-      }
+      ref.read(teamMembersNotifierProvider.notifier).getTeamMembers();
     });
     super.initState();
   }
@@ -75,112 +68,100 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
     return Padding(
       padding: getResponsivePadding(context),
       child: Scaffold(
-        appBar: StageAppBar(
-          title: widget.isCreating ? 'Create New Team' : 'Team Details',
+        appBar: const StageAppBar(
+          title: 'Team Details',
           isBackButtonVisible: true,
         ),
-        body: SingleChildScrollView(
+        // Remove SingleChildScrollView here and use CustomScrollView instead
+        body: CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (canEdit) ...[
-                  const SizedBox(height: 16),
-                  const Text('Manage'),
-                  const SizedBox(height: 12),
-                  PreferencesActionTile(
-                    title: 'Group Templates',
-                    trailingIcon: Icons.keyboard_arrow_right_rounded,
-                    leadingWidget: Icon(
-                      LucideIcons.users_round,
-                      size: 20,
-                      color: context.colorScheme.outline,
-                    ),
-                    height: 54,
-                    onTap: () {
-                      context.pushNamed(AppRoute.groups.name);
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  PreferencesActionTile(
-                    title: 'Event Templates',
-                    trailingIcon: Icons.keyboard_arrow_right_rounded,
-                    leadingWidget: Icon(
-                      LucideIcons.folders,
-                      size: 20,
-                      color: context.colorScheme.outline,
-                    ),
-                    height: 54,
-                    onTap: () {
-                      context.pushNamed(AppRoute.eventTemplates.name);
-                    },
-                  ),
-                ],
-                const SizedBox(height: 16),
-                CustomSettingTile(
-                  backgroundColor: context.colorScheme.onSurfaceVariant,
-                  placeholder:
-                      ref.watch(teamNotifierProvider).currentTeam?.name ??
-                          'Enter Team Name',
-                  headline: 'Team Name',
-                  suffix: canEdit
-                      ? Icon(
-                          LucideIcons.pencil,
-                          color: context.colorScheme.outline,
-                        )
-                      : const SizedBox(),
-                  onTap: () {
-                    if (!ref.watch(permissionServiceProvider).isLeaderOnTeam) {
-                      return;
-                    }
-                    EditFieldModal.show(
-                      context: context,
-                      fieldName: 'Team Name',
-                      value:
-                          ref.watch(teamNotifierProvider).currentTeam?.name ??
-                              'Enter Team Name',
-                      onSubmitted: (value) {
-                        ref
-                            .read(teamNotifierProvider.notifier)
-                            .updateTeamName(value);
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  if (canEdit) ...[
+                    const SizedBox(height: 16),
+                    const Text('Manage'),
+                    const SizedBox(height: 12),
+                    PreferencesActionTile(
+                      title: 'Group Templates',
+                      trailingIcon: Icons.keyboard_arrow_right_rounded,
+                      leadingWidget: Icon(
+                        LucideIcons.users_round,
+                        size: 20,
+                        color: context.colorScheme.outline,
+                      ),
+                      height: 54,
+                      onTap: () {
+                        context.pushNamed(AppRoute.groups.name);
                       },
-                    );
-                  },
-                  controller: widget.isCreating ? teamNameController : null,
-                ),
-                const SizedBox(height: 16),
-                Text('Members', style: context.textTheme.titleSmall),
-                const SizedBox(height: 12),
-                StageSearchBar(
-                  focusNode: searchFocusNode,
-                  controller: searchController,
-                  onChanged: (value) => setState(() {}),
-                ),
-                const SizedBox(height: 16),
-                _buildParticipantsList(),
-                if (widget.isCreating) ...[
-                  const Spacer(),
-                  ContinueButton(
-                    text: 'Create',
-                    onPressed: () {
-                      ref.read(teamNotifierProvider.notifier).createTeam(
-                            TeamRequest(
-                              name: teamNameController.text,
-                              membersCount: 1,
-                            ),
-                          );
-                      context.pop();
+                    ),
+                    const SizedBox(height: 12),
+                    PreferencesActionTile(
+                      title: 'Event Templates',
+                      trailingIcon: Icons.keyboard_arrow_right_rounded,
+                      leadingWidget: Icon(
+                        LucideIcons.folders,
+                        size: 20,
+                        color: context.colorScheme.outline,
+                      ),
+                      height: 54,
+                      onTap: () {
+                        context.pushNamed(AppRoute.eventTemplates.name);
+                      },
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  CustomSettingTile(
+                    backgroundColor: context.colorScheme.onSurfaceVariant,
+                    placeholder:
+                        ref.watch(teamNotifierProvider).currentTeam?.name ??
+                            'Enter Team Name',
+                    headline: 'Team Name',
+                    suffix: ref.watch(permissionServiceProvider).isLeaderOnTeam
+                        ? Icon(
+                            LucideIcons.pencil,
+                            color: context.colorScheme.outline,
+                          )
+                        : const SizedBox(),
+                    onTap: () {
+                      if (!ref
+                          .watch(permissionServiceProvider)
+                          .isLeaderOnTeam) {
+                        return;
+                      }
+                      EditFieldModal.show(
+                        context: context,
+                        fieldName: 'Team Name',
+                        value:
+                            ref.watch(teamNotifierProvider).currentTeam?.name ??
+                                'Enter Team Name',
+                        onSubmitted: (value) {
+                          ref
+                              .read(teamNotifierProvider.notifier)
+                              .updateTeamName(value);
+                        },
+                      );
                     },
-                    isEnabled: true,
                   ),
+                  const SizedBox(height: 16),
+                  Text('Members', style: context.textTheme.titleSmall),
+                  const SizedBox(height: 12),
+                  StageSearchBar(
+                    focusNode: searchFocusNode,
+                    controller: searchController,
+                    onChanged: (value) => setState(() {}),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildParticipantsList(),
+                  // Add some bottom padding
                   const SizedBox(height: 24),
-                ],
-              ],
+                ]),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

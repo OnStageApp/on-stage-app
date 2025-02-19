@@ -382,16 +382,12 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.teamDetails.name,
                       path: 'teamDetails',
                       builder: (context, state) {
-                        final isCreating = bool.tryParse(
-                              state.uri.queryParameters['isCreating']
-                                  .toString(),
-                            ) ??
-                            false;
+                       
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(AppRoute.teamDetails.name);
                         return TeamDetailsScreen(
-                          isCreating: isCreating,
+                       
                         );
                       },
                       routes: [
