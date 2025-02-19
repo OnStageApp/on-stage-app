@@ -37,6 +37,7 @@ class PreferencesSongStructure extends ConsumerWidget {
               songId: songId,
               context: context,
               ref: ref,
+              closeAfterSave: true,
             );
           },
         ),
