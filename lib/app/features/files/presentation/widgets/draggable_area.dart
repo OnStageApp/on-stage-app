@@ -51,7 +51,17 @@ class _DraggableFilesOverlayState extends State<DraggableFilesOverlay> {
 
   bool _isDragging = false;
 
-  String _getFileExtension(DropItem item) {
+  String _getFileExtension(DropItem item, String? suggestedName) {
+    // If we have a suggested name with an extension, don't add another one
+    if (suggestedName != null) {
+      final lowercaseName = suggestedName.toLowerCase();
+      if (_supportedFormats.values.any(
+        lowercaseName.endsWith,
+      )) {
+        return '';
+      }
+    }
+
     // Check platform-specific formats first
     final platformFormat = item.platformFormats.firstOrNull?.toString();
     if (platformFormat != null) {
@@ -124,7 +134,8 @@ class _DraggableFilesOverlayState extends State<DraggableFilesOverlay> {
                 try {
                   final fileData = await file.readAll();
                   final platformFile = PlatformFile(
-                    name: '$suggestedName${_getFileExtension(item)}',
+                    name:
+                        '$suggestedName${_getFileExtension(item, suggestedName)}',
                     size: fileData.length,
                     bytes: fileData,
                   );
