@@ -123,20 +123,23 @@ class PlanCard extends ConsumerWidget {
             ),
             const Spacer(),
             if (plan.price != 0)
-              ContinueButton(
-                text: isCurrent ? 'Current Plan ' : 'Try for Free',
-                textColor: isCurrent
-                    ? context.colorScheme.onSurface
-                    : context.colorScheme.onSurfaceVariant,
-                backgroundColor: isCurrent
-                    ? context.colorScheme.surface
-                    : context.colorScheme.onSecondary,
-                borderColor: context.colorScheme.primaryContainer,
-                onPressed: () {
-                  if (!isCurrent) _handlePurchase(ref, context);
-                },
-                isEnabled: true,
-                hasShadow: false,
+              Center(
+                child: ContinueButton(
+                  text: isCurrent ? 'Current Plan ' : 'Try for Free',
+                  textColor: isCurrent
+                      ? context.colorScheme.onSurface
+                      : context.colorScheme.onSurfaceVariant,
+                  backgroundColor: isCurrent
+                      ? context.colorScheme.surface
+                      : context.colorScheme.onSecondary,
+                  borderColor: context.colorScheme.primaryContainer,
+                  onPressed: () {
+                    if (!isCurrent) _handlePurchase(ref, context);
+                  },
+                  isEnabled: true,
+                  hasShadow: false,
+                  hasMaxConstraints: false,
+                ),
               ),
           ],
         ),

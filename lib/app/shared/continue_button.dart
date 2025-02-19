@@ -14,6 +14,7 @@ class ContinueButton extends StatelessWidget {
     this.textStyle,
     this.borderColor,
     this.boxShadow,
+    this.hasMaxConstraints = true,
     super.key,
   });
 
@@ -27,13 +28,14 @@ class ContinueButton extends StatelessWidget {
   final TextStyle? textStyle;
   final Color? borderColor;
   final BoxShadow? boxShadow;
+  final bool hasMaxConstraints;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(
-        maxWidth: 600,
-      ),
+      constraints: hasMaxConstraints
+          ? const BoxConstraints(maxWidth: 600)
+          : const BoxConstraints(),
       decoration: BoxDecoration(
         boxShadow: hasShadow
             ? [
