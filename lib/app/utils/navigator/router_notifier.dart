@@ -12,6 +12,8 @@ import 'package:on_stage_app/app/features/event_template/event_template/domain/e
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_template_details_screen.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_schedule_screen.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_screen.dart';
+import 'package:on_stage_app/app/features/files/presentation/song_files_screen.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/multi_pdf_preview_screen.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/groups_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
@@ -27,7 +29,6 @@ import 'package:on_stage_app/app/features/song/presentation/event_items_details_
 import 'package:on_stage_app/app/features/song/presentation/saved_songs_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/song_detail_screen.dart';
 import 'package:on_stage_app/app/features/song/presentation/songs_screen.dart';
-import 'package:on_stage_app/app/features/files/presentation/song_files_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/add_team_member_screen.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_details_screen.dart';
 import 'package:on_stage_app/app/features/user/presentation/change_password_screen.dart';
@@ -217,6 +218,24 @@ class NavigationNotifier extends _$NavigationNotifier {
                           builder: (context, state) {
                             return const SongFilesScreen();
                           },
+                          routes: [
+                            GoRoute(
+                              name: AppRoute.pdfPreview.name,
+                              path: 'pdfPreview',
+                              builder: (context, state) {
+                                final filePath = state.extra as List<String>?;
+                                final initialIndex = int.tryParse(
+                                      state.uri.queryParameters['initialIndex']
+                                          .toString(),
+                                    ) ??
+                                    0;
+                                return MultiPdfPreviewScreen(
+                                  filePaths: filePath!,
+                                  initialIndex: initialIndex,
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),

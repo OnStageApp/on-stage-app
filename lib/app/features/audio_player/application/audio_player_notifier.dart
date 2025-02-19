@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart' as rx;
 
@@ -27,6 +31,7 @@ class AudioController extends _$AudioController {
 
   Future<void> openFile(SongFile file) async {
     await _initializePlayer();
+    final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
 
     try {
       state = state.copyWith(
@@ -34,14 +39,13 @@ class AudioController extends _$AudioController {
         currentSongFile: file,
       );
 
-      // Create a tagged AudioSource instead of just using setUrl.
       final audioSource = AudioSource.uri(
         Uri.parse(file.url),
         tag: MediaItem(
           id: file.id,
           album: 'OnStage',
           title: file.name,
-          // artUri: file.artUri != null ? Uri.parse(file.artUri!) : null,
+          artUri: artUri,
         ),
       );
 
@@ -58,7 +62,6 @@ class AudioController extends _$AudioController {
     await _player?.dispose();
     _player = null;
     await _playerSubscription?.cancel();
-
     state = const AudioPlayerState();
   }
 
@@ -150,5 +153,18 @@ class AudioController extends _$AudioController {
         isPlaying: combinedState.isPlaying,
       );
     });
+  }
+
+  Future<Uri> _getAssetArtUri(String assetPath) async {
+    // Load the asset as bytes.
+    final byteData = await rootBundle.load(assetPath);
+    // Get a temporary directory.
+    final tempDir = await getTemporaryDirectory();
+    // Create a temporary file.
+    final file = File('${tempDir.path}/logo_onstage.png');
+    // Write the asset bytes to the file.
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    // Return the file URI.
+    return Uri.file(file.path);
   }
 }
