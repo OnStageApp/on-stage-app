@@ -61,7 +61,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
     _teams = ref.watch(teamsNotifierProvider).teams;
     return SafeArea(
       child: NestedScrollModal(
-        buildHeader: () => const ModalHeader(title: 'Teams'),
+        buildHeader: () => const ModalHeader(title: 'Your Teams'),
         headerHeight: () => 64,
         buildContent: () => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -103,7 +103,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                             horizontal: 12,
                           ),
                           title: Text(
-                            team.name ?? '',
+                            team.name,
                             style: context.textTheme.headlineMedium,
                           ),
                           subtitle: Text(
@@ -124,7 +124,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              '${team.role}',
+                              _getRole(team),
                               style: context.textTheme.titleMedium!
                                   .copyWith(color: context.colorScheme.outline),
                             ),
@@ -164,6 +164,9 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
       ),
     );
   }
+
+  String _getRole(Team team) =>
+      '${team.role?.toLowerCase() == 'none' ? 'Member' : team.role}';
 
   bool _isItemChecked(int index) =>
       ref.watch(teamsNotifierProvider).currentTeamId ==

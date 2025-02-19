@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
-import 'package:on_stage_app/app/features/event/domain/models/stager/create_all_stagers_request.dart';
 import 'package:on_stage_app/app/features/event/domain/models/stager/create_stager_request.dart';
 import 'package:on_stage_app/app/features/stager_template/application/stager_template_state.dart';
 import 'package:on_stage_app/app/features/stager_template/data/stager_template_repository.dart';
