@@ -39,4 +39,23 @@ class AmazonS3Notifier extends _$AmazonS3Notifier {
       return null;
     }
   }
+
+  Future<Uint8List?> getDocumentFromAWS(String presignedUrl) async {
+  try {
+    // Assuming you have an endpoint to fetch presigned URL
+    if (presignedUrl.isNullEmptyOrWhitespace) {
+      return null;
+    }
+    final documentBytes = await _s3Repository.getDocument(presignedUrl);
+    if (documentBytes.isNotEmpty) {
+      return Uint8List.fromList(documentBytes);
+    } else {
+      logger.e('Failed to fetch document. Status code: 500');
+      return null;
+    }
+  } catch (e) {
+    logger.e('Error fetching document: $e');
+    return null;
+  }
+}
 }

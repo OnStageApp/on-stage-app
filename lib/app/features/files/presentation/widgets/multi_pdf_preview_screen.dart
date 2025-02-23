@@ -20,11 +20,12 @@ class MultiPdfPreviewScreen extends StatefulWidget {
 class MultiPdfPreviewScreenState extends State<MultiPdfPreviewScreen> {
   late final PageController _pageController;
 
-@override
+  @override
   void initState() {
     _pageController = PageController(initialPage: widget.initialIndex);
     super.initState();
   }
+
   @override
   void dispose() {
     _pageController.dispose();

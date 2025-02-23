@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'song_files_repository.g.dart';
@@ -10,17 +11,16 @@ part 'song_files_repository.g.dart';
 abstract class SongFilesRepository {
   factory SongFilesRepository(Dio dio) = _SongFilesRepository;
 
-  @GET('/songs')
-  Future<List<SongFile>> getSongFiles();
+  @GET(API.getSongFiles)
+  Future<List<SongFile>> getSongFiles(
+    @Path('songId') String songId,
+  );
 
-  @POST('/songs/upload')
-  Future<String> getUploadUrl(@Body() Map<String, dynamic> fileInfo);
-
-  @DELETE('/songs/{id}')
-  Future<void> deleteSongFile(@Path('id') String id);
-
-  @PUT('/songs/{id}/play')
-  Future<String> getStreamUrl(@Path('id') String id);
+  @GET(API.getPresignedUrl)
+  Future<String> getPresignedUrl(
+    @Path('songId') String songId,
+    @Path('fileId') String fileId,
+  );
 }
 
 final songFilesRepoProvider = Provider<SongFilesRepository>((ref) {

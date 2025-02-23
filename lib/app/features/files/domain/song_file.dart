@@ -11,7 +11,6 @@ class SongFile with _$SongFile {
     required String songId,
     required String teamId,
     required String name,
-    required String url,
     required FileTypeEnum fileType,
     required int size,
   }) = _SongFile;

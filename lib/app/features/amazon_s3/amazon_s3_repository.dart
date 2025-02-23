@@ -10,4 +10,8 @@ abstract class AmazonS3Repository {
   @GET('{path}')
   @DioResponseType(ResponseType.bytes)
   Future<List<int>> getUserPhotoFromS3(@Path('path') String path);
+
+    @GET('{path}')
+  @DioResponseType(ResponseType.bytes)
+  Future<List<int>> getDocument(@Path('path') String path);
 }

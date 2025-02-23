@@ -13,7 +13,8 @@ import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongFilesScreen extends ConsumerStatefulWidget {
-  const SongFilesScreen({super.key});
+  const SongFilesScreen(this.songId, {super.key});
+  final String songId;
 
   @override
   SongFilesScreenState createState() => SongFilesScreenState();
@@ -23,7 +24,7 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(songFilesNotifierProvider.notifier).getSongFiles();
+      ref.read(songFilesNotifierProvider.notifier).getSongFiles(widget.songId);
     });
     super.initState();
   }
@@ -60,7 +61,9 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           },
           child: RefreshIndicator.adaptive(
             onRefresh: () async {
-              await ref.read(songFilesNotifierProvider.notifier).getSongFiles();
+              await ref
+                  .read(songFilesNotifierProvider.notifier)
+                  .getSongFiles(widget.songId);
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -95,7 +98,8 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: files.length,
-          itemBuilder: (context, index) => SongFileTile(files[index]),
+          itemBuilder: (context, index) =>
+              SongFileTile(files[index], widget.songId),
         ),
       ],
     );
@@ -114,12 +118,16 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
         'doc',
         'docx',
         'txt',
+        'ppt',
+        'pptx',
       ],
     );
 
-    if (result != null) {
-      final file = result.files.first;
-      unawaited(ref.read(songFilesNotifierProvider.notifier).addSongFile(file));
-    }
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.first;
+    await ref
+        .read(songFilesNotifierProvider.notifier)
+        .uploadFile(file, widget.songId);
   }
 }

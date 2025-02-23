@@ -286,11 +286,13 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           else
             widget.navigationShell,
           // ignore: use_if_null_to_convert_nulls_to_bools
-          if (audioState.currentSongFile?.url.isNotNullEmptyOrWhitespace ==
-              true)
+          // if (audioState.currentSongFile?.url.isNotNullEmptyOrWhitespace ==
+          //     true)
+          //TODO: fix this too
+          if (audioState.currentSongFile != null)
             StgAudioPlayer(
               hasNavbar: !_shouldHideBottomNav(currentLocation),
-              audioUrl: audioState.currentSongFile!.url,
+              audioUrl: 'audioState.currentSongFile!.url',
             ),
         ],
       ),
@@ -298,7 +300,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Widget _buildNavigationRail(BuildContext context) {
-    return CustomSideNavigation(
+    return CustomSideNavigation(  
       selectedIndex: widget.navigationShell.currentIndex,
       onDestinationSelected: _onChangedScreen,
       isExpanded: _isNavigationExpanded,
