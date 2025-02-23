@@ -16,8 +16,9 @@ final fileEditingStateProvider =
     StateProvider.autoDispose<bool>((ref) => false);
 
 class SongFileTile extends ConsumerStatefulWidget {
-  const SongFileTile(this.songFile, {super.key});
+  const SongFileTile(this.songFile, this.songId, {super.key});
   final SongFile songFile;
+  final String songId;
 
   @override
   ConsumerState<SongFileTile> createState() => _SongFileTileState();
@@ -84,7 +85,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                 if (widget.songFile.fileType == FileTypeEnum.audio) {
                   ref
                       .read(songFilesNotifierProvider.notifier)
-                      .openAudioFile(widget.songFile);
+                      .openAudioFile(widget.songFile, widget.songId);
                 } else {
                   openDocument(widget.songFile);
                 }
@@ -165,7 +166,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                     title: 'Rename',
                     onTap: () => _handleEditingToggle(false),
                   ),
-                  MenuAction(
+                  MenuAction( 
                     icon: LucideIcons.trash,
                     title: 'Remove',
                     onTap: () {},
@@ -195,49 +196,43 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
   }
 
   String _getFileSize() {
-    return widget.songFile.size > 1000
-        ? '${(widget.songFile.size / 1024).toStringAsFixed(2)} MB'
-        : '${widget.songFile.size} KB';
-  }
-
-  Future<void> openDocument(SongFile file) async {
-    final lowerName = file.name.toLowerCase();
-    if (lowerName.endsWith('.pdf')) {
-      // Set loading state for this file to true.
-      ref.read(documentLoadingProvider(file.id).notifier).state = true;
-
-      final pdfPaths = await ref
-          .read(songFilesNotifierProvider.notifier)
-          .getLocalPdfPathsForDocument(file);
-
-      // Set loading state to false when done.
-      ref.read(documentLoadingProvider(file.id).notifier).state = false;
-
-      if (pdfPaths.isNotEmpty && mounted) {
-        // Find the index of the tapped PDF among all PDF files.
-        final allPdfFiles = ref
-            .read(songFilesNotifierProvider)
-            .songFiles
-            .where((f) => f.name.toLowerCase().endsWith('.pdf'))
-            .toList();
-        final tappedIndex = allPdfFiles.indexWhere((f) => f.id == file.id);
-
-        unawaited(
-          context.pushNamed(
-            AppRoute.pdfPreview.name,
-            extra: List<String>.from(pdfPaths),
-            queryParameters: {
-              'initialIndex': tappedIndex.toString(),
-            },
-          ),
-        );
-      }
-    } else if (lowerName.endsWith('.ppt') || lowerName.endsWith('.pptx')) {
-      await OpenFile.open(file.url);
+    final size = widget.songFile.size;
+    if (size < 1024) {
+      return '$size B';
+    } else if (size < 1024 * 1024) {
+      return '${(size / 1024).toStringAsFixed(2)} KB';
     } else {
-      await OpenFile.open(file.url);
+      return '${(size / (1024 * 1024)).toStringAsFixed(2)} MB';
     }
   }
+
+Future<void> openDocument(SongFile file) async {
+  final lowerName = file.name.toLowerCase();
+  if (lowerName.endsWith('.pdf')) {
+    ref.read(documentLoadingProvider(file.id).notifier).state = true;
+    final documentUrl = await ref
+        .read(songFilesNotifierProvider.notifier)
+        .getDocument(file.songId, file.id);
+    ref.read(documentLoadingProvider(file.id).notifier).state = false;
+    if (documentUrl != null && mounted) {
+      await context.pushNamed(
+        AppRoute.pdfPreview.name,
+        extra: [documentUrl],
+        queryParameters: {'initialIndex': '0'},
+      );
+    } else {
+      debugPrint('Failed to retrieve PDF document URL.');
+    }
+  } else if (lowerName.endsWith('.ppt') ||
+      lowerName.endsWith('.pptx') ||
+      lowerName.endsWith('.txt')) {
+    final result = await OpenFile.open(file.url);
+    debugPrint('OpenFile result: $result');
+  } else {
+    debugPrint('Unsupported file type: ${file.name}');
+  }
+}
+
 }
 
 final documentLoadingProvider = StateProvider.family<bool, String>(

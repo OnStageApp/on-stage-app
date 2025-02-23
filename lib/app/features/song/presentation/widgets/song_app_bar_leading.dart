@@ -92,7 +92,12 @@ class SongAppBarLeading extends ConsumerWidget {
             ),
             icon: const Icon(LucideIcons.paperclip),
             onPressed: () {
-              context.pushNamed(AppRoute.songFiles.name);
+              context.pushNamed(
+                AppRoute.songFiles.name,
+                queryParameters: {
+                  'songId': songId,
+                },
+              );
             },
           ),
           const SizedBox(

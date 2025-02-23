@@ -216,7 +216,8 @@ class NavigationNotifier extends _$NavigationNotifier {
                           name: AppRoute.songFiles.name,
                           path: 'songFiles',
                           builder: (context, state) {
-                            return const SongFilesScreen();
+                            final songId = state.uri.queryParameters['songId'];
+                            return SongFilesScreen(songId!);
                           },
                           routes: [
                             GoRoute(

@@ -5,9 +5,11 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart' as rx;
@@ -18,6 +20,8 @@ part 'audio_player_notifier.g.dart';
 class AudioController extends _$AudioController {
   AudioPlayer? _player;
   StreamSubscription<CombinedPlayerState>? _playerSubscription;
+  AmazonS3Notifier get _amazonS3Notifier =>
+      ref.read(amazonS3NotifierProvider.notifier);
 
   @override
   AudioPlayerState build() {
@@ -29,18 +33,33 @@ class AudioController extends _$AudioController {
     return const AudioPlayerState();
   }
 
-  Future<void> openFile(SongFile file) async {
+  Future<void> openFile(SongFile file, String presignedUrl) async {
+    // Ensure the audio player is initialized.
     await _initializePlayer();
+
+    // Retrieve the artwork URI.
     final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
 
     try {
+      // Set state to loading with the current file.
       state = state.copyWith(
         status: AudioStatus.loading,
         currentSongFile: file,
       );
 
+      logger.i('PresignedUrl: $presignedUrl');
+
+      // Parse the presigned URL.
+      final uri = Uri.parse(presignedUrl);
+
+      // Debug: print URI components to verify correctness.
+      logger.i(
+        'Audio URI scheme: ${uri.scheme}, host: ${uri.host}, path: ${uri.path}',
+      );
+
+      // Create an audio source from the URL.
       final audioSource = AudioSource.uri(
-        Uri.parse(file.url),
+        uri,
         tag: MediaItem(
           id: file.id,
           album: 'OnStage',
@@ -49,10 +68,17 @@ class AudioController extends _$AudioController {
         ),
       );
 
+      // Attempt to set the audio source.
       await _player!.setAudioSource(audioSource);
+
+      logger.i('Audio source set');
+      // Update state to ready once the source is set.
       state = state.copyWith(status: AudioStatus.ready);
+
+      // Start playback.
       await _player!.play();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      logger.e('Error opening file', e, stackTrace);
       state = state.copyWith(status: AudioStatus.error);
     }
   }
