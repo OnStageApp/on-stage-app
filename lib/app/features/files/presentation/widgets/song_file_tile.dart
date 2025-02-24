@@ -1,16 +1,14 @@
-import 'dart:async';
-
+// lib/app/features/files/presentation/song_file_tile.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/files/application/file_manager.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:open_file/open_file.dart';
 
 final fileEditingStateProvider =
     StateProvider.autoDispose<bool>((ref) => false);
@@ -34,14 +32,10 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     _focusNode = FocusNode();
     _controller = TextEditingController(text: widget.songFile.name);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.addListener(() {
-        if (!_focusNode.hasFocus) {
-          if (ref.read(fileEditingStateProvider)) {
-            _handleEditingToggle(true);
-          }
-        }
-      });
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus && ref.read(fileEditingStateProvider)) {
+        _toggleEditMode();
+      }
     });
   }
 
@@ -52,15 +46,13 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     super.dispose();
   }
 
-  void _handleEditingToggle(bool currentEditingState) {
+  void _toggleEditMode() {
+    final currentEditingState = ref.read(fileEditingStateProvider);
     if (currentEditingState) {
       final newName = _controller.text;
-      // TODO: Implement rename logic
-      // ref.read(songFilesNotifierProvider.notifier).renameFile(widget.songFile, newName);
+      // Handle renaming logic here
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _focusNode.requestFocus();
-      });
+      _focusNode.requestFocus();
     }
     ref.read(fileEditingStateProvider.notifier).update((state) => !state);
   }
@@ -68,7 +60,8 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
   @override
   Widget build(BuildContext context) {
     final isEditing = ref.watch(fileEditingStateProvider);
-    final isLoading = ref.watch(documentLoadingProvider(widget.songFile.id));
+    final fileManagerState = ref.watch(fileManagerProvider);
+    final isLoading = fileManagerState.isLoading(widget.songFile.id);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -78,18 +71,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        onTap: isEditing
-            ? null
-            : () {
-                // Disable onTap when editing
-                if (widget.songFile.fileType == FileTypeEnum.audio) {
-                  ref
-                      .read(songFilesNotifierProvider.notifier)
-                      .openAudioFile(widget.songFile, widget.songId);
-                } else {
-                  openDocument(widget.songFile);
-                }
-              },
+        onTap: () => _openFile(context, isEditing),
         visualDensity: VisualDensity.compact,
         title: Row(
           children: [
@@ -104,31 +86,9 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (isEditing)
-                    GestureDetector(
-                      // Wrap TextField with GestureDetector
-                      onTap: () {}, // Empty onTap to prevent tap propagation
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        style: context.textTheme.titleMedium!.copyWith(
-                          color: context.colorScheme.onSurface,
-                        ),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    )
+                    _buildEditingTile()
                   else
-                    Text(
-                      widget.songFile.name,
-                      style: context.textTheme.titleMedium!.copyWith(
-                        color: context.colorScheme.onSurface,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    _buildNonEditingTile(),
                   Text(
                     _getFileSize(),
                     style: context.textTheme.bodySmall!.copyWith(
@@ -164,9 +124,9 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                   MenuAction(
                     icon: LucideIcons.pencil,
                     title: 'Rename',
-                    onTap: () => _handleEditingToggle(false),
+                    onTap: _toggleEditMode,
                   ),
-                  MenuAction( 
+                  MenuAction(
                     icon: LucideIcons.trash,
                     title: 'Remove',
                     onTap: () {},
@@ -195,46 +155,67 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     );
   }
 
+  Widget _buildEditingTile() {
+    return GestureDetector(
+      onTap: () {}, // Empty onTap to prevent tap propagation
+      child: TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        style: context.textTheme.titleMedium!.copyWith(
+          color: context.colorScheme.onSurface,
+        ),
+        decoration: const InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNonEditingTile() {
+    return Text(
+      widget.songFile.name,
+      style: context.textTheme.titleMedium!.copyWith(
+        color: context.colorScheme.onSurface,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  void _openFile(BuildContext context, bool isEditing) {
+    if (isEditing) {
+      return;
+    }
+    if (widget.songFile.fileType == FileTypeEnum.audio) {
+      ref
+          .read(songFilesNotifierProvider.notifier)
+          .openAudioFile(widget.songFile, widget.songId);
+    } else if (widget.songFile.fileType == FileTypeEnum.pdf) {
+      ref.read(fileManagerProvider.notifier).openPDF(
+            widget.songFile,
+            context,
+          );
+    } else {
+      ref.read(fileManagerProvider.notifier).openDocument(
+            widget.songFile,
+            context,
+          );
+    }
+  }
+
   String _getFileSize() {
     final size = widget.songFile.size;
-    if (size < 1024) {
+    const kb = 1024;
+    const mb = kb * 1024;
+
+    if (size < kb) {
       return '$size B';
-    } else if (size < 1024 * 1024) {
-      return '${(size / 1024).toStringAsFixed(2)} KB';
+    } else if (size < mb) {
+      return '${(size / kb).toStringAsFixed(2)} KB';
     } else {
-      return '${(size / (1024 * 1024)).toStringAsFixed(2)} MB';
+      return '${(size / mb).toStringAsFixed(2)} MB';
     }
   }
-
-Future<void> openDocument(SongFile file) async {
-  final lowerName = file.name.toLowerCase();
-  if (lowerName.endsWith('.pdf')) {
-    ref.read(documentLoadingProvider(file.id).notifier).state = true;
-    final documentUrl = await ref
-        .read(songFilesNotifierProvider.notifier)
-        .getDocument(file.songId, file.id);
-    ref.read(documentLoadingProvider(file.id).notifier).state = false;
-    if (documentUrl != null && mounted) {
-      await context.pushNamed(
-        AppRoute.pdfPreview.name,
-        extra: [documentUrl],
-        queryParameters: {'initialIndex': '0'},
-      );
-    } else {
-      debugPrint('Failed to retrieve PDF document URL.');
-    }
-  } else if (lowerName.endsWith('.ppt') ||
-      lowerName.endsWith('.pptx') ||
-      lowerName.endsWith('.txt')) {
-    final result = await OpenFile.open(file.url);
-    debugPrint('OpenFile result: $result');
-  } else {
-    debugPrint('Unsupported file type: ${file.name}');
-  }
 }
-
-}
-
-final documentLoadingProvider = StateProvider.family<bool, String>(
-  (ref, songFileId) => false,
-);

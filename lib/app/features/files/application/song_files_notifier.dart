@@ -102,16 +102,6 @@ class SongFilesNotifier extends _$SongFilesNotifier {
     }
   }
 
-  Future<String?> getStreamUrl(String id) async {
-    try {
-      // return await _repository.getStreamUrl(id);
-    } catch (e) {
-      state = state.copyWith(error: e);
-      rethrow;
-    }
-    return null;
-  }
-
   Future<void> openAudioFile(SongFile file, String songId) async {
     final presignedUrl = await _repository.getPresignedUrl(songId, file.id);
     await _audioController.openFile(file, presignedUrl);
