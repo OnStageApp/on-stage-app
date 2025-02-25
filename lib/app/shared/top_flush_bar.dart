@@ -10,7 +10,7 @@ class TopFlushBar {
     bool isError = false,
     Color? backgroundColor,
   }) {
-    Flushbar(
+    Flushbar<dynamic>(
       icon: Icon(
         icon ?? Icons.info_outline,
         color: Colors.white,

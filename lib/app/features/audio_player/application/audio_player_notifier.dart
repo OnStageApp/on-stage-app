@@ -33,33 +33,21 @@ class AudioController extends _$AudioController {
     return const AudioPlayerState();
   }
 
+// Improve error handling with user-friendly messages
   Future<void> openFile(SongFile file, String presignedUrl) async {
-    // Ensure the audio player is initialized.
     await _initializePlayer();
 
-    // Retrieve the artwork URI.
     final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
 
     try {
-      // Set state to loading with the current file.
       state = state.copyWith(
         status: AudioStatus.loading,
         currentSongFile: file,
+        errorMessage: null, // Clear any previous errors
       );
 
-      logger.i('PresignedUrl: $presignedUrl');
-
-      // Parse the presigned URL.
-      final uri = Uri.parse(presignedUrl);
-
-      // Debug: print URI components to verify correctness.
-      logger.i(
-        'Audio URI scheme: ${uri.scheme}, host: ${uri.host}, path: ${uri.path}',
-      );
-
-      // Create an audio source from the URL.
       final audioSource = AudioSource.uri(
-        uri,
+        Uri.parse(presignedUrl),
         tag: MediaItem(
           id: file.id,
           album: 'OnStage',
@@ -68,18 +56,28 @@ class AudioController extends _$AudioController {
         ),
       );
 
-      // Attempt to set the audio source.
       await _player!.setAudioSource(audioSource);
 
-      logger.i('Audio source set');
-      // Update state to ready once the source is set.
       state = state.copyWith(status: AudioStatus.ready);
 
-      // Start playback.
       await _player!.play();
     } catch (e, stackTrace) {
       logger.e('Error opening file', e, stackTrace);
-      state = state.copyWith(status: AudioStatus.error);
+
+      // Provide a user-friendly error message
+      var errorMessage = 'Unable to play audio file';
+      if (e is PlayerException) {
+        errorMessage = 'Playback error: Please try again';
+      } else if (e is FormatException) {
+        errorMessage = 'Invalid audio format';
+      } else if (e is SocketException) {
+        errorMessage = 'Network error: Please check your connection';
+      }
+
+      state = state.copyWith(
+        status: AudioStatus.error,
+        errorMessage: errorMessage,
+      );
     }
   }
 

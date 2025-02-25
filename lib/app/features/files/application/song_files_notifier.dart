@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
@@ -11,6 +9,7 @@ import 'package:on_stage_app/app/features/files/data/song_files_repository.dart'
 import 'package:on_stage_app/app/features/files/data/song_files_upload_repository.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:on_stage_app/app/features/files/domain/update_song_file_request.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,26 +42,25 @@ class SongFilesNotifier extends _$SongFilesNotifier {
     }
   }
 
-  Future<void> addSongFile(PlatformFile file) async {
-    final extension = file.extension?.toLowerCase() ?? '';
-    // Determine file type.
-    final fileType = (['mp3', 'wav', 'aac', 'm4a', 'caf'].contains(extension))
-        ? FileTypeEnum.audio
-        : (extension == 'pdf')
-            ? FileTypeEnum.pdf
-            : FileTypeEnum.other;
+  Future<void> renameSongFile(String fileId, String newName) async {
+    try {
+      // First update backend
+      final request = UpdateSongFileRequest(name: newName);
+      await _repository.updateSongFile(fileId, request);
 
-    final newFile = SongFile(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      songId: '1',
-      teamId: '1',
-      name: file.name,
-      size: file.size,
-      fileType: fileType,
-    );
+      // Then update state
+      final updatedFiles = state.songFiles.map((file) {
+        if (file.id == fileId) {
+          return file.copyWith(name: newName);
+        }
+        return file;
+      }).toList();
 
-    // Simply add the new file to the state.
-    state = state.copyWith(songFiles: [...state.songFiles, newFile]);
+      state = state.copyWith(songFiles: updatedFiles);
+    } catch (e) {
+      logger.e('Error renaming file: $e');
+      state = state.copyWith(error: e);
+    }
   }
 
   Future<void> uploadFile(PlatformFile platformFile, String songId) async {
@@ -93,11 +91,13 @@ class SongFilesNotifier extends _$SongFilesNotifier {
 
   Future<void> deleteSongFile(String id) async {
     try {
-      // await _repository.deleteSongFile(id);
+      await _repository.deleteSongFile(id);
+
       state = state.copyWith(
         songFiles: state.songFiles.where((song) => song.id != id).toList(),
       );
     } catch (e) {
+      logger.e('Error deleting file: $e');
       state = state.copyWith(error: e);
     }
   }

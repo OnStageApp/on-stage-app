@@ -14,6 +14,7 @@ class AudioPlayerState with _$AudioPlayerState {
     @Default(Duration.zero) Duration duration,
     @Default(AudioStatus.initial) AudioStatus status,
     AudioPlayer? player,
+    String? errorMessage,
   }) = _AudioPlayerState;
 }
 
