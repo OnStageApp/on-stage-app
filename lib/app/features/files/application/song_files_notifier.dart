@@ -2,13 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_state.dart';
 import 'package:on_stage_app/app/features/files/application/upload_manager/uploads_manager.dart';
 import 'package:on_stage_app/app/features/files/data/song_files_repository.dart';
 import 'package:on_stage_app/app/features/files/data/song_files_upload_repository.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
-import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/features/files/domain/update_song_file_request.dart';
 import 'package:on_stage_app/app/features/files/domain/uploading_file.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -17,6 +15,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'song_files_notifier.g.dart';
 
+const maxUploadSize = 100000000;
+
 @riverpod
 class SongFilesNotifier extends _$SongFilesNotifier {
   // ignore: avoid_manual_providers_as_generated_provider_dependency
@@ -24,8 +24,7 @@ class SongFilesNotifier extends _$SongFilesNotifier {
   SongFilesUploadRepository get _uploadRepository =>
       // ignore: avoid_manual_providers_as_generated_provider_dependency
       ref.read(songFilesUploadRepoProvider);
-  AudioController get _audioController =>
-      ref.read(audioControllerProvider.notifier);
+
   UploadsManager get _uploadsManager =>
       ref.read(uploadsManagerProvider.notifier);
 
@@ -47,11 +46,6 @@ class SongFilesNotifier extends _$SongFilesNotifier {
 
   Future<void> renameSongFile(String fileId, String newName) async {
     try {
-      // First update backend
-      final request = UpdateSongFileRequest(name: newName);
-      await _repository.updateSongFile(fileId, request);
-
-      // Then update state
       final updatedFiles = state.songFiles.map((file) {
         if (file.id == fileId) {
           return file.copyWith(name: newName);
@@ -60,14 +54,23 @@ class SongFilesNotifier extends _$SongFilesNotifier {
       }).toList();
 
       state = state.copyWith(songFiles: updatedFiles);
+
+      final request = UpdateSongFileRequest(name: newName);
+      await _repository.updateSongFile(fileId, request);
     } catch (e) {
       logger.e('Error renaming file: $e');
-      state = state.copyWith(error: e);
+      state = state.copyWith(
+        songFiles: state.songFiles,
+        error: e,
+      );
     }
   }
 
   Future<void> uploadFile(PlatformFile platformFile, String songId) async {
     try {
+      if (platformFile.size > maxUploadSize) {
+        throw Exception('File size exceeds the maximum allowed size of 100MB');
+      }
       // Create uploading file model
       final upFile = UploadingFile(
         id: platformFile.name,
@@ -107,9 +110,7 @@ class SongFilesNotifier extends _$SongFilesNotifier {
 
       // Convert error to user-friendly message
       final errorMessage = e.toString();
-      final cleanError = errorMessage.length > 50
-          ? '${errorMessage.substring(0, 50)}...'
-          : errorMessage;
+      final cleanError = errorMessage;
 
       // Mark upload as failed
       _uploadsManager.markUploadError(
@@ -134,11 +135,6 @@ class SongFilesNotifier extends _$SongFilesNotifier {
       logger.e('Error deleting file: $e');
       state = state.copyWith(error: e);
     }
-  }
-
-  Future<void> openAudioFile(SongFile file, String songId) async {
-    final presignedUrl = await _repository.getPresignedUrl(songId, file.id);
-    await _audioController.openFile(file, presignedUrl);
   }
 
   Future<String?> getDocument(

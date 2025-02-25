@@ -12,7 +12,7 @@ enum FileTypeEnum {
   IconData get icon {
     switch (this) {
       case FileTypeEnum.audio:
-        return LucideIcons.music;
+        return LucideIcons.audio_lines;
       case FileTypeEnum.pdf:
         return LucideIcons.file_text;
       case FileTypeEnum.other:

@@ -1,14 +1,16 @@
-import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
+import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
+import 'package:on_stage_app/app/features/files/application/caching_service.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FileManagerState {
   FileManagerState({
@@ -36,154 +38,113 @@ class FileManagerNotifier extends StateNotifier<FileManagerState> {
   FileManagerNotifier(this._ref) : super(FileManagerState());
   final Ref _ref;
 
-  Future<void> openDocument(SongFile file, BuildContext context) async {
+  AudioController get _audioController =>
+      _ref.read(audioControllerProvider.notifier);
+
+  CachingService get _cachingService => _ref.read(cachingServiceProvider);
+
+  Future<void> openFile(SongFile file, BuildContext context) async {
     try {
       _setLoading(file.id, true);
       _clearError(file.id);
 
-      final documentUrl = await _ref
-          .read(songFilesNotifierProvider.notifier)
-          .getDocument(file.songId, file.id);
-
-      if (documentUrl == null) {
-        _setError(file.id, 'Failed to retrieve document URL');
-        return;
-      }
-
-      // Caching the file based on its type
-      final cachedFilePath = await _cacheFile(
-        documentUrl,
+      String? s3FileUrl;
+      final cachedFileUrl = await _cachingService.checkCache(
         file.id,
         file.name,
-        file.fileType, // Pass file type to handle PDFs separately
+        file.fileExtension ?? '',
+        file.fileType,
       );
+      logger.i('File is cached: ${cachedFileUrl.isNotNullEmptyOrWhitespace}');
 
-      if (cachedFilePath == null) {
-        _setError(file.id, 'Failed to cache file');
-        return;
+      if (cachedFileUrl.isNullEmptyOrWhitespace) {
+        s3FileUrl = await _ref
+            .read(songFilesNotifierProvider.notifier)
+            .getDocument(file.songId, file.id);
+
+        if (s3FileUrl == null) {
+          _setError(file.id, 'Failed to retrieve file URL');
+          return;
+        }
+        logger.i('Fetched file URL');
       }
-      if (!context.mounted) return;
 
-      await _openWithSystemViewer(cachedFilePath);
+      final fileToOpen = cachedFileUrl.isNotNullEmptyOrWhitespace
+          ? cachedFileUrl
+          : await _cacheFile(file, s3FileUrl);
+
+      if (fileToOpen != null) {
+        if (!context.mounted) return;
+        unawaited(_openFileBasedOnType(file, fileToOpen, context));
+      }
     } catch (e) {
-      _setError(file.id, 'Error opening document: $e');
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to open file: $e')),
-        );
-      }
+      _setError(file.id, 'Error opening file: $e');
+      if (!context.mounted) return;
+      _showErrorSnackbar(context, 'Failed to open file: $e');
     } finally {
       _setLoading(file.id, false);
     }
   }
 
-  Future<void> openPDF(SongFile songFile, BuildContext context) async {
+  Future<String?> _cacheFile(SongFile file, String? fileUrl) async {
+    final cachedFile = await _cachingService.cacheFile(
+      fileUrl!,
+      file.id,
+      file.name,
+      file.fileExtension ?? '',
+      file.fileType,
+    );
+
+    if (cachedFile == null) {
+      _setError(file.id, 'Failed to cache file: ${file.name}');
+      return null;
+    }
+
+    return cachedFile;
+  }
+
+  Future<void> _openFileBasedOnType(
+    SongFile file,
+    String cachedFilePath,
+    BuildContext context,
+  ) async {
+    if (file.fileType == FileTypeEnum.audio) {
+      await _openAudioFile(file, cachedFilePath);
+    } else if (file.fileType == FileTypeEnum.pdf) {
+      await _openPDFFile(cachedFilePath, context);
+    } else {
+      await _openDocumentFile(cachedFilePath);
+    }
+    logger.i('Opened file: ${file.name}');
+  }
+
+  Future<void> _openAudioFile(SongFile file, String cachedFilePath) async {
+    await _audioController.openFile(file, cachedFilePath);
+  }
+
+  Future<void> _openPDFFile(String cachedFilePath, BuildContext context) async {
     try {
-      final fileUrl = await _ref
-              .read(songFilesNotifierProvider.notifier)
-              .getDocument(songFile.songId, songFile.id) ??
-          '';
       if (!context.mounted) return;
       await context.pushNamed(
         AppRoute.pdfPreview.name,
-        extra: [fileUrl],
+        extra: [cachedFilePath],
         queryParameters: {'initialIndex': '0', 'isLocalFile': 'true'},
       );
     } catch (e) {
-      debugPrint('Error opening PDF: $e');
+      logger.e('Error opening PDF: $e');
       throw Exception('Failed to open PDF file: $e');
     }
   }
 
-  Future<void> _openWithSystemViewer(String filePath) async {
+  Future<void> _openDocumentFile(String cachedFilePath) async {
     try {
-      final result = await OpenFile.open(filePath);
-      debugPrint('OpenFile result: $result');
-
-      if (result.type != ResultType.done) {
-        throw Exception('Failed to open file: ${result.message}');
-      }
+      await OpenFile.open(cachedFilePath);
     } catch (e) {
-      debugPrint('Error opening file with system viewer: $e');
-      throw Exception('Failed to open file with system viewer: $e');
+      throw Exception('Failed to open document: $e');
     }
   }
 
-  // Cache file for both general files and PDFs
-Future<String?> _cacheFile(
-  String url,
-  String fileId,
-  String fileName,
-  FileTypeEnum fileType, 
-) async {
-  try {
-    // Create cache directory if needed
-    final appDir = await getApplicationCacheDirectory();
-    final fileDir = Directory(
-      '${appDir.path}/${fileType == FileTypeEnum.audio ? 'audio' : 'documents'}',
-    );
-    if (!fileDir.existsSync()) {
-      await fileDir.create(recursive: true);
-    }
-
-    // Determine the file extension
-    final extension = fileType == FileTypeEnum.pdf
-        ? 'pdf'
-        : fileType == FileTypeEnum.audio
-            ? fileName.split('.').last
-            : fileName.split('.').last;
-
-    final cachedFilePath = '${fileDir.path}/$fileId.$extension';
-    final cachedFile = File(cachedFilePath);
-
-    // Download the file if it doesn't exist in cache
-    if (!cachedFile.existsSync()) {
-      final response = await http.get(Uri.parse(url));
-      await cachedFile.writeAsBytes(response.bodyBytes);
-      debugPrint('File downloaded to: $cachedFilePath');
-    } else {
-      debugPrint('Using cached file: $cachedFilePath');
-    }
-
-    return cachedFilePath;
-  } catch (e) {
-    debugPrint('Error caching file: $e');
-    return null;
-  }
-}
-
-
-  Future<void> cleanupCache({int maxAgeInDays = 3}) async {
-    try {
-      final appDir = await getApplicationCacheDirectory();
-      final fileDir = Directory('${appDir.path}/documents');
-
-      if (fileDir.existsSync()) {
-        final now = DateTime.now();
-        await for (final entity in fileDir.list()) {
-          if (entity is File) {
-            final fileStat = entity.statSync();
-            final fileAge = now.difference(fileStat.modified);
-
-            if (fileAge.inDays > maxAgeInDays) {
-              await entity.delete();
-              debugPrint('Deleted old cached file: ${entity.path}');
-            }
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint('Error cleaning up cache: $e');
-    }
-  }
-
-  void _setLoading(String fileId, bool isLoading) {
-    state = state.copyWith(
-      loadingFiles: {...state.loadingFiles, fileId: isLoading},
-    );
-  }
-
+  // Error handling improvements
   void _setError(String fileId, String error) {
     state = state.copyWith(
       errorMessages: {...state.errorMessages, fileId: error},
@@ -193,6 +154,20 @@ Future<String?> _cacheFile(
   void _clearError(String fileId) {
     final newErrors = {...state.errorMessages}..remove(fileId);
     state = state.copyWith(errorMessages: newErrors);
+  }
+
+  void _setLoading(String fileId, bool isLoading) {
+    state = state.copyWith(
+      loadingFiles: {...state.loadingFiles, fileId: isLoading},
+    );
+  }
+
+  // Show error messages in snackbar
+  void _showErrorSnackbar(BuildContext context, String message) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }
 

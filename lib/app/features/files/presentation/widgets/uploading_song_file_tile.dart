@@ -226,15 +226,10 @@ class _UploadingSongFileTileState extends State<UploadingSongFileTile>
           color: context.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(2),
         ),
-        child: Row(
+        child: const Row(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.3,
+            SizedBox(
               height: 4,
-              decoration: BoxDecoration(
-                color: context.colorScheme.error,
-                borderRadius: BorderRadius.circular(2),
-              ),
             ),
           ],
         ),
@@ -258,7 +253,6 @@ class _UploadingSongFileTileState extends State<UploadingSongFileTile>
     switch (widget.status) {
       case UploadStatus.uploading:
         return const SizedBox.shrink();
-
       case UploadStatus.success:
         return TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),

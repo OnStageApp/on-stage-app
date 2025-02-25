@@ -5,7 +5,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
@@ -32,7 +31,10 @@ class AudioController extends _$AudioController {
   }
 
 // Improve error handling with user-friendly messages
-  Future<void> openFile(SongFile file, String presignedUrl) async {
+  Future<void> openFile(
+    SongFile file,
+    String localUrl,
+  ) async {
     await _initializePlayer();
 
     final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
@@ -44,8 +46,8 @@ class AudioController extends _$AudioController {
         errorMessage: null, // Clear any previous errors
       );
 
-      final audioSource = AudioSource.uri(
-        Uri.parse(presignedUrl),
+      final audioSource = AudioSource.file(
+        localUrl,
         tag: MediaItem(
           id: file.id,
           album: 'OnStage',
@@ -60,7 +62,11 @@ class AudioController extends _$AudioController {
 
       await _player!.play();
     } catch (e, stackTrace) {
-      logger.e('Error opening file', e, stackTrace);
+      logger.e(
+        'Error opening file ${file.name}, path: $localUrl',
+        e,
+        stackTrace,
+      );
 
       // Provide a user-friendly error message
       var errorMessage = 'Unable to play audio file';
@@ -116,19 +122,7 @@ class AudioController extends _$AudioController {
   }
 
   Future<void> seek(Duration position) async {
-    // Update the UI state immediately to show where the user is seeking to
-    state = state.copyWith(
-      isSeeking: true,
-      seekPosition: position,
-    );
-
-    // Perform the actual seek operation
     await _player?.seek(position);
-
-    // After seeking completes, update the state
-    state = state.copyWith(
-      isSeeking: false,
-    );
   }
 
   Future<void> skipForward() async {

@@ -12,8 +12,7 @@ class ProgressBarWidget extends ConsumerWidget {
     final state = ref.watch(audioControllerProvider);
     final audioNotifier = ref.read(audioControllerProvider.notifier);
 
-    final displayPosition =
-        state.isSeeking ? state.seekPosition : state.position;
+    final displayPosition = state.position;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
