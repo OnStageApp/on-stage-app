@@ -111,41 +111,48 @@ class FileManagerNotifier extends StateNotifier<FileManagerState> {
   }
 
   // Cache file for both general files and PDFs
-  Future<String?> _cacheFile(
-    String url,
-    String fileId,
-    String fileName,
-    FileTypeEnum fileType,
-  ) async {
-    try {
-      // Create cache directory if needed
-      final appDir = await getApplicationCacheDirectory();
-      final fileDir = Directory('${appDir.path}/documents');
-      if (!fileDir.existsSync()) {
-        await fileDir.create(recursive: true);
-      }
-
-      // Determine the file extension based on file type
-      final extension =
-          fileType == FileTypeEnum.pdf ? 'pdf' : fileName.split('.').last;
-      final cachedFilePath = '${fileDir.path}/$fileId.$extension';
-      final cachedFile = File(cachedFilePath);
-
-      // Download the file if it doesn't exist in cache
-      if (!cachedFile.existsSync()) {
-        final response = await http.get(Uri.parse(url));
-        await cachedFile.writeAsBytes(response.bodyBytes);
-        debugPrint('File downloaded to: $cachedFilePath');
-      } else {
-        debugPrint('Using cached file: $cachedFilePath');
-      }
-
-      return cachedFilePath;
-    } catch (e) {
-      debugPrint('Error caching file: $e');
-      return null;
+Future<String?> _cacheFile(
+  String url,
+  String fileId,
+  String fileName,
+  FileTypeEnum fileType, 
+) async {
+  try {
+    // Create cache directory if needed
+    final appDir = await getApplicationCacheDirectory();
+    final fileDir = Directory(
+      '${appDir.path}/${fileType == FileTypeEnum.audio ? 'audio' : 'documents'}',
+    );
+    if (!fileDir.existsSync()) {
+      await fileDir.create(recursive: true);
     }
+
+    // Determine the file extension
+    final extension = fileType == FileTypeEnum.pdf
+        ? 'pdf'
+        : fileType == FileTypeEnum.audio
+            ? fileName.split('.').last
+            : fileName.split('.').last;
+
+    final cachedFilePath = '${fileDir.path}/$fileId.$extension';
+    final cachedFile = File(cachedFilePath);
+
+    // Download the file if it doesn't exist in cache
+    if (!cachedFile.existsSync()) {
+      final response = await http.get(Uri.parse(url));
+      await cachedFile.writeAsBytes(response.bodyBytes);
+      debugPrint('File downloaded to: $cachedFilePath');
+    } else {
+      debugPrint('Using cached file: $cachedFilePath');
+    }
+
+    return cachedFilePath;
+  } catch (e) {
+    debugPrint('Error caching file: $e');
+    return null;
   }
+}
+
 
   Future<void> cleanupCache({int maxAgeInDays = 3}) async {
     try {

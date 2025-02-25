@@ -85,79 +85,44 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        splashColor: context.colorScheme.surfaceBright,
-        tileColor: context.colorScheme.onSurfaceVariant,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+      child: InkWell(
         onTap: () => _openFile(context, isEditing),
-        visualDensity: VisualDensity.compact,
-        title: Row(
-          children: [
-            Icon(
-              widget.songFile.fileType.icon,
-              size: 24,
-              color: widget.songFile.fileType.iconColor(),
-            ),
-            const SizedBox(width: Insets.smallNormal),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (isEditing)
-                    _buildEditingTile()
-                  else
-                    _buildNonEditingTile(),
-                  Text(
-                    _getFileSize(),
-                    style: context.textTheme.bodySmall!.copyWith(
-                      color: context.colorScheme.outline,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: context.colorScheme.onSurfaceVariant,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                widget.songFile.fileType.icon,
+                size: 24,
+                color: widget.songFile.fileType.iconColor(),
               ),
-            ),
-            if (isLoading)
-              Container(
-                padding: const EdgeInsets.all(6),
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: context.isDarkMode
-                      ? const Color(0xFF43474E)
-                      : context.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(7),
+              const SizedBox(width: Insets.smallNormal),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isEditing)
+                      _buildEditingTile()
+                    else
+                      _buildNonEditingTile(),
+                    Text(
+                      _getFileSize(),
+                      style: context.textTheme.bodySmall!.copyWith(
+                        color: context.colorScheme.outline,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                child: SizedBox(
-                  child: CircularProgressIndicator(
-                    color: context.colorScheme.onSurface,
-                    strokeWidth: 2,
-                  ),
-                ),
-              )
-            else
-              AdaptiveMenuContext(
-                items: [
-                  MenuAction(
-                    icon: LucideIcons.pencil,
-                    title: 'Rename',
-                    onTap: _toggleEditMode,
-                  ),
-                  MenuAction(
-                    icon: LucideIcons.trash,
-                    title: 'Remove',
-                    onTap: () {
-                      ref
-                          .read(songFilesNotifierProvider.notifier)
-                          .deleteSongFile(widget.songFile.id);
-                    },
-                    isDestructive: true,
-                  ),
-                ],
-                child: Container(
+              ),
+              if (isLoading)
+                Container(
+                  padding: const EdgeInsets.all(6),
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
@@ -166,14 +131,50 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                         : context.colorScheme.surface,
                     borderRadius: BorderRadius.circular(7),
                   ),
-                  child: const Icon(
-                    LucideIcons.ellipsis_vertical,
-                    size: 15,
-                    color: Color(0xFF8E9199),
+                  child: SizedBox(
+                    child: CircularProgressIndicator(
+                      color: context.colorScheme.onSurface,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                )
+              else
+                AdaptiveMenuContext(
+                  items: [
+                    MenuAction(
+                      icon: LucideIcons.pencil,
+                      title: 'Rename',
+                      onTap: _toggleEditMode,
+                    ),
+                    MenuAction(
+                      icon: LucideIcons.trash,
+                      title: 'Remove',
+                      onTap: () {
+                        ref
+                            .read(songFilesNotifierProvider.notifier)
+                            .deleteSongFile(widget.songFile.id);
+                      },
+                      isDestructive: true,
+                    ),
+                  ],
+                  child: Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: context.isDarkMode
+                          ? const Color(0xFF43474E)
+                          : context.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    child: const Icon(
+                      LucideIcons.ellipsis_vertical,
+                      size: 15,
+                      color: Color(0xFF8E9199),
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

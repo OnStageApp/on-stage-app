@@ -20,8 +20,6 @@ part 'audio_player_notifier.g.dart';
 class AudioController extends _$AudioController {
   AudioPlayer? _player;
   StreamSubscription<CombinedPlayerState>? _playerSubscription;
-  AmazonS3Notifier get _amazonS3Notifier =>
-      ref.read(amazonS3NotifierProvider.notifier);
 
   @override
   AudioPlayerState build() {
@@ -118,7 +116,19 @@ class AudioController extends _$AudioController {
   }
 
   Future<void> seek(Duration position) async {
+    // Update the UI state immediately to show where the user is seeking to
+    state = state.copyWith(
+      isSeeking: true,
+      seekPosition: position,
+    );
+
+    // Perform the actual seek operation
     await _player?.seek(position);
+
+    // After seeking completes, update the state
+    state = state.copyWith(
+      isSeeking: false,
+    );
   }
 
   Future<void> skipForward() async {

@@ -105,6 +105,7 @@ dependencies:
   audio_service: ^0.18.17
   open_file: ^3.5.10
   syncfusion_flutter_pdfviewer: ^28.1.37
+  audio_video_progress_bar: ^2.0.3
 dev_dependencies:
   build_runner: ^2.4.14
   custom_lint: ^0.7.0

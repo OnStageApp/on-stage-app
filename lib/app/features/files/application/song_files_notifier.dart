@@ -2,14 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-import 'package:on_stage_app/app/features/amazon_s3/amazon_s3_notifier.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_state.dart';
+import 'package:on_stage_app/app/features/files/application/upload_manager/uploads_manager.dart';
 import 'package:on_stage_app/app/features/files/data/song_files_repository.dart';
 import 'package:on_stage_app/app/features/files/data/song_files_upload_repository.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/features/files/domain/update_song_file_request.dart';
+import 'package:on_stage_app/app/features/files/domain/uploading_file.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,11 +22,13 @@ class SongFilesNotifier extends _$SongFilesNotifier {
   // ignore: avoid_manual_providers_as_generated_provider_dependency
   SongFilesRepository get _repository => ref.read(songFilesRepoProvider);
   SongFilesUploadRepository get _uploadRepository =>
+      // ignore: avoid_manual_providers_as_generated_provider_dependency
       ref.read(songFilesUploadRepoProvider);
   AudioController get _audioController =>
       ref.read(audioControllerProvider.notifier);
-  AmazonS3Notifier get _amazonS3Notifier =>
-      ref.read(amazonS3NotifierProvider.notifier);
+  UploadsManager get _uploadsManager =>
+      ref.read(uploadsManagerProvider.notifier);
+
   @override
   SongFilesState build() => const SongFilesState();
 
@@ -65,7 +68,20 @@ class SongFilesNotifier extends _$SongFilesNotifier {
 
   Future<void> uploadFile(PlatformFile platformFile, String songId) async {
     try {
-      state = state.copyWith(isLoading: true, error: null);
+      // Create uploading file model
+      final upFile = UploadingFile(
+        id: platformFile.name,
+        name: platformFile.name,
+        fileType: FileTypeEnum.fromExtension(platformFile.extension ?? ''),
+        size: platformFile.size,
+      );
+
+      // Mark file as uploading
+      _uploadsManager.startUpload(upFile);
+
+      state = state.copyWith(error: null);
+
+      // Prepare the file for upload
       final mimeType =
           lookupMimeType(platformFile.path!) ?? 'application/octet-stream';
 
@@ -75,16 +91,34 @@ class SongFilesNotifier extends _$SongFilesNotifier {
         contentType: MediaType.parse(mimeType),
       );
 
+      // Perform the actual upload
       final uploadedFile =
           await _uploadRepository.uploadSongFile(songId, multi);
 
-      // Add the uploaded file to state
+      // Mark upload as successful
+      await _uploadsManager.markUploadSuccess(upFile);
+
+      // Update the state with the new file
       state = state.copyWith(
         songFiles: [...state.songFiles, uploadedFile],
-        isLoading: false,
       );
     } catch (e) {
       logger.e('Error uploading file: $e');
+
+      // Convert error to user-friendly message
+      final errorMessage = e.toString();
+      final cleanError = errorMessage.length > 50
+          ? '${errorMessage.substring(0, 50)}...'
+          : errorMessage;
+
+      // Mark upload as failed
+      _uploadsManager.markUploadError(
+        platformFile.name,
+        cleanError,
+        platformFile.extension,
+        platformFile.size,
+      );
+
       state = state.copyWith(error: e, isLoading: false);
     }
   }

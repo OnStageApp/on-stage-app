@@ -4,12 +4,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
+import 'package:on_stage_app/app/features/files/application/upload_manager/uploads_manager.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/draggable_area.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/file_section.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_empty_widget.dart';
-import 'package:on_stage_app/app/features/files/presentation/widgets/upload_section_widget.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/uploading_section.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -71,6 +72,7 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
   }
 
   Widget _buildContent(bool isLoading, Object? error, List<SongFile> files) {
+    final uploadingFiles = ref.watch(uploadsManagerProvider).uploadingFiles;
     // Show loading state
     if (isLoading && files.isEmpty) {
       return _buildLoadingState();
@@ -82,7 +84,7 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
     }
 
     // Show empty state
-    if (files.isEmpty) {
+    if (files.isEmpty && uploadingFiles.isEmpty) {
       return const SongFileEmptyWidget();
     }
 
@@ -154,6 +156,9 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ListView(
         children: [
+          UploadingSection(
+            songId: widget.songId,
+          ),
           if (audioFiles.isNotEmpty)
             FileSection(
               title: 'Audio',
@@ -172,9 +177,6 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
               files: otherFiles,
               songId: widget.songId,
             ),
-          // Show if all sections are empty
-          if (audioFiles.isEmpty && documentFiles.isEmpty && otherFiles.isEmpty)
-            const SongFileEmptyWidget(),
         ],
       ),
     );
@@ -190,19 +192,9 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
 
       if (result == null || result.files.isEmpty) return;
 
-      if (mounted) {
-        // TopFlushBar.show(
-        //   context,
-        //   'Uploading files...',
-        //   icon: Icons.cloud_upload_outlined,
-        //   backgroundColor: context.colorScheme.surface,
-        // );
-      }
-
       final notifier = ref.read(songFilesNotifierProvider.notifier);
 
-      // Upload files one by one
-      for (final file in result.files) {
+      final uploadFutures = result.files.map((file) async {
         try {
           await notifier.uploadFile(file, widget.songId);
         } catch (e) {
@@ -210,17 +202,10 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
             _showUploadError(file.name, e);
           }
         }
-      }
-    } catch (e) {
-      if (mounted) {
-        // TopFlushBar.show(
-        //   context,
-        //   'Error selecting files: $e',
-        //   icon: Icons.error_outline,
-        //   isError: true,
-        // );
-      }
-    }
+      }).toList();
+
+      await Future.wait(uploadFutures);
+    } catch (e) {}
   }
 
   Future<void> onFileDropped(PlatformFile platformFile) async {
