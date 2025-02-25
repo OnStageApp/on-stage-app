@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
@@ -59,7 +60,7 @@ class _SongTileState extends ConsumerState<SongTile> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: context.colorScheme.primary.withOpacity(0.1),
+                            color: context.colorScheme.primary.withAlpha(20),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Text("Team's Song"),
@@ -77,7 +78,7 @@ class _SongTileState extends ConsumerState<SongTile> {
                         children: [
                           Flexible(
                             child: Text(
-                              '${widget.song.artist?.name}' ?? '',
+                              '${widget.song.artist?.name}',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall!
@@ -98,7 +99,24 @@ class _SongTileState extends ConsumerState<SongTile> {
                   ),
                 ),
               ),
+              if (widget.song.hasFiles)
+                IconButton(
+                  onPressed: () {
+                    context.pushNamed(
+                      AppRoute.songFiles.name,
+                      queryParameters: {
+                        'songId': widget.song.id,
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    LucideIcons.paperclip,
+                    size: 24,
+                    color: context.colorScheme.outline,
+                  ),
+                ),
               IconButton(
+                splashColor: context.colorScheme.surfaceBright,
                 onPressed: () {
                   if (widget.song.isFavorite) {
                     ref

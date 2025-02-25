@@ -19,6 +19,7 @@ class UploadsManager extends _$UploadsManager {
     final errorFiles = {...state.errorFiles}
       ..removeWhere((err) => err.file.id == file.id);
 
+
     uploadingFiles.add(file);
 
     state = state.copyWith(
@@ -29,7 +30,7 @@ class UploadsManager extends _$UploadsManager {
     logger.i('File ${file.name} added to uploading queue');
   }
 
-  Future<void> markUploadSuccess(UploadingFile file) async{
+  Future<void> markUploadSuccess(UploadingFile file) async {
     final uploadingFiles = {...state.uploadingFiles};
     final successFiles = {...state.successFiles};
 

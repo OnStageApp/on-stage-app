@@ -250,9 +250,30 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
 
   static const List<String> _allowedExtensions = [
     // Audio files
-    'mp3', 'wav', 'aac', 'm4a', 'caf', 'flac', 'ogg',
+    'mp3',
+    'wav',
+    'aac',
+    'm4a',
+    'caf',
+    'flac',
+    'ogg',
+    'wma',
+    'aiff',
+    'alac',
+    'opus',
+    'amr',
+    'mka',
+    'spx',
+    'ra',
+    'wavpack',
+    'pcm',
     // Document files
-    'pdf', 'doc', 'docx', 'txt', 'rtf', 'md',
+    'pdf',
+    'doc',
+    'docx',
+    'txt',
+    'rtf',
+    'md',
     // Presentation files
     'ppt', 'pptx',
     // Image files

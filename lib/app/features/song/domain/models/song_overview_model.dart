@@ -17,6 +17,7 @@ class SongOverview with _$SongOverview {
     @Default(false) bool isFavorite,
     String? teamId,
     String? songMdNotes,
+    @Default(false) bool hasFiles,
   }) = _SongOverview;
 
   factory SongOverview.fromJson(Map<String, dynamic> json) =>
