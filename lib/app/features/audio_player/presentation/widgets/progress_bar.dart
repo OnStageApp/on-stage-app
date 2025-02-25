@@ -1,64 +1,38 @@
-// Extracted Progress Bar Widget
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart'; // Import the package
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
-import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
-class ProgressBar extends ConsumerWidget {
-  const ProgressBar({super.key});
+class ProgressBarWidget extends ConsumerWidget {
+  const ProgressBarWidget({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(audioControllerProvider);
     final audioNotifier = ref.read(audioControllerProvider.notifier);
-    final positionStr = state.status == AudioStatus.loading
-        ? '00:00'
-        : audioNotifier.formatDuration(state.position);
-    final durationStr = state.status == AudioStatus.loading
-        ? '00:00'
-        : audioNotifier.formatDuration(state.duration);
+
+    final displayPosition =
+        state.isSeeking ? state.seekPosition : state.position;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          Text(
-            positionStr,
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.colorScheme.outline,
-            ),
-          ),
-          Expanded(
-            child: SliderTheme(
-              data: const SliderThemeData(
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
-                overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
-              ),
-              child: Slider(
-                inactiveColor: context.colorScheme.outline,
-                thumbColor: context.colorScheme.primary,
-                value: state.status == AudioStatus.loading
-                    ? 0.0
-                    : state.position.inMilliseconds.toDouble(),
-                max: state.status == AudioStatus.loading
-                    ? 1.0
-                    : state.duration.inMilliseconds.toDouble(),
-                onChanged: state.status == AudioStatus.loading
-                    ? null
-                    : (value) {
-                        final newPosition =
-                            Duration(milliseconds: value.toInt());
-                        audioNotifier.seek(newPosition);
-                      },
-              ),
-            ),
-          ),
-          Text(
-            durationStr,
-            style: context.textTheme.titleSmall!.copyWith(
-              color: context.colorScheme.outline,
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: ProgressBar(
+        progress: displayPosition,
+        total: state.duration,
+        buffered: state.bufferedPosition,
+        onSeek: audioNotifier.seek,
+        timeLabelLocation: TimeLabelLocation.sides,
+        timeLabelType: TimeLabelType.totalTime,
+        timeLabelTextStyle: context.textTheme.titleSmall!.copyWith(
+          color: context.colorScheme.outline,
+        ),
+        thumbRadius: 0,
+        thumbGlowRadius: 12,
+        thumbColor: context.colorScheme.onSurface,
+        baseBarColor: context.colorScheme.surfaceContainerHighest,
+        progressBarColor: context.colorScheme.onSurface,
+        bufferedBarColor: context.colorScheme.outline,
       ),
     );
   }

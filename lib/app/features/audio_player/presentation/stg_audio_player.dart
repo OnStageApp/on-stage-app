@@ -200,7 +200,7 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer>
       children: [
         _buildHeader(context, state),
         const SizedBox(height: 12),
-        const ProgressBar(),
+        const ProgressBarWidget(),
         const SizedBox(height: 4),
         const PlayerControls(),
       ],
@@ -208,12 +208,14 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer>
   }
 
   Widget _buildHeader(BuildContext context, AudioPlayerState state) {
+    final fileName =
+        ref.watch(audioControllerProvider).currentSongFile?.name ?? 'Undefined';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
           Text(
-            'laud-numele-tenor.wav',
+            fileName,
             style: context.textTheme.titleMedium!
                 .copyWith(color: context.colorScheme.onSurface),
           ),
