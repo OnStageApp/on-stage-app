@@ -1,32 +1,46 @@
+// lib/app/features/files/domain/file_type_enum.dart
+// Add this method to the existing FileTypeEnum class
+
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 
 enum FileTypeEnum {
   audio,
   pdf,
-  other,
-}
+  other;
 
-extension FileTypeExtension on FileTypeEnum {
   IconData get icon {
     switch (this) {
       case FileTypeEnum.audio:
-        return LucideIcons.chart_no_axes_column;
+        return LucideIcons.music;
       case FileTypeEnum.pdf:
         return LucideIcons.file_text;
       case FileTypeEnum.other:
-        return LucideIcons.sticky_note;
+        return LucideIcons.file;
     }
   }
 
   Color iconColor() {
     switch (this) {
       case FileTypeEnum.audio:
-        return const Color(0xFFADEBFF);
+        return Colors.blue;
       case FileTypeEnum.pdf:
-        return const Color(0xFF9FC6FF);
+        return Colors.red;
       case FileTypeEnum.other:
         return Colors.grey;
+    }
+  }
+
+  // Add this static method to determine file type from extension
+  static FileTypeEnum fromExtension(String extension) {
+    final ext = extension.toLowerCase();
+
+    if (['mp3', 'wav', 'aac', 'm4a', 'caf', 'flac', 'ogg'].contains(ext)) {
+      return FileTypeEnum.audio;
+    } else if (['pdf'].contains(ext)) {
+      return FileTypeEnum.pdf;
+    } else {
+      return FileTypeEnum.other;
     }
   }
 }

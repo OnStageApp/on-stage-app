@@ -181,7 +181,9 @@ class API {
 
   //song-files
   static const String getSongFiles = 'song-files/songs/{songId}';
+  static const String updateSongFile = 'song-files/{fileId}';
   static const String getPresignedUrl =
       'song-files/songs/{songId}/files/{fileId}';
+  static const String deleteSongFile = 'song-files/{fileId}';
   static const String uploadSongFile = 'song-files/songs/{songId}';
 }

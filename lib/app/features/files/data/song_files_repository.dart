@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:on_stage_app/app/features/files/domain/update_song_file_request.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
 import 'package:on_stage_app/app/utils/api.dart';
 import 'package:retrofit/retrofit.dart';
@@ -14,6 +15,17 @@ abstract class SongFilesRepository {
   @GET(API.getSongFiles)
   Future<List<SongFile>> getSongFiles(
     @Path('songId') String songId,
+  );
+
+  @PUT(API.updateSongFile)
+  Future<void> updateSongFile(
+    @Path('fileId') String fileId,
+    @Body() UpdateSongFileRequest request,
+  );
+
+  @DELETE(API.deleteSongFile)
+  Future<void> deleteSongFile(
+    @Path('fileId') String fileId,
   );
 
   @GET(API.getPresignedUrl)

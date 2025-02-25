@@ -2,13 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/file_manager.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
+import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/string_utils.dart';
 
 final fileEditingStateProvider =
     StateProvider.autoDispose<bool>((ref) => false);
@@ -50,7 +53,12 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     final currentEditingState = ref.read(fileEditingStateProvider);
     if (currentEditingState) {
       final newName = _controller.text;
-      // Handle renaming logic here
+      // Complete this implementation
+      if (newName.isNotEmpty && newName != widget.songFile.name) {
+        ref
+            .read(songFilesNotifierProvider.notifier)
+            .renameSongFile(widget.songFile.id, newName);
+      }
     } else {
       _focusNode.requestFocus();
     }
@@ -62,6 +70,18 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     final isEditing = ref.watch(fileEditingStateProvider);
     final fileManagerState = ref.watch(fileManagerProvider);
     final isLoading = fileManagerState.isLoading(widget.songFile.id);
+    final audioPlayerState = ref.watch(audioControllerProvider);
+
+    if (audioPlayerState.errorMessage.isNotNullEmptyOrWhitespace) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TopFlushBar.show(
+          context,
+          audioPlayerState.errorMessage ?? 'An error occurred',
+          icon: Icons.error_outline,
+          isError: true,
+        );
+      });
+    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -129,7 +149,11 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                   MenuAction(
                     icon: LucideIcons.trash,
                     title: 'Remove',
-                    onTap: () {},
+                    onTap: () {
+                      ref
+                          .read(songFilesNotifierProvider.notifier)
+                          .deleteSongFile(widget.songFile.id);
+                    },
                     isDestructive: true,
                   ),
                 ],
