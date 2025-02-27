@@ -1,18 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/audio_player/application/audio_player_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/file_manager.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
-import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/file_size_calculator.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 
 final fileEditingStateProvider =
     StateProvider.autoDispose<bool>((ref) => false);
@@ -29,7 +25,6 @@ class SongFileTile extends ConsumerStatefulWidget {
 class _SongFileTileState extends ConsumerState<SongFileTile> {
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
-  String? _previousErrorMessage;
 
   @override
   void initState() {
@@ -71,24 +66,6 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     final isEditing = ref.watch(fileEditingStateProvider);
     final fileManagerState = ref.watch(fileManagerProvider);
     final isLoading = fileManagerState.isLoading(widget.songFile.id);
-    final audioPlayerState = ref.watch(audioControllerProvider);
-
-    if (audioPlayerState.errorMessage.isNotNullEmptyOrWhitespace &&
-        audioPlayerState.errorMessage != _previousErrorMessage) {
-      _previousErrorMessage = audioPlayerState.errorMessage;
-
-      // Use a microtask to ensure this happens after the current build cycle
-      Future.microtask(() {
-        if (mounted && context.mounted) {
-          TopFlushBar.show(
-            context,
-            audioPlayerState.errorMessage ?? 'An error occurred',
-            icon: Icons.error_outline,
-            isError: true,
-          );
-        }
-      });
-    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -100,7 +77,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () => _openFile(context, isEditing),
+            onTap: () => isLoading ? null : _openFile(context, isEditing),
             overlayColor:
                 WidgetStateProperty.all(context.colorScheme.surfaceBright),
             borderRadius: BorderRadius.circular(8),
@@ -223,11 +200,15 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     );
   }
 
-  void _openFile(BuildContext context, bool isEditing) {
-    if (isEditing) {
+  Future<void> _openFile(BuildContext context, bool isEditing) async {
+    final isLoading =
+        ref.watch(fileManagerProvider).isLoading(widget.songFile.id);
+    if (isEditing || isLoading) {
       return;
     }
-    ref.read(fileManagerProvider.notifier).openFile(widget.songFile, context);
+    await ref
+        .read(fileManagerProvider.notifier)
+        .openFile(widget.songFile, context);
   }
 
   String _getFileSize() {

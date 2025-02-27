@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/application/songs/song_tab_scope.dart';
 import 'package:on_stage_app/app/features/song/application/songs/songs_notifier.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_overview_model.dart';
+import 'package:on_stage_app/app/remote_configs/is_beta_team_provider.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/song_key_label_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -99,7 +100,8 @@ class _SongTileState extends ConsumerState<SongTile> {
                   ),
                 ),
               ),
-              if (widget.song.hasFiles)
+              //TODO: BETA
+              if (widget.song.hasFiles && ref.watch(isBetaTeamProvider))
                 IconButton(
                   onPressed: () {
                     context.pushNamed(

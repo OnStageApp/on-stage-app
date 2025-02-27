@@ -33,17 +33,17 @@ extension PermissionTypeX on PermissionType {
       case PermissionType.reminders:
         return 'Set reminders for your events!';
       case PermissionType.addTeamMembers:
-        return 'Step Up, Discover More!';
+        return 'Step up, discover more!';
       case PermissionType.addEvents:
-        return 'Step Up, Discover More!';
+        return 'Step up, discover more!';
       case PermissionType.addSong:
         return 'Explore more by upgrading';
       case PermissionType.screenSync:
-        return 'Step Up, Discover More!';
+        return 'Step up, discover more!';
       case PermissionType.songFileStorage:
-        return 'Step Up, Discover More!';
+        return 'Upgrade your storage limit!';
       case PermissionType.none:
-        return 'Step Up, Discover More!';
+        return 'Step up, discover more!';
     }
   }
 
@@ -60,7 +60,7 @@ extension PermissionTypeX on PermissionType {
       case PermissionType.screenSync:
         return 'Screen Sync';
       case PermissionType.songFileStorage:
-        return 'Song File Storage';
+        return 'Storage Limit Exceeded';
       case PermissionType.none:
         return 'Upgrade to Pro';
     }
@@ -91,7 +91,7 @@ extension PermissionTypeX on PermissionType {
       case PermissionType.songFileStorage:
         return isDarkMode
             ? 'assets/images/paywall_storage_dark.png'
-            : 'assets/images/paywall_storage_dark.png';
+            : 'assets/images/paywall_storage_light.png';
       case PermissionType.none:
         return isDarkMode
             ? 'assets/images/upgrade_dark.png'

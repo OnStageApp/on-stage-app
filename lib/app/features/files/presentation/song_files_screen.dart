@@ -15,6 +15,7 @@ import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_s
 import 'package:on_stage_app/app/features/files/presentation/widgets/uploading_section.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
+import 'package:on_stage_app/app/shared/beta_label_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/supported_file_formats/supported_file_formats.dart';
@@ -54,11 +55,17 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
       padding: getResponsivePadding(context),
       child: Scaffold(
         appBar: StageAppBar(
-          title: 'Files',
+          title: '',
+          titleWidget: const Row(
+            children: [
+              Text('Files'),
+              SizedBox(width: 12),
+              BetaLabelWidget(),
+            ],
+          ),
           isBackButtonVisible: true,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
-            // Disable button while loading
             child: AddNewButton(
               onPressed: isLoading ? null : pickFile,
             ),

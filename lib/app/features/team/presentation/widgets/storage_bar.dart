@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:on_stage_app/app/shared/beta_label_widget.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/file_size_calculator.dart';
 
@@ -50,6 +51,8 @@ class StorageUsageBar extends StatelessWidget {
                     'Storage',
                     style: context.textTheme.titleMedium,
                   ),
+                  const SizedBox(width: 8),
+                  const BetaLabelWidget(),
                   const Spacer(),
                   Text(
                     '$usedStorageFormatted of $totalStorageFormatted',

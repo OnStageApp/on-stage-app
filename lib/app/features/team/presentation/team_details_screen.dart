@@ -17,6 +17,7 @@ import 'package:on_stage_app/app/features/team_member/domain/invite_status/invit
 import 'package:on_stage_app/app/features/team_member/domain/team_member.dart';
 import 'package:on_stage_app/app/features/team_member/domain/team_member_role/team_member_role.dart';
 import 'package:on_stage_app/app/features/user/domain/enums/permission_type.dart';
+import 'package:on_stage_app/app/remote_configs/is_beta_team_provider.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/member_tile.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
@@ -117,13 +118,15 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                         context.pushNamed(AppRoute.eventTemplates.name);
                       },
                     ),
-                                      const SizedBox(height: 16),
-                  StorageUsageBar(
-                    usedStorage: currentTeam?.usedStorage ?? 0,
-                    totalStorage: maxStorage,
-                    onTap: () {},
-                  ),
-                  const SizedBox(height: 16),
+                    if (ref.watch(isBetaTeamProvider)) ...[
+                      const SizedBox(height: 16),
+                      StorageUsageBar(
+                        usedStorage: currentTeam?.usedStorage ?? 0,
+                        totalStorage: maxStorage,
+                        onTap: () {},
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ],
                   const SizedBox(height: 16),
                   CustomSettingTile(
