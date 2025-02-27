@@ -63,9 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '895845013571',
     projectId: 'on-stage-app-firebase-server',
     storageBucket: 'on-stage-app-firebase-server.firebasestorage.app',
-    androidClientId: '895845013571-8llikk9sqpamqcf790t0fvg25g3thk15.apps.googleusercontent.com',
-    iosClientId: '895845013571-j78fsqbihesjarrijqaelec90c7in36h.apps.googleusercontent.com',
+    androidClientId:
+        '895845013571-8llikk9sqpamqcf790t0fvg25g3thk15.apps.googleusercontent.com',
+    iosClientId:
+        '895845013571-j78fsqbihesjarrijqaelec90c7in36h.apps.googleusercontent.com',
     iosBundleId: 'com.onstage.app',
   );
-
 }

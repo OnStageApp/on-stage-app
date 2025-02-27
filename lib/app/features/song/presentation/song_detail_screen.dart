@@ -6,6 +6,7 @@ import 'package:on_stage_app/app/features/permission/application/permission_noti
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/editable_structure_list.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar_leading.dart';
+import 'package:on_stage_app/app/remote_configs/is_beta_team_provider.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -54,6 +55,8 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isInBeta = ref.watch(isBetaTeamProvider);
+
     return Padding(
       padding: getResponsivePadding(context),
       child: Scaffold(
@@ -62,7 +65,7 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
           title:
               ref.watch(songNotifierProvider(widget.songId)).song.title ?? '',
           trailing: SongAppBarLeading(
-            hasAttachments: true,
+            hasAttachments: isInBeta,
             songId: widget.songId,
           ),
           bottom: PreferredSize(
