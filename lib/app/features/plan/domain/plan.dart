@@ -20,6 +20,7 @@ class Plan with _$Plan {
     @Default(false) bool hasAddSong,
     @Default(false) bool hasScreensSync,
     @Default(false) bool hasReminders,
+    @Default(1000000) int maxStorage,
   }) = _Plan;
 
   factory Plan.fromJson(Map<String, dynamic> json) => _$PlanFromJson(json);

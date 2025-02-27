@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,9 +7,11 @@ import 'package:on_stage_app/app/features/files/application/file_manager.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
+import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/shared/top_flush_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/file_size_calculator.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 
 final fileEditingStateProvider =
@@ -89,95 +92,102 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () => _openFile(context, isEditing),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: context.colorScheme.onSurfaceVariant,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.colorScheme.onSurfaceVariant,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => _openFile(context, isEditing),
+            overlayColor:
+                WidgetStateProperty.all(context.colorScheme.surfaceBright),
             borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                widget.songFile.fileType.icon,
-                size: 24,
-                color: widget.songFile.fileType.iconColor(),
-              ),
-              const SizedBox(width: Insets.smallNormal),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isEditing)
-                      _buildEditingTile()
-                    else
-                      _buildNonEditingTile(),
-                    Text(
-                      _getFileSize(),
-                      style: context.textTheme.bodySmall!.copyWith(
-                        color: context.colorScheme.outline,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    widget.songFile.fileType.icon,
+                    size: 24,
+                    color: widget.songFile.fileType.iconColor(),
+                  ),
+                  const SizedBox(width: Insets.smallNormal),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isEditing)
+                          _buildEditingTile()
+                        else
+                          _buildNonEditingTile(),
+                        Text(
+                          _getFileSize(),
+                          style: context.textTheme.bodySmall!.copyWith(
+                            color: context.colorScheme.outline,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isLoading)
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: context.isDarkMode
+                            ? const Color(0xFF43474E)
+                            : context.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(7),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      child: const SizedBox(
+                        child: StgLoadingIndicator(
+                          size: 16,
+                        ),
+                      ),
+                    )
+                  else
+                    AdaptiveMenuContext(
+                      items: [
+                        MenuAction(
+                          icon: LucideIcons.pencil,
+                          title: 'Rename',
+                          onTap: _toggleEditMode,
+                        ),
+                        MenuAction(
+                          icon: LucideIcons.trash,
+                          title: 'Remove',
+                          onTap: () {
+                            ref
+                                .read(songFilesNotifierProvider.notifier)
+                                .deleteSongFile(widget.songFile.id);
+                          },
+                          isDestructive: true,
+                        ),
+                      ],
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: context.isDarkMode
+                              ? const Color(0xFF43474E)
+                              : context.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                        child: const Icon(
+                          LucideIcons.ellipsis_vertical,
+                          size: 15,
+                          color: Color(0xFF8E9199),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
+                ],
               ),
-              if (isLoading)
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: context.isDarkMode
-                        ? const Color(0xFF43474E)
-                        : context.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: SizedBox(
-                    child: CircularProgressIndicator(
-                      color: context.colorScheme.onSurface,
-                      strokeWidth: 2,
-                    ),
-                  ),
-                )
-              else
-                AdaptiveMenuContext(
-                  items: [
-                    MenuAction(
-                      icon: LucideIcons.pencil,
-                      title: 'Rename',
-                      onTap: _toggleEditMode,
-                    ),
-                    MenuAction(
-                      icon: LucideIcons.trash,
-                      title: 'Remove',
-                      onTap: () {
-                        ref
-                            .read(songFilesNotifierProvider.notifier)
-                            .deleteSongFile(widget.songFile.id);
-                      },
-                      isDestructive: true,
-                    ),
-                  ],
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: context.isDarkMode
-                          ? const Color(0xFF43474E)
-                          : context.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                    child: const Icon(
-                      LucideIcons.ellipsis_vertical,
-                      size: 15,
-                      color: Color(0xFF8E9199),
-                    ),
-                  ),
-                ),
-            ],
+            ),
           ),
         ),
       ),
@@ -221,16 +231,6 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
   }
 
   String _getFileSize() {
-    final size = widget.songFile.size;
-    const kb = 1024;
-    const mb = kb * 1024;
-
-    if (size < kb) {
-      return '$size B';
-    } else if (size < mb) {
-      return '${(size / kb).toStringAsFixed(2)} KB';
-    } else {
-      return '${(size / mb).toStringAsFixed(2)} MB';
-    }
+    return FileSizeCalculator.formatSize(widget.songFile.size);
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/application/upload_manager/uploads_manager.dart';
@@ -10,11 +11,14 @@ import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/draggable_area.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/file_section.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_empty_widget.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_shimmer.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/uploading_section.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
 import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/supported_file_formats/supported_file_formats.dart';
+import 'package:on_stage_app/logger.dart';
 
 class SongFilesScreen extends ConsumerStatefulWidget {
   const SongFilesScreen(this.songId, {super.key});
@@ -73,42 +77,22 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
 
   Widget _buildContent(bool isLoading, Object? error, List<SongFile> files) {
     final uploadingFiles = ref.watch(uploadsManagerProvider).uploadingFiles;
-    // Show loading state
     if (isLoading && files.isEmpty) {
-      return _buildLoadingState();
+      return const SongFileShimmerList();
     }
 
-    // Show error state
     if (error != null && files.isEmpty) {
-      return _buildErrorState(error);
+      return _buildErrorState();
     }
 
-    // Show empty state
     if (files.isEmpty && uploadingFiles.isEmpty) {
       return const SongFileEmptyWidget();
     }
 
-    // Show file list
     return _buildFilesList(files);
   }
 
-  Widget _buildLoadingState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 24),
-          Text(
-            'Loading files...',
-            style: context.textTheme.titleMedium,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorState(Object error) {
+  Widget _buildErrorState() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -128,14 +112,21 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              error.toString(),
+              'An error occurred while loading files. Please try again.',
               style: context.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: _loadFiles,
-              icon: const Icon(Icons.refresh),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              icon: const Icon(LucideIcons.refresh_cw),
               label: const Text('Retry'),
             ),
           ],
@@ -186,7 +177,7 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: _allowedExtensions,
+        allowedExtensions: SupportedFileFormats.allowedExtensions,
         allowMultiple: true,
       );
 
@@ -205,23 +196,17 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
       }).toList();
 
       await Future.wait(uploadFutures);
-    } catch (e) {}
+    } catch (e) {
+      logger.e('Error picking file: $e');
+    }
   }
 
   Future<void> onFileDropped(PlatformFile platformFile) async {
     try {
-      // Show uploading message
-      if (mounted) {
-        // TopFlushBar.show(
-        //   context,
-        //   'Uploading ${platformFile.name}...',
-        //   icon: Icons.cloud_upload_outlined,
-        // );
-      }
-
+      logger.i('Uploading file: ${platformFile.name}');
       await ref
           .read(songFilesNotifierProvider.notifier)
-          .uploadFile(platformFile, widget.songId);
+          .uploadDroppedFile(platformFile, widget.songId);
     } catch (e) {
       if (mounted) {
         _showUploadError(platformFile.name, e);
@@ -230,53 +215,12 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
   }
 
   void _showUploadError(String fileName, Object error) {
-    // Use AdaptiveDialog for errors that can be retried
     AdaptiveDialog.show(
       context: context,
       title: 'Upload Failed',
       description: 'Failed to upload "$fileName". Would you like to try again?',
       actionText: 'Retry',
-      onAction: () {
-        // Show error details
-        // TopFlushBar.show(
-        //   context,
-        //   'Error: $error',
-        //   icon: Icons.error_outline,
-        //   isError: true,
-        // );
-      },
+      onAction: () {},
     );
   }
-
-  static const List<String> _allowedExtensions = [
-    // Audio files
-    'mp3',
-    'wav',
-    'aac',
-    'm4a',
-    'caf',
-    'flac',
-    'ogg',
-    'wma',
-    'aiff',
-    'alac',
-    'opus',
-    'amr',
-    'mka',
-    'spx',
-    'ra',
-    'wavpack',
-    'pcm',
-    // Document files
-    'pdf',
-    'doc',
-    'docx',
-    'txt',
-    'rtf',
-    'md',
-    // Presentation files
-    'ppt', 'pptx',
-    // Image files
-    'jpg', 'jpeg', 'png', 'gif', 'webp',
-  ];
 }

@@ -53,6 +53,7 @@ class PermissionService {
         return hasReminders;
       case PermissionType.addSong:
       case PermissionType.screenSync:
+      case PermissionType.songFileStorage:
       case PermissionType.none:
         return false;
     }
