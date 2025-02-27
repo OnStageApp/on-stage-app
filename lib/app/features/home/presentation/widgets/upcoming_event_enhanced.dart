@@ -111,22 +111,23 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                   ),
                 ],
               )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'No upcoming events',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: context.colorScheme.onSurface,
-                      ),
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'No upcoming events',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: context.colorScheme.onSurface,
                     ),
-                    if (ref.watch(permissionServiceProvider).hasAccessToEdit)
-                      CreateEventAdaptiveMenu(
+                  ),
+                  if (ref.watch(permissionServiceProvider).hasAccessToEdit)
+                    SizedBox(
+                      width: 150,
+                      child: CreateEventAdaptiveMenu(
                         width: 150,
-                        height: 32,
+                        height: 36,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -155,8 +156,8 @@ class UpcomingEventEnhanced extends ConsumerWidget {
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
       ),
     );

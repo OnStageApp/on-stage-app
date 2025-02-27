@@ -38,7 +38,8 @@ class ApiErrorHandler {
           final data = error.response!.data as Map<String, dynamic>;
 
           // Attempt to parse error response
-          errorMessage = data['message']?.toString() ?? 'An error occurred';
+          errorMessage =
+              data['errorDescription']?.toString() ?? 'An error occurred';
           errorCode = data['errorCode']?.toString();
           errorName = data['errorName']?.toString();
         }
