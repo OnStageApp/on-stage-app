@@ -67,7 +67,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               },
               icon: const Icon(
                 Icons.close,
-                size: 32,
+                size: 36,
               ),
             ),
           ),

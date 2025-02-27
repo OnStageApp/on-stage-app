@@ -116,7 +116,6 @@ class API {
   static const String notificationById = 'notifications/{id}';
 
   //song-config
-  static const String songConfigBySongId = 'song-config/{songId}';
   static const String songConfig = 'song-config';
 
   //ws

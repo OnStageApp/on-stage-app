@@ -13,7 +13,7 @@ class RemoteConfigService {
   static const _minRequiredVersionKey = 'min_required_version';
   static const _betaTestingKey = 'beta_testing';
   static const _defaultVersion = '1.0.0';
-  static const _defaultBetaTesting = '{"teamIds": [], "features": []}';
+  static const _defaultBetaTesting = '{"teamIds": []}';
 
   Future<void> initialize() async {
     try {
