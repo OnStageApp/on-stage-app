@@ -4,10 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/custom_setting_tile.dart';
 import 'package:on_stage_app/app/features/event/presentation/widgets/edit_field_modal.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
+import 'package:on_stage_app/app/features/plan/application/current_plan_provider.dart';
 import 'package:on_stage_app/app/features/search/presentation/stage_search_bar.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_action_tile.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/presentation/team_member_modal.dart';
+import 'package:on_stage_app/app/features/team/presentation/widgets/storage_bar.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/team_members_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/domain/invite_status/invite_status.dart';
@@ -65,6 +68,8 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final canEdit = ref.watch(permissionServiceProvider).hasAccessToEdit;
+    final currentTeam = ref.watch(teamNotifierProvider).currentTeam;
+    final maxStorage = ref.watch(currentPlanProvider).maxStorage;
     return Padding(
       padding: getResponsivePadding(context),
       child: Scaffold(
@@ -112,6 +117,13 @@ class TeamDetailsScreenState extends ConsumerState<TeamDetailsScreen> {
                         context.pushNamed(AppRoute.eventTemplates.name);
                       },
                     ),
+                                      const SizedBox(height: 16),
+                  StorageUsageBar(
+                    usedStorage: currentTeam?.usedStorage ?? 0,
+                    totalStorage: maxStorage,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 16),
                   ],
                   const SizedBox(height: 16),
                   CustomSettingTile(

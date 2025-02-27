@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:on_stage_app/app/analytics/analytics_service.dart';
 import 'package:on_stage_app/app/database/app_database.dart';
@@ -11,8 +10,8 @@ import 'package:on_stage_app/app/features/user/application/user_state.dart';
 import 'package:on_stage_app/app/features/user/data/profile_picture_repository.dart';
 import 'package:on_stage_app/app/features/user/data/user_repository.dart';
 import 'package:on_stage_app/app/features/user/domain/models/profile/user_profile.dart';
-import 'package:on_stage_app/app/shared/data/api_error_handler/api_error_handler.dart';
 import 'package:on_stage_app/app/shared/data/dio_client.dart';
+import 'package:on_stage_app/app/shared/data/error/handlers/api_error_handler.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
@@ -78,18 +77,17 @@ class UserNotifier extends _$UserNotifier {
       );
 
       return true;
-    } catch (e) {
-      final errorMessage = e is DioException
-          ? ApiErrorHandler.handleDioException(e)
-          : 'An unexpected error occurred';
+    } catch (e, stackTrace) {
+      final apiError = ApiErrorHandler.handleError(e, stackTrace);
 
       state = state.copyWith(
         isLoading: false,
-        error: errorMessage,
-        currentUser: state.currentUser, // Preserve current user on error
+        error: apiError.message,
+        currentUser: state.currentUser,
       );
 
-      logger.e('Error updating user: $e');
+      logger.e('Error updating user: $e', stackTrace);
+
       return false;
     }
   }
@@ -169,16 +167,15 @@ class UserNotifier extends _$UserNotifier {
         isLoading: false,
       );
       return true;
-    } catch (e) {
-      final errorMessage = e is DioException
-          ? ApiErrorHandler.handleDioException(e)
-          : 'An unexpected error occurred';
+    } catch (e, stackTrace) {
+      final apiError = ApiErrorHandler.handleError(e, stackTrace);
 
       state = state.copyWith(
         isLoading: false,
-        error: errorMessage,
+        error: apiError.message,
         currentUser: state.currentUser,
       );
+
       return false;
     }
   }

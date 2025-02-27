@@ -1,16 +1,37 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class OnStageLoadingIndicator extends StatelessWidget {
-  const OnStageLoadingIndicator({super.key});
+class StgLoadingIndicator extends StatelessWidget {
+  const StgLoadingIndicator({
+    super.key,
+    this.size = 24,
+  });
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: SizedBox(
-        width: 50,
-        height: 50,
-        child: CircularProgressIndicator(),
-      ),
-    );
+    if (Platform.isIOS) {
+      return Center(
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: CupertinoActivityIndicator(
+            radius: size / 2,
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: const CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
   }
 }

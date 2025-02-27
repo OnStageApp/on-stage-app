@@ -54,25 +54,29 @@ class SongDetailScreenState extends ConsumerState<SongDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: StageAppBar(
-        isBackButtonVisible: true,
-        title: ref.watch(songNotifierProvider(widget.songId)).song.title ?? '',
-        trailing: SongAppBarLeading(
-          hasAttachments: true,
-          songId: widget.songId,
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(52),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: EditableStructureList(
-              songId: widget.songId,
+    return Padding(
+      padding: getResponsivePadding(context),
+      child: Scaffold(
+        appBar: StageAppBar(
+          isBackButtonVisible: true,
+          title:
+              ref.watch(songNotifierProvider(widget.songId)).song.title ?? '',
+          trailing: SongAppBarLeading(
+            hasAttachments: true,
+            songId: widget.songId,
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(52),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: EditableStructureList(
+                songId: widget.songId,
+              ),
             ),
           ),
         ),
+        body: _buildContent(),
       ),
-      body: _buildContent(),
     );
   }
 

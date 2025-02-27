@@ -12,6 +12,7 @@ class Team with _$Team {
     required int? membersCount,
     @JsonKey(includeFromJson: false) @Default([]) List<Uint8List?> memberPhotos,
     @Default([]) List<String> membersUserIds,
+    @Default(0) int usedStorage,
     String? role,
   }) = _Team;
 

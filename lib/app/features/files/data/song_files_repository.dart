@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
@@ -32,6 +34,13 @@ abstract class SongFilesRepository {
   Future<String> getPresignedUrl(
     @Path('songId') String songId,
     @Path('fileId') String fileId,
+  );
+
+  @POST(API.uploadSongFile)
+  @MultiPart()
+  Future<SongFile> uploadSongFile(
+    @Part(name: 'songId') String songId,
+    @Part() File file,
   );
 }
 

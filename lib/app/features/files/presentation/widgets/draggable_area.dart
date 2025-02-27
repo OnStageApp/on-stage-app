@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
+import 'package:on_stage_app/app/utils/supported_file_formats/supported_file_formats.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
@@ -22,32 +23,11 @@ class DraggableFilesOverlay extends StatefulWidget {
 }
 
 class _DraggableFilesOverlayState extends State<DraggableFilesOverlay> {
-  static const _supportedFormats = {
-    'm4a-audio': '.m4a',
-    'mp3': '.mp3',
-    'wav': '.wav',
-    'aac': '.aac',
-    // Document formats
-    'pdf': '.pdf',
-    'doc': '.doc',
-    'docx': '.docx',
-    'ppt': '.ppt',
-    'pptx': '.pptx',
-    'text': '.txt',
-  };
+  static const Map<String, String> _supportedFormats =
+      SupportedFileFormats.formatExtensionMap;
 
-  static const _supportedStandardFormats = [
-    Formats.pdf as DataFormat,
-    Formats.plainText as DataFormat,
-    Formats.wav as DataFormat,
-    Formats.mp3 as DataFormat,
-    Formats.m4a as DataFormat,
-    Formats.aac as DataFormat,
-    Formats.ppt as DataFormat,
-    Formats.doc as DataFormat,
-    Formats.docx as DataFormat,
-    Formats.pptx as DataFormat,
-  ];
+  static const _supportedStandardFormats =
+      SupportedFileFormats.supportedStandardFormats;
 
   bool _isDragging = false;
 
@@ -109,7 +89,6 @@ class _DraggableFilesOverlayState extends State<DraggableFilesOverlay> {
       formats: Formats.standardFormats,
       onDropOver: (event) {
         final item = event.session.items.first;
-        logger.i('Event formats: ${item.platformFormats}');
 
         if (_isSupported(item) && !_isDragging) {
           setState(() => _isDragging = true);
@@ -133,9 +112,10 @@ class _DraggableFilesOverlayState extends State<DraggableFilesOverlay> {
               reader.getFile(null, (file) async {
                 try {
                   final fileData = await file.readAll();
+                  final name =
+                      '$suggestedName${_getFileExtension(item, suggestedName)}';
                   final platformFile = PlatformFile(
-                    name:
-                        '$suggestedName${_getFileExtension(item, suggestedName)}',
+                    name: name,
                     size: fileData.length,
                     bytes: fileData,
                   );

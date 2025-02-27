@@ -73,7 +73,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
                   child: SizedBox(
                     height: 24,
                     width: 24,
-                    child: OnStageLoadingIndicator(),
+                    child: StgLoadingIndicator(),
                   ),
                 )
               else

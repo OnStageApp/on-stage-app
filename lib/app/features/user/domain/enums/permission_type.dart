@@ -4,6 +4,7 @@ enum PermissionType {
   reminders,
   addTeamMembers,
   addEvents,
+  songFileStorage,
   none,
 }
 
@@ -20,6 +21,8 @@ extension PermissionTypeX on PermissionType {
         return 'addTeamMembers';
       case PermissionType.addEvents:
         return 'addEvents';
+      case PermissionType.songFileStorage:
+        return 'songFileStorage';
       case PermissionType.none:
         return 'none';
     }
@@ -36,6 +39,8 @@ extension PermissionTypeX on PermissionType {
       case PermissionType.addSong:
         return 'Explore more by upgrading';
       case PermissionType.screenSync:
+        return 'Step Up, Discover More!';
+      case PermissionType.songFileStorage:
         return 'Step Up, Discover More!';
       case PermissionType.none:
         return 'Step Up, Discover More!';
@@ -54,6 +59,8 @@ extension PermissionTypeX on PermissionType {
         return 'Add Songs';
       case PermissionType.screenSync:
         return 'Screen Sync';
+      case PermissionType.songFileStorage:
+        return 'Song File Storage';
       case PermissionType.none:
         return 'Upgrade to Pro';
     }
@@ -79,12 +86,16 @@ extension PermissionTypeX on PermissionType {
             : 'assets/images/paywall_add_song_light.png';
       case PermissionType.screenSync:
         return isDarkMode
-            ? 'assets/images/paywall/screen_sync_dark.png'
-            : 'assets/images/paywall/screen_sync_light.png';
+            ? 'assets/images/screen_sync_dark.png'
+            : 'assets/images/screen_sync_light.png';
+      case PermissionType.songFileStorage:
+        return isDarkMode
+            ? 'assets/images/paywall_storage_dark.png'
+            : 'assets/images/paywall_storage_dark.png';
       case PermissionType.none:
         return isDarkMode
-            ? 'assets/images/paywall/upgrade_dark.png'
-            : 'assets/images/paywall/upgrade_light.png';
+            ? 'assets/images/upgrade_dark.png'
+            : 'assets/images/upgrade_light.png';
     }
   }
 }

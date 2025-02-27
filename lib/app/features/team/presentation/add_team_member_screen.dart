@@ -54,7 +54,7 @@ class TeamMembersModalState extends ConsumerState<AddTeamMemberScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         child: ref.watch(teamNotifierProvider).isLoading
-            ? const OnStageLoadingIndicator()
+            ? const StgLoadingIndicator()
             : Form(
                 key: _formKey,
                 child: Column(
