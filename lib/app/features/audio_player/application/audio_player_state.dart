@@ -1,5 +1,5 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 
 part 'audio_player_state.freezed.dart';

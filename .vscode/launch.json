@@ -30,6 +30,31 @@
     //   ]
     // },
     {
+      "name": "Attach: Design for iPad",
+      "request": "attach",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+          "--app-id",
+          "com.onstage.app",
+          "--flavor",
+          "production",
+          "--target",
+          "lib/main.dart"
+      ],
+      "deviceId": "mac-designed-for-ipad",
+  },
+  {
+      "name": "Flutter macOS Debug",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "args": ["-d", "macos",        "--flavor",
+      "production",
+      "--target",
+      "lib/main.dart"]
+  },
+    {
       "name": "Launch production",
       "request": "launch",
       "type": "dart",

@@ -18,7 +18,6 @@ class PlayerControls extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
         children: [
-          // Skip to beginning of track.
           IconButton(
             highlightColor: context.colorScheme.surfaceBright,
             visualDensity: VisualDensity.compact,
@@ -53,7 +52,7 @@ class PlayerControls extends ConsumerWidget {
                     if (state.isPlaying) {
                       audioNotifier.pause();
                     } else {
-                      audioNotifier.play();
+                      audioNotifier.resume();
                     }
                   },
             icon: isLoading
