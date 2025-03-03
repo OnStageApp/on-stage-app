@@ -4,7 +4,7 @@ import 'package:on_stage_app/app/features/event/application/events/events_notifi
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/teams/teams_notifier.dart';
 import 'package:on_stage_app/app/features/team/domain/team.dart';
-import 'package:on_stage_app/app/shared/loading_widget.dart';
+import 'package:on_stage_app/app/features/user/presentation/widgets/teams_shimmer.dart';
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/utils/adaptive_modal.dart';
@@ -26,7 +26,7 @@ class TeamsSelectionModal extends ConsumerStatefulWidget {
     required BuildContext context,
     void Function()? onSave,
   }) {
-    AdaptiveModal.show(
+    AdaptiveModal.show<void>(
       context: context,
       isFloatingForLargeScreens: true,
       expand: false,
@@ -69,13 +69,7 @@ class TeamsSelectionModalState extends ConsumerState<TeamsSelectionModal> {
             children: [
               const SizedBox(height: 16),
               if (ref.watch(teamsNotifierProvider).isLoading)
-                const Center(
-                  child: SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: StgLoadingIndicator(),
-                  ),
-                )
+                const TeamsShimmer()
               else
                 Padding(
                   padding: const EdgeInsets.only(bottom: 42),

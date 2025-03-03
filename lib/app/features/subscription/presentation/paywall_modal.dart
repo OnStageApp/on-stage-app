@@ -17,14 +17,17 @@ import 'package:url_launcher/url_launcher.dart';
 class PaywallModal extends ConsumerStatefulWidget {
   const PaywallModal({
     required this.permissionType,
+    this.onClosed,
     super.key,
   });
 
   final PermissionType permissionType;
+  final VoidCallback? onClosed;
 
   static void show({
     required BuildContext context,
     required PermissionType permissionType,
+    VoidCallback? onClosed,
   }) {
     showModalBottomSheet<Widget>(
       isScrollControlled: true,
@@ -41,10 +44,13 @@ class PaywallModal extends ConsumerStatefulWidget {
           heightFactor: 0.95,
           child: PaywallModal(
             permissionType: permissionType,
+            onClosed: onClosed,
           ),
         );
       },
-    );
+    ).then((_) {
+      onClosed?.call();
+    });
   }
 
   @override
@@ -80,6 +86,10 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
     }
   }
 
+  void _closeModal() {
+    context.popDialog();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,9 +119,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(
-              onPressed: () {
-                context.popDialog();
-              },
+              onPressed: _closeModal,
               child: Text(
                 'Close',
                 style: context.textTheme.titleLarge!
@@ -175,7 +183,7 @@ class _PaywallModalState extends ConsumerState<PaywallModal> {
                   }
 
                   if (mounted) {
-                    context.popDialog();
+                    _closeModal();
                   }
                 },
                 isEnabled: true,

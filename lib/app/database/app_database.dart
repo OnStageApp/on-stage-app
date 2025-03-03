@@ -251,26 +251,6 @@ class AppDatabase extends _$AppDatabase {
     return null;
   }
 
-  Future<int> insertTeamMemberPhoto(TeamMemberPhoto photo) {
-    return into(profilePictureTable).insert(
-      ProfilePictureTableCompanion.insert(
-        id: photo.userId,
-        picture: Value(photo.profilePicture),
-      ),
-    );
-  }
-
-  Future<bool> updateTeamMemberPhoto(TeamMemberPhoto photo) async {
-    return await (update(profilePictureTable)
-              ..where((tbl) => tbl.id.equals(photo.userId)))
-            .write(
-          ProfilePictureTableCompanion(
-            picture: Value(photo.profilePicture),
-          ),
-        ) >
-        0;
-  }
-
   Future<int> deleteTeamMemberPhoto(String id) {
     return (delete(profilePictureTable)..where((tbl) => tbl.id.equals(id)))
         .go();

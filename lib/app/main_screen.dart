@@ -14,7 +14,6 @@ import 'package:on_stage_app/app/features/notifications/application/notification
 import 'package:on_stage_app/app/features/permission/application/network_permission_notifier.dart';
 import 'package:on_stage_app/app/features/plan/application/plan_service.dart';
 import 'package:on_stage_app/app/features/song/presentation/add_new_song/adaptive_dialog_on_pop.dart';
-import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/presentation/paywall_modal.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
@@ -26,7 +25,6 @@ import 'package:on_stage_app/app/features/user_settings/application/user_setting
 import 'package:on_stage_app/app/shared/custom_side_navigation.dart';
 import 'package:on_stage_app/app/socket_io_service/socket_io_service.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
-import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/app/utils/tab_navigation_info.dart';
 import 'package:on_stage_app/logger.dart';
 
@@ -109,7 +107,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           .read(teamMembersNotifierProvider.notifier)
           .fetchAndSaveTeamMemberPhotos(),
       ref.read(userNotifierProvider.notifier).init(),
-      ref.read(teamNotifierProvider.notifier).getCurrentTeam(),
       ref.read(currentTeamMemberNotifierProvider.notifier).initializeState(),
       ref.read(userSettingsNotifierProvider.notifier).init(),
       ref.read(subscriptionNotifierProvider.notifier).init(),
@@ -121,6 +118,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     }).catchError((error, s) {
       logger.e('Error during provider initialization: $error $s');
     });
+    await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
+
     await notificationNotifier.getNotifications();
   }
 
@@ -300,7 +299,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   Widget _buildNavigationRail(BuildContext context) {
-    return CustomSideNavigation(  
+    return CustomSideNavigation(
       selectedIndex: widget.navigationShell.currentIndex,
       onDestinationSelected: _onChangedScreen,
       isExpanded: _isNavigationExpanded,
@@ -320,13 +319,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     ref.listen<PermissionType?>(
       networkPermissionProvider,
       (previous, permissionType) {
-        if (permissionType != null) {
+        if (previous == null && permissionType != null) {
           PaywallModal.show(
             context: context,
             permissionType: permissionType,
+            onClosed: () {
+              ref.read(networkPermissionProvider.notifier).clearPermission();
+            },
           );
-
-          ref.read(networkPermissionProvider.notifier).clearPermission();
         }
       },
     );

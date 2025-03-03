@@ -39,6 +39,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void initializeNotifiers() {
     ref.read(songsNotifierProvider(SongTabScope.home).notifier).getSongs();
     ref.read(eventsNotifierProvider.notifier).getUpcomingEvent();
+    ref.read(teamNotifierProvider.notifier).getCurrentTeam();
   }
 
   @override

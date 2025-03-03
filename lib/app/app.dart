@@ -14,6 +14,7 @@ import 'package:on_stage_app/app/remote_configs/remote_config_service.dart';
 import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/app_launcher_checker.dart';
+import 'package:on_stage_app/app/utils/app_scroll_behavior.dart';
 import 'package:on_stage_app/app/utils/dialog_helper.dart';
 import 'package:on_stage_app/app/utils/environment_manager.dart';
 import 'package:on_stage_app/app/utils/navigator/router_notifier.dart';
@@ -60,6 +61,7 @@ class _AppState extends ConsumerState<App> {
         ref.read(sharedPreferencesProvider).getBool('isDarkMode');
 
     return MaterialApp.router(
+      scrollBehavior: AppScrollBehavior(),
       debugShowCheckedModeBanner: !EnvironmentManager.isProduction,
       routerConfig: router,
       theme: userSettings.isDarkMode ?? isDarkModeCache ?? false

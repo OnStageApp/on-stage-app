@@ -30,7 +30,10 @@ class SwitchTeamsButton extends StatelessWidget {
           const SizedBox(width: 8),
           SvgPicture.asset(
             'assets/icons/arrow_down.svg',
-            color: context.colorScheme.primary,
+            colorFilter: ColorFilter.mode(
+              context.colorScheme.primary,
+              BlendMode.srcIn,
+            ),
           ),
         ],
       ),
