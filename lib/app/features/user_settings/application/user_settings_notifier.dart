@@ -21,6 +21,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   UserSettingsRepository? _userSettingsRepository;
   static const String _darkModeKey = 'isDarkMode';
   static const String _songViewKey = 'songView';
+  static const String _chordsViewMode = 'chordsViewMode';
   static const String _notificationEnabledKey = 'isNotificationEnabled';
   static const String _isOnboardingDone = 'isOnboardingDone';
   static const String _textSizeKey = 'textSize';
@@ -154,6 +155,19 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
+  Future<void> setChordsViewMode(ChordsViewMode chordsView) async {
+    try {
+      final userSettings = UserSettings(chordsView: chordsView);
+      state = state.copyWith(
+        chordsView: chordsView,
+      );
+
+      await _saveUserSettings(userSettings);
+    } catch (e) {
+      logger.e('Error setting song view mode: $e');
+    }
+  }
+
   Future<void> setOnboardingDone() async {
     try {
       const userSettings = UserSettings(isOnboardingDone: true);
@@ -225,6 +239,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   Future<void> _loadLocalSettings() async {
     final isDarkMode = prefs.getBool(_darkModeKey);
     final songViewIndex = prefs.getInt(_songViewKey);
+    final chordsViewIndex = prefs.getInt(_chordsViewMode);
     final isNotificationEnabled = prefs.getBool(_notificationEnabledKey);
     final isOnboardingDone =
         ref.read(sharedPreferencesProvider).getBool(_isOnboardingDone);
@@ -236,7 +251,10 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       isDarkMode: isDarkMode,
       songView: songViewIndex != null
           ? SongViewMode.values[songViewIndex]
-          : SongViewMode.american,
+          : SongViewMode.chordLyrics,
+      chordsView: chordsViewIndex != null
+          ? ChordsViewMode.values[chordsViewIndex]
+          : ChordsViewMode.american,
       isNotificationsEnabled: isNotificationEnabled,
       isOnboardingDone: isOnboardingDone,
       textSize: textSizeIndex != null
@@ -255,6 +273,9 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
     if (settings.songView != null) {
       prefs.setInt(_songViewKey, settings.songView!.index);
+    }
+    if (settings.chordsView != null) {
+      prefs.setInt(_chordsViewMode, settings.chordsView!.index);
     }
     if (settings.isNotificationsEnabled != null) {
       prefs.setBool(_notificationEnabledKey, settings.isNotificationsEnabled!);

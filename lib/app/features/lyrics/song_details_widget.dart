@@ -122,7 +122,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                   const SongKey(),
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
-              SongViewMode.american,
+              SongViewMode.chordLyrics,
           originalSongKey:
               ref.watch(songNotifierProvider(widget.songId)).song.originalKey ??
                   const SongKey(),

@@ -35,16 +35,17 @@ class ChordProcessor extends _$ChordProcessor {
     required SongKey updateSongKey,
     double scaleFactor = 1.0,
     int widgetPadding = 0,
-    SongViewMode songViewMode = SongViewMode.american,
+    SongViewMode songViewMode = SongViewMode.chordLyrics,
+    ChordsViewMode chordsViewMode = ChordsViewMode.american,
     ChordViewPref? chordViewPref,
   }) {
     final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
 
     final chordTransposer = ChordTransposer(
-      songViewMode,
       originalSongKey: originalSongKey,
       transpose: transposeIncrement,
       songKeyToBeUpdated: updateSongKey,
+      chordsViewMode: chordsViewMode,
     );
 
     _textScaleFactor = scaleFactor;
@@ -65,6 +66,7 @@ class ChordProcessor extends _$ChordProcessor {
               widgetPadding: widgetPadding,
               media: media,
               chordTransposer: chordTransposer,
+              songViewMode: songViewMode,
             );
           } else {
             lyricsLine.add(
@@ -73,6 +75,7 @@ class ChordProcessor extends _$ChordProcessor {
                 lyricsStyle,
                 chordStyle,
                 chordTransposer,
+                songViewMode,
               ),
             );
           }
@@ -144,6 +147,7 @@ class ChordProcessor extends _$ChordProcessor {
     required int widgetPadding,
     required double media,
     required ChordTransposer chordTransposer,
+    required SongViewMode songViewMode,
   }) {
     var character = '';
     var characterIndex = 0;
@@ -172,6 +176,7 @@ class ChordProcessor extends _$ChordProcessor {
               lyricsStyle,
               chordStyle,
               chordTransposer,
+              songViewMode,
             ),
           );
           currentCharacters = '';
@@ -185,6 +190,7 @@ class ChordProcessor extends _$ChordProcessor {
         lyricsStyle,
         chordStyle,
         chordTransposer,
+        songViewMode,
       ),
     );
   }
@@ -205,6 +211,7 @@ class ChordProcessor extends _$ChordProcessor {
     TextStyle lyricsStyle,
     TextStyle chordStyle,
     ChordTransposer chordTransposer,
+    SongViewMode songViewMode,
   ) {
     final chordLyricsLine = SongLines();
     var lyricsSoFar = '';
@@ -219,7 +226,7 @@ class ChordProcessor extends _$ChordProcessor {
         if (character == ']') {
           final double leadingSpace;
 
-          if (isChordOnlyLine) {
+          if (isChordOnlyLine || songViewMode == SongViewMode.chords) {
             leadingSpace = isFirstChord ? 0 : 16.0;
           } else {
             final sizeOfLeadingLyrics =
@@ -235,7 +242,7 @@ class ChordProcessor extends _$ChordProcessor {
           final transposedChord = chordTransposer.transposeChord(chordsSoFar);
           chordLyricsLine.chords.add(Chord(leadingSpace, transposedChord));
 
-          if (!isChordOnlyLine) {
+          if (!isChordOnlyLine && songViewMode != SongViewMode.chords) {
             chordLyricsLine.lyrics += lyricsSoFar;
           }
 
@@ -255,7 +262,8 @@ class ChordProcessor extends _$ChordProcessor {
       },
     );
 
-    if (!isChordOnlyLine) {
+    // Add any remaining lyrics text, but only if not in chords-only mode
+    if (!isChordOnlyLine && songViewMode != SongViewMode.chords) {
       chordLyricsLine.lyrics += lyricsSoFar;
     }
 
