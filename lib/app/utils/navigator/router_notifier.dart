@@ -13,7 +13,6 @@ import 'package:on_stage_app/app/features/event_template/event_template/presenta
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_schedule_screen.dart';
 import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_templates_screen.dart';
 import 'package:on_stage_app/app/features/files/presentation/song_files_screen.dart';
-import 'package:on_stage_app/app/features/files/presentation/widgets/multi_pdf_preview_screen.dart';
 import 'package:on_stage_app/app/features/groups/group_template/presentation/groups_screen.dart';
 import 'package:on_stage_app/app/features/home/presentation/home_screen.dart';
 import 'package:on_stage_app/app/features/loading/presentation/loading_screen.dart';
@@ -183,6 +182,14 @@ class NavigationNotifier extends _$NavigationNotifier {
                       },
                       routes: [
                         GoRoute(
+                          name: AppRoute.songFiles.name,
+                          path: 'songFiles',
+                          builder: (context, state) {
+                            final songId = state.uri.queryParameters['songId'];
+                            return SongFilesScreen(songId!);
+                          },
+                        ),
+                        GoRoute(
                           name: AppRoute.editSongInfo.name,
                           path: 'editSongInfo',
                           builder: (context, state) {
@@ -211,32 +218,6 @@ class NavigationNotifier extends _$NavigationNotifier {
                               isNewSong: isNewSong,
                             );
                           },
-                        ),
-                        GoRoute(
-                          name: AppRoute.songFiles.name,
-                          path: 'songFiles',
-                          builder: (context, state) {
-                            final songId = state.uri.queryParameters['songId'];
-                            return SongFilesScreen(songId!);
-                          },
-                          routes: [
-                            GoRoute(
-                              name: AppRoute.pdfPreview.name,
-                              path: 'pdfPreview',
-                              builder: (context, state) {
-                                final filePath = state.extra as List<String>?;
-                                final initialIndex = int.tryParse(
-                                      state.uri.queryParameters['initialIndex']
-                                          .toString(),
-                                    ) ??
-                                    0;
-                                return MultiPdfPreviewScreen(
-                                  filePaths: filePath!,
-                                  initialIndex: initialIndex,
-                                );
-                              },
-                            ),
-                          ],
                         ),
                       ],
                     ),
@@ -297,6 +278,19 @@ class NavigationNotifier extends _$NavigationNotifier {
                           fetchEventItems: fetchEventItems,
                         );
                       },
+                      routes: [
+                        GoRoute(
+                          name: AppRoute.songFilesFromEvent.name,
+                          path: 'songFilesFromEvent',
+                          builder: (context, state) {
+                            final songId = state.uri.queryParameters['songId'];
+
+                            return SongFilesScreen(
+                              songId!,
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     GoRoute(
                       name: AppRoute.schedule.name,
@@ -410,13 +404,10 @@ class NavigationNotifier extends _$NavigationNotifier {
                       name: AppRoute.teamDetails.name,
                       path: 'teamDetails',
                       builder: (context, state) {
-                       
                         ref
                             .read(analyticsServiceProvider.notifier)
                             .logScreenView(AppRoute.teamDetails.name);
-                        return TeamDetailsScreen(
-                       
-                        );
+                        return const TeamDetailsScreen();
                       },
                       routes: [
                         GoRoute(

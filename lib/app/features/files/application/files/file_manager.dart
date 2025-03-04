@@ -7,7 +7,7 @@ import 'package:on_stage_app/app/features/files/application/cache/caching_servic
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
-import 'package:on_stage_app/app/router/app_router.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/multi_pdf_preview_screen.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:open_file/open_file.dart';
@@ -125,10 +125,9 @@ class FileManagerNotifier extends StateNotifier<FileManagerState> {
   Future<void> _openPDFFile(String cachedFilePath, BuildContext context) async {
     try {
       if (!context.mounted) return;
-      await context.pushNamed(
-        AppRoute.pdfPreview.name,
-        extra: [cachedFilePath],
-        queryParameters: {'initialIndex': '0', 'isLocalFile': 'true'},
+      await MultiPdfPreviewDialog.show(
+        context: context,
+        filePaths: [cachedFilePath],
       );
     } catch (e) {
       logger.e('Error opening PDF: $e');

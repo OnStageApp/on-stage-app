@@ -17,7 +17,7 @@ class BetaLabelWidget extends StatelessWidget {
       child: Text(
         'BETA',
         style: context.textTheme.labelSmall?.copyWith(
-          color: context.colorScheme.onSurface,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),

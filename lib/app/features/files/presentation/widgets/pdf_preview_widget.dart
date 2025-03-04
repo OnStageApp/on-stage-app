@@ -15,6 +15,7 @@ class PdfViewerScreen extends StatelessWidget {
       child: SfPdfViewer.file(
         file,
         scrollDirection: PdfScrollDirection.vertical,
+        canShowScrollHead: false,
         onDocumentLoaded: (details) {
           logger.i('PdfViewerScreen: Document loaded $details');
         },

@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/song/presentation/widgets/editable_str
 import 'package:on_stage_app/app/features/song/presentation/widgets/loading_overlay.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/page_indicator.dart';
 import 'package:on_stage_app/app/features/song/presentation/widgets/song_app_bar_leading.dart';
+import 'package:on_stage_app/app/remote_configs/is_beta_team_provider.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 
 class EventItemsDetailsScreen extends ConsumerStatefulWidget {
@@ -94,6 +95,7 @@ class _EventItemsDetailsScreenState
     }
     final songId = items[_currentIndex].song?.id ?? '';
     final songState = ref.watch(songNotifierProvider(songId));
+    final isInBeta = ref.watch(isBetaTeamProvider);
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -105,6 +107,7 @@ class _EventItemsDetailsScreenState
           trailing: _isSong(_currentIndex)
               ? SongAppBarLeading(
                   songId: songState.song.id ?? '',
+                  hasAttachments: isInBeta,
                   isFromEvent: true,
                 )
               : MomentSettings(moment: items[_currentIndex]),

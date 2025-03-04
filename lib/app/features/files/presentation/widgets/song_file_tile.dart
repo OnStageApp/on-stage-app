@@ -173,7 +173,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
 
   Widget _buildEditingTile() {
     return GestureDetector(
-      onTap: () {}, // Empty onTap to prevent tap propagation
+      onTap: () {}, 
       child: TextField(
         controller: _controller,
         focusNode: _focusNode,

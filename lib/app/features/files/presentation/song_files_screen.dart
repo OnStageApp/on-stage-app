@@ -22,7 +22,10 @@ import 'package:on_stage_app/app/utils/supported_file_formats/supported_file_for
 import 'package:on_stage_app/logger.dart';
 
 class SongFilesScreen extends ConsumerStatefulWidget {
-  const SongFilesScreen(this.songId, {super.key});
+  const SongFilesScreen(
+    this.songId, {
+    super.key,
+  });
   final String songId;
 
   @override

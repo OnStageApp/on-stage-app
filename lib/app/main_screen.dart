@@ -127,7 +127,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return [
       '/events/eventItemsWithPages',
       '/events/addEvent',
-      '/songs/song',
+      // '/songs/song',
       '/songs/song/editSongContent',
       '/songs/song/editSongInfo',
       '/songs/createSongInfo',

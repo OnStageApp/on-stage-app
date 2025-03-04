@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
@@ -72,9 +71,6 @@ class SongAppBarLeading extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
-        const SizedBox(
-          width: 4,
-        ),
         if (hasAttachments) ...[
           IconButton(
             visualDensity: VisualDensity.compact,
@@ -93,7 +89,9 @@ class SongAppBarLeading extends ConsumerWidget {
             icon: const Icon(LucideIcons.paperclip),
             onPressed: () {
               context.pushNamed(
-                AppRoute.songFiles.name,
+                isFromEvent
+                    ? AppRoute.songFilesFromEvent.name
+                    : AppRoute.songFiles.name,
                 queryParameters: {
                   'songId': songId,
                 },

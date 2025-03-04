@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/pdf_preview_widget.dart';
-import 'package:on_stage_app/app/shared/stage_app_bar.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class MultiPdfPreviewScreen extends StatefulWidget {
-  const MultiPdfPreviewScreen({
+class MultiPdfPreviewDialog extends StatefulWidget {
+  const MultiPdfPreviewDialog({
     required this.filePaths,
     required this.initialIndex,
     super.key,
@@ -13,11 +13,26 @@ class MultiPdfPreviewScreen extends StatefulWidget {
   final List<String> filePaths;
   final int initialIndex;
 
+  static Future<void> show({
+    required BuildContext context,
+    required List<String> filePaths,
+    int initialIndex = 0,
+  }) {
+    return AdaptiveModal.show<void>(
+      context: context,
+      enableDrag: false,
+      child: MultiPdfPreviewDialog(
+        filePaths: filePaths,
+        initialIndex: initialIndex,
+      ),
+    );
+  }
+
   @override
-  MultiPdfPreviewScreenState createState() => MultiPdfPreviewScreenState();
+  MultiPdfPreviewDialogState createState() => MultiPdfPreviewDialogState();
 }
 
-class MultiPdfPreviewScreenState extends State<MultiPdfPreviewScreen> {
+class MultiPdfPreviewDialogState extends State<MultiPdfPreviewDialog> {
   late final PageController _pageController;
 
   @override
@@ -34,49 +49,62 @@ class MultiPdfPreviewScreenState extends State<MultiPdfPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: StageAppBar(
-        isBackButtonVisible: true,
-        title: '',
-        titleWidget: Text(
-          'Files',
-          style: context.textTheme.titleLarge,
-        ),
-      ),
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: widget.filePaths.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: PdfViewerScreen(filePath: widget.filePaths[index]),
-                ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 32,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: SmoothPageIndicator(
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              PageView.builder(
                 controller: _pageController,
-                count: widget.filePaths.length,
-                effect: ExpandingDotsEffect(
-                  activeDotColor: Theme.of(context).primaryColor,
+                itemCount: widget.filePaths.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: const BoxDecoration(),
+                    child: PdfViewerScreen(
+                      filePath: widget.filePaths[index],
+                    ),
+                  );
+                },
+              ),
+              Positioned(
+                top: 6,
+                right: 6,
+                child: IconButton(
+                  icon: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.colorScheme.surface,
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
-            ),
+              // Page indicator
+              Positioned(
+                bottom: 16,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: SmoothPageIndicator(
+                    controller: _pageController,
+                    count: widget.filePaths.length,
+                    effect: ExpandingDotsEffect(
+                      activeDotColor: Theme.of(context).primaryColor,
+                      dotHeight: 8,
+                      dotWidth: 8,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

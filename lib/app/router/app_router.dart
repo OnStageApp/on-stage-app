@@ -37,7 +37,11 @@ enum AppRoute {
   groups,
   momentDetails,
   eventTemplates,
-  eventTemplateDetails, eventItemTemplateSchedule, songFiles, pdfPreview,
+  eventTemplateDetails,
+  eventItemTemplateSchedule,
+  songFiles,
+  songFilesFromEvent,
+  
 }
 
 extension GoRouterExtension on GoRouter {
