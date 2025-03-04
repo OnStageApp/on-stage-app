@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:on_stage_app/app/features/event_template/event_template/presentation/event_template_feature_wall.dart';
-import 'package:on_stage_app/app/features/permission/application/permission_notifier.dart';
 import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/features/team/application/team_notifier.dart';
 import 'package:on_stage_app/app/features/team_member/application/current_team_member/current_team_member_notifier.dart';
@@ -10,13 +8,12 @@ import 'package:on_stage_app/app/features/user/presentation/widgets/library_sect
 import 'package:on_stage_app/app/features/user/presentation/widgets/profile_header.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/sign_out_button.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/team_section.dart';
-import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/app_version.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/env_switcher_widget.dart';
-import 'package:onboarding_overlay/onboarding_overlay.dart'; // Import the package
+import 'package:onboarding_overlay/onboarding_overlay.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -35,19 +32,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.read(teamNotifierProvider.notifier).getCurrentTeam();
-      _checkIfEventTemplatesWallShouldBeShown();
     });
-  }
-
-  void _checkIfEventTemplatesWallShouldBeShown() {
-    final isLeaderOnTeam = ref.watch(permissionServiceProvider).isLeaderOnTeam;
-    final isEventTemplatesFeatureWallShown = ref
-            .watch(userSettingsNotifierProvider)
-            .isEventTemplatesFeatureWallShown ??
-        false;
-    if (isEventTemplatesFeatureWallShown == false && isLeaderOnTeam) {
-      showEventTemplateFeature(context);
-    }
   }
 
   @override
