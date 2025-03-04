@@ -301,7 +301,8 @@ class _SongEditorWidgetState extends ConsumerState<SongEditorWidget> {
 
   Widget _buildChordToolbar(SectionData sectionData) {
     final song = ref.watch(songNotifierProvider(widget.songId)).song;
-    final songKey = song.key ?? const SongKey(chord: ChordsWithoutSharp.C);
+    final songKey =
+        song.originalKey ?? const SongKey(chord: ChordsWithoutSharp.C);
     final chords = ChordsForKeyHelper.getDiatonicChordsForKey(songKey);
 
     return Expanded(

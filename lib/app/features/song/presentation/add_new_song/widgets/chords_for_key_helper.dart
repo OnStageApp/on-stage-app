@@ -109,7 +109,9 @@ class ChordsForKeyHelper {
   }
 
   static int? _getRootIndex(
-      ChordsWithoutSharp? chord, ChordTypeEnum chordType) {
+    ChordsWithoutSharp? chord,
+    ChordTypeEnum chordType,
+  ) {
     if (chord == null) return null;
     final baseIndex = _baseSemitones[chord];
     if (baseIndex == null) return null;

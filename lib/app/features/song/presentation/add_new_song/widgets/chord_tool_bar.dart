@@ -54,7 +54,7 @@ class ChordToolbar extends ConsumerWidget {
                 Colors.transparent,
                 Color(0xFF343536),
               ],
-              stops: const [0.0, 0.05, 0.95, 1.0],
+              stops: [0.0, 0.05, 0.95, 1.0],
             ).createShader(bounds);
           },
           blendMode: BlendMode.dstOut,

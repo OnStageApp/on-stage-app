@@ -88,7 +88,7 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
       case TransposerOpenFrom.eventsScreen:
         return canEdit ? 'Change Key' : 'Preview Key';
       case TransposerOpenFrom.newSong:
-        return 'Set Key';
+        return 'Set Original Key';
     }
   }
 
@@ -262,7 +262,6 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
 
   Widget _buildMinorMajor() {
     final minorMajor = <String>['Maj', 'min'];
-
     return Container(
       height: 48,
       decoration: BoxDecoration(
