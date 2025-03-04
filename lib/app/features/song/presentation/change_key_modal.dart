@@ -130,7 +130,15 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
               children: [
                 _buildKeys(),
                 const SizedBox(height: Insets.small),
-                _buildChordTypes(),
+                Row(
+                  children: [
+                    Expanded(child: _buildChordTypes()),
+                    if (widget.isFrom == TransposerOpenFrom.newSong) ...[
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildMinorMajor()),
+                    ],
+                  ],
+                ),
                 const SizedBox(height: Insets.medium),
                 Center(
                   child: ContinueButton(
@@ -248,6 +256,47 @@ class ChangeKeyModalState extends ConsumerState<ChangeKeyModal> {
             );
           }),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMinorMajor() {
+    final minorMajor = <String>['Maj', 'min'];
+
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: context.colorScheme.onSurfaceVariant,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: List.generate(minorMajor.length, (index) {
+          final value = minorMajor[index];
+          final isMajor = value == 'Maj';
+          final isSelected = isMajor == _songKey.isMajor;
+          return Expanded(
+            child: Row(
+              children: [
+                ChordTypeWidget(
+                  chordType: value,
+                  isSelected: isSelected,
+                  onTap: () {
+                    if (!isSelected) {
+                      _updateSongKey(_songKey.copyWith(isMajor: isMajor));
+                    }
+                  },
+                ),
+                if (isMajor)
+                  Container(
+                    height: 24,
+                    width: 1,
+                    margin: const EdgeInsets.symmetric(vertical: 12),
+                    color: context.colorScheme.onSurface.withAlpha(40),
+                  ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

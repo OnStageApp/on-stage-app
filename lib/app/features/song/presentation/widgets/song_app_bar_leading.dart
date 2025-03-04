@@ -100,9 +100,6 @@ class SongAppBarLeading extends ConsumerWidget {
               );
             },
           ),
-          const SizedBox(
-            width: 4,
-          ),
         ],
         SettingsTrailingAppBarButton(
           onTap: () {
