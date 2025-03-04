@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/user_settings/application/user_setting
 import 'package:on_stage_app/app/shared/modal_header.dart';
 import 'package:on_stage_app/app/shared/nested_scroll_modal.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
+import 'package:on_stage_app/app/utils/adaptive_modal.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 
 class SongViewModeModal extends ConsumerStatefulWidget {
@@ -18,10 +19,10 @@ class SongViewModeModal extends ConsumerStatefulWidget {
   static void show({
     required BuildContext context,
   }) {
-    showModalBottomSheet<Widget>(
-      backgroundColor: context.colorScheme.surfaceContainerHigh,
+    AdaptiveModal.show<void>(
       context: context,
-      builder: (context) => NestedScrollModal(
+      isFloatingForLargeScreens: true,
+      child: NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Song View'),
         headerHeight: () {
           return 64;
@@ -37,14 +38,14 @@ class SongViewModeModal extends ConsumerStatefulWidget {
 }
 
 class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
-  SongViewMode? _selectedValue;
+  ChordsViewMode? _selectedValue;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _selectedValue = ref.watch(userSettingsNotifierProvider).songView ??
-            SongViewMode.american;
+        _selectedValue = ref.watch(userSettingsNotifierProvider).chordsView ??
+            ChordsViewMode.american;
       });
     });
     super.initState();
@@ -69,21 +70,21 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...SongViewMode.values.map(
+        ...ChordsViewMode.values.map(
           _buildChordTypeTile,
         ),
       ],
     );
   }
 
-  Widget _buildChordTypeTile(SongViewMode songViewMode) {
+  Widget _buildChordTypeTile(ChordsViewMode chordsView) {
     return InkWell(
       onTap: () {
         setState(() {
-          _selectedValue = songViewMode;
+          _selectedValue = chordsView;
         });
-        ref.read(userSettingsNotifierProvider.notifier).setSongViewMode(
-              songViewMode,
+        ref.read(userSettingsNotifierProvider.notifier).setChordsViewMode(
+              chordsView,
             );
         context.popDialog();
       },
@@ -92,7 +93,7 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
-            color: _selectedValue == songViewMode
+            color: _selectedValue == chordsView
                 ? context.colorScheme.primary
                 : context.colorScheme.onSurfaceVariant,
             width: 2,
@@ -105,7 +106,7 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
             SizedBox(
               width: 42,
               child: Text(
-                songViewMode.example,
+                chordsView.example,
                 style: context.textTheme.titleMedium!.copyWith(
                   color: context.colorScheme.outline,
                 ),
@@ -113,7 +114,7 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
             ),
             const SizedBox(width: 12),
             Text(
-              songViewMode.name,
+              chordsView.name,
               style: context.textTheme.titleMedium,
             ),
           ],

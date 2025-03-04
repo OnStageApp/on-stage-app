@@ -5,25 +5,24 @@ import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.d
 
 class ChordTransposer {
   ChordTransposer(
-    this.chordNotation, {
+ {
     required this.songKeyToBeUpdated,
     required this.originalSongKey,
+    required this.chordsViewMode,
     this.transpose = 0,
     this.isRomanStyle = false,
   }) {
     cycle = defaultCycle;
 
-    switch (chordNotation) {
-      case SongViewMode.lyrics:
+    switch (chordsViewMode) {
+      case ChordsViewMode.american:
         cycle = defaultCycle;
-      case SongViewMode.american:
-        cycle = defaultCycle;
-      case SongViewMode.numeric:
+      case ChordsViewMode.numeric:
         cycle = isRomanStyle ? romanNumerals : arabicNumerals;
     }
   }
 
-  final SongViewMode chordNotation;
+  final ChordsViewMode chordsViewMode;
   late List<String> cycle;
   int transpose;
   bool isRomanStyle;
@@ -108,8 +107,8 @@ class ChordTransposer {
   ];
 
   String transposeChord(String chord) {
-    if (transpose == 0 && chordNotation != SongViewMode.numeric) {
-      if (chordNotation == SongViewMode.american) {
+    if (transpose == 0 && chordsViewMode != ChordsViewMode.numeric) {
+      if (chordsViewMode == ChordsViewMode.american) {
         return _convertAccidentals(chord);
       }
       return chord;
@@ -121,7 +120,7 @@ class ChordTransposer {
     }
     var result = outChord.join('/');
 
-    if (chordNotation == SongViewMode.american) {
+    if (chordsViewMode == ChordsViewMode.american) {
       result = _convertAccidentals(result);
     }
 
@@ -139,7 +138,7 @@ class ChordTransposer {
   };
 
   String _processChord(String chord) {
-    if (chordNotation == SongViewMode.numeric) {
+    if (chordsViewMode == ChordsViewMode.numeric) {
       return _toNumeric(chord, originalSongKey.name);
     }
 
