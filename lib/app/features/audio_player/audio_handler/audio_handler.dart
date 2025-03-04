@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:on_stage_app/logger.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MyAudioHandler extends BaseAudioHandler {
@@ -10,15 +11,9 @@ class MyAudioHandler extends BaseAudioHandler {
   final _playbackStateSubject = BehaviorSubject<PlaybackState>.seeded(
     PlaybackState(
       controls: [
-        MediaControl.rewind,
         MediaControl.play,
-        MediaControl.fastForward,
+        MediaControl.pause,
       ],
-      systemActions: const {
-        MediaAction.seek,
-        MediaAction.seekForward,
-        MediaAction.seekBackward,
-      },
     ),
   );
 
@@ -41,30 +36,34 @@ class MyAudioHandler extends BaseAudioHandler {
 
   @override
   Future<void> play() async {
+    logger.i('Playing audio');
     _playbackStateSubject.add(
       _playbackStateSubject.value.copyWith(
         playing: true,
         processingState: AudioProcessingState.ready,
+        controls: [MediaControl.pause],
       ),
     );
   }
 
   @override
   Future<void> pause() async {
+    logger.i('Pausing audio');
     _playbackStateSubject.add(
       _playbackStateSubject.value.copyWith(
         playing: false,
+        controls: [MediaControl.play],
       ),
     );
   }
 
   @override
   Future<void> stop() async {
+    logger.i('Stopping audio');
     _playbackStateSubject.add(
       _playbackStateSubject.value.copyWith(
         playing: false,
-        processingState: AudioProcessingState.idle,
-        updatePosition: Duration.zero,
+        controls: [MediaControl.play],
       ),
     );
   }
