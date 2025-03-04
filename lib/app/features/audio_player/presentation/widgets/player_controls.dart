@@ -54,7 +54,7 @@ class PlayerControls extends ConsumerWidget {
                     if (state.isPlaying) {
                       audioNotifier.pause();
                     } else {
-                      audioNotifier.play();
+                      audioNotifier.resume();
                     }
                   },
             icon: isLoading
