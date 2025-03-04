@@ -5,7 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
-import 'package:on_stage_app/app/features/audio_player/audio_handler.dart';
+import 'package:on_stage_app/app/features/audio_player/audio_handler/audio_handler.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,15 +18,15 @@ part 'audio_player_notifier.g.dart';
 class AudioController extends _$AudioController {
   AudioPlayer? _player;
   StreamSubscription<dynamic>? _playerSubscription;
-  final MyAudioHandler _audioHandler = MyAudioHandler();
 
   @override
   AudioPlayerState build() {
+    final audioHandler = ref.watch(audioHandlerProvider);
     ref.onDispose(() {
       ref.onDispose(() {
         _playerSubscription?.cancel();
         _player?.dispose();
-        _audioHandler.stop();
+        audioHandler.stop();
       });
     });
     return const AudioPlayerState();
@@ -38,30 +38,24 @@ class AudioController extends _$AudioController {
   ) async {
     await _initializePlayer();
 
-    // Get the album art as a URI (for background display)
     final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
 
     try {
       state = state.copyWith(
         status: AudioStatus.loading,
         currentSongFile: file,
-        errorMessage: null, // Clear any previous errors
+        errorMessage: null,
       );
 
-      // In audioplayers, you set the URL and then start playback.
-      // setUrl returns an int result (1 means success)
       await _player!.setSourceDeviceFile(localUrl);
-      // if (result != 1) {
-      //   throw Exception('Error setting URL for audio');
-      // }
 
-      // Once the URL is set, update state and start playback.
       state = state.copyWith(status: AudioStatus.ready);
       await _player!.resume();
 
-      // Update AudioService's background media item.
-      // This will help display the correct info in the system’s media controls.
-      await _audioHandler.updateMediaItem(
+      // ignore: avoid_manual_providers_as_generated_provider_dependency
+      final audioHandler = ref.watch(audioHandlerProvider);
+
+      await audioHandler.updateMediaItem(
         MediaItem(
           id: file.id,
           album: 'OnStage',
@@ -149,19 +143,22 @@ class AudioController extends _$AudioController {
     if (_player != null) return;
 
     _player = AudioPlayer();
-    state = state.copyWith(player: _player);
 
-    _playerSubscription =
+    _playerSubscription ??=
         rx.CombineLatestStream.combine3<Duration, Duration, PlayerState, void>(
       _player!.onPositionChanged,
       _player!.onDurationChanged,
       _player!.onPlayerStateChanged,
       (position, duration, playerState) {
-        state = state.copyWith(
-          position: position,
-          duration: duration,
-          isPlaying: playerState == PlayerState.playing,
-        );
+        if (state.position != position ||
+            state.duration != duration ||
+            state.isPlaying != (playerState == PlayerState.playing)) {
+          state = state.copyWith(
+            position: position,
+            duration: duration,
+            isPlaying: playerState == PlayerState.playing,
+          );
+        }
       },
     ).listen((_) {});
   }

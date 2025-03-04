@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 
@@ -13,7 +12,6 @@ class AudioPlayerState with _$AudioPlayerState {
     @Default(Duration.zero) Duration bufferedPosition,
     @Default(Duration.zero) Duration duration,
     @Default(AudioStatus.initial) AudioStatus status,
-    AudioPlayer? player,
     String? errorMessage,
   }) = _AudioPlayerState;
 }

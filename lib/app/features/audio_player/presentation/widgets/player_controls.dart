@@ -18,19 +18,20 @@ class PlayerControls extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
         children: [
-          // Skip to beginning of track.
-          IconButton(
-            highlightColor: context.colorScheme.surfaceBright,
-            visualDensity: VisualDensity.compact,
-            padding: const EdgeInsets.all(8),
-            onPressed:
-                isLoading ? null : () => audioNotifier.seek(Duration.zero),
-            icon: Icon(
-              Icons.fast_rewind_rounded,
-              size: 32,
-              color: context.colorScheme.onSurface,
-            ),
-          ),
+          //TODO:Implement later
+          // // Skip to beginning of track.
+          // IconButton(
+          //   highlightColor: context.colorScheme.surfaceBright,
+          //   visualDensity: VisualDensity.compact,
+          //   padding: const EdgeInsets.all(8),
+          //   onPressed:
+          //       isLoading ? null : () => audioNotifier.seek(Duration.zero),
+          //   icon: Icon(
+          //     Icons.fast_rewind_rounded,
+          //     size: 32,
+          //     color: context.colorScheme.onSurface,
+          //   ),
+          // ),
           const Spacer(),
           IconButton(
             highlightColor: context.colorScheme.surfaceBright,
@@ -110,19 +111,20 @@ class PlayerControls extends ConsumerWidget {
             ),
           ),
           const Spacer(),
-          // Skip to end of track.
-          IconButton(
-            highlightColor: context.colorScheme.surfaceBright,
-            visualDensity: VisualDensity.compact,
-            padding: const EdgeInsets.all(8),
-            onPressed:
-                isLoading ? null : () => audioNotifier.seek(state.duration),
-            icon: Icon(
-              Icons.fast_forward_rounded,
-              size: 32,
-              color: context.colorScheme.onSurface,
-            ),
-          ),
+          //TODO:Implement later
+          // // Skip to end of track.
+          // IconButton(
+          //   highlightColor: context.colorScheme.surfaceBright,
+          //   visualDensity: VisualDensity.compact,
+          //   padding: const EdgeInsets.all(8),
+          //   onPressed:
+          //       isLoading ? null : () => audioNotifier.seek(state.duration),
+          //   icon: Icon(
+          //     Icons.fast_forward_rounded,
+          //     size: 32,
+          //     color: context.colorScheme.onSurface,
+          //   ),
+          // ),
         ],
       ),
     );
