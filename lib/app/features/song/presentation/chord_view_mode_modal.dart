@@ -21,7 +21,6 @@ class SongViewModeModal extends ConsumerStatefulWidget {
   }) {
     AdaptiveModal.show<void>(
       context: context,
-      isFloatingForLargeScreens: true,
       child: NestedScrollModal(
         buildHeader: () => const ModalHeader(title: 'Song View'),
         headerHeight: () {
