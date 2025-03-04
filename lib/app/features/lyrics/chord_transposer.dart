@@ -4,8 +4,7 @@ import 'package:on_stage_app/app/features/song/domain/models/tonality/chord_type
 import 'package:on_stage_app/app/features/song/domain/models/tonality/song_key.dart';
 
 class ChordTransposer {
-  ChordTransposer(
- {
+  ChordTransposer({
     required this.songKeyToBeUpdated,
     required this.originalSongKey,
     required this.chordsViewMode,
@@ -168,7 +167,7 @@ class ChordTransposer {
 
     final root = match.group(1)!;
     final quality = match.group(2) ?? '';
-    var remainder = match.group(3) ?? '';
+    final remainder = match.group(3) ?? '';
 
     // Get semitones for both chord and key
     final chordSemitone = noteToSemitone[root];
@@ -207,7 +206,7 @@ class ChordTransposer {
       return numeral + _convertSuffix(quality + remainder);
     } else {
       // For Arabic numerals
-      String chordQuality = '';
+      var chordQuality = '';
 
       // Check if remainder is just a number
       final isOnlyNumber = RegExp(r'^\d+$').hasMatch(remainder);
