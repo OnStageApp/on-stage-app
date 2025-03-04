@@ -13,11 +13,11 @@ class ChordsViewModeWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PreferencesActionTile(
       leadingWidget: Text(
-        ref.watch(userSettingsNotifierProvider).chordsView?.example ?? '',
+        ref.watch(userSettingsNotifierProvider).chordView?.example ?? '',
         style: context.textTheme.titleMedium!
             .copyWith(color: context.colorScheme.outline),
       ),
-      title: ref.watch(userSettingsNotifierProvider).chordsView?.name ?? '',
+      title: ref.watch(userSettingsNotifierProvider).chordView?.name ?? '',
       trailingIcon: Icons.keyboard_arrow_down_rounded,
       onTap: () {
         SongViewModeModal.show(

@@ -1,14 +1,14 @@
-enum SongViewMode { chords, lyrics, chordLyrics }
+enum SongViewMode { both, chords, lyrics }
 
 extension SongViewModeValues on SongViewMode {
   String get name {
     switch (this) {
+      case SongViewMode.both:
+        return 'Both';
       case SongViewMode.chords:
         return 'Chords';
       case SongViewMode.lyrics:
         return 'Lyrics';
-      case SongViewMode.chordLyrics:
-        return 'ChordLyrics';
     }
   }
 
@@ -18,30 +18,34 @@ extension SongViewModeValues on SongViewMode {
         return 'C#';
       case SongViewMode.lyrics:
         return '---';
-      case SongViewMode.chordLyrics:
+      case SongViewMode.both:
         return 'IV';
     }
   }
 }
 
-enum ChordsViewMode { numeric, american }
+enum ChordViewMode { american, numbers, numerals }
 
-extension ChordsViewModeExtension on ChordsViewMode {
+extension ChordViewModeExtension on ChordViewMode {
   String get name {
     switch (this) {
-      case ChordsViewMode.numeric:
-        return 'Numeric';
-      case ChordsViewMode.american:
+      case ChordViewMode.american:
         return 'American';
+      case ChordViewMode.numbers:
+        return 'Numbers';
+      case ChordViewMode.numerals:
+        return 'Numerals';
     }
   }
 
   String get example {
     switch (this) {
-      case ChordsViewMode.numeric:
-        return 'IV';
-      case ChordsViewMode.american:
+      case ChordViewMode.american:
         return 'C#';
+      case ChordViewMode.numbers:
+        return '5/3';
+      case ChordViewMode.numerals:
+        return 'IV';
     }
   }
 }

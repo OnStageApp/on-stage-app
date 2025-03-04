@@ -33,10 +33,10 @@ class ChordProcessor extends _$ChordProcessor {
     required double media,
     required SongKey originalSongKey,
     required SongKey updateSongKey,
+    required ChordViewMode chordViewMode,
     double scaleFactor = 1.0,
     int widgetPadding = 0,
-    SongViewMode songViewMode = SongViewMode.chordLyrics,
-    ChordsViewMode chordsViewMode = ChordsViewMode.american,
+    SongViewMode songViewMode = SongViewMode.both,
     ChordViewPref? chordViewPref,
   }) {
     final transposeIncrement = differenceFrom(originalSongKey, updateSongKey);
@@ -45,7 +45,7 @@ class ChordProcessor extends _$ChordProcessor {
       originalSongKey: originalSongKey,
       transpose: transposeIncrement,
       songKeyToBeUpdated: updateSongKey,
-      chordsViewMode: chordsViewMode,
+      chordViewMode: chordViewMode,
     );
 
     _textScaleFactor = scaleFactor;
