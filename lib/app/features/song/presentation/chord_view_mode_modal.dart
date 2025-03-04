@@ -37,14 +37,14 @@ class SongViewModeModal extends ConsumerStatefulWidget {
 }
 
 class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
-  ChordsViewMode? _selectedValue;
+  ChordViewMode? _selectedValue;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _selectedValue = ref.watch(userSettingsNotifierProvider).chordsView ??
-            ChordsViewMode.american;
+        _selectedValue = ref.watch(userSettingsNotifierProvider).chordView ??
+            ChordViewMode.american;
       });
     });
     super.initState();
@@ -69,14 +69,14 @@ class ChordViewModeModalState extends ConsumerState<SongViewModeModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...ChordsViewMode.values.map(
+        ...ChordViewMode.values.map(
           _buildChordTypeTile,
         ),
       ],
     );
   }
 
-  Widget _buildChordTypeTile(ChordsViewMode chordsView) {
+  Widget _buildChordTypeTile(ChordViewMode chordsView) {
     return InkWell(
       onTap: () {
         setState(() {

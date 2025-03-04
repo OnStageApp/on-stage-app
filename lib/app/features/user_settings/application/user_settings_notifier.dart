@@ -21,7 +21,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   UserSettingsRepository? _userSettingsRepository;
   static const String _darkModeKey = 'isDarkMode';
   static const String _songViewKey = 'songView';
-  static const String _chordsViewMode = 'chordsViewMode';
+  static const String _chordViewMode = 'chordViewMode';
   static const String _notificationEnabledKey = 'isNotificationEnabled';
   static const String _isOnboardingDone = 'isOnboardingDone';
   static const String _textSizeKey = 'textSize';
@@ -155,11 +155,11 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     }
   }
 
-  Future<void> setChordsViewMode(ChordsViewMode chordsView) async {
+  Future<void> setChordsViewMode(ChordViewMode chordView) async {
     try {
-      final userSettings = UserSettings(chordsView: chordsView);
+      final userSettings = UserSettings(chordView: chordView);
       state = state.copyWith(
-        chordsView: chordsView,
+        chordView: chordView,
       );
 
       await _saveUserSettings(userSettings);
@@ -239,7 +239,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
   Future<void> _loadLocalSettings() async {
     final isDarkMode = prefs.getBool(_darkModeKey);
     final songViewIndex = prefs.getInt(_songViewKey);
-    final chordsViewIndex = prefs.getInt(_chordsViewMode);
+    final chordsViewIndex = prefs.getInt(_chordViewMode);
     final isNotificationEnabled = prefs.getBool(_notificationEnabledKey);
     final isOnboardingDone =
         ref.read(sharedPreferencesProvider).getBool(_isOnboardingDone);
@@ -251,10 +251,10 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
       isDarkMode: isDarkMode,
       songView: songViewIndex != null
           ? SongViewMode.values[songViewIndex]
-          : SongViewMode.chordLyrics,
-      chordsView: chordsViewIndex != null
-          ? ChordsViewMode.values[chordsViewIndex]
-          : ChordsViewMode.american,
+          : SongViewMode.both,
+      chordView: chordsViewIndex != null
+          ? ChordViewMode.values[chordsViewIndex]
+          : ChordViewMode.american,
       isNotificationsEnabled: isNotificationEnabled,
       isOnboardingDone: isOnboardingDone,
       textSize: textSizeIndex != null
@@ -274,8 +274,8 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     if (settings.songView != null) {
       prefs.setInt(_songViewKey, settings.songView!.index);
     }
-    if (settings.chordsView != null) {
-      prefs.setInt(_chordsViewMode, settings.chordsView!.index);
+    if (settings.chordView != null) {
+      prefs.setInt(_chordViewMode, settings.chordView!.index);
     }
     if (settings.isNotificationsEnabled != null) {
       prefs.setBool(_notificationEnabledKey, settings.isNotificationsEnabled!);

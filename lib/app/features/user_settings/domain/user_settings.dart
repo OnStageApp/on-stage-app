@@ -11,7 +11,7 @@ class UserSettings with _$UserSettings {
     String? id,
     String? userId,
     SongViewMode? songView,
-    ChordsViewMode? chordsView,
+    ChordViewMode? chordView,
     TextSize? textSize,
     bool? isDarkMode,
     bool? displayMdNotes,

@@ -122,7 +122,9 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
                   const SongKey(),
           media: MediaQuery.of(context).size.width - 48,
           songViewMode: ref.watch(userSettingsNotifierProvider).songView ??
-              SongViewMode.chordLyrics,
+              SongViewMode.both,
+          chordViewMode: ref.watch(userSettingsNotifierProvider).chordView ??
+              ChordViewMode.american,
           originalSongKey:
               ref.watch(songNotifierProvider(widget.songId)).song.originalKey ??
                   const SongKey(),
@@ -229,6 +231,7 @@ class SongDetailWidgetState extends ConsumerState<SongDetailWidget> {
     ref
       ..listen(userSettingsNotifierProvider, (previous, next) {
         if (previous?.songView != next.songView ||
+            previous?.chordView != next.chordView ||
             previous?.textSize != next.textSize) {
           logger.i('user settings changed');
           setState(_getTextStyles);

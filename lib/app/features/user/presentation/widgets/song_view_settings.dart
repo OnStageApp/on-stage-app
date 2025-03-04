@@ -25,7 +25,7 @@ class SongViewSettings extends ConsumerWidget {
         StageToggle(
           initialIndex: SongViewMode.values.indexOf(
             ref.watch(userSettingsNotifierProvider).songView ??
-                SongViewMode.chordLyrics,
+                SongViewMode.both,
           ),
           labels: SongViewMode.values.map((e) => e.name).toList(),
           totalSwitches: SongViewMode.values.length,
@@ -41,6 +41,11 @@ class SongViewSettings extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         const ChordsViewModeWidget(),
+        const SizedBox(height: 24),
+        Text(
+          'Display Options',
+          style: context.textTheme.titleSmall,
+        ),
         const SizedBox(height: 12),
         CustomSwitchListTile(
           title: 'Md Notes',

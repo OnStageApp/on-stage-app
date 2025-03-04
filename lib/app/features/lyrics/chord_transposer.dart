@@ -7,24 +7,24 @@ class ChordTransposer {
   ChordTransposer({
     required this.songKeyToBeUpdated,
     required this.originalSongKey,
-    required this.chordsViewMode,
+    required this.chordViewMode,
     this.transpose = 0,
-    this.isRomanStyle = false,
   }) {
     cycle = defaultCycle;
 
-    switch (chordsViewMode) {
-      case ChordsViewMode.american:
+    switch (chordViewMode) {
+      case ChordViewMode.american:
         cycle = defaultCycle;
-      case ChordsViewMode.numeric:
-        cycle = isRomanStyle ? romanNumerals : arabicNumerals;
+      case ChordViewMode.numbers:
+        cycle = romanNumbers;
+      case ChordViewMode.numerals:
+        cycle = arabicNumerals;
     }
   }
 
-  final ChordsViewMode chordsViewMode;
+  final ChordViewMode chordViewMode;
   late List<String> cycle;
   int transpose;
-  bool isRomanStyle;
   final SongKey songKeyToBeUpdated;
 
   final SongKey originalSongKey;
@@ -85,7 +85,7 @@ class ChordTransposer {
     11: {'sharp': 'B', 'flat': 'B'},
   };
 
-  static const List<String> romanNumerals = [
+  static const List<String> romanNumbers = [
     'I',
     'ii',
     'iii',
@@ -106,8 +106,10 @@ class ChordTransposer {
   ];
 
   String transposeChord(String chord) {
-    if (transpose == 0 && chordsViewMode != ChordsViewMode.numeric) {
-      if (chordsViewMode == ChordsViewMode.american) {
+    if (transpose == 0 &&
+        (chordViewMode != ChordViewMode.numbers ||
+            chordViewMode != ChordViewMode.numerals)) {
+      if (chordViewMode == ChordViewMode.american) {
         return _convertAccidentals(chord);
       }
       return chord;
@@ -119,7 +121,7 @@ class ChordTransposer {
     }
     var result = outChord.join('/');
 
-    if (chordsViewMode == ChordsViewMode.american) {
+    if (chordViewMode == ChordViewMode.american) {
       result = _convertAccidentals(result);
     }
 
@@ -137,7 +139,8 @@ class ChordTransposer {
   };
 
   String _processChord(String chord) {
-    if (chordsViewMode == ChordsViewMode.numeric) {
+    if (chordViewMode == ChordViewMode.numbers ||
+        chordViewMode == ChordViewMode.numerals) {
       return _toNumeric(chord, originalSongKey.name);
     }
 
@@ -196,7 +199,7 @@ class ChordTransposer {
       }
     }
 
-    if (isRomanStyle) {
+    if (ChordViewMode.numerals == chordViewMode) {
       // Roman numerals logic remains the same
       if (!quality.toLowerCase().startsWith('maj') &&
           (quality.startsWith('m') && RegExp('[a-z]').hasMatch(quality[0]) ||
@@ -235,7 +238,7 @@ class ChordTransposer {
   }
 
   Map<int, String> getDegreeMap() {
-    if (isRomanStyle) {
+    if (ChordViewMode.numerals == chordViewMode) {
       return {
         0: 'I',
         2: 'II',
@@ -262,7 +265,7 @@ class ChordTransposer {
     var suffix = suffixChord;
     if (suffix.isEmpty) return '';
 
-    if (isRomanStyle) {
+    if (ChordViewMode.numerals == chordViewMode) {
       // Roman numeral style - remove quality indicators since they're shown by case
       suffix = suffix
           .replaceAll('maj', '')
