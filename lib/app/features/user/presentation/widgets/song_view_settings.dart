@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/song/domain/models/song_view_mode.dart';
-import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/preferences_view_mode.dart';
+import 'package:on_stage_app/app/features/song/presentation/widgets/preferences/chords_view_mode.dart';
 import 'package:on_stage_app/app/features/user/presentation/widgets/custom_switch_list_tile.dart';
 import 'package:on_stage_app/app/features/user_settings/application/user_settings_notifier.dart';
 import 'package:on_stage_app/app/shared/stage_toggle.dart';
