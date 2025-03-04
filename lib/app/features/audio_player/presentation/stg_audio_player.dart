@@ -214,12 +214,15 @@ class _StgAudioPlayerState extends ConsumerState<StgAudioPlayer>
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-          Text(
-            fileName,
-            style: context.textTheme.titleMedium!
-                .copyWith(color: context.colorScheme.onSurface),
+          Expanded(
+            child: Text(
+              fileName,
+              style: context.textTheme.titleMedium!
+                  .copyWith(color: context.colorScheme.onSurface),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          const Spacer(),
           if (context.isLargeScreen)
             Padding(
               padding: const EdgeInsets.only(right: 12),

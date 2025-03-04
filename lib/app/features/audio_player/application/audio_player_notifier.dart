@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
-import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
+import 'package:on_stage_app/app/features/audio_player/audio_handler.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,25 +17,28 @@ part 'audio_player_notifier.g.dart';
 @riverpod
 class AudioController extends _$AudioController {
   AudioPlayer? _player;
-  StreamSubscription<CombinedPlayerState>? _playerSubscription;
+  StreamSubscription<dynamic>? _playerSubscription;
+  final MyAudioHandler _audioHandler = MyAudioHandler();
 
   @override
   AudioPlayerState build() {
-    // Clean up resources when the provider is disposed.
     ref.onDispose(() {
-      _playerSubscription?.cancel();
-      _player?.dispose();
+      ref.onDispose(() {
+        _playerSubscription?.cancel();
+        _player?.dispose();
+        _audioHandler.stop();
+      });
     });
     return const AudioPlayerState();
   }
 
-// Improve error handling with user-friendly messages
   Future<void> openFile(
     SongFile file,
     String localUrl,
   ) async {
     await _initializePlayer();
 
+    // Get the album art as a URI (for background display)
     final artUri = await _getAssetArtUri('assets/icons/logo_onstage.png');
 
     try {
@@ -46,21 +48,27 @@ class AudioController extends _$AudioController {
         errorMessage: null, // Clear any previous errors
       );
 
-      final audioSource = AudioSource.file(
-        localUrl,
-        tag: MediaItem(
+      // In audioplayers, you set the URL and then start playback.
+      // setUrl returns an int result (1 means success)
+      await _player!.setSourceDeviceFile(localUrl);
+      // if (result != 1) {
+      //   throw Exception('Error setting URL for audio');
+      // }
+
+      // Once the URL is set, update state and start playback.
+      state = state.copyWith(status: AudioStatus.ready);
+      await _player!.resume();
+
+      // Update AudioService's background media item.
+      // This will help display the correct info in the system’s media controls.
+      await _audioHandler.updateMediaItem(
+        MediaItem(
           id: file.id,
           album: 'OnStage',
           title: file.name,
           artUri: artUri,
         ),
       );
-
-      await _player!.setAudioSource(audioSource);
-
-      state = state.copyWith(status: AudioStatus.ready);
-
-      await _player!.play();
     } catch (e, stackTrace) {
       logger.e(
         'Error opening file ${file.name}, path: $localUrl',
@@ -68,9 +76,8 @@ class AudioController extends _$AudioController {
         stackTrace,
       );
 
-      // Provide a user-friendly error message
       var errorMessage = 'Unable to play audio file';
-      if (e is PlayerException) {
+      if (e is Exception) {
         errorMessage = 'Playback error: Please try again';
       } else if (e is FormatException) {
         errorMessage = 'Invalid audio format';
@@ -98,22 +105,9 @@ class AudioController extends _$AudioController {
     state = state.copyWith(currentSongFile: null);
   }
 
-  Future<void> loadAudio(String url) async {
-    if (_player == null) {
-      await _initializePlayer();
-    }
-    try {
-      state = state.copyWith(status: AudioStatus.loading);
-      await _player!.setUrl(url);
-      state = state.copyWith(status: AudioStatus.ready);
-    } catch (e) {
-      state = state.copyWith(status: AudioStatus.error);
-    }
-  }
-
   Future<void> play() async {
     if (state.status == AudioStatus.ready) {
-      await _player?.play();
+      await _player?.resume();
     }
   }
 
@@ -126,19 +120,21 @@ class AudioController extends _$AudioController {
   }
 
   Future<void> skipForward() async {
-    if (_player != null) {
-      final newPosition = state.position + const Duration(seconds: 10);
-      final skipTo =
-          newPosition < state.duration ? newPosition : state.duration;
-      await _player?.seek(skipTo);
-    }
+    await _skipBy(const Duration(seconds: 10));
   }
 
   Future<void> skipBackward() async {
-    if (_player != null) {
-      final newPosition = state.position - const Duration(seconds: 10);
-      final skipTo = newPosition > Duration.zero ? newPosition : Duration.zero;
-      await _player?.seek(skipTo);
+    await _skipBy(const Duration(seconds: -10));
+  }
+
+  // Helper method to skip forward or backward.
+  Future<void> _skipBy(Duration offset) async {
+    final currentDuration = await _player?.getCurrentPosition();
+    if (currentDuration != null) {
+      final currentPosition = currentDuration;
+      final newPosition = currentPosition + offset;
+      await _player
+          ?.seek(newPosition > Duration.zero ? newPosition : Duration.zero);
     }
   }
 
@@ -150,49 +146,31 @@ class AudioController extends _$AudioController {
   }
 
   Future<void> _initializePlayer() async {
-    // Prevent multiple initializations.
     if (_player != null) return;
 
     _player = AudioPlayer();
     state = state.copyWith(player: _player);
 
-    // Combine streams in a type-safe manner.
-    final combinedStream = rx.CombineLatestStream.combine4<Duration, Duration,
-        Duration?, PlayerState, CombinedPlayerState>(
-      _player!.positionStream,
-      _player!.bufferedPositionStream,
-      _player!.durationStream,
-      _player!.playerStateStream,
-      (position, bufferedPosition, duration, playerState) =>
-          CombinedPlayerState(
-        position: position,
-        bufferedPosition: bufferedPosition,
-        duration: duration ?? Duration.zero,
-        isPlaying: playerState.playing,
-      ),
-    );
-
-    // Listen to the combined stream and update the state.
-    _playerSubscription = combinedStream.listen((combinedState) {
-      state = state.copyWith(
-        position: combinedState.position,
-        bufferedPosition: combinedState.bufferedPosition,
-        duration: combinedState.duration,
-        isPlaying: combinedState.isPlaying,
-      );
-    });
+    _playerSubscription =
+        rx.CombineLatestStream.combine3<Duration, Duration, PlayerState, void>(
+      _player!.onPositionChanged,
+      _player!.onDurationChanged,
+      _player!.onPlayerStateChanged,
+      (position, duration, playerState) {
+        state = state.copyWith(
+          position: position,
+          duration: duration,
+          isPlaying: playerState == PlayerState.playing,
+        );
+      },
+    ).listen((_) {});
   }
 
   Future<Uri> _getAssetArtUri(String assetPath) async {
-    // Load the asset as bytes.
     final byteData = await rootBundle.load(assetPath);
-    // Get a temporary directory.
     final tempDir = await getTemporaryDirectory();
-    // Create a temporary file.
     final file = File('${tempDir.path}/logo_onstage.png');
-    // Write the asset bytes to the file.
     await file.writeAsBytes(byteData.buffer.asUint8List());
-    // Return the file URI.
     return Uri.file(file.path);
   }
 }

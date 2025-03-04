@@ -5,6 +5,7 @@
   "version": "0.2.0",
   "configurations": [
 
+
     // {
     //   "name": "Launch development",
     //   "request": "launch",
@@ -29,6 +30,22 @@
     //     "lib/main.dart"
     //   ]
     // },
+    {
+      "name": "Attach: Design for iPad",
+      "request": "attach",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+          "--app-id",
+          "com.onstage.app",
+          "--flavor",
+          "production",
+          "--target",
+          "lib/main.dart"
+      ],
+      "deviceId": "mac-designed-for-ipad",
+  },
+
     {
       "name": "Launch production",
       "request": "launch",
