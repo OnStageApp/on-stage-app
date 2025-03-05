@@ -30,16 +30,17 @@ class _SongTileState extends ConsumerState<SongTile> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        final queryParams = {'songId': widget.song.id};
-        context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colorScheme.onSurfaceVariant,
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return Material(
+      color: context.colorScheme.onSurfaceVariant,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        overlayColor:
+            WidgetStateProperty.all(context.colorScheme.surfaceBright),
+        borderRadius: BorderRadius.circular(10),
+        onTap: () {
+          final queryParams = {'songId': widget.song.id};
+          context.pushNamed(AppRoute.song.name, queryParameters: queryParams);
+        },
         child: Padding(
           padding:
               const EdgeInsets.only(left: 5, top: 5, right: 12, bottom: 12),
@@ -103,6 +104,7 @@ class _SongTileState extends ConsumerState<SongTile> {
               //TODO: BETA
               if (widget.song.hasFiles && ref.watch(isBetaTeamProvider))
                 IconButton(
+                  visualDensity: VisualDensity.compact,
                   onPressed: () {
                     context.pushNamed(
                       AppRoute.songFiles.name,

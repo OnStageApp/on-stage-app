@@ -6,6 +6,10 @@ final isBetaTeamProvider = Provider<bool>((ref) {
   final currentTeam = ref.watch(teamNotifierProvider).currentTeam;
   final remoteConfigService = ref.watch(remoteConfigProvider);
   final betaTestingConfig = remoteConfigService.betaTestingConfig;
-  return currentTeam != null &&
-      betaTestingConfig.teamIds.contains(currentTeam.id);
+  final allowAll = betaTestingConfig.allowAll;
+  final teamIds = betaTestingConfig.teamIds;
+  if (allowAll) {
+    return true;
+  }
+  return currentTeam != null && teamIds.contains(currentTeam.id);
 });

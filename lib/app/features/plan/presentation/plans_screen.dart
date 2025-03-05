@@ -5,6 +5,7 @@ import 'package:on_stage_app/app/features/plan/application/filtered_plans_provid
 import 'package:on_stage_app/app/features/plan/presentation/controller/plan_controller.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_carousel.dart';
 import 'package:on_stage_app/app/features/plan/presentation/widgets/plan_duration_toggle.dart';
+import 'package:on_stage_app/app/features/subscription/subscription_notifier.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -154,7 +155,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 openUrl(
-                                  'https://philosophical-stage-226575.framer.app/terms',
+                                  'https://www.notion.so/Terms-and-conditions-194d8a51e05e8005b8c6f872ab03435f',
                                 );
                               },
                           ),
@@ -166,7 +167,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                             ),
                           ),
                           TextSpan(
-                            text: 'privacy policy.',
+                            text: 'privacy policy. ',
                             style: context.textTheme.bodySmall!.copyWith(
                               color: context.colorScheme.primary,
                               fontSize: 11,
@@ -174,8 +175,28 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 openUrl(
-                                  'https://philosophical-stage-226575.framer.app/privacy',
+                                  'https://www.notion.so/Privacy-Policy-18ad8a51e05e80a093c8fc16b037790b',
                                 );
+                              },
+                          ),
+                          TextSpan(
+                            text: 'Already Purchased Subscription? ',
+                            style: context.textTheme.bodySmall!.copyWith(
+                              color: context.colorScheme.outline,
+                              fontSize: 11,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Restore Purchase',
+                            style: context.textTheme.bodySmall!.copyWith(
+                              color: context.colorScheme.primary,
+                              fontSize: 11,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                ref
+                                    .read(subscriptionNotifierProvider.notifier)
+                                    .restorePurchases();
                               },
                           ),
                         ],

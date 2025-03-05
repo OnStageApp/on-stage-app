@@ -34,11 +34,11 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
     return _subscriptionRepository!;
   }
 
-  final logger = Logger();
+  final _logger = Logger();
 
   @override
   SubscriptionState build() {
-    logger.d('SubscriptionNotifier: build() called');
+    _logger.d('SubscriptionNotifier: build() called');
     _subscriptionRepository = SubscriptionRepository(ref.watch(dioProvider));
     _localDb = ref.read(databaseProvider);
 
@@ -52,13 +52,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       (previous, current) async {
         if (previous?.id != current?.id) {
           if (current != null) {
-            logger.d(
+            _logger.d(
               'User logged in, syncing subscription for user: ${current.id}',
             );
             await Purchases.logIn(current.id);
           } else {
             //TODO: logout is not working we need to handle this one, is not triggered. I thing provider gets invalidated
-            logger.d('User logged out, clearing subscription for user');
+            _logger.d('User logged out, clearing subscription for user');
             state = const SubscriptionState();
             await Purchases.logOut();
           }
@@ -78,9 +78,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       await getCurrentSubscription(forceUpdate: true);
       await saveCurrentPlan();
 
-      logger.d('SubscriptionNotifier initialization completed');
+      _logger.d('SubscriptionNotifier initialization completed');
     } catch (e, s) {
-      logger.e('Failed to initialize RevenueCat: $e $s');
+      _logger.e('Failed to initialize RevenueCat: $e $s');
       state =
           state.copyWith(errorMessage: 'Failed to initialize RevenueCat: $e');
     }
@@ -107,7 +107,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         );
       }
 
-      logger.i('Products fetched: $products');
+      _logger.i('Products fetched: $products');
 
       final customInfo = await Purchases.purchaseStoreProduct(products.first);
 
@@ -116,26 +116,26 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         isLoading: false,
         errorMessage: null,
       );
-      logger.i('Package purchased successfully: $packageId');
+      _logger.i('Package purchased successfully: $packageId');
     } catch (e) {
       if (e is PurchasesErrorCode &&
           e == PurchasesErrorCode.paymentPendingError) {
-        logger.w('Payment pending for package: $packageId');
+        _logger.w('Payment pending for package: $packageId');
       } else if (e is PurchasesErrorCode &&
           e == PurchasesErrorCode.invalidReceiptError) {
-        logger
+        _logger
             .e('Invalid receipt error: Ensure sandbox and production handling');
       } else if (e is PurchasesErrorCode &&
           e == PurchasesErrorCode.purchaseCancelledError) {
-        logger.i('Purchase cancelled for package: $packageId');
+        _logger.i('Purchase cancelled for package: $packageId');
       } else if (e is PlatformException && e.code == '1') {
-        logger.i('User cancelled the purchase with package: $packageId');
+        _logger.i('User cancelled the purchase with package: $packageId');
         state = state.copyWith(
           isLoading: false,
         );
         return;
       } else {
-        logger.e('Failed to purchase package: $packageId, error: $e');
+        _logger.e('Failed to purchase package: $packageId, error: $e');
       }
 
       state = state.copyWith(
@@ -148,7 +148,7 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
   Future<void> getCurrentSubscription({
     bool forceUpdate = false,
   }) async {
-    logger.d('Getting current subscription');
+    _logger.d('Getting current subscription');
     if (!state.isLoading) {
       state = state.copyWith(isLoading: true);
     }
@@ -178,12 +178,12 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
       return;
     } catch (e, s) {
       if (e.toString().contains('Sandbox receipt used in production')) {
-        logger.w(
+        _logger.w(
           'Sandbox receipt encountered in '
           'production, switching to sandbox environment $s',
         );
       }
-      logger.e('Error getting current subscription $e');
+      _logger.e('Error getting current subscription $e');
       state = state.copyWith(isLoading: false);
       return;
     }
@@ -197,9 +197,9 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
       state = state.copyWith(currentSubscription: subscription);
       await saveCurrentPlan();
-      logger.i('Subscription updated successfully');
+      _logger.i('Subscription updated successfully');
     } catch (e) {
-      logger.e('Error updating subscription $e');
+      _logger.e('Error updating subscription $e');
       await ref.read(databaseProvider).saveSubscription(subscription);
       state = state.copyWith(currentSubscription: subscription);
       rethrow;
@@ -213,6 +213,32 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
         await ref.read(planServiceProvider.notifier).getPlanById(planId);
     state = state.copyWith(currentPlan: currentPlan);
     return currentPlan;
+  }
+
+  Future<void> restorePurchases() async {
+    try {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+
+      _logger.d('Attempting to restore purchases');
+
+      final customerInfo = await Purchases.restorePurchases();
+
+      state = state.copyWith(
+        customerInfo: customerInfo,
+        isLoading: false,
+      );
+
+      await getCurrentSubscription(forceUpdate: true);
+      await saveCurrentPlan();
+
+      _logger.i('Purchases restored successfully');
+    } catch (e) {
+      _logger.e('Failed to restore purchases: $e');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to restore purchases: $e',
+      );
+    }
   }
 
   Future<CustomerInfo> _setConfigurations() async {
@@ -229,13 +255,13 @@ class SubscriptionNotifier extends _$SubscriptionNotifier {
 
     await Purchases.configure(configuration);
 
-    logger.d(
+    _logger.d(
       'Purchases configured '
       'using ${Platform.isAndroid ? "Android" : "iOS"} environment',
     );
 
     final customerInfo = await Purchases.getCustomerInfo();
-    logger
+    _logger
         .d('Initial customer info fetched: ${customerInfo.originalAppUserId}');
     return customerInfo;
   }
