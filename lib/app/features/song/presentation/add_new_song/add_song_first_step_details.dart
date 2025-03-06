@@ -21,6 +21,8 @@ import 'package:on_stage_app/app/theme/theme.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 
+const defaultArtist = Artist(id: '6757ed5cc0cfe20bbdcadab5', name: 'Unknown');
+
 class AddSongFirstStepDetails extends ConsumerStatefulWidget {
   const AddSongFirstStepDetails({required this.songId, super.key});
 
@@ -73,7 +75,11 @@ class _AddSongFirstStepDetailsState
           .getSongById(widget.songId!);
       _prefillValuesIfEditing();
     } else {
-      _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
+      setState(() {
+        _selectedKey = const SongKey(chord: ChordsWithoutSharp.C);
+        _selectedArtist = defaultArtist;
+        _selectedTheme = ThemeEnum.worship;
+      });
     }
   }
 
@@ -120,6 +126,7 @@ class _AddSongFirstStepDetailsState
               CustomTextField(
                 label: 'Song Name',
                 hint: 'Enter Song Name',
+                requiredField: true,
                 icon: Icons.music_note,
                 keyboardType: TextInputType.text,
                 controller: _songNameController,
@@ -137,20 +144,13 @@ class _AddSongFirstStepDetailsState
                 keyboardType: TextInputType.number,
                 icon: Icons.speed,
                 controller: _bpmController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a tempo';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid tempo';
-                  }
-                  return null;
-                },
+                validator: (p0) => null,
               ),
               const SizedBox(height: Insets.medium),
               PreferenceSelector<SongKey>(
                 label: 'Key',
                 placeholder: 'Select Key',
+                requiredField: true,
                 selectedValue: _selectedKey,
                 displayValue: (key) => key?.name ?? '',
                 validator: (key) {
@@ -178,6 +178,7 @@ class _AddSongFirstStepDetailsState
               PreferenceSelector<Artist>(
                 label: 'Artist',
                 placeholder: 'Choose Artist',
+                requiredField: true,
                 selectedValue: _selectedArtist,
                 displayValue: (artist) => artist?.name ?? '',
                 validator: (artist) {
@@ -201,6 +202,7 @@ class _AddSongFirstStepDetailsState
               PreferenceSelector<ThemeEnum>(
                 label: 'Theme',
                 placeholder: 'Choose theme',
+                requiredField: true,
                 selectedValue: _selectedTheme,
                 displayValue: (theme) => theme?.title ?? '',
                 validator: (theme) {
@@ -252,7 +254,7 @@ class _AddSongFirstStepDetailsState
     final newSongId = await ref
         .read(songNotifierProvider(widget.songId).notifier)
         .saveSongToDB();
-    if (!context.mounted || newSongId.isNullEmptyOrWhitespace) return;
+    if (!mounted || newSongId.isNullEmptyOrWhitespace) return;
     context.goNamed(
       AppRoute.editSongContent.name,
       queryParameters: {
@@ -272,7 +274,7 @@ class _AddSongFirstStepDetailsState
             theme: _selectedTheme,
           ),
         );
-    if (!context.mounted) return;
+    if (!mounted) return;
     context.pop();
   }
 
@@ -291,8 +293,6 @@ class _AddSongFirstStepDetailsState
 
   bool _isFormValid() {
     return _songNameController.text.isNotEmpty &&
-        _bpmController.text.isNotEmpty &&
-        int.tryParse(_bpmController.text) != null &&
         _selectedKey != null &&
         _selectedArtist?.id != null &&
         _selectedArtist != null &&

@@ -13,6 +13,7 @@ class PreferenceSelector<T> extends StatelessWidget {
     super.key,
     this.validator,
     this.icon,
+    this.requiredField = false,
   });
 
   final String label;
@@ -22,6 +23,7 @@ class PreferenceSelector<T> extends StatelessWidget {
   final VoidCallback onTap;
   final FormFieldValidator<T?>? validator;
   final IconData? icon;
+  final bool requiredField;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +42,21 @@ class PreferenceSelector<T> extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: context.textTheme.titleSmall!.copyWith(
-                color: context.colorScheme.onSurface,
-              ),
+            Row(
+              children: [
+                Text(
+                  label,
+                  style: context.textTheme.titleSmall!.copyWith(
+                    color: context.colorScheme.onSurface,
+                  ),
+                ),
+                if (requiredField)
+                  Text(
+                    ' *',
+                    style: context.textTheme.titleSmall!
+                        .copyWith(color: context.colorScheme.error),
+                  ),
+              ],
             ),
             const SizedBox(height: Insets.small),
             PreferencesActionTile(

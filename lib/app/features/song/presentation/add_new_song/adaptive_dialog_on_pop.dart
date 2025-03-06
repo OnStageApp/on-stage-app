@@ -70,9 +70,10 @@ class AdaptiveDialogOnPop extends ConsumerWidget {
         context: context,
         builder: (_) => AdaptiveDialogOnPop(
           title: title ?? 'Discard Changes',
-          description: 'Are you sure you want to leave? '
-              'Any unsaved changes will be lost.',
-          actionText: description ?? 'Yes',
+          description: description ??
+              'Are you sure you want to leave? '
+                  'Any unsaved changes will be lost.',
+          actionText: 'Yes',
         ),
       );
     } else {

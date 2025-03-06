@@ -23,6 +23,7 @@ class ProgressBarWidget extends ConsumerWidget {
         onSeek: audioNotifier.seek,
         timeLabelLocation: TimeLabelLocation.sides,
         timeLabelType: TimeLabelType.totalTime,
+        timeLabelPadding: 4,
         timeLabelTextStyle: context.textTheme.titleSmall!.copyWith(
           color: context.colorScheme.outline,
         ),
