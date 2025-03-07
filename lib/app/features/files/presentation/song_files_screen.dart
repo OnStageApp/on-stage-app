@@ -14,7 +14,6 @@ import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_e
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_shimmer.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/uploading_section.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
-import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/beta_label_widget.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
@@ -62,15 +61,82 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           titleWidget: const Row(
             children: [
               Text('Files'),
-              SizedBox(width: 12),
-              BetaLabelWidget(),
+              // SizedBox(width: 12),
+              // BetaLabelWidget(),
             ],
           ),
           isBackButtonVisible: true,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: AddNewButton(
-              onPressed: isLoading ? null : pickFile,
+            child: Row(
+              children: [
+                Material(
+                  color: context.colorScheme.onSurfaceVariant,
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    onTap: () {
+                      // Add your link functionality here
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.file_up,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add Files',
+                            style: context.textTheme.titleMedium!.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Material(
+                  color: context.colorScheme.onSurfaceVariant,
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    onTap: () {
+                      // Add your link functionality here
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.link_2,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add Link',
+                            style: context.textTheme.titleMedium!.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
