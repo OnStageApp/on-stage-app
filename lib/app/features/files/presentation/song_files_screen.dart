@@ -74,13 +74,18 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
             ),
           ),
         ),
-        body: DraggableFilesOverlay(
-          onFileDropped: isLoading ? (p) {} : onFileDropped,
-          child: RefreshIndicator.adaptive(
-            onRefresh: _loadFiles,
-            child: _buildContent(isLoading, error, files),
-          ),
+        body: RefreshIndicator.adaptive(
+          onRefresh: _loadFiles,
+          child: _buildContent(isLoading, error, files),
         ),
+        //TODO: Implement in the future
+        // body: DraggableFilesOverlay(
+        //   onFileDropped: isLoading ? (p) {} : onFileDropped,
+        //   child: RefreshIndicator.adaptive(
+        //     onRefresh: _loadFiles,
+        //     child: _buildContent(isLoading, error, files),
+        //   ),
+        // ),
       ),
     );
   }
