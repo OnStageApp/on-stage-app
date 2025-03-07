@@ -107,7 +107,7 @@ class ChordTransposer {
 
   String transposeChord(String chord) {
     if (transpose == 0 &&
-        (chordViewMode != ChordViewMode.numbers ||
+        (chordViewMode != ChordViewMode.numbers &&
             chordViewMode != ChordViewMode.numerals)) {
       if (chordViewMode == ChordViewMode.american) {
         return _convertAccidentals(chord);
