@@ -46,8 +46,9 @@ class _OnboardingFifthStepState extends ConsumerState<OnboardingFifthStep> {
                 CustomTextField(
                   enabled: true,
                   label: 'Username',
-                  hint: 'Enter your username',
+                  hint: 'eg. johndoe // it will help others to find you',
                   icon: Icons.person,
+                  requiredField: true,
                   controller: _usernameController,
                   onChanged: (value) {
                     ref

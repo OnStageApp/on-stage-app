@@ -12,8 +12,9 @@ class SongFile with _$SongFile {
     required String teamId,
     required String name,
     required FileTypeEnum fileType,
-    required int size,
+    required int? size,
     required String? fileExtension,
+    required String? link,
   }) = _SongFile;
 
   factory SongFile.fromJson(Map<String, dynamic> json) =>

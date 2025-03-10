@@ -33,6 +33,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initializeNotifiers();
+      showOnboardingOverlay(context);
     });
   }
 

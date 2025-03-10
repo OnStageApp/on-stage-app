@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
-import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/application/audio_handler/audio_handler.dart';
+import 'package:on_stage_app/app/features/audio_player/application/audio_player_state.dart';
 import 'package:on_stage_app/app/features/audio_player/domain/combined_player_state.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
 import 'package:on_stage_app/logger.dart';
@@ -36,6 +36,8 @@ class AudioController extends _$AudioController {
     if (_audioHandler != null) return;
     try {
       _audioHandler = await ref.watch(audioServiceProvider.future);
+      await _audioHandler!.player.setReleaseMode(ReleaseMode.stop);
+
       _setupCombinedPlayerListener();
     } catch (e, stackTrace) {
       logger.e('Error initializing AudioService', e, stackTrace);

@@ -44,18 +44,27 @@ class SongFilesNotifier extends _$SongFilesNotifier {
     }
   }
 
-  Future<void> renameSongFile(String fileId, String newName) async {
+  Future<void> updateSongFile(
+    String fileId,
+    String newName, {
+    String? newLink,
+  }) async {
     try {
       final updatedFiles = state.songFiles.map((file) {
         if (file.id == fileId) {
-          return file.copyWith(name: newName);
+          return file.copyWith(
+            name: newName,
+            link: file.fileType == FileTypeEnum.link && newLink != null
+                ? newLink
+                : file.link,
+          );
         }
         return file;
       }).toList();
 
       state = state.copyWith(songFiles: updatedFiles);
 
-      final request = UpdateSongFileRequest(name: newName);
+      final request = UpdateSongFileRequest(name: newName, link: newLink);
       await _repository.updateSongFile(fileId, request);
     } catch (e) {
       logger.e('Error renaming file: $e');
@@ -148,6 +157,20 @@ class SongFilesNotifier extends _$SongFilesNotifier {
     } catch (e) {
       logger.e('Error fetching PDF document URL: $e');
       return null;
+    }
+  }
+
+  Future<void> uploadLink(String songId, String name, String link) async {
+    try {
+      final request = UpdateSongFileRequest(name: name, link: link);
+      final uploadedFile = await _repository.uploadLink(songId, request);
+
+      state = state.copyWith(
+        songFiles: [...state.songFiles, uploadedFile],
+      );
+    } catch (e) {
+      logger.e('Error uploading link: $e');
+      state = state.copyWith(error: e);
     }
   }
 
