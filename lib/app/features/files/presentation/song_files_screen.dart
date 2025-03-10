@@ -8,13 +8,15 @@ import 'package:on_stage_app/app/features/files/application/song_files_notifier.
 import 'package:on_stage_app/app/features/files/application/upload_manager/uploads_manager.dart';
 import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
-import 'package:on_stage_app/app/features/files/presentation/widgets/draggable_area.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/edit_link_modal.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/file_section.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_empty_widget.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/song_file_shimmer.dart';
 import 'package:on_stage_app/app/features/files/presentation/widgets/uploading_section.dart';
+import 'package:on_stage_app/app/features/song/application/song/song_notifier.dart';
 import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
-import 'package:on_stage_app/app/shared/beta_label_widget.dart';
+import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
+import 'package:on_stage_app/app/shared/add_new_button.dart';
 import 'package:on_stage_app/app/shared/stage_app_bar.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/supported_file_formats/supported_file_formats.dart';
@@ -32,11 +34,13 @@ class SongFilesScreen extends ConsumerStatefulWidget {
 }
 
 class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
+  String? songTitle;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadFiles();
+      songTitle = ref.watch(songNotifierProvider(widget.songId)).song.title;
     });
   }
 
@@ -58,85 +62,42 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
       child: Scaffold(
         appBar: StageAppBar(
           title: '',
-          titleWidget: const Row(
+          titleWidget: Row(
             children: [
-              Text('Files'),
-              // SizedBox(width: 12),
-              // BetaLabelWidget(),
+              Expanded(
+                child: Text(
+                  '$songTitle',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
             ],
           ),
           isBackButtonVisible: true,
           trailing: Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: Row(
-              children: [
-                Material(
-                  color: context.colorScheme.onSurfaceVariant,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      // Add your link functionality here
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            LucideIcons.file_up,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Add Files',
-                            style: context.textTheme.titleMedium!.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+            child: AdaptiveMenuContext(
+              width: 24,
+              items: [
+                MenuAction(
+                  title: 'Add Link',
+                  onTap: () => {
+                    EditLinkModal.show(
+                      context: context,
+                      songId: widget.songId,
                     ),
-                  ),
+                  },
+                  icon: LucideIcons.link,
                 ),
-                const SizedBox(width: 12),
-                Material(
-                  color: context.colorScheme.onSurfaceVariant,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () {
-                      // Add your link functionality here
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            LucideIcons.link_2,
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Add Link',
-                            style: context.textTheme.titleMedium!.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                MenuAction(
+                  title: 'Add Files',
+                  onTap: () => {
+                    if (isLoading) null else pickFile(),
+                  },
+                  icon: LucideIcons.file_up,
                 ),
               ],
+              child: const AddNewButton(),
             ),
           ),
         ),
@@ -144,14 +105,6 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           onRefresh: _loadFiles,
           child: _buildContent(isLoading, error, files),
         ),
-        //TODO: Implement in the future
-        // body: DraggableFilesOverlay(
-        //   onFileDropped: isLoading ? (p) {} : onFileDropped,
-        //   child: RefreshIndicator.adaptive(
-        //     onRefresh: _loadFiles,
-        //     child: _buildContent(isLoading, error, files),
-        //   ),
-        // ),
       ),
     );
   }
@@ -217,6 +170,8 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
   }
 
   Widget _buildFilesList(List<SongFile> files) {
+    final links =
+        files.where((file) => file.fileType == FileTypeEnum.link).toList();
     final audioFiles =
         files.where((file) => file.fileType == FileTypeEnum.audio).toList();
     final documentFiles =
@@ -231,6 +186,12 @@ class SongFilesScreenState extends ConsumerState<SongFilesScreen> {
           UploadingSection(
             songId: widget.songId,
           ),
+          if (links.isNotEmpty)
+            FileSection(
+              title: 'Links',
+              files: links,
+              songId: widget.songId,
+            ),
           if (audioFiles.isNotEmpty)
             FileSection(
               title: 'Audio',

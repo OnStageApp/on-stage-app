@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:on_stage_app/app/features/event/application/event/event_notifier.dart';
@@ -7,6 +8,7 @@ import 'package:on_stage_app/app/features/event/presentation/widgets/assigned_pe
 import 'package:on_stage_app/app/features/event_items/application/event_items_notifier.dart';
 import 'package:on_stage_app/app/features/event_items/domain/event_item.dart';
 import 'package:on_stage_app/app/features/event_items/presentation/widget/event_item_time.dart';
+import 'package:on_stage_app/app/router/app_router.dart';
 import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/list_utils.dart';
 import 'package:on_stage_app/app/utils/string_utils.dart';
@@ -111,11 +113,9 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Align(
-                        alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               EventItemTime(
@@ -168,6 +168,25 @@ class EventItemTileState extends ConsumerState<EventItemTile> {
                           ],
                         ),
                       ),
+                      if (isSong && widget.eventItem.song!.hasFiles == true)
+                        Center(
+                          child: IconButton(
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () {
+                              context.pushNamed(
+                                AppRoute.songFilesFromEvent.name,
+                                queryParameters: {
+                                  'songId': widget.eventItem.song!.id,
+                                },
+                              );
+                            },
+                            icon: Icon(
+                              LucideIcons.paperclip,
+                              size: 22,
+                              color: context.colorScheme.outline,
+                            ),
+                          ),
+                        ),
                       Container(
                         margin: const EdgeInsets.only(right: 12),
                         alignment: Alignment.center,

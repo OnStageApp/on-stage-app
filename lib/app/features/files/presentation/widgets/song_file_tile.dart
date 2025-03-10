@@ -3,7 +3,10 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:on_stage_app/app/features/files/application/files/file_manager.dart';
 import 'package:on_stage_app/app/features/files/application/song_files_notifier.dart';
+import 'package:on_stage_app/app/features/files/domain/file_type_enum.dart';
 import 'package:on_stage_app/app/features/files/domain/song_file.dart';
+import 'package:on_stage_app/app/features/files/presentation/widgets/edit_link_modal.dart';
+import 'package:on_stage_app/app/shared/adaptive_dialog.dart';
 import 'package:on_stage_app/app/shared/adaptive_menu_context.dart';
 import 'package:on_stage_app/app/shared/loading_widget.dart';
 import 'package:on_stage_app/app/theme/theme.dart';
@@ -11,7 +14,7 @@ import 'package:on_stage_app/app/utils/build_context_extensions.dart';
 import 'package:on_stage_app/app/utils/file_size_calculator.dart';
 
 final fileEditingStateProvider =
-    StateProvider.autoDispose<bool>((ref) => false);
+    StateProvider.family.autoDispose<bool, String>((ref, id) => false);
 
 class SongFileTile extends ConsumerStatefulWidget {
   const SongFileTile(this.songFile, this.songId, {super.key});
@@ -33,7 +36,8 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
     _controller = TextEditingController(text: widget.songFile.name);
 
     _focusNode.addListener(() {
-      if (!_focusNode.hasFocus && ref.read(fileEditingStateProvider)) {
+      if (!_focusNode.hasFocus &&
+          ref.watch(fileEditingStateProvider(widget.songFile.id))) {
         _toggleEditMode();
       }
     });
@@ -47,23 +51,28 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
   }
 
   void _toggleEditMode() {
-    final currentEditingState = ref.read(fileEditingStateProvider);
+    final currentEditingState =
+        ref.read(fileEditingStateProvider(widget.songFile.id));
     if (currentEditingState) {
       final newName = _controller.text;
       if (newName.isNotEmpty && newName != widget.songFile.name) {
         ref
             .read(songFilesNotifierProvider.notifier)
-            .renameSongFile(widget.songFile.id, newName);
+            .updateSongFile(widget.songFile.id, newName);
+      } else {
+        _controller.text = widget.songFile.name;
       }
     } else {
       _focusNode.requestFocus();
     }
-    ref.read(fileEditingStateProvider.notifier).update((state) => !state);
+    ref
+        .read(fileEditingStateProvider(widget.songFile.id).notifier)
+        .update((state) => !state);
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = ref.watch(fileEditingStateProvider);
+    final isEditing = ref.watch(fileEditingStateProvider(widget.songFile.id));
     final fileManagerState = ref.watch(fileManagerProvider);
     final isLoading = fileManagerState.isLoading(widget.songFile.id);
 
@@ -99,14 +108,15 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                           _buildEditingTile()
                         else
                           _buildNonEditingTile(),
-                        Text(
-                          _getFileSize(),
-                          style: context.textTheme.bodySmall!.copyWith(
-                            color: context.colorScheme.outline,
+                        if (widget.songFile.fileType != FileTypeEnum.link)
+                          Text(
+                            _getFileSize(),
+                            style: context.textTheme.bodySmall!.copyWith(
+                              color: context.colorScheme.outline,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
                       ],
                     ),
                   ),
@@ -135,13 +145,34 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
                           title: 'Rename',
                           onTap: _toggleEditMode,
                         ),
+                        if (widget.songFile.fileType == FileTypeEnum.link)
+                          MenuAction(
+                            icon: LucideIcons.settings_2,
+                            title: 'Edit',
+                            onTap: () {
+                              EditLinkModal.show(
+                                context: context,
+                                songId: widget.songId,
+                                link: widget.songFile,
+                              );
+                            },
+                          ),
                         MenuAction(
                           icon: LucideIcons.trash,
                           title: 'Remove',
                           onTap: () {
-                            ref
-                                .read(songFilesNotifierProvider.notifier)
-                                .deleteSongFile(widget.songFile.id);
+                            AdaptiveDialog.show(
+                              context: context,
+                              title: 'Remove Attachment',
+                              description: 'Are you sure you want to remove '
+                                  '${widget.songFile.name}?',
+                              actionText: 'Remove',
+                              onAction: () async {
+                                await ref
+                                    .read(songFilesNotifierProvider.notifier)
+                                    .deleteSongFile(widget.songFile.id);
+                              },
+                            );
                           },
                           isDestructive: true,
                         ),
@@ -173,7 +204,7 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
 
   Widget _buildEditingTile() {
     return GestureDetector(
-      onTap: () {}, 
+      onTap: () {},
       child: TextField(
         controller: _controller,
         focusNode: _focusNode,
@@ -212,6 +243,6 @@ class _SongFileTileState extends ConsumerState<SongFileTile> {
   }
 
   String _getFileSize() {
-    return FileSizeCalculator.formatSize(widget.songFile.size);
+    return FileSizeCalculator.formatSize(widget.songFile.size ?? 0);
   }
 }

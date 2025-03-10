@@ -184,4 +184,5 @@ class API {
       'song-files/songs/{songId}/files/{fileId}';
   static const String deleteSongFile = 'song-files/{fileId}';
   static const String uploadSongFile = 'song-files/songs';
+    static const String uploadLink = 'song-files/songs/{songId}/link';
 }

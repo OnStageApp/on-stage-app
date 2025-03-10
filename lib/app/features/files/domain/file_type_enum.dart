@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 
 enum FileTypeEnum {
+  link,
   audio,
   pdf,
   other;
 
   IconData get icon {
     switch (this) {
+      case FileTypeEnum.link:
+        return LucideIcons.link;
       case FileTypeEnum.audio:
         return LucideIcons.audio_lines;
       case FileTypeEnum.pdf:
@@ -22,8 +25,10 @@ enum FileTypeEnum {
 
   Color iconColor() {
     switch (this) {
-      case FileTypeEnum.audio:
+      case FileTypeEnum.link:
         return Colors.blue;
+      case FileTypeEnum.audio:
+        return Colors.green;
       case FileTypeEnum.pdf:
         return Colors.red;
       case FileTypeEnum.other:

@@ -11,6 +11,7 @@ import 'package:on_stage_app/app/features/files/presentation/widgets/multi_pdf_p
 import 'package:on_stage_app/app/utils/string_utils.dart';
 import 'package:on_stage_app/logger.dart';
 import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FileManagerState {
   FileManagerState({
@@ -48,6 +49,15 @@ class FileManagerNotifier extends StateNotifier<FileManagerState> {
       _setLoading(file.id, true);
       _clearError(file.id);
 
+      if (file.fileType == FileTypeEnum.link) {
+        if (file.link.isNullEmptyOrWhitespace) {
+          _setError(file.id, 'Link URL is empty');
+          return;
+        }
+        await _openLink(file.link!);
+
+        return;
+      }
       String? s3FileUrl;
       final cachedFileUrl = await _cachingService.checkCache(
         file.id,
@@ -166,6 +176,13 @@ class FileManagerNotifier extends StateNotifier<FileManagerState> {
     if (context.mounted) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _openLink(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $url');
     }
   }
 }

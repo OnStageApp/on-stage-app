@@ -42,6 +42,12 @@ abstract class SongFilesRepository {
     @Part(name: 'songId') String songId,
     @Part() File file,
   );
+
+  @POST(API.uploadLink)
+  Future<SongFile> uploadLink(
+    @Path('songId') String songId,
+    @Body() UpdateSongFileRequest request,
+  );
 }
 
 final songFilesRepoProvider = Provider<SongFilesRepository>((ref) {
